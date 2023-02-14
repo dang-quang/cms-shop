@@ -1,0 +1,877 @@
+/**
+ * Created by Long ND on 3/8/21.
+ */
+import md5 from "md5";
+import moment from "moment";
+import { getWithTimeout, postWithTimeout, putWithTimeout } from "./networking";
+import {
+  getFileWithCheckingToken,
+  getWithCheckingToken,
+  postWithCheckingToken,
+  putWithCheckingToken,
+  postFileWithCheckingToken,
+  deleteWithCheckingToken,
+} from "./NetworkingAuth";
+import store from "../redux/store";
+import Cookies from "js-cookie";
+export const BASE_API_URL = "https://rest.tigerate.com";
+let stagingUrl = "https://node.tigerate.com/v1";
+export const imageUrl = "https://s1.kse.vn";
+let baseUrl = stagingUrl;
+let baseUrlKse = "https://s1.kse.vn/api";
+const seckey = "D62D94DBA65E";
+const businessId = "46";
+
+const deviceModel = "iPhone 13";
+const osName = "iOS";
+const osVersion = "15.4";
+const appVersion = "0.1";
+const buildKey = "vn.supper.app.apigw";
+export function getSignature() {
+  let timestamp = moment().format("YYYY-MM-DD HH:mm:ssZ");
+  return {
+    timestamp: timestamp,
+    signature: md5(timestamp + seckey),
+  };
+}
+
+function getUserInfoRedux() {
+  return store.getState().user.userInfo;
+}
+
+export function userLogin(email, password, ati) {
+  return postWithTimeout(
+    `${baseUrl}/users/login`,
+    {},
+    {
+      email,
+      password,
+      ati,
+    }
+  );
+}
+export function verifyLogin(email, phone, answer) {
+  return postWithCheckingToken(
+    `${baseUrl}/users/verify`,
+    {},
+    {
+      email,
+      phone,
+      answer,
+    }
+  );
+}
+
+export function getUserProfile() {
+  return getWithCheckingToken(`${baseUrl}/users/me`, {});
+}
+
+export function getShopConnectURL(channel) {
+  return postWithCheckingToken(
+    `${baseUrl}/shop/auth`,
+    {},
+    { channel: channel }
+  );
+}
+
+export function getShopConnectCrmUrl(shopId, channel) {
+  Cookies.set("shop_id", shopId);
+  return postWithCheckingToken(
+    `${baseUrl}/shop/authCrm`,
+    {},
+    { channel: channel }
+  );
+}
+
+export function addShop(shopId, auth_code, channel) {
+  var body = {
+    shopId: parseInt(shopId ?? 0),
+    auth_code: auth_code,
+    channel: channel,
+    bus: getUserInfoRedux()?.bus ? getUserInfoRedux().bus : "",
+    active: 1,
+    editor: getUserInfoRedux()?.bus ? getUserInfoRedux().bus : "",
+  };
+  return postWithCheckingToken(`${baseUrl}/shop/verify`, {}, body);
+}
+export function getPackage(body) {
+  return postWithCheckingToken(`${baseUrl}/package/getAll`, {}, body);
+}
+export function getPaymentHistory(body) {
+  var a;
+  if (body) {
+    a = {
+      tuKhoa: body,
+    };
+  }
+  return postWithCheckingToken(`${baseUrl}/package/paymentHistory`, {}, a);
+}
+export function createUser(body) {
+  return postWithCheckingToken(`${baseUrl}/users`, {}, body);
+}
+export function syncProduct(body) {
+  var params = {
+    shopId: body.shopId,
+  };
+  return postWithCheckingToken(`${baseUrl}/shop/syncProduct`, {}, params);
+}
+export function getAllUser(params) {
+  var body = {
+    tuKhoa: params,
+  };
+  return postWithCheckingToken(`${baseUrl}/users/getAll`, {}, body);
+}
+export function activeCrm(id, active_crm, auth_code) {
+  Cookies.remove("shop_id");
+  return putWithCheckingToken(
+    `${baseUrl}/shop/${id}`,
+    {},
+    {
+      active_crm,
+      auth_code,
+    }
+  );
+}
+
+export function getAllShop() {
+  return getWithCheckingToken(
+    `${baseUrl}/shop/bus/${
+      getUserInfoRedux()?.bus ? getUserInfoRedux().bus : ""
+    }`,
+    {},
+    {}
+  );
+}
+export function getShop(id) {
+  return getWithCheckingToken(`${baseUrl}/shop/${id}`, {}, {});
+}
+export function updateShop(id, name, code) {
+  return putWithCheckingToken(
+    `${baseUrl}/shop/${id}`,
+    {},
+    {
+      name,
+      code,
+    }
+  );
+}
+export function getOperationScreen() {
+  return postWithCheckingToken(
+    `${baseUrl}/dashboard/operation`,
+    {},
+    {
+      time_to: "2021-09-16",
+    }
+  );
+}
+export function getOrderScreen() {
+  return postWithCheckingToken(`${baseUrl}/order/getOrderScreen`, {}, {});
+}
+export function getOrderList(params) {
+  return postWithCheckingToken(
+    `${baseUrl}/order/getOrderList`,
+    {},
+    {
+      ...params,
+    }
+  );
+}
+export function getOrderDelivery(params) {
+  return postWithCheckingToken(
+    `${baseUrl}/delivery/getAllData`,
+    {},
+    {
+      ...params,
+    }
+  );
+}
+export function updateConfirmDelivery(params) {
+  return postWithCheckingToken(
+    `${baseUrl}/delivery/updateConfirm`,
+    {},
+    {
+      ...params,
+    }
+  );
+}
+export function updateforControlDelivery(params) {
+  return postWithCheckingToken(
+    `${baseUrl}/delivery/updateForControl`,
+    {},
+    {
+      ...params,
+    }
+  );
+}
+export function getOrderPayment(params) {
+  return postWithCheckingToken(
+    `${baseUrl}/payment/getAllData`,
+    {},
+    {
+      ...params,
+    }
+  );
+}
+export function getRequestPayment(params) {
+  return postWithTimeout(
+    `${BASE_API_URL}/payment-request/get-list`,
+    {
+      "x-device-id": localStorage.getItem("DEVICEID"),
+      language: localStorage.getItem("LANGUAGE"),
+      Authorization: `${localStorage.getItem("ENCACCESSTOKEN")}##${localStorage.getItem("LOGINTOKEN")}`,
+    },
+    {
+      ...params,
+    }
+  );
+}
+export function updateConfirmPayment(params) {
+  return postWithCheckingToken(
+    `${baseUrl}/payment/updateConfirm`,
+    {},
+    {
+      ...params,
+    }
+  );
+}
+export function updateforControlPayment(params) {
+  return postWithCheckingToken(
+    `${baseUrl}/payment/updateForControl`,
+    {},
+    {
+      ...params,
+    }
+  );
+}
+export function updateNotePayment(params) {
+  return postWithCheckingToken(
+    `${baseUrl}/payment/updateNote`,
+    {},
+    {
+      ...params,
+    }
+  );
+}
+export function updateNoteDelivery(params) {
+  return postWithCheckingToken(
+    `${baseUrl}/delivery/updateNote`,
+    {},
+    {
+      ...params,
+    }
+  );
+}
+export function getOrderDetail(ordersn) {
+  return postWithCheckingToken(
+    `${baseUrl}/order/getOrderDetail`,
+    {},
+    {
+      order_sn: ordersn,
+    }
+  );
+}
+export function getShipOrder(ordersn) {
+  return postWithCheckingToken(
+    `${baseUrl}/order/getShipOrder`,
+    {},
+    {
+      order_sn: ordersn,
+    }
+  );
+}
+export function shipOrder(ordersn, pickup) {
+  return postWithCheckingToken(
+    `${baseUrl}/order/shipOrder`,
+    {},
+    {
+      order_sn: ordersn,
+      pickup: pickup,
+    }
+  );
+}
+export function cancelOrder(ordersn, reason) {
+  return postWithCheckingToken(
+    `${baseUrl}/order/cancelOrder`,
+    {},
+    {
+      order_sn: ordersn,
+      cancel_reason: reason,
+    }
+  );
+}
+export function getAirwayBill(ordersn) {
+  return getFileWithCheckingToken(
+    `${baseUrl}/order/getAirwayBill`,
+    {},
+    {
+      order_sn: ordersn,
+    }
+  );
+}
+export function createAirwayBill(ordersn) {
+  return postWithCheckingToken(
+    `${baseUrl}/order/createAirwayBill`,
+    {},
+    {
+      order_sn: ordersn,
+    }
+  );
+}
+export function getCreateItemScreen() {
+  return postWithCheckingToken(
+    `${baseUrl}/inventory/getCreateItemScreen`,
+    {},
+    {}
+  );
+}
+export function createInventoryProp(propName, obj) {
+  return postWithCheckingToken(
+    `${baseUrl}/inventory/create/` + propName,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+export function uploadImage(files) {
+  return postFileWithCheckingToken(`${baseUrl}/media/uploadImage`, {}, files);
+}
+export function createInventoryItem(obj) {
+  return postWithCheckingToken(
+    `${baseUrl}/inventory/createItem`,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+export function getCreateItemEcomScreen() {
+  return postWithCheckingToken(
+    `${baseUrl}/inventory/getCreateItemEcomScreen`,
+    {},
+    {}
+  );
+}
+export function createItemFromEcom(shopId, sameSku, sameName) {
+  return postWithCheckingToken(
+    `${baseUrl}/inventory/createItemFromEcom`,
+    {},
+    {
+      shop_id: shopId,
+      same_sku: sameSku,
+      same_name: sameName,
+    }
+  );
+}
+export function getInventoryScreen() {
+  return postWithCheckingToken(
+    `${baseUrl}/inventory/getInventoryScreen`,
+    {},
+    {}
+  );
+}
+export function changePassword(email, new_password, password) {
+  return putWithCheckingToken(
+    `${baseUrl}/users/`,
+    {},
+    {
+      email,
+      new_password,
+      password,
+    }
+  );
+}
+
+export function getInventoryItemList(obj) {
+  return postWithCheckingToken(
+    `${baseUrl}/inventory/getInventoryItemList`,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+export function getInventoryItemDetail(id) {
+  return postWithCheckingToken(
+    `${baseUrl}/inventory/getInventoryItemDetail`,
+    {},
+    {
+      item_id: id,
+    }
+  );
+}
+export function searchShopItem(keyword) {
+  return postWithCheckingToken(
+    `${baseUrl}/inventory/searchShopItem`,
+    {},
+    {
+      keyword,
+    }
+  );
+}
+export function getAllSupplier() {
+  return getWithCheckingToken(`${baseUrl}/supplier`, {}, {});
+}
+export function getAllStock() {
+  return getWithCheckingToken(`${baseUrl}/stock`, {}, {});
+}
+export function getAllPurchaseOrder(obj) {
+  return postWithCheckingToken(
+    `${baseUrl}/purchase_order/getAllPurchaseOrder`,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+export function createNewPurchaseOrder(obj) {
+  obj.bus = getUserInfoRedux()?.bus ? getUserInfoRedux().bus : "";
+  return postWithCheckingToken(
+    `${baseUrl}/purchase_order`,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+export function updatePurchaseOrder(obj) {
+  return putWithCheckingToken(
+    `${baseUrl}/purchase_order/${obj._id}`,
+    {},
+    { ...obj }
+  );
+}
+export function getProductScreen() {
+  return postWithCheckingToken(`${baseUrl}/product/getProductScreen`, {}, {});
+}
+export function getProductList(params) {
+  return postWithCheckingToken(
+    `${baseUrl}/product/getProductList`,
+    {},
+    {
+      ...params,
+    }
+  );
+}
+export function getProductDetail(id) {
+  return postWithCheckingToken(
+    `${baseUrl}/product/getProductDetail`,
+    {},
+    {
+      item_id: id,
+    }
+  );
+}
+export function copyProduct(list_id, shop_id, autoRename) {
+  return postWithCheckingToken(
+    `${baseUrl}/product/copyProduct`,
+    {},
+    {
+      item_id_list: list_id,
+      to_shop_id: shop_id,
+      auto_rename: autoRename,
+    }
+  );
+}
+export function createNewSupplier(obj) {
+  return postWithCheckingToken(
+    `${baseUrl}/supplier`,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+export function createNewStock(obj) {
+  return postWithCheckingToken(
+    `${baseUrl}/stock`,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+export function getChannelData() {
+  return postWithCheckingToken(`${baseUrl}/shop/getChannel`, {}, {});
+}
+export function getAllShippingFee(obj) {
+  return postWithCheckingToken(
+    `${baseUrl}/shipping_fee/getAllShippingFee`,
+    {},
+    { ...obj }
+  );
+}
+export function createNewShippingFee(obj) {
+  obj.bus = getUserInfoRedux()?.bus ? getUserInfoRedux().bus : "";
+  return postWithCheckingToken(
+    `${baseUrl}/shipping_fee`,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+export function updateShippingFee(obj) {
+  return putWithCheckingToken(
+    `${baseUrl}/shipping_fee/${obj._id}`,
+    {},
+    { ...obj }
+  );
+}
+export function deleteShippingFee(id) {
+  return postWithCheckingToken(`${baseUrl}/shipping_fee/${id}`, {}, {});
+}
+//Deal Shock
+export function getAllDealShock(obj) {
+  return postWithCheckingToken(
+    `${baseUrl}/dealshock/getAllDealShock`,
+    {},
+    { ...obj }
+  );
+}
+export function createNewDealShock(obj) {
+  obj.bus = getUserInfoRedux()?.bus ? getUserInfoRedux().bus : "";
+  return postWithCheckingToken(
+    `${baseUrl}/dealshock/insertDealShock`,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+export function updateDealShock(obj) {
+  return putWithCheckingToken(
+    `${baseUrl}/dealshock/${obj._id}`,
+    {},
+    { ...obj }
+  );
+}
+export function deleteDealShock(id) {
+  return postWithCheckingToken(`${baseUrl}/dealshock/${id}`, {}, {});
+}
+export function getAllPromotionMarketing(obj) {
+  return postWithCheckingToken(
+    `${baseUrl}/promotion/getAllPromotionMarketing`,
+    {},
+    { ...obj }
+  );
+}
+export function createNewPromotionMarketing(obj) {
+  obj.bus = getUserInfoRedux()?.bus ? getUserInfoRedux().bus : "";
+  return postWithCheckingToken(
+    `${baseUrl}/promotion/insertPromotionMarketing`,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+export function updatePromotionMarketing(obj) {
+  return putWithCheckingToken(
+    `${baseUrl}/promotion/updatePromotionMarketing/${obj._id}`,
+    {},
+    { ...obj }
+  );
+}
+export function deletePromotionMarketing(id) {
+  return postWithCheckingToken(
+    `${baseUrl}/promotion/deletePromotionMarketing/${id}`,
+    {},
+    {}
+  );
+}
+export function getCrmScreen() {
+  return postWithCheckingToken(`${baseUrl}/crm/getCrmScreen`, {}, {});
+}
+
+export function getRateScreen() {
+  return postWithCheckingToken(`${baseUrl}/crm/getRateScreen`, {}, {});
+}
+
+export function getCommentList(obj) {
+  return postWithCheckingToken(
+    `${baseUrl}/crm/getCommentList`,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+export function replyComment(obj) {
+  return postWithCheckingToken(
+    `${baseUrl}/crm/replyComment`,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+
+export function getTaskScreen() {
+  return postWithCheckingToken(`${baseUrl}/task_manage/getTaskScreen`, {}, {});
+}
+
+export function getListUser() {
+  return postWithCheckingToken(`${baseUrl}/task_manage/getListUser`, {}, {});
+}
+
+export function createTask(obj) {
+  return postWithCheckingToken(
+    `${baseUrl}/task_manage/createTask`,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+
+export function updateTask(obj) {
+  return postWithCheckingToken(
+    `${baseUrl}/task_manage/updateTask`,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+
+export function deleteTask(id) {
+  return postWithCheckingToken(
+    `${baseUrl}/task_manage/deleteTask`,
+    {},
+    {
+      id: id,
+    }
+  );
+}
+
+export function getTaskDetail(obj) {
+  return postWithCheckingToken(
+    `${baseUrl}/task_manage/getTaskDetail`,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+
+export function addMemberTask(id, list_member) {
+  return postWithCheckingToken(
+    `${baseUrl}/task_manage/addMemberTask`,
+    {},
+    {
+      id: id,
+      list_member: list_member,
+    }
+  );
+}
+
+export function removeMemberTask(id, member_id) {
+  return postWithCheckingToken(
+    `${baseUrl}/task_manage/removeMemberTask`,
+    {},
+    {
+      id: id,
+      member_id: member_id,
+    }
+  );
+}
+
+export function moveGroup(id, position) {
+  return postWithCheckingToken(
+    `${baseUrl}/task_manage/moveGroup`,
+    {},
+    {
+      id: id,
+      position: position,
+    }
+  );
+}
+
+export function createSubTask(obj) {
+  return postWithCheckingToken(
+    `${baseUrl}/task_manage/createSubTask`,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+
+export function updateSubTask(obj) {
+  return postWithCheckingToken(
+    `${baseUrl}/task_manage/updateSubTask`,
+    {},
+    {
+      ...obj,
+    }
+  );
+}
+
+export function deleteSubTask(id) {
+  return postWithCheckingToken(
+    `${baseUrl}/task_manage/deleteSubTask`,
+    {},
+    {
+      id: id,
+    }
+  );
+}
+
+export function moveTask(id, task_id, position) {
+  return postWithCheckingToken(
+    `${baseUrl}/task_manage/moveTask`,
+    {},
+    {
+      id: id,
+      task_id: task_id,
+      position: position,
+    }
+  );
+}
+
+export function addMemberSubTask(id, list_member) {
+  return postWithCheckingToken(
+    `${baseUrl}/task_manage/addMemberSubTask`,
+    {},
+    {
+      id: id,
+      list_member: list_member,
+    }
+  );
+}
+
+export function removeMemberSubTask(id, member_id) {
+  return postWithCheckingToken(
+    `${baseUrl}/task_manage/removeMemberSubTask`,
+    {},
+    {
+      id: id,
+      member_id: member_id,
+    }
+  );
+}
+
+// export function getFirstToken() {
+//   return postWithTimeout(
+//     `${BASE_API_URL}/tools/enc-first-token`,
+//     {},
+//     {
+//       deviceId: localStorage.getItem("DEVICEID"),
+//       buildKey: buildKey,
+//     }
+//   );
+// }
+
+export function initData() {
+  return postWithTimeout(
+    `${BASE_API_URL}/init-data`,
+    {
+      "x-device-id": localStorage.getItem("DEVICEID"),
+      language: localStorage.getItem("LANGUAGE"),
+      Authorization: localStorage.getItem("INITTOKEN"),
+    },
+    {
+      deviceModel: deviceModel,
+      osName: osName,
+      osVersion: osVersion,
+      appVersion: appVersion,
+      firebaseToken: "Firebase token test",
+    }
+  );
+}
+// export function getEncToken() {
+//   return postWithTimeout(
+//     `${BASE_API_URL}/tools/enc-access-token`,
+//     {},
+//     {
+//       deviceId: localStorage.getItem("DEVICEID"),
+//       buildKey: buildKey,
+//       rsaPublicKey: localStorage.getItem("RSAPUBLIC"),
+//     }
+//   );
+// }
+// export function generateSignature(phoneNumber, password) {
+//   return postWithTimeout(
+//     `${BASE_API_URL}/tools/generate-signature`,
+//     {},
+//     {
+//       signatureKey: localStorage.getItem("RSASIGNATURE"),
+//       signatureData: `${phoneNumber}${password}`,
+//     }
+//   );
+// }
+
+export function userLoginNew(email, password) {
+  return postWithTimeout(
+    `${BASE_API_URL}/auth/login`,
+    {
+      "x-device-id": localStorage.getItem("DEVICEID"),
+      language: localStorage.getItem("LANGUAGE"),
+      Authorization: localStorage.getItem("ENCACCESSTOKEN"),
+    },
+    {
+      accountNumber: email,
+      pass: password,
+      signature: localStorage.getItem("SIGNATUREKEY"),
+      orgId: "1",
+      branchId: "1",
+    }
+  );
+}
+
+// export function decryptToken() {
+//   return postWithTimeout(
+//     `${BASE_API_URL}/tools/decrypt`,
+//     {},
+//     {
+//       deviceId: localStorage.getItem("DEVICEID"),
+//       buildKey: buildKey,
+//       cryptData: localStorage.getItem("ACCESSSTOKEN"),
+//       rsaPrivateKey: localStorage.getItem("RSAPRIVATE"),
+//     }
+//   );
+// }
+// export function encryptToken(cryptDataDecrypt) {
+//   return postWithTimeout(
+//     `${BASE_API_URL}/tools/encrypt`,
+//     {},
+//     {
+//       deviceId: localStorage.getItem("DEVICEID"),
+//       buildKey: buildKey,
+//       cryptData: cryptDataDecrypt,
+//       rsaPublicKey: localStorage.getItem("RSAPUBLIC"),
+//       rsaPrivateKey: localStorage.getItem("RSAPRIVATE"),
+//     }
+//   );
+// }
+export function getHomeBlog() {
+  return postWithTimeout(
+    `${BASE_API_URL}/home/home-blog`,
+    {
+      "x-device-id": localStorage.getItem("DEVICEID"),
+      language: localStorage.getItem("LANGUAGE"),
+      Authorization: `${localStorage.getItem(
+        "ENCACCESSTOKEN"
+      )}##${localStorage.getItem("LOGINTOKEN")}`,
+    },
+    {
+      page: 0,
+    }
+  );
+}
+
+export function getDropDown() {
+  return postWithTimeout(`${BASE_API_URL}/hr/common/get-dropdown`,
+    {
+      "x-device-id": localStorage.getItem("DEVICEID"),
+      language: localStorage.getItem("LANGUAGE"),
+      Authorization: `${localStorage.getItem(
+        "ENCACCESSTOKEN"
+      )}##${localStorage.getItem("LOGINTOKEN")}`
+    },
+    {
+      type:"DEPARTMENT"
+    }
+  );
+}

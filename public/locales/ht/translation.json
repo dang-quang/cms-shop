@@ -1,0 +1,21 @@
+{
+  "english": "Angle",
+  "creole": "Kreyol",
+  "france": "Franse",
+  "sideBar": {
+    "shop": "Shop",
+    "qrManagement": "QR management",
+    "shopManagement": "Shop Management",
+    "product": "Product",
+    "categoryManagement": "Category management",
+    "productApproval": "Product approval",
+    "marketing": "Marketing",
+    "broadcastMessages": "Broadcast messages",
+    "smsMessages": "SMS messages",
+    "advertisement": "Advertisment",
+    "voucher": "Voucher",
+    "flashSale": "Flash sale",
+    "operationReport": "Operation Report",
+    "uiManagement": "UI Management"
+  }
+}

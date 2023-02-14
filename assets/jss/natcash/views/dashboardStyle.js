@@ -1,0 +1,306 @@
+import {
+  primaryColor,
+  whiteColor,
+  blackColor,
+  hexToRgb,
+  successColor,
+  infoColor,
+  orangeColor,
+  grayColor,
+} from "assets/jss/natcash.js";
+
+const dashboardStyle = {
+  successText: {
+    color: successColor[0],
+  },
+  upArrowCardCategory: {
+    width: "16px",
+    height: "16px",
+  },
+  stats: {
+    color: grayColor[0],
+    display: "inline-flex",
+    fontSize: "12px",
+    lineHeight: "22px",
+    "& svg": {
+      top: "4px",
+      width: "16px",
+      height: "16px",
+      position: "relative",
+      marginRight: "3px",
+      marginLeft: "3px",
+    },
+    "& .fab,& .fas,& .far,& .fal,& .material-icons": {
+      top: "4px",
+      fontSize: "16px",
+      position: "relative",
+      marginRight: "3px",
+      marginLeft: "3px",
+    },
+  },
+  cardCategory: {
+    color: grayColor[0],
+    margin: "0",
+    fontSize: "14px",
+    marginTop: "0",
+    paddingTop: "10px",
+    marginBottom: "0",
+  },
+  cardCategoryWhite: {
+    color: "rgba(" + hexToRgb(whiteColor) + ",.62)",
+    margin: "0",
+    fontSize: "14px",
+    marginTop: "0",
+    marginBottom: "0",
+  },
+  cardTitle: {
+    color: grayColor[2],
+    marginTop: "0px",
+    minHeight: "auto",
+    fontWeight: "300",
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    marginBottom: "3px",
+    textDecoration: "none",
+    "& small": {
+      color: grayColor[1],
+      fontWeight: "400",
+      lineHeight: "1",
+    },
+  },
+  cardTitle2: {
+    fontWeight: "bold",
+    margin: "5px 0",
+    "@media (max-width: 769px)": {
+      fontSize: "22px",
+    },
+  },
+  cardTitleWhite: {
+    color: whiteColor,
+    marginTop: "0px",
+    minHeight: "auto",
+    fontWeight: "300",
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    marginBottom: "3px",
+    textDecoration: "none",
+    "& small": {
+      color: grayColor[1],
+      fontWeight: "400",
+      lineHeight: "1",
+    },
+  },
+  cardSubtitle: {
+    fontWeight: "500",
+    color: grayColor[1],
+    marginBottom: 0,
+    textTransform: "uppercase",
+    "@media (max-width: 1025px) and (min-width: 900px)": {
+      fontSize: "12px",
+    },
+  },
+  cardMoney: {
+    "@media (max-width: 1025px) and (min-width: 900px)": {
+      fontSize: "12px",
+    },
+  },
+  filterContainer: {
+    display: "flex",
+  },
+  filterDate: {
+    display: "flex",
+    marginRight: "20px",
+  },
+  filterSelections: {
+    display: "flex",
+  },
+  formControl: {
+    minWidth: 120,
+    marginRight: "5px",
+  },
+  //custom table
+  note: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    bottom: "10px",
+    color: "#c0c1c2",
+    display: "block",
+    fontWeight: "400",
+    fontSize: "13px",
+    lineHeight: "13px",
+    left: "0",
+    marginLeft: "20px",
+    position: "absolute",
+    width: "260px",
+  },
+  cardCategoryWhite: {
+    color: "rgba(255,255,255,.62)",
+    margin: "0",
+    fontSize: "14px",
+    marginTop: "0",
+    marginBottom: "0",
+  },
+  cardTitleWhite: {
+    color: "#FFFFFF",
+    marginTop: "0px",
+    minHeight: "auto",
+    fontWeight: "300",
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    marginBottom: "3px",
+    textDecoration: "none",
+  },
+  img: {
+    width: "60px",
+    height: "60px",
+    position: "absolute",
+    borderRadius: "10px",
+    top: "0",
+    bottom: "0",
+    left: "0",
+    right: "0",
+    margin: "auto",
+  },
+  bodyContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  tableTransition: {
+    transition: "height .5s",
+  },
+  proContainer: {
+    display: "flex",
+  },
+  proInfoContainer: {
+    marginLeft: "10px",
+  },
+  proImg: {
+    width: "65px",
+    height: "65px",
+    padding: "2px",
+    objectFit: "cover",
+    borderRadius: "8px",
+  },
+  shopImg: {
+    width: "15px",
+    height: "15px",
+    borderRadius: "4px",
+    marginRight: "5px",
+  },
+  shopInfoContainer: {
+    display: "flex",
+    marginRight: "20px",
+  },
+  codeIcon: {
+    fontSize: "16px",
+    marginRight: "5px",
+    color: "#808080",
+  },
+  txtShopName: {
+    padding: "0 !important",
+    margin: "0 !important",
+    color: "#808080 !important",
+  },
+  txtMoreTypes: {
+    padding: "0 !important",
+    margin: "0 !important",
+    color: "rgb(156, 39, 176) !important",
+  },
+  txtLienKet: {
+    padding: "1px 3px !important",
+    margin: "0 !important",
+    marginTop: "4px !important",
+    borderRadius: "4px",
+    border: "0.5px solid #dbdbdb",
+    width: "fit-content",
+    color: "#808080",
+    backgroundColor: "#f5f5f5",
+    fontSize: "11px !important",
+  },
+  txtProductName: {
+    display: "block",
+    fontSize: "15px !important",
+    padding: "0 !important",
+    margin: "0 !important",
+    marginBottom: "4px !important",
+    color: "rgba(0, 0, 0, 0.87)",
+  },
+  card: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "auto",
+    paddingTop: "25px",
+  },
+  modalContainer: {
+    width: "90% !important",
+    minWidth: "300px !important",
+  },
+  filterTitleContainer: {
+    display: "flex",
+    marginLeft: "20px",
+  },
+  filterEleContent: {
+    justifyContent: "space-between",
+    borderBottom: "1px solid #D2D2D2",
+  },
+  filterFooter: {
+    justifyContent: "flex-end",
+    display: "flex",
+    width: "100%",
+  },
+  titleFilter: {
+    color: "#9c27b0",
+  },
+  popperNav: {
+    marginTop: "55px",
+  },
+  dropdownItem: {
+    fontSize: "13px",
+    padding: "10px 20px",
+    margin: "0 5px",
+    borderRadius: "2px",
+    WebkitTransition: "all 150ms linear",
+    MozTransition: "all 150ms linear",
+    OTransition: "all 150ms linear",
+    MsTransition: "all 150ms linear",
+    transition: "all 150ms linear",
+    display: "block",
+    clear: "both",
+    fontWeight: "400",
+    lineHeight: "1.42857143",
+    color: "#333",
+    whiteSpace: "nowrap",
+    height: "unset",
+    minHeight: "unset",
+    "&:hover": {
+      backgroundColor: "#9c27b0",
+      color: "#fff",
+    },
+  },
+  selFilterTitleContainer: {
+    display: "flex",
+    alignItems: "center",
+    marginLeft: "40px",
+    marginTop: "15px",
+  },
+  filteTritle: {
+    marginRight: "10px !important",
+  },
+  btnFilterDate: {
+    maxWidth: "100%",
+  },
+  iconShopData: {
+    width: "30px !important",
+    height: "30px !important",
+    marginBottom: "5px !important",
+  },
+  txtShopDataValue: {
+    color: primaryColor[0],
+    margin: "5px 0 !important",
+    fontSize: "17px",
+  },
+};
+
+export default dashboardStyle;

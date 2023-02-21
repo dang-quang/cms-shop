@@ -73,12 +73,20 @@ const addVoucherStyle = {
     display: "flex",
     justifyContent: "end",
   },
-  viewItem:{
+  viewItemRight:{
     // with: '100%',
     flexDirection:'row',
     justifyContent: "space-between",
-    display:  "flex",
-    marginBottom: 15
+    // display:  "flex",
+    marginBottom: 15,
+    with: '30%'
+  },
+  viewItemLeft:{
+    flexDirection:'row',
+    justifyContent: "space-between",
+    // display:  "flex",
+    marginBottom: 15,
+    with: '65%'
   }
 };
 

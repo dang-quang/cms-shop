@@ -584,19 +584,23 @@ function AddShop() {
 
   const FormGroupCustom_2 = () => {
     return (
-      <div>
-        <div className={classes.viewItem}>
-          <TextField id="outlined-basic" label="Tên cửa hàng" variant="outlined" style={{ width: '65%' }} />
-          <TextField id="outlined-basic" label="Mã Cửa hàng tham chiếu" variant="outlined" style={{ width: '30%' }} />
-        </div>
-        <div className={classes.viewItem}>
-          <TextField id="outlined-basic" label="Điện thoại liên hệ" variant="outlined" style={{ width: '30%' }} />
-          <TextField id="outlined-basic" label="Người liên hệ" variant="outlined" style={{ width: '30%' }} />
-          <div styles={{ width: '30%' }}>
+      <GridContainer>
+        <GridItem className={classes.viewItemLeft} xs={8} sm={8} md={8}>
+          <TextField id="outlined-basic" label="Tên cửa hàng" variant="outlined" style={{ width: '100%' }} />
+          <div style={{ justifyContent: 'space-between', display: 'flex', marginTop: 20 }}>
+            <TextField id="outlined-basic" label="Điện thoại liên hệ" variant="outlined" style={{ width: '45%', marginBottom: 20 }} />
+            <TextField id="outlined-basic" label="Người liên hệ" variant="outlined" style={{ width: '45%', marginBottom: 20 }} />
+          </div>
+        </GridItem>
+        <GridItem className={classes.viewItemRight} xs={4} sm={4} md={4}>
+          <TextField id="outlined-basic" label="Mã Cửa hàng tham chiếu" variant="outlined" style={{ width: '100%', marginBottom: 20 }} />
+
+
+          <div styles={{ width: '100%', marginBottom: 20 }}>
             <ImageUpload cardName="Input Image" imageGallery={galleryImageList} />
           </div>
-        </div>
-      </div>
+        </GridItem>
+      </GridContainer>
     )
   };
 
@@ -606,7 +610,7 @@ function AddShop() {
       <CardHeader color="primary">
         <h4 className={classes.cardTitleWhite}>{text.title}</h4>
       </CardHeader>
-      <CardBody className={classes.cardBody}>
+      <CardBody className={classes.cardBody} style={{paddingBottom: 200}}>
         {FormGroupCustom_2()}
         <ModalCustom
           width={1000}

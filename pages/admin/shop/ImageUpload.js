@@ -37,6 +37,7 @@ import ReplayIcon from "@material-ui/icons/Replay";
 
 //Tabs
 import { withStyles } from "@material-ui/core/styles";
+import imgDefaul from "assets/img/choose_file_defaul.png";
 
 const imageGallery = [
     "https://raw.githubusercontent.com/dxyang/StyleTransfer/master/style_imgs/mosaic.jpg",
@@ -115,7 +116,7 @@ class ImageUploadCard extends React.Component {
     state = {
         mainState: "initial", // initial, search, gallery, uploaded
         imageUploaded: 0,
-        selectedFile: null
+        selectedFile: imgDefaul
     };
 
     handleUploadClick = event => {
@@ -155,7 +156,14 @@ class ImageUploadCard extends React.Component {
 
         return (
             <React.Fragment>
-                <div>
+                <div style={
+                    { width: '100%', 
+                    height: 56,  
+                    border: "1px solid rgb(196 196 196)", 
+                    borderRadius: 5, 
+                    alignItems:'center',
+                    display: 'flex'
+                }}>
                     <input
                         accept="image/*"
                         className={classes.input}
@@ -165,8 +173,8 @@ class ImageUploadCard extends React.Component {
                         onChange={this.handleUploadClick}
                     />
                     <label htmlFor="contained-button-file">
-                        <div style={{ width: '100%', height: 56 }}>
-                            Upload
+                        <div style={{marginLeft: 10}}>
+                            Choose File
                         </div>
                     </label>
                 </div>
@@ -297,7 +305,7 @@ class ImageUploadCard extends React.Component {
 
         return (
             <React.Fragment>
-                <CardActionArea onClick={this.imageResetHandler}>
+                <CardActionArea onClick={this.imageResetHandler} style={{backgroundColor: ''}}>
                     <img
                         width="100%"
                         className={classes.media}
@@ -322,11 +330,10 @@ class ImageUploadCard extends React.Component {
 
         return (
             // <React.Fragment>
-                <div style={{width: 347, height: 56, borderWidth: 1, borderColor: '#000' }}>
-                        {(this.state.mainState == "initial" && this.renderInitialState()) ||
+                <div style={{width: 347, height: 56}}>
+                        {this.renderInitialState()}
 
-                            (this.state.mainState == "uploaded" &&
-                                this.renderUploadedState())}
+                        {this.renderUploadedState()}
                 </div>
             // </React.Fragment>
         );

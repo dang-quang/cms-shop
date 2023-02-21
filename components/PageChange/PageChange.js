@@ -12,7 +12,7 @@ import classNames from "classnames";
 import styles from "assets/jss/natcash/layouts/adminStyle.js";
 
 import bgImage from "assets/img/sidebar-2.jpg";
-import logo from "assets/img/logo.png";
+import logoWide from "assets/img/logo-wide.png";
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
 import sideStyles from "assets/jss/natcash/components/sidebarStyle.js";
@@ -72,9 +72,8 @@ export default function PageChange(props) {
         className={classNames(sideClasses.logoLink)}
       >
         <div className={sideClasses.logoImage}>
-          <img src={logo} alt="logo" className={sideClasses.img} />
+          <img src={logoWide} alt="logo" className={sideClasses.img} />
         </div>
-        {'natcash'}
       </a>
     </div>
   );

@@ -44,7 +44,7 @@ const dashboardRoutes = [
     permission: "stocks",
     subMenu: [
       {
-        path: "/#",
+        path: "/qrManagement",
         name: "qrManagement",
         layout: "/admin",
         parent: "operation",

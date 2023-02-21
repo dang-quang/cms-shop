@@ -37,15 +37,15 @@ export default function Header(props) {
     var name = sidebar;
     props.routes.map((prop) => {
       if (activeRoute(prop.layout + prop.path)) {
-          return (name = t(prop.name))
+        return (name = t(`sideBar.${prop.name}`))
       }
       prop.subMenu?.map((item) => {
         if (activeRoute(item.layout + item.path)) {
-          console.log('tung', props)
-          return (name = t(item.name))
+          return (name = t(`sideBar.${item.name}`))
         }
       });
     });
+
     return name;
   }
   const { color } = props;

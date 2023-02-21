@@ -51,6 +51,10 @@ import { activeCrm, addShop, getAllShop, getShopConnectCrmUrl, syncProduct, upda
 import styles from "assets/jss/natcash/views/shoplist/shoplistStyle.js";
 import { useRouter } from "next/router";
 
+import imgShape from "assets/img/shape.png";
+import imgPen from "assets/img/ic_pen.png";
+import imgDelete from "assets/img/ic_delete.png";
+
 function ShopListPage() {
   const router = useRouter();
   const { shop_id, code } = router.query;
@@ -94,8 +98,8 @@ function ShopListPage() {
   }, []);
 
   const TABLE_HEAD = [
-    { id: "en", value: ["Channel", "CRM", "Shop infomation", "Actions"] },
-    { id: "vi", value: ["Kênh", "CRM", "Thông tin gian hàng", "Thao tác"] },
+    { id: "en", value: ["STT", "Code", "Name", "Parent", "Status", "Apply promotion", "Publish time", ""] },
+    { id: "vi", value: ["STT", "Code", "Name", "Parent", "Status", "Apply promotion", "Publish time", ""] },
   ];
   const options = [
     {
@@ -205,6 +209,7 @@ function ShopListPage() {
   const [data, setData] = useState([]);
   const getShopData = async () => {
     var res = await getAllShop();
+    console.log('getShopData', res);
     setData(res.data);
   };
 
@@ -331,120 +336,36 @@ function ShopListPage() {
     }
   };
   const renderTable = (item, index) => {
+    console.log("item", item);
     return (
       <TableRow key={index} className={tableClasses.tableBodyRow}>
         <TableCell className={tableClasses.tableCell} key={"shopImage"}>
-          <img src={item.icon} className={classes.tableImage} />
+          {index}
         </TableCell>
         <TableCell className={tableClasses.tableCell} key={"shopType"}>
-          <Switch
-            checked={item.active_crm}
-            onChange={() => handleConnect(item)}
-            name="checkedA"
-            disabled={(item.channel == "shopee" || item.channel == "lazada") ? false : true}
-          />
+          SPMT
+        </TableCell>
+        <TableCell className={tableClasses.tableCell} key={"shopType"}>
+          {item.name}
         </TableCell>
         <TableCell className={tableClasses.tableCell} key={"shopInfo"}>
-          <div className={classes.shopInfo}>
-            <img src={item.avatar} className={classes.tableImage} />
-            <div className={classes.shopInfoTxt}>
-              <Tooltip title={text.btnEdit + " " + "🖊"} placement="right-start">
-                <input
-                  type="text"
-                  id="shopName"
-                  name="shopName"
-                  defaultValue={item?.name}
-                  className={classes.inputText + " " + classes.inputShopName}
-                  onBlur={() => handleBlurShopName(item)}
-                  onClick={() => onClickShopName(item)}
-                  onChange={onChangeShopName}
-                />
-              </Tooltip>
-              <Tooltip title={text.btnEdit + " " + "🖊"} placement="right-start">
-                <input
-                  type="text"
-                  id="shopCode"
-                  name="shopCode"
-                  defaultValue={item?.code}
-                  className={classes.inputText + " " + classes.inputShopType}
-                  onBlur={() => handleBlurShopCode(item)}
-                  onClick={() => onClickShopCode(item)}
-                  onChange={onChangeShopCode}
-                />
-              </Tooltip>
-            </div>
-          </div>
+          Not Set
         </TableCell>
-        <TableCell>
-          <div className={classes.proInfoContainer} key={"action"}>
-            <Button
-              id={"action-label" + item?.shopId}
-              aria-owns={
-                showAction.indexOf(item) !== -1
-                  ? "action-list-grow" + item?.shopId
-                  : null
-              }
-              aria-haspopup="true"
-              color="white"
-              size="sm"
-              onClick={() => handleAction(item)}
-            >
-              {text.optionsTitle}
-              <Icon className={classes.btnFilter}>expand_more_outlined</Icon>
-            </Button>
-            <Poppers
-              open={Boolean(showAction.indexOf(item) !== -1)}
-              anchorEl={showAction.indexOf(item) !== -1}
-              transition
-              disablePortal
-              className={
-                classNames({
-                  [classes.popperClose]: !showAction.indexOf(item) !== -1,
-                }) +
-                " " +
-                classes.popperNav
-              }
-            >
-              {({ TransitionProps, placement }) => (
-                <Grow
-                  {...TransitionProps}
-                  id={"action-list-grow" + item?.id}
-                  style={{
-                    transformOrigin:
-                      placement === "bottom" ? "center top" : "center bottom",
-                  }}
-                >
-                  <Paper>
-                    <ClickAwayListener onClickAway={() => handleAction(item)}>
-                      <MenuList role="menu">
-                        <MenuItem className={classes.dropdownItem}>
-                          <Link href={"/admin/shop/" + item.shopId}>
-                            <a target="_blank">{text?.options[0]}</a>
-                          </Link>
-                        </MenuItem>
-                        <MenuItem className={classes.dropdownItem}>
-                          <Link href={"/admin/shop/" + item.shopId}>
-                            <a target="_blank">{text?.options[2]}</a>
-                          </Link>
-                        </MenuItem>
-                        <MenuItem
-                          onClick={() => handleActionSync(item)}
-                          className={classes.dropdownItem}
-                        >
-                          {text?.options[1]}
-                        </MenuItem>
-                        <MenuItem
-                          onClick={() => handleAction(item)}
-                          className={classes.dropdownItem}
-                        >
-                          {text?.options[3]}
-                        </MenuItem>
-                      </MenuList>
-                    </ClickAwayListener>
-                  </Paper>
-                </Grow>
-              )}
-            </Poppers>
+        <TableCell className={tableClasses.tableCell} key={"shopInfo"}>
+          Active
+        </TableCell>
+        <TableCell className={tableClasses.tableCell} key={"shopInfo"}>
+          True
+        </TableCell>
+        <TableCell className={tableClasses.tableCell} key={"shopInfo"}>
+          2022-08-12
+        </TableCell>
+
+        <TableCell className={tableClasses.tableCell} key={"shopInfo"}>
+          <div>
+            <img src={imgShape} style={{ width: 20, height: 14, marginLeft: 7 }} />
+            <img src={imgPen} style={{ width: 20, height: 14, marginLeft: 7 }} />
+            <img src={imgDelete} style={{ width: 20, height: 14, marginLeft: 7 }} />
           </div>
         </TableCell>
       </TableRow>
@@ -458,7 +379,15 @@ function ShopListPage() {
         <h4 className={classes.cardTitleWhite}>{text.title}</h4>
         <p className={classes.cardCategoryWhite}>{text.subTitle}</p>
       </CardHeader>
+
       <CardBody className={classes.cardBody}>
+        <Link href={"/admin/shop/addshop"}>
+          <Button color="primary" style={{ width: 100, marginLeft: 15 }}>
+            <Icon className={classes.btnFilter}>add</Icon>
+            CREATE NEW SHOP
+          </Button>
+        </Link>
+
         <div>
           <div
             className={dashClasses.filterSelections}
@@ -506,8 +435,8 @@ function ShopListPage() {
                         }
                         key={key}
                         style={{
-                          textAlign: `${key == text.tableHead.length - 1 ? "right" : "left"
-                            }`,
+                          textAlign: "left"
+                          ,
                         }}
                       >
                         {prop}

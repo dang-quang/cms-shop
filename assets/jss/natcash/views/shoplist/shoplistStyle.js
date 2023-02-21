@@ -159,5 +159,9 @@ const shoplistStyle = {
     fontSize: "15px",
     marginBottom: "5px",
   },
+  btnFilter: {
+    marginRight: "5px",
+    fontSize: "20px",
+  },
 };
 export default shoplistStyle;

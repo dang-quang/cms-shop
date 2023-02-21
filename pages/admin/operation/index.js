@@ -1360,3 +1360,4 @@ function Dashboard() {
 Dashboard.layout = Admin;
 
 export default WithAuthentication(Dashboard);
+// export default Dashboard;

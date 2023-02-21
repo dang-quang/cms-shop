@@ -208,7 +208,7 @@ function AddQrShop() {
                 <NotificationContainer/>
             </CardBody>
             <CardFooter className={classes.flex_end}>
-                <Button color="gray" onClick={() => handelSubmit()}>
+                <Button color="gray" onClick={() => Router.back()}>
                     {t('cancel')}
                 </Button>
                 <Button color="primary" onClick={() => handelSubmit()}>

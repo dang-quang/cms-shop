@@ -325,7 +325,7 @@ class ImageUploadCard  extends React.Component{
 
         return (
             <React.Fragment>
-                <CardActionArea onClick={this.imageResetHandler} style={{backgroundColor: '#E3E3E3', display: 'flex'}}>
+                <CardActionArea onClick={this.imageResetHandler} style={{backgroundColor: '#FAFAFA', display: 'flex'}}>
                     <img
                         width={this.widthScreen}
                         height={220}

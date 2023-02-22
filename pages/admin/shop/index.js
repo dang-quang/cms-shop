@@ -1,210 +1,140 @@
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import {
-  NotificationContainer,
-  NotificationManager
-} from "react-light-notifications";
-import "react-light-notifications/lib/main.css";
-import { useDispatch, useSelector } from "react-redux";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
+import { formatNumber } from "../../../utilities/utils";
 // layout for this page
 import Admin from "layouts/Admin.js";
 // core components
-import FormControl from "@material-ui/core/FormControl";
-import MenuItem from "@material-ui/core/MenuItem";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Tooltip from "@material-ui/core/Tooltip";
-import Search from "@material-ui/icons/Search";
+import { Icon } from "@material-ui/core";
 import Card from "components/Card/Card.js";
+import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-import CardHeader from "components/Card/CardHeader.js";
 import Button from "components/CustomButtons/Button.js";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
 import CustomInput from "components/CustomInput/CustomInput.js";
-
-import { Icon } from "@material-ui/core";
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import Grow from "@material-ui/core/Grow";
-import MenuList from "@material-ui/core/MenuList";
-import Paper from "@material-ui/core/Paper";
-import Poppers from "@material-ui/core/Popper";
+import shopStyle from "assets/jss/natcash/views/shoplist/shoplistStyle.js";
+import ModalCustom from "components/ModalCustom/ModalCustom.js";
+import Search from "@material-ui/icons/Search";
+import FormControl from "@material-ui/core/FormControl";
+import MenuItem from "@material-ui/core/MenuItem";
+import WithAuthentication from "components/WithAuthentication/WithAuthentication";
+import GridContainer from "components/Grid/GridContainer.js";
 import adminStyles from "assets/jss/natcash/components/headerLinksStyle.js";
 import tableStyles from "assets/jss/natcash/components/tableStyle.js";
-import taskStyles from "assets/jss/natcash/components/tasksStyle.js";
 import dashStyles from "assets/jss/natcash/views/dashboardStyle.js";
+import styles from "assets/jss/natcash/views/qrshop/qrshopIndexStyle";
+import { KeyboardDatePicker, MuiPickersUtilsProvider, } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import vi from "date-fns/locale/vi";
+import Poppers from "@material-ui/core/Popper";
+import MenuList from "@material-ui/core/MenuList";
+import Grow from "@material-ui/core/Grow";
+import Paper from "@material-ui/core/Paper";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import classNames from "classnames";
-import Switch from "components/CustomSwitch/Switch.js";
-import useWindowSize from "components/Hooks/useWindowSize.js";
-import WithAuthentication from "components/WithAuthentication/WithAuthentication";
+import { getRequestPayment, updateConfirmPayment, updateNotePayment } from "../../../utilities/ApiManage";
+import Pagination from "@material-ui/lab/Pagination";
 import { setShowLoader } from "../../../redux/actions/app";
-// connect api
-import Cookies from 'js-cookie';
-import { CHANNEL } from "../../../redux/actions/app";
+import { NotificationContainer, NotificationManager, } from "react-light-notifications";
+import { primaryColor } from "../../../assets/jss/natcash";
+import { useTranslation } from "react-i18next";
+import Router from "next/router";
 import { activeCrm, addShop, getAllShop, getShopConnectCrmUrl, syncProduct, updateShop } from "../../../utilities/ApiManage";
 
-import styles from "assets/jss/natcash/views/shoplist/shoplistStyle.js";
-import { useRouter } from "next/router";
-
-import imgShape from "assets/img/shape.png";
-import imgPen from "assets/img/ic_pen.png";
-import imgDelete from "assets/img/ic_delete.png";
+const QrShopFakeData = [
+  {
+    id: '1',
+    name: 'Shop 1',
+    link: 'http://shop1/qr1',
+    status: true,
+    publish: "2021-10-28T13:20:36+07:00",
+    update: "2021-10-28T13:20:36+07:00"
+  }, {
+    id: '2',
+    name: 'Shop 2',
+    link: 'http://shop1/qr2',
+    status: true,
+    publish: "2021-10-28T13:20:36+07:00",
+    update: "2021-10-28T13:20:36+07:00"
+  }, {
+    id: '3',
+    name: 'Shop 3',
+    link: 'http://shop1/qr3',
+    status: true,
+    publish: "2021-10-28T13:20:36+07:00",
+    update: "2021-10-28T13:20:36+07:00"
+  }, {
+    id: '4',
+    name: 'Shop 4',
+    link: 'http://shop1/qr4',
+    status: true,
+    publish: "2021-10-28T13:20:36+07:00",
+    update: "2021-10-28T13:20:36+07:00"
+  }, {
+    id: '5',
+    name: 'Shop 5',
+    link: 'http://shop1/qr5',
+    status: true,
+    publish: "2021-10-28T13:20:36+07:00",
+    update: "2021-10-28T13:20:36+07:00"
+  }, {
+    id: '6',
+    name: 'Shop 6',
+    link: 'http://shop1/qr6',
+    status: true,
+    publish: "2021-10-28T13:20:36+07:00",
+    update: "2021-10-28T13:20:36+07:00"
+  },
+];
 
 function ShopListPage() {
-  const router = useRouter();
-  const { shop_id, code } = router.query;
-  const size = useWindowSize();
+  const useShopStyles = makeStyles(shopStyle);
+  const shopClasses = useShopStyles();
+  const dispatch = useDispatch();
   const useStyles = makeStyles(styles);
-  const classes = useStyles();
+  const [isShowModal, setIsShowModal] = useState(false);
   const useAdminStyles = makeStyles(adminStyles);
   const useTableStyles = makeStyles(tableStyles);
   const adminClasses = useAdminStyles();
+  const classes = useStyles();
   const tableClasses = useTableStyles();
-  const useTaskStyles = makeStyles(taskStyles);
-  const taskClasses = useTaskStyles();
   const useDashStyles = makeStyles(dashStyles);
   const dashClasses = useDashStyles();
-  const [showFilter, setShowFilter] = useState(false);
   const [showAction, setShowAction] = useState([]);
-  const [handleFilter, setHandleFilter] = useState("");
-  const [tickFilter, setTickFilter] = useState("");
-  const [smartFilter, setSmartFilter] = useState([]);
-  const [fromDate, setFromDate] = useState(moment().format());
-  const [toDate, setToDate] = useState(moment().format());
-  const [isMobile, setIsMobile] = useState(false);
-  const [codeShop, setCode] = useState("");
-  const [modalItem, setModalItem] = useState({});
-  const [isValidCode, setIsValidCode] = useState(true);
-  const [helperTextInput, setHelperTextInput] = useState("");
-  const [shopName, setShopName] = useState("");
-  const [shopCode, setShopCode] = useState("");
-  const channel = useSelector((state) => state.app.channel);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    if (code) {
-      if (channel && channel !== null && channel !== 'null') {
-        addShop(shop_id, code, channel);
-        dispatch({ type: CHANNEL, channel: null });
-      }
-      else {
-        activeCrm(Cookies.get('shop_id'), true, code);
-      }
-    }
-  }, []);
+  const [doFilter, setDoFilter] = useState(0);
+  const [doSearch, setDoSearch] = useState(false);
+  const [filterDate, setFilterDate] = useState(false);
+  const { t } = useTranslation();
 
   const TABLE_HEAD = [
-    { id: "en", value: ["STT", "Code", "Name", "Parent", "Status", "Apply promotion", "Publish time", ""] },
-    { id: "vi", value: ["STT", "Code", "Name", "Parent", "Status", "Apply promotion", "Publish time", ""] },
-  ];
-  const options = [
-    {
-      id: "en",
-      title: "options",
-      value: ["Decentralization", "Product sync", "Edit", "Delete"],
-    },
-    { id: "vi", title: "tùy chọn", value: ["Phân quyền", "Đồng bộ sản phẩm", "Sửa", "Xóa",] },
-  ];
-  const Filter = [
-    {
-      id: "en",
-      value: {
-        title: "Change shopId",
-        value: ["Stock", "Created date", "Stock level", "Channel SKU mapping"],
-        button: ["Reset", "Confirm"],
-      },
-    },
-    {
-      id: "vi",
-      value: {
-        title: "Đổi mã gian hàng",
-        value: [
-          "Tồn kho",
-          "Ngày tạo",
-          "Tồn kho",
-          "Trạng thái liên kết sản phẩm đăng bán",
-        ],
-        button: ["Đặt lại", "Xác nhận"],
-      },
-    },
+    t('qrManagement.stt'),
+    'Code',
+    'Name',
+    'Parent',
+    'Status',
+    'Apply promotion',
+    'Publish time',
+    t('action'),
   ];
 
-  const NOTIFICATION = [
-    {
-      id: "en",
-      value: {
-        title: ["Error", "Notification"],
-        message: [
-          "Please enter < 10 characters. No: spaces, accents and special characters",
-          "Something well wrong! Please try again later",
-          "Change shop code successfully",
-          "Successfully renamed shop",
-        ],
-      },
-    },
-    {
-      id: "vi",
-      value: {
-        title: ["Lỗi", "Thông báo"],
-        message: [
-          "Vui lòng nhập < 10 ký tự. Không có: khoảng trắng, dấu và ký tự đặc biệt",
-          "Có lỗi xảy ra! Vui Lòng thử lại sau",
-          "Đổi mã shop thành công",
-          "Đổi tên shop thành công",
-        ],
-      },
-    },
-  ];
-  const language = useSelector((state) => state.app.language);
-  const listText = [
-    {
-      id: "en",
-      title: "Shop",
-      subTitle: "List of linked shops",
-      txtSearch: "Find by account",
-      tableHead: TABLE_HEAD[0].value,
-      optionsTitle: options[0].title,
-      options: options[0].value,
-      fillter: Filter[0].value,
-      btnEdit: "Edit",
-      notification: NOTIFICATION[0].value,
-    },
-    {
-      id: "vi",
-      title: "Gian hàng",
-      subTitle: "Gian hàng đã liên kết",
-      txtSearch: "Tìm kiếm tài khoản",
-      tableHead: TABLE_HEAD[1].value,
-      optionsTitle: options[1].title,
-      options: options[1].value,
-      fillter: Filter[1].value,
-      btnEdit: "Sửa",
-      notification: NOTIFICATION[1].value,
-    },
-  ];
-  const [text, setText] = useState(listText[0]);
-
-  useEffect(() => {
-    for (let i = 0; i < listText.length; i++) {
-      if (language == listText[i].id) {
-        setText(listText[i]);
-        break;
-      }
-    }
-  }, [language]);
-  useEffect(() => {
-    window.addEventListener(
-      "resize",
-      () => {
-        setIsMobile(window.innerWidth < 1200);
-      },
-      false
-    );
-  }, []);
+  const [selectedTitle, setSelectedTitle] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const [txtSearch, setTxtSearch] = useState("");
+  const [fromDate, setFromDate] = useState(
+    moment().subtract(30, "days").format()
+  );
+  const [toDate, setToDate] = useState(moment().format());
+  const [isMobile, setIsMobile] = useState(false);
+  const [checked, setChecked] = useState([]);
 
   const [data, setData] = useState([]);
   const getShopData = async () => {
@@ -217,24 +147,77 @@ function ShopListPage() {
     getShopData();
   }, []);
 
-  const handleConnect = async (item) => {
-    dispatch({ type: CHANNEL, channel: null });
-    if (!item.active_crm) {
-      var res = await getShopConnectCrmUrl(item.shopId, item.channel);
-      if (res) {
-        var url = res;
-        const win = window.open(url, "_blank");
-        if (win != null) {
-          win.focus();
-        }
-      }
-    }
-    else {
-      activeCrm(item.shopId, false);
-    }
-    return;
-  };
+  const MENU_TITLE_INFO = [
+    {
+      name: t('all'),
+      value: "ALL",
+    },
+    {
+      name: t('qrManagement.notActive'),
+      value: "NOTACTIVE",
+    },
+    {
+      name: t('qrManagement.active'),
+      value: "ACTIVE",
+    },
+  ];
 
+  const menuTitleData = {
+    "ready_to_ship": 51,
+    "processed": 10,
+    "shipped": 47,
+    "to_confirm_receive": 105,
+    "to_return": 0,
+    "cancelled": 519
+  }
+  useEffect(() => {
+    window.addEventListener(
+      "resize",
+      () => {
+        setIsMobile(window.innerWidth < 1570);
+      },
+      false
+    );
+  }, []);
+  // useEffect(async () => {
+  //     dispatch(setShowLoader(true));
+  //     setChecked([]);
+  //     let params = {};
+  //     params.current_page = currentPage;
+  //     if (txtSearch) {
+  //         params.order_sn = txtSearch;
+  //     }
+  //     if (doFilter) {
+  //         params.fromDate = moment(fromDate).unix();
+  //         params.toDate = moment(toDate).unix();
+  //     }
+  //     if (selectedTitle.value) {
+  //         params.status = selectedTitle.value;
+  //     }
+  //     const res = await getRequestPayment();
+  //
+  //     if (res.status == 0 && res?.list) {
+  //         if (res.list.length > 0) {
+  //             setData(res.list);
+  //         }
+  //         // setCurrentPage(res.data.data_page.current_page);
+  //         // setTotalPage(res.data.data_page.total_page);
+  //     }
+  //     dispatch(setShowLoader(false));
+  // }, [doSearch, doFilter, selectedTitle, currentPage]);
+  const resetFilterDate = () => {
+    setFromDate(moment().subtract(30, "days").format());
+    setToDate(moment().format());
+    setFilterDate(false);
+    setDoFilter(0);
+  };
+  const handleSelectPage = (event, value) => {
+    setCurrentPage(value);
+  };
+  const handleTitle = (item) => {
+    setSelectedTitle(item);
+    setCurrentPage(1);
+  };
   const handleAction = (item) => {
     const currentIndex = showAction.indexOf(item);
     const newAction = [...showAction];
@@ -245,127 +228,139 @@ function ShopListPage() {
     }
     setShowAction(newAction);
   };
-  const handleActionSync = async (item) => {
-    dispatch(setShowLoader(true));
-    let res = await syncProduct(item);
-    dispatch(setShowLoader(false));
-    if (res.code === 200) {
-      // Router.push("/admin/shop");
-      NotificationManager.success({
-        title: "Success",
-        message: "Success",
-      });
-    } else {
-      NotificationManager.error({
-        title: "Error",
-        message: res.message ? res.message : "Error",
-      });
-    }
+  const handleInputSearch = (event) => {
+    setTxtSearch(event.target.value);
+    setCurrentPage(1);
   };
-
-  var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-
-  function hasUnicode(str) {
-    for (var i = 0; i < str.length; i++) {
-      if (str.charCodeAt(i) > 127) return true;
-    }
-    return false;
-  }
-
-  // Update shop name
-  const handleBlurShopName = async (item) => {
-    const rest = await updateShop(item.shopId, shopName, item.code);
-    if (shopName !== item.name) {
-      if (rest.code == 200) {
-        NotificationManager.success({
-          title: `${text.notification.title[1]}`,
-          message: `${text.notification.message[3]}`,
-        });
-      } else {
-        NotificationManager.error({
-          title: `${text.notification.title[0]}`,
-          message: `${text.notification.message[1]}`,
-        });
-      }
-    }
-  };
-
-  const onClickShopName = (item) => {
-    setShopName(item.name);
-  };
-
-  const onChangeShopName = (e) => {
-    setShopName(e.target.value);
-  };
-
-  // Update shop code
-  const onClickShopCode = (item) => {
-    setShopCode(item.code);
-  };
-
-  const onChangeShopCode = (e) => {
-    setShopCode(e.target.value);
-  };
-
-  const handleBlurShopCode = async (item) => {
-    if (shopCode !== item.code) {
-      if (
-        shopCode.length > 20 ||
-        shopCode.length <= 0 ||
-        format.test(shopCode) ||
-        hasUnicode(shopCode)
-      ) {
-        NotificationManager.error({
-          title: `${text.notification.title[1]}`,
-          message: `${text.notification.message[0]}`,
-        });
-      } else {
-        const rest = await updateShop(item.shopId, item.name, shopCode);
-        if (rest.code == 200) {
-          NotificationManager.success({
-            title: `${text.notification.title[1]}`,
-            message: `${text.notification.message[2]}`,
-          });
-        } else {
-          NotificationManager.error({
-            title: `${text.notification.title[0]}`,
-            message: `${text.notification.message[1]}`,
-          });
-        }
-      }
-    }
-  };
-  const renderTable = (item, index) => {
-    console.log("item", item);
+  const renderShop = (item, index) => {
     return (
-      <TableRow key={index} className={tableClasses.tableBodyRow}>
-        <TableCell className={tableClasses.tableCell} key={"shopImage"}>
-          {index}
-        </TableCell>
-        <TableCell className={tableClasses.tableCell} key={"shopType"}>
-          SPMT
-        </TableCell>
-        <TableCell className={tableClasses.tableCell} key={"shopType"}>
-          {item.name}
-        </TableCell>
-        <TableCell className={tableClasses.tableCell} key={"shopInfo"}>
-          Not Set
-        </TableCell>
-        <TableCell className={tableClasses.tableCell} key={"shopInfo"}>
-          Active
+      <TableRow
+        key={index}
+        className={tableClasses.tableBodyRow}
+        style={{
+          backgroundColor: checked.indexOf(item) !== -1 ? "#fff6f0" : "#fff",
+        }}
+      >
+        <TableCell className={tableClasses.tableCell} key={"shopInfo3"}>
+          <div className={classes.proInfoContainer}>
+            <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
+              {index}
+            </p>
+          </div>
         </TableCell>
         <TableCell className={tableClasses.tableCell} key={"shopInfo"}>
-          True
+          <div className={classes.proInfoContainer}>
+            <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
+              SPMT 1
+            </p>
+          </div>
+        </TableCell>
+        <TableCell className={tableClasses.tableCell} key={"name"}>
+          <div className={classes.proInfoContainer}>
+            <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
+              {item.name}
+            </p>
+          </div>
         </TableCell>
         <TableCell className={tableClasses.tableCell} key={"shopInfo"}>
-          2022-08-12
+        <div className={classes.proInfoContainer}>
+          <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
+            Not Set
+          </p>
+        </div>
+      </TableCell>
+        <TableCell className={tableClasses.tableCell} key={"link"}>
+          <div className={classes.proInfoContainer}>
+            <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
+            Active
+            </p>
+          </div>
         </TableCell>
-
-        <TableCell className={tableClasses.tableCell} key={"shopInfo"}>
-          <div>
-            <img src={imgShape} style={{ width: 20, height: 14, marginLeft: 7 }} />
-            <img src={imgPen} style={{ width: 20, height: 14, marginLeft: 7 }} />
-            <img src={imgDelete} style={{ width: 20, height: 14, marginLeft: 7 }} />
+        <TableCell className={tableClasses.tableCell} key={"status"}>
+          <div className={classes.proInfoContainer}>
+            <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
+              {item.status ? t('qrManagement.active') : t('qrManagement.notActive')}
+            </p>
+          </div>
+        </TableCell>
+        <TableCell className={tableClasses.tableCell} key={"detail"}>
+          <div className={classes.proInfoContainer}>
+            <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
+              {moment(item.update).format("DD/MM/YYYY")}
+            </p>
+          </div>
+        </TableCell>
+        <TableCell className={tableClasses.tableCell}>
+          <div className={classes.text + " " + classes.infoTextStatus + " " + classes.flex_center}>
+            <a
+              target="_blank"
+              className={tableClasses.tableCell + " " + classes.txtOrderCode + " " + classes.cursor}>
+              <Button
+                id={"action-label" + item?.id}
+                aria-owns={
+                  showAction.indexOf(item) !== -1
+                    ? "action-list-grow" + item?.id
+                    : null
+                }
+                aria-haspopup="true"
+                color="white"
+                size="sm"
+                onClick={() => handleAction(item)}>
+                <Icon className={shopClasses.btnFilter}>settings</Icon>
+              </Button>
+            </a>
+            <Poppers
+              open={Boolean(showAction.indexOf(item) !== -1)}
+              anchorEl={showAction.indexOf(item) !== -1}
+              transition
+              disablePortal
+              className={
+                classNames({
+                  [shopClasses.popperClose]: !showAction.indexOf(item) !== -1,
+                }) +
+                " " +
+                classes.actionPopperNav
+              }
+            >
+              {({ TransitionProps, placement }) => (
+                <Grow
+                  {...TransitionProps}
+                  id={"action-list-grow" + item?.order_sn}
+                  style={{
+                    transformOrigin:
+                      placement === "bottom" ? "center top" : "center bottom",
+                  }}
+                >
+                  <Paper>
+                    <ClickAwayListener onClickAway={() => handleAction(item)}>
+                      <MenuList role="menu">
+                        <MenuItem className={classes.dropdownItem}
+                          onClick={() => {
+                            Router.push('/admin/shop/addshop');
+                          }}
+                        >
+                          {t('detail')}
+                        </MenuItem>
+                        <MenuItem className={classes.dropdownItem}
+                          onClick={() => {
+                            Router.push('/admin/shop/addshop');
+                          }}
+                        >
+                          {t('edit')}
+                        </MenuItem>
+                        <MenuItem className={classes.dropdownItem}
+                          onClick={() => {
+                            setIsShowModal(true);
+                          }}
+                        >
+                          {t('delete')}
+                        </MenuItem>
+                      </MenuList>
+                    </ClickAwayListener>
+                  </Paper>
+                </Grow>
+              )}
+            </Poppers>
           </div>
         </TableCell>
       </TableRow>
@@ -376,27 +371,38 @@ function ShopListPage() {
     <Card>
       <NotificationContainer />
       <CardHeader color="primary">
-        <h4 className={classes.cardTitleWhite}>{text.title}</h4>
-        <p className={classes.cardCategoryWhite}>{text.subTitle}</p>
+        <h4 className={classes.cardTitleWhite}>{t('sideBar.shopManagement')}</h4>
       </CardHeader>
-
       <CardBody className={classes.cardBody}>
-        <Link href={"/admin/shop/addshop"}>
-          <Button color="primary" style={{ width: 100, marginLeft: 15 }}>
-            <Icon className={classes.btnFilter}>add</Icon>
-            CREATE NEW SHOP
-          </Button>
-        </Link>
-
-        <div>
-          <div
-            className={dashClasses.filterSelections}
-            style={{
-              marginLeft: "25px",
-              position: "relative",
-              display: "block",
-            }}
-          >
+        <div className={classes.selectTitleContainer}>
+          <GridContainer>
+            {MENU_TITLE_INFO.map((item, index) => {
+              return (
+                <div
+                  className={classes.selectContainer}
+                  style={{
+                    backgroundColor:
+                      selectedTitle.value == item.value ? primaryColor[3] : "",
+                  }}
+                  onClick={() => handleTitle(item)}
+                >
+                  <p>{item.name}</p>
+                  {menuTitleData[Object.keys(menuTitleData)[index - 1]] > 0 && (
+                    <p className={classes.txtNumTitle}>
+                      {formatNumber(
+                        menuTitleData[Object.keys(menuTitleData)[index - 1]]
+                      )}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </GridContainer>
+        </div>
+        <div
+          className={dashClasses.filterSelections + " " + classes.flex_center_between}
+        >
+          <div>
             <FormControl className={dashClasses.formControl}>
               <div style={{ marginRight: "15px" }}>
                 <CustomInput
@@ -405,16 +411,201 @@ function ShopListPage() {
                       adminClasses.margin + " " + classes.searchContainer,
                   }}
                   inputProps={{
-                    placeholder: `${text.txtSearch}`,
+                    placeholder: t('findBy'),
+                    onChange: handleInputSearch,
                   }}
                 />
-                <Button color="white" aria-label="edit" justIcon round>
+                <Button
+                  color="white"
+                  aria-label="edit"
+                  justIcon
+                  round
+                  onClick={() => setDoSearch(!doSearch)}
+                >
                   <Search />
                 </Button>
               </div>
             </FormControl>
+            <FormControl className={dashClasses.formControl}
+              style={{ marginRight: "25px" }}>
+              <Button
+                color="white"
+                id={"filter-date-label"}
+                aria-owns={filterDate ? "filter-date" : null}
+                aria-haspopup="true"
+                className={classes.filteTritle}
+                onClick={() => setFilterDate(true)}
+              >
+                {moment(fromDate).format("DD/MM/yyyy") +
+                  " - " +
+                  moment(toDate).format("DD/MM/yyyy")}
+              </Button>
+              <Poppers
+                open={Boolean(filterDate)}
+                anchorEl={filterDate}
+                transition
+                disablePortal
+                className={
+                  classNames({
+                    [classes.popperClose]: filterDate != true,
+                  }) +
+                  " " +
+                  classes.datePopperNav
+                }
+              >
+                {({ TransitionProps, placement }) => (
+                  <Grow
+                    {...TransitionProps}
+                    id={"filter-date"}
+                    style={{
+                      transformOrigin:
+                        placement === "bottom" ? "center top" : "center bottom",
+                    }}
+                  >
+                    <Paper>
+                      <ClickAwayListener
+                        onClickAway={() => setFilterDate(false)}
+                      >
+                        <div style={{ width: isMobile ? "190px" : "460px" }}>
+                          <div
+                            style={{ padding: "7px 15px", borderRadius: "4px" }}
+                          >
+                            <p
+                              style={{
+                                margin: 0,
+                                fontSize: "17px",
+                                fontWeight: "400",
+                                color: primaryColor[0],
+                              }}
+                            >
+                              {t('updateDate')}
+                            </p>
+                            <div style={{ marginTop: "10px" }}>
+                              <MuiPickersUtilsProvider
+                                utils={DateFnsUtils}
+                                locale={vi}
+                              >
+                                <GridContainer>
+                                  <KeyboardDatePicker
+                                    disableToolbar
+                                    variant="inline"
+                                    format="dd/MM/yyyy"
+                                    margin="normal"
+                                    id="date-picker-inline"
+                                    label={t('from')}
+                                    value={fromDate}
+                                    onChange={(value) => setFromDate(value)}
+                                    KeyboardButtonProps={{
+                                      "aria-label": "change date",
+                                    }}
+                                    style={{ margin: "0 40px", width: "150px" }}
+                                  />
+                                  <KeyboardDatePicker
+                                    disableToolbar
+                                    variant="inline"
+                                    format="dd/MM/yyyy"
+                                    margin="normal"
+                                    id="date-picker-inline"
+                                    label={t('to')}
+                                    value={toDate}
+                                    onChange={(value) => setToDate(value)}
+                                    KeyboardButtonProps={{
+                                      "aria-label": "change date",
+                                    }}
+                                    style={{ margin: "0 40px", width: "150px" }}
+                                  />
+                                </GridContainer>
+                              </MuiPickersUtilsProvider>
+                            </div>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                marginTop: "15px",
+                                justifyContent: "flex-end",
+                              }}
+                            >
+                              <Button
+                                color="white"
+                                size="sm"
+                                style={{ marginRight: "10px" }}
+                                onClick={() => resetFilterDate()}
+                              >
+                                {t('reset')}
+                              </Button>
+                              <Button
+                                color="primary"
+                                size="sm"
+                                onClick={() => {
+                                  setDoFilter(doFilter + 1);
+                                  setFilterDate(false);
+                                }}
+                              >
+                                {t('apply')}
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </ClickAwayListener>
+                    </Paper>
+                  </Grow>
+                )}
+              </Poppers>
+            </FormControl>
           </div>
+          <FormControl
+            className={dashClasses.formControl}
+            style={{
+              marginRight: "25px",
+              position: isMobile ? "static" : "absolute",
+              right: "0",
+            }}
+          >
+            <Link href={"/admin/shop/addshop"}>
+              <Button id="update-label" color="green">
+                CREATE NEW SHOP
+              </Button>
+            </Link>
+
+          </FormControl>
         </div>
+        <ModalCustom
+          width={600}
+          title={t('confirmation')}
+          subTitle={""}
+          // isShow={true}
+          isShow={isShowModal}
+          handleClose={() => setIsShowModal(false)}
+        >
+          <div className={classes.flex_center}>
+            <FormControl variant="outlined" size="small" style={{ flex: 1 }}>
+              <p style={{ flex: 1 }}>
+                {t('deleteConfirm')}
+              </p>
+            </FormControl>
+          </div>
+          <div
+            className={tableClasses.tableResponsive}
+            style={{ marginTop: "0", flexDirection: "row-reverse", display: 'flex', }}
+          >
+            <div className={classes.buttonContainer}>
+              <Button
+                color="primary"
+                onClick={() => { }}
+              >
+                {t('submit')}
+              </Button>
+            </div>
+            <div className={classes.buttonContainer}>
+              <Button
+                color="gray"
+                onClick={() => setIsShowModal(false)}
+              >
+                {t('cancel')}
+              </Button>
+            </div>
+          </div>
+        </ModalCustom>
       </CardBody>
       <CardFooter>
         <div
@@ -425,7 +616,7 @@ function ShopListPage() {
             {data !== undefined ? (
               <TableHead className={tableClasses["primary" + "TableHeader"]}>
                 <TableRow className={tableClasses.tableHeadRow}>
-                  {text.tableHead.map((prop, key) => {
+                  {TABLE_HEAD.map((prop, key) => {
                     return (
                       <TableCell
                         className={
@@ -433,12 +624,11 @@ function ShopListPage() {
                           " " +
                           tableClasses.tableHeadCell
                         }
-                        key={key}
                         style={{
-                          textAlign: "left"
-                          ,
+                          textAlign: "left",
+                          // width: key == 4 || key == 0 ? "200px" : null,
                         }}
-                      >
+                        key={key}>
                         {prop}
                       </TableCell>
                     );
@@ -447,22 +637,19 @@ function ShopListPage() {
               </TableHead>
             ) : null}
             <TableBody>
-              {data?.map((item, index) => {
-                return renderTable(item, index);
+              {data.map((item, index) => {
+                return renderShop(item, index);
               })}
             </TableBody>
           </Table>
-          {/* <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={data.length}
-          rowsPerPage={2}
-          page={1}
-          // onPageChange={handleChangePage}
-          // onRowsPerPageChange={handleChangeRowsPerPage}
-        /> */}
+          <div style={{ margin: "15px 0" }}>
+            <Pagination
+              count={totalPage}
+              page={currentPage}
+              onChange={handleSelectPage}
+            />
+          </div>
         </div>
-        <NotificationContainer />
       </CardFooter>
     </Card>
   );

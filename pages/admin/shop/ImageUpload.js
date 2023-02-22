@@ -112,12 +112,31 @@ const styles = theme => ({
     }
 });
 
-class ImageUploadCard extends React.Component {
+class ImageUploadCard  extends React.Component{
+
+    constructor(props) {
+        super(props);
+        this.state = { widthScreen: 0 };
+      }
+
+    componentDidMount() {
+        this.updateWindowDimensions();
+        window.addEventListener("resize", this.updateWindowDimensions);
+    }
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.updateWindowDimensions);
+      }
+    
+      updateWindowDimensions = () => {
+        this.setState({ width: window.innerWidth*2.5/10 });
+      };
+
     state = {
         mainState: "initial", // initial, search, gallery, uploaded
         imageUploaded: 0,
         selectedFile: imgDefaul
     };
+    
 
     handleUploadClick = event => {
         var file = event.target.files[0];
@@ -157,7 +176,8 @@ class ImageUploadCard extends React.Component {
         return (
             <React.Fragment>
                 <div style={
-                    { width: '100%', 
+                    {
+                    // width: '100%', 
                     height: 56,  
                     border: "1px solid rgb(196 196 196)", 
                     borderRadius: 5, 
@@ -305,9 +325,10 @@ class ImageUploadCard extends React.Component {
 
         return (
             <React.Fragment>
-                <CardActionArea onClick={this.imageResetHandler} style={{backgroundColor: ''}}>
+                <CardActionArea onClick={this.imageResetHandler} style={{backgroundColor: '#E3E3E3', display: 'flex'}}>
                     <img
-                        width="100%"
+                        width={this.widthScreen}
+                        height={220}
                         className={classes.media}
                         src={this.state.selectedFile}
                     />
@@ -330,7 +351,7 @@ class ImageUploadCard extends React.Component {
 
         return (
             // <React.Fragment>
-                <div style={{width: 347, height: 56}}>
+                <div style={{width: this.widthScreen, height: 56}}>
                         {this.renderInitialState()}
 
                         {this.renderUploadedState()}

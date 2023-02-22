@@ -51,6 +51,7 @@ import {
   RadioGroup,
   Checkbox,
   FormControlLabel,
+  Box 
 } from "@material-ui/core";
 
 import Check from "@material-ui/icons/Check";
@@ -82,14 +83,6 @@ import imgProduct from "assets/img/product.png";
 import ModalCustom from "components/ModalCustom/ModalCustom.js";
 import styles from "assets/jss/natcash/views/shoplist/addShopStyle.js";
 
-const galleryImageList = [
-  "https://raw.githubusercontent.com/dxyang/StyleTransfer/master/style_imgs/mosaic.jpg",
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
-  "https://raw.githubusercontent.com/ShafeenTejani/fast-style-transfer/master/examples/dora-maar-picasso.jpg",
-  "https://pbs.twimg.com/profile_images/925531519858257920/IyYLHp-u_400x400.jpg",
-  "https://raw.githubusercontent.com/ShafeenTejani/fast-style-transfer/master/examples/dog.jpg",
-  "http://r.ddmcdn.com/s_f/o_1/cx_462/cy_245/cw_1349/ch_1349/w_720/APL/uploads/2015/06/caturday-shutterstock_149320799.jpg"
-];
 
 function AddShop() {
   const useStyles = makeStyles(styles);
@@ -316,7 +309,7 @@ function AddShop() {
   const listText = [
     {
       id: "en",
-      title: "Create new voucher",
+      title: "Create new shop",
       tableHead: TABLE_HEAD[0].value,
       tableHead_2: TABLE_HEAD_2[0].value,
       form_group_custom: FORM_GROUP_CUSTOM[0].value,
@@ -333,7 +326,7 @@ function AddShop() {
     },
     {
       id: "vi",
-      title: "Tạo mã giảm giá mới",
+      title: "Tạo shop mới",
       tableHead: TABLE_HEAD[1].value,
       tableHead_2: TABLE_HEAD_2[1].value,
       form_group_custom: FORM_GROUP_CUSTOM[1].value,
@@ -369,7 +362,7 @@ function AddShop() {
       ...values,
       ["voucher_code"]: "SHOP" + values.voucher_code,
     });
-    alert("hi");
+    alert("Are you sure ?");
   };
 
   const CustomRadio = withStyles({
@@ -431,6 +424,25 @@ function AddShop() {
       quantity: 8,
     },
   ]);
+
+  const currencies = [
+    {
+      value: 'USD',
+      label: '$',
+    },
+    {
+      value: 'EUR',
+      label: '€',
+    },
+    {
+      value: 'BTC',
+      label: '฿',
+    },
+    {
+      value: 'JPY',
+      label: '¥',
+    },
+  ];
 
   const handleCheckAll = () => {
     if (isCheckAll) {
@@ -584,6 +596,7 @@ function AddShop() {
 
   const FormGroupCustom_2 = () => {
     return (
+
       <GridContainer>
         <GridItem className={classes.viewItemLeft} xs={8} sm={8} md={8}>
           <TextField id="outlined-basic" label="Tên cửa hàng" variant="outlined" style={{ width: '100%' }} />
@@ -591,16 +604,44 @@ function AddShop() {
             <TextField id="outlined-basic" label="Điện thoại liên hệ" variant="outlined" style={{ width: '45%', marginBottom: 20 }} />
             <TextField id="outlined-basic" label="Người liên hệ" variant="outlined" style={{ width: '45%', marginBottom: 20 }} />
           </div>
+          <div style={{ justifyContent: 'space-between', display: 'flex', marginTop: 20 }}>
+            <TextField id="outlined-basic" label="Địa chỉ" variant="outlined" style={{ width: '45%', marginBottom: 20 }} />
+            <TextField
+              id="outlined-select-currency"
+              select
+              label="Loại cửa hàng"
+              defaultValue="Select"
+              variant="outlined"
+              style={{ width: '45%', marginBottom: 20 }}
+            >
+              {currencies.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </div>
+          <div style={{ justifyContent: 'space-between', display: 'flex', marginTop: 20 }}>
+            <TextField
+              hei
+              id="outlined-multiline-static"
+              rows={4}
+              label="Ghi chú"
+              variant="outlined"
+              style={{ width: '100%', marginBottom: 20 }}
+            />
+          </div>
         </GridItem>
         <GridItem className={classes.viewItemRight} xs={4} sm={4} md={4}>
           <TextField id="outlined-basic" label="Mã Cửa hàng tham chiếu" variant="outlined" style={{ width: '100%', marginBottom: 20 }} />
 
 
           <div styles={{ width: '100%', marginBottom: 20 }}>
-            <ImageUpload cardName="Input Image" imageGallery={galleryImageList} />
+            <ImageUpload cardName="Input Image"/>
           </div>
         </GridItem>
       </GridContainer>
+      
     )
   };
 
@@ -610,111 +651,10 @@ function AddShop() {
       <CardHeader color="primary">
         <h4 className={classes.cardTitleWhite}>{text.title}</h4>
       </CardHeader>
-      <CardBody className={classes.cardBody} style={{paddingBottom: 200}}>
+      <CardBody className={classes.cardBody} style={{ paddingBottom: 20 }}>
         {FormGroupCustom_2()}
-        <ModalCustom
-          width={1000}
-          title={text.popup_title}
-          subTitle={""}
-          // isShow={true}
-          isShow={isShowModal}
-          handleClose={() => setIsShowModal(false)}
-        >
-          <div className={classes.flex_center}>
-            <FormControl variant="outlined" size="small">
-              <Select
-                labelId="select-outlined-label-1"
-                id="select-outlined"
-                value={filterType}
-                onChange={handleChangeFilterType}
-              >
-                <MenuItem value={"name"}>{text.popup_select[0]}</MenuItem>
-                <MenuItem value={"id"}>{text.popup_select[1]}</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl variant="outlined" size="small" style={{ flex: 1 }}>
-              <TextField
-                //   error={validateItemName ? false : true}
-                id="input1"
-                label={""}
-                variant="outlined"
-                size="small"
-                fullWidth
-                inputProps={{
-                  value: filterValue,
-                  onChange: handleChangeFilterValue,
-                }}
-                placeholder={text.placeholder}
-                autoComplete="off"
-                style={{ flex: 1 }}
-              />
-            </FormControl>
-            <div style={{ marginLeft: "10px" }}>
-              <Button color="primary">{text.popup_button[0]}</Button>
-              <Button color="gray">{text.popup_button[1]}</Button>
-            </div>
-          </div>
-          <div
-            className={tableClasses.tableResponsive}
-            style={{ marginTop: "0" }}
-          >
-            <Table className={tableClasses.table}>
-              {dataProduct !== undefined ? (
-                <TableHead className={tableClasses["primary" + "TableHeader"]}>
-                  <TableRow className={tableClasses.tableHeadRow}>
-                    <TableCell className={tableClasses.tableCell}>
-                      <Checkbox
-                        checked={isCheckAll}
-                        tabIndex={-1}
-                        onClick={() => handleCheckAll()}
-                        checkedIcon={
-                          <Check className={taskClasses.checkedIcon} />
-                        }
-                        icon={<Check className={taskClasses.uncheckedIcon} />}
-                        classes={{
-                          checked: taskClasses.checked,
-                          root: taskClasses.root,
-                        }}
-                      />
-                    </TableCell>
-                    {text.tableHead_2.map((prop, key) => {
-                      return (
-                        <TableCell
-                          className={
-                            tableClasses.tableCell +
-                            " " +
-                            tableClasses.tableHeadCell
-                          }
-                          key={key}
-                        >
-                          {prop}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                </TableHead>
-              ) : null}
-              <TableBody>
-                {dataProduct.map((item, index) => {
-                  return renderProduct(item, index);
-                })}
-              </TableBody>
-            </Table>
-            <div className={classes.buttonContainer}>
-              <Button
-                color="primary"
-                onClick={() => {
-                  setValues({ ...values, ["added_product"]: checked }),
-                    setIsShowModal(false);
-                }}
-              >
-                {text.popup_button[2]}
-              </Button>
-            </div>
-          </div>
-        </ModalCustom>
       </CardBody>
-      <CardFooter className={classes.flex_end}>
+      <CardFooter className={classes.flex_end} style={{display:'flex', with:'100%', justifyContent:'center'}}>
         <Button color="primary" onClick={() => handelSubmit()}>
           {text.buttons[3]}
         </Button>

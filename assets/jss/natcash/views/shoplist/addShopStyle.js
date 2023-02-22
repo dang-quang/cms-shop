@@ -55,7 +55,8 @@ const addVoucherStyle = {
   },
   flex_end: {
     display: "flex",
-    justifyContent: "end !important",
+    justifyContent: "center",
+    width:"100%",
   },
   txtProductName: {
     display: "block",

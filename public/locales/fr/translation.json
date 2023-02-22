@@ -35,7 +35,7 @@
     "qrManagement": "QR management",
     "shopManagement": "Shop Management",
     "product": "Product",
-    "productCategory": "Product Category",
+    "category": "Category",
     "productApproval": "Product approval",
     "marketing": "Marketing",
     "broadcastMessages": "Broadcast messages",
@@ -65,12 +65,14 @@
     "code": "Code",
     "parent": "Parent",
     "applyPromotion": "Apply promotion",
-    "category": "Category",
+    "productCategory": "Product Category",
     "categoryName": "Product category name",
     "autoProduceCategory": "Automatically produce the category code",
     "categoryCode": "Category code",
     "categoryCodeDes": "Please only enter the characters (A-Z), number (0-9); Maximum of 6 characters.",
     "parentCategoryCode": "Parent's category code",
-    "parentCategoryCodeDes": "\"Not set\" if do not have"
+    "parentCategoryCodeDes": "\"Not set\" if do not have",
+    "brand": "Brand",
+    "origin": "Origin"
   }
 }

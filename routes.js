@@ -69,7 +69,7 @@ const dashboardRoutes = [
     subMenu: [
       {
         path: "/category",
-        name: "productCategory",
+        name: "category",
         layout: "/admin",
         parent: "operation",
         permission: "product_category",

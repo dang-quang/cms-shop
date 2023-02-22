@@ -47,6 +47,9 @@ import {NotificationContainer, NotificationManager,} from "react-light-notificat
 import {primaryColor} from "../../../assets/jss/natcash";
 import {useTranslation} from "react-i18next";
 import Router from "next/router";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
 const CategoryFakeData = [
     {
@@ -121,6 +124,12 @@ function ProductCategory() {
         t('action'),
     ];
 
+    const CATEGORY_TYPE = [
+        t('category.productCategory'),
+        t('category.brand'),
+        t('category.origin')
+    ]
+
     const [data, setData] = useState([]);
     const [selectedTitle, setSelectedTitle] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -131,6 +140,7 @@ function ProductCategory() {
     );
     const [toDate, setToDate] = useState(moment().format());
     const [isMobile, setIsMobile] = useState(false);
+    const [selectedTab, setSelectedTab] = useState(CATEGORY_TYPE[0]);
 
     useEffect(() => {
         window.addEventListener(
@@ -224,7 +234,7 @@ function ProductCategory() {
                     <div className={classes.proInfoContainer}>
                         <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
                             {console.log('tung', item?.parent)}
-                            {item?.parent ?  item?.parent : t('notSet')}
+                            {item?.parent ? item?.parent : t('notSet')}
                         </p>
                     </div>
                 </TableCell>
@@ -330,7 +340,7 @@ function ProductCategory() {
         <Card>
             <NotificationContainer/>
             <CardHeader color="primary">
-                <h4 className={classes.cardTitleWhite}>{t('sideBar.productCategory')}</h4>
+                <h4 className={classes.cardTitleWhite}>{t('sideBar.category')}</h4>
             </CardHeader>
             <CardBody className={classes.cardBody}>
                 <div
@@ -542,6 +552,47 @@ function ProductCategory() {
                 </ModalCustom>
             </CardBody>
             <CardFooter>
+                <div className={classes.sideBarContainer}>
+                    <List className={classes.listContainer}>
+                        {CATEGORY_TYPE.map((item, index) => {
+                            return (
+                                // <ListItem className={classNames(
+                                //     classes.itemLink,
+                                //     // selectedTab == item ? classes.sideBarWhiteNormal : classes.sideBarWhiteText,
+                                // )}>
+                                //     <ListItemText
+                                //         primary={item}
+                                //         className={classNames(
+                                //             classes.itemText,
+                                //             selectedTab == item ? classes.sideBarWhiteNormal : classes.sideBarWhiteText,
+                                //         )}
+                                //         disableTypography={true}
+                                //     />
+                                // </ListItem>
+                                <a className={classes.item} onClick={() => setSelectedTab(item)}>
+                                    <ListItem
+                                        button
+                                        className={
+                                            classNames(
+                                                classes.itemLink,
+                                                selectedTab === item ? classes.white : ""
+                                            )}
+                                    >
+                                        <ListItemText
+                                            primary={item}
+                                            className={classNames(
+                                                classes.itemText,
+                                                selectedTab === item ? classes.whiteFont : ""
+                                            )}
+                                            disableTypography={true}
+                                        />
+                                    </ListItem>
+                                </a>
+                            );
+                        })}
+                    </List>
+
+                </div>
                 <div
                     className={tableClasses.tableResponsive}
                     style={{marginTop: "0", marginLeft: "20px"}}

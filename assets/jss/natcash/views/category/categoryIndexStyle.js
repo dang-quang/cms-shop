@@ -139,7 +139,7 @@ const categoryIndexStyle = {
         display: 'flex',
         alignSelf: 'start',
         width: '12vw',
-        backgroundColor: primaryColor[0],
+        // backgroundColor: primaryColor[0],
         height: '500px'
     },
     itemText: {
@@ -147,7 +147,7 @@ const categoryIndexStyle = {
         margin: "0",
         lineHeight: "30px",
         fontSize: "14px",
-        color: whiteColor,
+        color: blackColor,
     },
     itemLink: {
         width: "auto",
@@ -169,24 +169,24 @@ const categoryIndexStyle = {
         },
     },
     white: {
-        backgroundColor: whiteColor,
+        backgroundColor: primaryColor[0],
         boxShadow:
             "0 12px 20px -10px rgba(" +
-            hexToRgb(whiteColor) +
+            hexToRgb(primaryColor[0]) +
             ",.28), 0 4px 20px 0 rgba(" +
             hexToRgb(blackColor) +
             ",.12), 0 7px 8px -5px rgba(" +
-            hexToRgb(whiteColor) +
+            hexToRgb(primaryColor[0]) +
             ",.2)",
         "&:hover,&:focus": {
-            backgroundColor: whiteColor,
+            backgroundColor: primaryColor[0],
             boxShadow:
                 "0 12px 20px -10px rgba(" +
-                hexToRgb(whiteColor) +
+                hexToRgb(primaryColor[0]) +
                 ",.28), 0 4px 20px 0 rgba(" +
                 hexToRgb(blackColor) +
                 ",.12), 0 7px 8px -5px rgba(" +
-                hexToRgb(whiteColor) +
+                hexToRgb(primaryColor[0]) +
                 ",.2)",
         },
         "& $itemText": {
@@ -197,7 +197,7 @@ const categoryIndexStyle = {
         },
     },
     whiteFont: {
-        color: whiteColor,
+        color: '#fff !important',
     },
     listContainer: {
         display: 'flex',

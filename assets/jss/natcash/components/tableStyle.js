@@ -102,6 +102,12 @@ const tableStyle = (theme) => ({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  txtOrderInfo: {
+    fontSize: "15px !important",
+    padding: "0 !important",
+    margin: "0 !important",
+    marginBottom: "4px !important",
+  },
 });
 
 export default tableStyle;

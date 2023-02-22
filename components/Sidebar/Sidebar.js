@@ -105,7 +105,6 @@ export default function Sidebar(props) {
   }
 
   const { color, logo, image, logoText, routes } = props;
-  console.log('tung', props)
   var links = (
     <List
       className={classes.list}

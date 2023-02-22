@@ -51,7 +51,7 @@ import {
   RadioGroup,
   Checkbox,
   FormControlLabel,
-  Box 
+  Box
 } from "@material-ui/core";
 
 import Check from "@material-ui/icons/Check";
@@ -598,50 +598,66 @@ function AddShop() {
     return (
 
       <GridContainer>
-        <GridItem className={classes.viewItemLeft} xs={8} sm={8} md={8}>
-          <TextField id="outlined-basic" label="Tên cửa hàng" variant="outlined" style={{ width: '100%' }} />
-          <div style={{ justifyContent: 'space-between', display: 'flex', marginTop: 20 }}>
-            <TextField id="outlined-basic" label="Điện thoại liên hệ" variant="outlined" style={{ width: '45%', marginBottom: 20 }} />
-            <TextField id="outlined-basic" label="Người liên hệ" variant="outlined" style={{ width: '45%', marginBottom: 20 }} />
-          </div>
-          <div style={{ justifyContent: 'space-between', display: 'flex', marginTop: 20 }}>
-            <TextField id="outlined-basic" label="Địa chỉ" variant="outlined" style={{ width: '45%', marginBottom: 20 }} />
-            <TextField
-              id="outlined-select-currency"
-              select
-              label="Loại cửa hàng"
-              defaultValue="Select"
-              variant="outlined"
-              style={{ width: '45%', marginBottom: 20 }}
-            >
-              {currencies.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </div>
-          <div style={{ justifyContent: 'space-between', display: 'flex', marginTop: 20 }}>
-            <TextField
-              hei
-              id="outlined-multiline-static"
-              rows={4}
-              label="Ghi chú"
-              variant="outlined"
-              style={{ width: '100%', marginBottom: 20 }}
-            />
-          </div>
+        <GridItem className={classes.viewItem} xs={12} sm={12} md={8}>
+          <TextField id="outlined-basic" label="Tên cửa hàng" variant="outlined" style={{ width: '100%', marginBottom: 20, }} xs={12} sm={12} md={12} />
+
         </GridItem>
-        <GridItem className={classes.viewItemRight} xs={4} sm={4} md={4}>
-          <TextField id="outlined-basic" label="Mã Cửa hàng tham chiếu" variant="outlined" style={{ width: '100%', marginBottom: 20 }} />
+        <GridItem className={classes.viewItemRight} xs={12} sm={12} md={4}>
+          <TextField id="outlined-basic" label="Mã Cửa hàng tham chiếu" variant="outlined" style={{ width: '100%', marginBottom: 20 }} sm={12} />
+        </GridItem>
 
 
-          <div styles={{ width: '100%', marginBottom: 20 }}>
-            <ImageUpload cardName="Input Image"/>
+        <GridItem className={classes.viewItem} xs={12} sm={12} md={4}>
+          <TextField id="outlined-basic" label="Điện thoại liên hệ" variant="outlined" style={{ marginBottom: 20, width: '100%', }} xs={12} sm={12} md={8} />
+        </GridItem>
+        <GridItem className={classes.viewItem} xs={12} sm={12} md={4}>
+          <TextField id="outlined-basic" label="Người liên hệ" variant="outlined" style={{ marginBottom: 20, width: '100%', }} xs={12} sm={12} md={8} />
+        </GridItem>
+        <GridItem className={classes.viewItem} xs={12} sm={12} md={4}>
+          <div styles={{ width: '100%', marginBottom: 20, height: 220 , display:'flex'}}>
+            <ImageUpload cardName="Input Image" />
           </div>
         </GridItem>
+
+
+        <GridItem className={classes.viewItem} xs={12} sm={12} md={4}>
+          <TextField id="outlined-basic" label="Địa chỉ" variant="outlined" style={{ width: '100%', marginBottom: 20 }} />
+        </GridItem>
+        <GridItem className={classes.viewItem} xs={12} sm={12} md={4}>
+          <TextField
+            id="outlined-select-currency"
+            select
+            label="Loại cửa hàng"
+            defaultValue="Select"
+            variant="outlined"
+            style={{ width: '100%', marginBottom: 20 }}
+          >
+            {currencies.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+        </GridItem>
+        <GridItem className={classes.viewItem} xs={12} sm={12} md={4}>
+        </GridItem>
+
+
+        <GridItem className={classes.viewItem} xs={12} sm={12} md={8}>
+          <TextField
+            hei
+            id="outlined-multiline-static"
+            rows={4}
+            label="Ghi chú"
+            variant="outlined"
+            style={{ width: '100%', marginBottom: 20 }}
+          />
+        </GridItem>
+
+
+
       </GridContainer>
-      
+
     )
   };
 
@@ -654,7 +670,7 @@ function AddShop() {
       <CardBody className={classes.cardBody} style={{ paddingBottom: 20 }}>
         {FormGroupCustom_2()}
       </CardBody>
-      <CardFooter className={classes.flex_end} style={{display:'flex', with:'100%', justifyContent:'center'}}>
+      <CardFooter className={classes.flex_end} style={{ display: 'flex', with: '100%', justifyContent: 'center' }}>
         <Button color="primary" onClick={() => handelSubmit()}>
           {text.buttons[3]}
         </Button>

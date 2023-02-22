@@ -88,6 +88,10 @@ const addVoucherStyle = {
     // display:  "flex",
     marginBottom: 15,
     with: '65%'
+  },
+  viewItem:{
+    display:  "content",
+    marginBottom: 20,
   }
 };
 

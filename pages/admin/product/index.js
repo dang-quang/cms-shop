@@ -64,7 +64,7 @@ import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import classNames from "classnames";
 import { getProductScreen, getProductList } from "../../../utilities/ApiManage";
 import { setShowLoader } from "../../../redux/actions/app";
-import { NotificationContainer, NotificationManager} from "react-light-notifications";
+import { NotificationContainer, NotificationManager } from "react-light-notifications";
 import Pagination from "@material-ui/lab/Pagination";
 
 function ProductPage() {
@@ -95,12 +95,14 @@ function ProductPage() {
     {
       id: "en",
       value: [
-        "Product information",
-        "Stock",
-        "Sell price",
-        "Order",
-        "Profit",
+        "STT",
+        "Name",
+        "Category",
+        "Price",
+        "Shop",
         "Status",
+        "Create by",
+        "Pubish time",
       ],
     },
     {
@@ -176,368 +178,7 @@ function ProductPage() {
     },
   ];
   const [menuCardData, setMenuCardData] = useState("");
-  // const [data, setData] = useState([
-  //   {id: 1, productCode:"TP-71", productName: "Glico Icreo Nhật Bản số 0 (0-12 tháng)", image:"https://media.shoptretho.com.vn/upload/image/product/20180628/sua-bot-combiotic-hipp-so-1-800g-new-1.png", shopName:"STTMN", shopIcon: "https://www.freepnglogos.com/uploads/shopee-logo/shopee-bag-logo-free-transparent-icon-17.png", quantity: 20, price: 250000, order: 10, sales: 2500000, status: true, isConnect: false,
-  //           types: [
-  //             {id: 1, typeCode: "TP-711", typeName:"900g", image:"https://media.shoptretho.com.vn/upload/image/product/20180628/sua-bot-combiotic-hipp-so-1-800g-new-1.png", quantity: 15, price: 250000, order: 4, sales: 1000000, isConnect: false},
-  //             {id: 1, typeCode: "TP-712", typeName:"650g", image:"https://media.shoptretho.com.vn/upload/image/product/20180628/sua-bot-combiotic-hipp-so-1-800g-new-1.png", quantity: 10, price: 200000, order: 6, sales: 1200000, isConnect: false},
-  //           ]
-  //   },
-  //   {id: 2, productCode:"TP-71", productName: "Sữa bột trẻ em", image:"https://media.shoptretho.com.vn/upload/image/product/20180628/sua-bot-combiotic-hipp-so-1-800g-new-1.png", shopName:"STTMN", shopIcon: "https://www.freepnglogos.com/uploads/shopee-logo/shopee-bag-logo-free-transparent-icon-17.png", quantity: 20, price: 250000, order: 10, sales: 2500000, status: false, isConnect: true},
-  //   {id: 3, productCode:"SU-331", productName: "Sữa bột trẻ em", image:"https://media.shoptretho.com.vn/upload/image/product/20180628/sua-bot-combiotic-hipp-so-1-800g-new-1.png", shopName:"STTOfficial", shopIcon: "https://group.lazada.com/static/ipr_annual_report/images/xxl-lazada-logo.svg", quantity: 20, price: 250000, order: 10, sales: 2500000, status: false, isConnect: false,
-  //           types: [
-  //             {id: 1, typeCode: "SU-3311", typeName:"900g", image:"https://media.shoptretho.com.vn/upload/image/product/20180628/sua-bot-combiotic-hipp-so-1-800g-new-1.png", quantity: 15, price: 250000, order: 4, sales: 1000000, isConnect: false},
-  //             {id: 1, typeCode: "SU-3312", typeName:"650g", image:"https://media.shoptretho.com.vn/upload/image/product/20180628/sua-bot-combiotic-hipp-so-1-800g-new-1.png", quantity: 10, price: 200000, order: 6, sales: 1200000, isConnect: false},
-  //           ]
-  //   },
-  //   {id: 4, productCode:"SP-321", productName: "Bỉm trẻ em", image:"https://dairymart.vn/wp-content/uploads/2018/09/b%E1%BB%89m-bobby-t%C3%A3-d%C3%A1n-l23.jpg", shopName:"STT", shopIcon: "https://group.lazada.com/static/ipr_annual_report/images/xxl-lazada-logo.svg", quantity: 20, price: 250000, order: 10, sales: 2500000, status: true, isConnect: true},
-  //   {id: 5, productCode:"KT-0023", productName: "Bánh ăn dặm", image:"https://toplist.vn/images/800px/banh-an-dam-gerber-590833.jpg", shopName:"STTMN", shopIcon: "https://www.freepnglogos.com/uploads/shopee-logo/shopee-bag-logo-free-transparent-icon-17.png", quantity: 20, price: 250000, order: 10, sales: 2500000, status: false, isConnect: false},
-  // ])
-
-  const [data, setData] = useState([
-    // {
-    //   shop_name: "STTMN",
-    //   shop_icon:
-    //     "https://www.freepnglogos.com/uploads/shopee-logo/shopee-bag-logo-free-transparent-icon-17.png",
-    //   is_connect: false,
-    //   item_id: 138346,
-    //   category_id: 100991,
-    //   item_name: "Sữa Morinaga Kodomil số 3 hương vani",
-    //   description:
-    //     "- Thành phần: toferrin nhằm tăng cường sức đề kháng cho trẻ.\n\n- Kodomil bổ sung thành phần lợi khuẩn",
-    //   item_sku: "SU-1004",
-    //   create_time: 1629274395,
-    //   update_time: 1629514738,
-    //   attribute_list: [
-    //     {
-    //       attribute_id: 100010,
-    //       original_attribute_name: "Shelf Life",
-    //       is_mandatory: false,
-    //       attribute_value_list: [
-    //         {
-    //           value_id: 580,
-    //           original_value_name: "6 Months",
-    //           value_unit: "",
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       attribute_id: 100016,
-    //       original_attribute_name: "Pack Type",
-    //       is_mandatory: false,
-    //       attribute_value_list: [
-    //         {
-    //           value_id: 374,
-    //           original_value_name: "Bundle",
-    //           value_unit: "",
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       attribute_id: 100125,
-    //       original_attribute_name: "Baby Life Stage",
-    //       is_mandatory: false,
-    //       attribute_value_list: [
-    //         {
-    //           value_id: 1086,
-    //           original_value_name: "Growing-Up Milk (3+ years)",
-    //           value_unit: "",
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       attribute_id: 100135,
-    //       original_attribute_name: "Recommended Age",
-    //       is_mandatory: true,
-    //       attribute_value_list: [
-    //         {
-    //           value_id: 5566,
-    //           original_value_name: ">=2 years old",
-    //           value_unit: "",
-    //         },
-    //       ],
-    //     },
-    //   ],
-    //   image: {
-    //     image_url_list: [
-    //       "https://cf.shopee.vn/file/b0d8dc6ee5f7f6b7610aaf86f8e54862",
-    //       "https://cf.shopee.vn/file/f7395e32bea70e428f181626f8bc24d4",
-    //     ],
-    //     image_id_list: [
-    //       "b0d8dc6ee5f7f6b7610aaf86f8e54862",
-    //       "f7395e32bea70e428f181626f8bc24d4",
-    //     ],
-    //   },
-    //   weight: "0.850",
-    //   dimension: {
-    //     package_length: 0,
-    //     package_width: 0,
-    //     package_height: 0,
-    //   },
-    //   logistic_info: [
-    //     {
-    //       logistic_id: 50018,
-    //       logistic_name: "J&T Express",
-    //       enabled: true,
-    //       is_free: false,
-    //     },
-    //     {
-    //       logistic_id: 50010,
-    //       logistic_name: "Viettel Post",
-    //       enabled: true,
-    //       is_free: false,
-    //     },
-    //   ],
-    //   pre_order: {
-    //     is_pre_order: false,
-    //     days_to_ship: 2,
-    //   },
-    //   condition: "NEW",
-    //   size_chart: "",
-    //   item_status: "NORMAL",
-    //   has_model: true,
-    //   brand: {
-    //     brand_id: 1140462,
-    //     original_brand_name: "morigana",
-    //   },
-    //   item_dangerous: 0,
-    //   model_data: {
-    //     tier_variation: [
-    //       {
-    //         name: "Trọng lượng",
-    //         option_list: [
-    //           {
-    //             option: "850g",
-    //           },
-    //           {
-    //             option: "600g",
-    //           },
-    //         ],
-    //       },
-    //       {
-    //         name: "Hạn sử dụng",
-    //         option_list: [
-    //           {
-    //             option: "6 tháng",
-    //           },
-    //           {
-    //             option: "12 tháng",
-    //           },
-    //         ],
-    //       },
-    //     ],
-    //     model: [
-    //       {
-    //         model_id: 256314,
-    //         promotion_id: 0,
-    //         tier_index: [1, 1],
-    //         stock_info: [
-    //           {
-    //             stock_type: 2,
-    //             current_stock: 54,
-    //             normal_stock: 54,
-    //             reserved_stock: 0,
-    //           },
-    //           {
-    //             stock_type: 1,
-    //             current_stock: 0,
-    //             normal_stock: 0,
-    //             reserved_stock: 0,
-    //           },
-    //         ],
-    //         price_info: [
-    //           {
-    //             current_price: 300000,
-    //             original_price: 300000,
-    //             inflated_price_of_current_price: 300000,
-    //             inflated_price_of_original_price: 300000,
-    //           },
-    //         ],
-    //         model_sku: "SU-60012",
-    //         order: 3,
-    //         sales: 1800000,
-    //       },
-    //       {
-    //         model_id: 256315,
-    //         promotion_id: 0,
-    //         tier_index: [0, 0],
-    //         stock_info: [
-    //           {
-    //             stock_type: 2,
-    //             current_stock: 32,
-    //             normal_stock: 32,
-    //             reserved_stock: 0,
-    //           },
-    //           {
-    //             stock_type: 1,
-    //             current_stock: 0,
-    //             normal_stock: 0,
-    //             reserved_stock: 0,
-    //           },
-    //         ],
-    //         price_info: [
-    //           {
-    //             current_price: 340000,
-    //             original_price: 340000,
-    //             inflated_price_of_current_price: 340000,
-    //             inflated_price_of_original_price: 340000,
-    //           },
-    //         ],
-    //         model_sku: "SU-85006",
-    //         order: 5,
-    //         sales: 1500000,
-    //         status: false,
-    //       },
-    //       {
-    //         model_id: 256316,
-    //         promotion_id: 0,
-    //         tier_index: [0, 1],
-    //         stock_info: [
-    //           {
-    //             stock_type: 2,
-    //             current_stock: 75,
-    //             normal_stock: 75,
-    //             reserved_stock: 0,
-    //           },
-    //           {
-    //             stock_type: 1,
-    //             current_stock: 0,
-    //             normal_stock: 0,
-    //             reserved_stock: 0,
-    //           },
-    //         ],
-    //         price_info: [
-    //           {
-    //             current_price: 400000,
-    //             original_price: 400000,
-    //             inflated_price_of_current_price: 400000,
-    //             inflated_price_of_original_price: 400000,
-    //           },
-    //         ],
-    //         model_sku: "SU-85012",
-    //         order: 2,
-    //         sales: 1000000,
-    //       },
-    //       {
-    //         model_id: 256317,
-    //         promotion_id: 0,
-    //         tier_index: [1, 0],
-    //         stock_info: [
-    //           {
-    //             stock_type: 2,
-    //             current_stock: 12,
-    //             normal_stock: 12,
-    //             reserved_stock: 0,
-    //           },
-    //           {
-    //             stock_type: 1,
-    //             current_stock: 0,
-    //             normal_stock: 0,
-    //             reserved_stock: 0,
-    //           },
-    //         ],
-    //         price_info: [
-    //           {
-    //             current_price: 250000,
-    //             original_price: 250000,
-    //             inflated_price_of_current_price: 250000,
-    //             inflated_price_of_original_price: 250000,
-    //           },
-    //         ],
-    //         model_sku: "SU-60006",
-    //         order: 3,
-    //         sales: 1200000,
-    //       },
-    //     ],
-    //   },
-    //   order: 15,
-    //   sales: 4300000,
-    //   stock_info: [
-    //     {
-    //       stock_type: 2,
-    //       current_stock: 322,
-    //       normal_stock: 322,
-    //       reserved_stock: 0,
-    //     },
-    //   ],
-    // },
-    // {
-    //   shop_name: "STTMN",
-    //   shop_icon:
-    //     "https://www.freepnglogos.com/uploads/shopee-logo/shopee-bag-logo-free-transparent-icon-17.png",
-    //   is_connect: true,
-    //   item_id: 138348,
-    //   category_id: 101001,
-    //   item_name: "Tã - bỉm quần Moony M58",
-    //   description:
-    //     "Thiết kếdịu nhẹ mềm mại mà còn cho tự nhiên, từ đó tránh hăm bí khi mặc tã.",
-    //   item_sku: "BIM-09321",
-    //   create_time: 1629274866,
-    //   update_time: 1629279638,
-    //   price_info: [
-    //     {
-    //       currency: "VND",
-    //       original_price: 430000,
-    //       current_price: 430000,
-    //     },
-    //   ],
-    //   stock_info: [
-    //     {
-    //       stock_type: 2,
-    //       current_stock: 123,
-    //       normal_stock: 123,
-    //       reserved_stock: 0,
-    //     },
-    //   ],
-    //   image: {
-    //     image_url_list: [
-    //       "https://cf.shopee.vn/file/89e11aec4508fe5e78197fae5d169894",
-    //       "https://cf.shopee.vn/file/3662b6b384af6884a33b793289b1ad46",
-    //     ],
-    //     image_id_list: [
-    //       "89e11aec4508fe5e78197fae5d169894",
-    //       "3662b6b384af6884a33b793289b1ad46",
-    //     ],
-    //   },
-    //   weight: "0.500",
-    //   dimension: {
-    //     package_length: 0,
-    //     package_width: 0,
-    //     package_height: 0,
-    //   },
-    //   logistic_info: [
-    //     {
-    //       logistic_id: 50018,
-    //       logistic_name: "J&T Express",
-    //       enabled: true,
-    //       is_free: false,
-    //     },
-    //     {
-    //       logistic_id: 50010,
-    //       logistic_name: "Viettel Post",
-    //       enabled: true,
-    //       is_free: false,
-    //     },
-    //   ],
-    //   pre_order: {
-    //     is_pre_order: false,
-    //     days_to_ship: 2,
-    //   },
-    //   condition: "NEW",
-    //   size_chart: "",
-    //   item_status: "NORMAL",
-    //   has_model: false,
-    //   promotion_id: 0,
-    //   brand: {
-    //     brand_id: 1125291,
-    //     original_brand_name: "Goo.n",
-    //   },
-    //   item_dangerous: 0,
-    //   order: 12,
-    //   sales: 3480000,
-    //   status: true,
-    // },
-  ]);
+  const [data, setData] = useState([]);
   const [listRadio, setListRadio] = useState([
     {
       id: "1",
@@ -630,7 +271,7 @@ function ProductPage() {
     );
   }, []);
 
-  useEffect(async() => {
+  useEffect(async () => {
     dispatch(setShowLoader(true))
     const res = await getProductScreen()
     setData(res.data.item_list)
@@ -639,8 +280,8 @@ function ProductPage() {
     setMenuCardData(res.data.item_count_by_status)
     dispatch(setShowLoader(false))
   }, []);
-  
-  useEffect(async() => {
+
+  useEffect(async () => {
     dispatch(setShowLoader(true));
     setChecked([]);
     let params = {};
@@ -778,9 +419,10 @@ function ProductPage() {
   const productInfo = (item) => {
     return (
       <div className={classes.proContainer}>
-        <img className={classes.proImg} src={item?.detail?.image?.image_url_list? item?.detail?.image?.image_url_list[0] : item?.detail?.images[0]} />
+        <img className={classes.proImg} src={item?.detail?.image?.image_url_list ? item?.detail?.image?.image_url_list[0] : item?.detail?.images[0]} />
         <div className={classes.proInfoContainer}>
-          <Link href={"/admin/product/" + item.item_id}>
+        {/*<Link href={"/admin/product/" + item.item_id}>*/}
+          <Link href={"/admin/inventory/" + item.item_id}>
             <a
               target="_blank"
               className={tableClasses.tableCell + " " + classes.txtProductName}
@@ -829,12 +471,12 @@ function ProductPage() {
             </div>
             {item?.item_sku && (
               <div className={classes.shopInfoContainer}>
-              <Icon className={classes.codeIcon}>crop_free</Icon>
-              <p className={tableClasses.tableCell + " " + classes.txtShopName}>
-                {item.item_sku}
-              </p>
-            </div>
-            )}         
+                <Icon className={classes.codeIcon}>crop_free</Icon>
+                <p className={tableClasses.tableCell + " " + classes.txtShopName}>
+                  {item.item_sku}
+                </p>
+              </div>
+            )}
           </div>
           {item?.is_connect == false && (
             <p className={tableClasses.tableCell + " " + classes.txtLienKet}>
@@ -900,29 +542,20 @@ function ProductPage() {
             backgroundColor: checked.indexOf(item) !== -1 ? "#fff6f0" : "#fff",
           }}
         >
-          <TableCell className={tableClasses.tableCell}>
-            <Checkbox
-              checked={checked.indexOf(item) !== -1}
-              tabIndex={-1}
-              onClick={() => handleToggle(item)}
-              checkedIcon={<Check className={taskClasses.checkedIcon} />}
-              icon={<Check className={taskClasses.uncheckedIcon} />}
-              classes={{
-                checked: taskClasses.checked,
-                root: taskClasses.root,
-              }}
-            />
+          <TableCell className={tableClasses.tableCell} key={"stt"}>
+            {index}
           </TableCell>
           <TableCell className={tableClasses.tableCell} key={"productInfo"}>
             {productInfo(item)}
           </TableCell>
           <TableCell className={tableClasses.tableCell} key={"quantity"}>
-            {/* {formatNumber(item?.stock_info[0]?.current_stock)} */}
+            abc
           </TableCell>
           <TableCell className={tableClasses.tableCell} key={"price"}>
-            {/* {item.has_model
-              ? "---"
-              : formatCurrency(item?.price_info[0]?.current_price)} */}
+            abc
+          </TableCell>
+          <TableCell className={tableClasses.tableCell} key={"quantity"}>
+            abc
           </TableCell>
           <TableCell className={tableClasses.tableCell} key={"order"}>
             {formatNumber(item.order)}
@@ -937,47 +570,20 @@ function ProductPage() {
               name="checkedA"
             />
           </TableCell>
+          <TableCell className={tableClasses.tableCell}>
+            <Checkbox
+              checked={checked.indexOf(item) !== -1}
+              tabIndex={-1}
+              onClick={() => handleToggle(item)}
+              checkedIcon={<Check className={taskClasses.checkedIcon} />}
+              icon={<Check className={taskClasses.uncheckedIcon} />}
+              classes={{
+                checked: taskClasses.checked,
+                root: taskClasses.root,
+              }}
+            />
+          </TableCell>
         </TableRow>
-        {item?.has_model &&
-          showProduct.indexOf(item) !== -1 &&
-          item.model_data.model.map((subItem, subIdx) => {
-            return (
-              <TableRow
-                key={index}
-                className={
-                  tableClasses.tableBodyRow + " " + classes.tableTransition
-                }
-                style={{
-                  backgroundColor:
-                    checked.indexOf(item) !== -1 ? "#fff6f0" : "#fff",
-                }}
-              >
-                <TableCell className={tableClasses.tableCell}></TableCell>
-                <TableCell
-                  className={tableClasses.tableCell}
-                  key={"productInfo"}
-                  style={{ paddingLeft: "70px !important" }}
-                >
-                  {productTypeInfo(subItem, index)}
-                </TableCell>
-                <TableCell className={tableClasses.tableCell} key={"quantity"}>
-                  {formatNumber(subItem.stock_info[0].current_stock)}
-                </TableCell>
-                <TableCell className={tableClasses.tableCell} key={"price"}>
-                  {formatCurrency(subItem.price_info[0].current_price)}
-                </TableCell>
-                <TableCell className={tableClasses.tableCell} key={"order"}>
-                  {formatNumber(subItem.order)}
-                </TableCell>
-                <TableCell className={tableClasses.tableCell} key={"sales"}>
-                  {formatCurrency(subItem.sales)}
-                </TableCell>
-                <TableCell className={tableClasses.tableCell} key={"status"}>
-                  {subItem.status}
-                </TableCell>
-              </TableRow>
-            );
-          })}
       </React.Fragment>
     );
   };
@@ -1263,7 +869,7 @@ function ProductPage() {
                           })}
                         </GridContainer>
                       </div>
-                      
+
                       <div class={classes.filterEleContent}>
                         <p className={classes.titleFilter}>
                           TRẠNG THÁI LIÊN KẾT SẢN PHẨM ĐĂNG BÁN
@@ -1489,6 +1095,21 @@ function ProductPage() {
             {data !== undefined ? (
               <TableHead className={tableClasses["primary" + "TableHeader"]}>
                 <TableRow className={tableClasses.tableHeadRow}>
+
+                  {text.tableHead.map((prop, key) => {
+                    return (
+                      <TableCell
+                        className={
+                          tableClasses.tableCell +
+                          " " +
+                          tableClasses.tableHeadCell
+                        }
+                        key={key}
+                      >
+                        {prop}
+                      </TableCell>
+                    );
+                  })}
                   <TableCell className={tableClasses.tableCell}>
                     <Checkbox
                       checked={isCheckAll}
@@ -1504,20 +1125,6 @@ function ProductPage() {
                       }}
                     />
                   </TableCell>
-                  {text.tableHead.map((prop, key) => {
-                    return (
-                      <TableCell
-                        className={
-                          tableClasses.tableCell +
-                          " " +
-                          tableClasses.tableHeadCell
-                        }
-                        key={key}
-                      >
-                        {prop}
-                      </TableCell>
-                    );
-                  })}
                 </TableRow>
               </TableHead>
             ) : null}

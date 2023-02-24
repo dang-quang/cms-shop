@@ -179,32 +179,7 @@ function ShopListPage() {
       false
     );
   }, []);
-  // useEffect(async () => {
-  //     dispatch(setShowLoader(true));
-  //     setChecked([]);
-  //     let params = {};
-  //     params.current_page = currentPage;
-  //     if (txtSearch) {
-  //         params.order_sn = txtSearch;
-  //     }
-  //     if (doFilter) {
-  //         params.fromDate = moment(fromDate).unix();
-  //         params.toDate = moment(toDate).unix();
-  //     }
-  //     if (selectedTitle.value) {
-  //         params.status = selectedTitle.value;
-  //     }
-  //     const res = await getRequestPayment();
-  //
-  //     if (res.status == 0 && res?.list) {
-  //         if (res.list.length > 0) {
-  //             setData(res.list);
-  //         }
-  //         // setCurrentPage(res.data.data_page.current_page);
-  //         // setTotalPage(res.data.data_page.total_page);
-  //     }
-  //     dispatch(setShowLoader(false));
-  // }, [doSearch, doFilter, selectedTitle, currentPage]);
+
   const resetFilterDate = () => {
     setFromDate(moment().subtract(30, "days").format());
     setToDate(moment().format());
@@ -251,7 +226,7 @@ function ShopListPage() {
         <TableCell className={tableClasses.tableCell} key={"shopInfo"}>
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
-              SPMT 1
+              {item.code}
             </p>
           </div>
         </TableCell>
@@ -265,7 +240,7 @@ function ShopListPage() {
         <TableCell className={tableClasses.tableCell} key={"shopInfo"}>
         <div className={classes.proInfoContainer}>
           <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
-            Not Set
+            {item.partner_id}
           </p>
         </div>
       </TableCell>

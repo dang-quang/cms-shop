@@ -50,52 +50,71 @@ import Router from "next/router";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import AddInformation from "./addInfo";
 
-const CategoryFakeData = [
+const BrandFakeData = [
     {
         id: '1',
-        code: 'SPMT',
-        name: 'Điện tử, công nghệ',
-        parent: null,
+        code: 'APPLE',
+        name: 'Apple',
         status: true,
-        promotion: true,
         publish: "2021-10-28T13:20:36+07:00",
     }, {
         id: '2',
-        code: 'DDCN',
-        name: 'Đồ dùng cá nhân',
-        parent: null,
+        code: 'CHANNEL',
+        name: 'Channel',
         status: true,
-        promotion: false,
         publish: "2021-10-28T13:20:36+07:00",
     }, {
         id: '3',
-        code: 'LAPTOP',
-        name: 'Máy tính xách tay',
-        parent: 'Điện tử, công nghệ',
+        code: 'DELL',
+        name: 'Dell',
         status: true,
-        promotion: false,
         publish: "2021-10-28T13:20:36+07:00",
     }, {
         id: '4',
-        code: 'QA',
-        name: 'Quần áo',
-        parent: null,
+        code: 'SAM',
+        name: 'Samsung',
         status: true,
-        promotion: true,
-        publish: "2021-10-28T13:20:36+07:00",
-    }, {
-        id: '5',
-        code: 'TP',
-        name: 'Thực phẩm',
-        parent: null,
-        status: true,
-        promotion: false,
         publish: "2021-10-28T13:20:36+07:00",
     },
 ];
 
-function ProductCategory() {
+const OriginFakeData = [
+    {
+        id: '1',
+        code: 'VN',
+        name: 'Viet Nam',
+        status: true,
+        publish: "2021-10-28T13:20:36+07:00",
+    }, {
+        id: '2',
+        code: 'USA',
+        name: 'America',
+        status: true,
+        publish: "2021-10-28T13:20:36+07:00",
+    }, {
+        id: '3',
+        code: 'JP',
+        name: 'Japan',
+        status: true,
+        publish: "2021-10-28T13:20:36+07:00",
+    }, {
+        id: '4',
+        code: 'CN',
+        name: 'China',
+        status: true,
+        publish: "2021-10-28T13:20:36+07:00",
+    }, {
+        id: '5',
+        code: 'LO',
+        name: 'Lao',
+        status: true,
+        publish: "2021-10-28T13:20:36+07:00",
+    },
+];
+
+function ProductOtherInformation() {
     const useShopStyles = makeStyles(shopStyle);
     const shopClasses = useShopStyles();
     const useStyles = makeStyles(styles);
@@ -111,17 +130,33 @@ function ProductCategory() {
     const [doFilter, setDoFilter] = useState(0);
     const [doSearch, setDoSearch] = useState(false);
     const [filterDate, setFilterDate] = useState(false);
+    const [isShowEdit, setIsShowEdit] = useState(false);
     const {t} = useTranslation();
-    const TABLE_HEAD = [
+
+
+    const TABLE_BRAND_HEAD = [
         t('qrManagement.stt'),
         t('category.code'),
         t('name'),
-        t('category.parent'),
         t('status'),
-        t('category.applyPromotion'),
         t('qrManagement.publishTime'),
         t('action'),
     ];
+
+    const CATEGORY_TYPE = [
+        {
+            label: t('otherInformation.brand'),
+            value: 'brand'
+        },
+        {
+            label: t('otherInformation.origin'),
+            value: 'origin'
+        },
+    ]
+    const [table, setTable] = useState({
+        tableHead: [],
+        tableBody: []
+    });
 
 
     const [data, setData] = useState([]);
@@ -134,6 +169,64 @@ function ProductCategory() {
     );
     const [toDate, setToDate] = useState(moment().format());
     const [isMobile, setIsMobile] = useState(false);
+    const [selectedTab, setSelectedTab] = useState(CATEGORY_TYPE[0]);
+
+    useEffect(() => {
+        console.log('tung', selectedTab, CATEGORY_TYPE[0])
+        switch (selectedTab.value) {
+            case CATEGORY_TYPE[0].value:
+                setTable({
+                    tableHead: TABLE_BRAND_HEAD,
+                    tableBody: BrandFakeData,
+                })
+                return;
+            case CATEGORY_TYPE[1].value:
+                setTable({
+                    tableHead: TABLE_BRAND_HEAD,
+                    tableBody: OriginFakeData,
+                })
+                return;
+            default:
+                setTable({
+                    tableHead: [],
+                    tableBody: [],
+                })
+                return;
+        }
+    }, [selectedTab])
+
+    const CreateButton = () => {
+        const createText =  getCreateButtonText();
+
+        return (
+            <FormControl
+                className={dashClasses.formControl}
+                onClick={() => setIsShowEdit(true)}
+                style={{
+                    marginRight: "25px",
+                    position: isMobile ? "static" : "absolute",
+                    right: "0",
+                }}
+            >
+                {/*<Link href={"/admin/category/addCategory"} onPress={() => setIsShowEdit(true)}>*/}
+                <Button id="update-label" color="green" >
+                    {createText}
+                </Button>
+                {/*</Link>*/}
+
+            </FormControl>
+        );
+    }
+
+    const getCreateButtonText = () => {
+        let createText;
+        if (selectedTab.value === CATEGORY_TYPE[0].value) {
+            createText = t('otherInformation.createBrand');
+        } else {
+            createText = t('otherInformation.createOrigin');
+        }
+        return createText;
+    }
 
     useEffect(() => {
         window.addEventListener(
@@ -223,13 +316,13 @@ function ProductCategory() {
                         </p>
                     </div>
                 </TableCell>
-                <TableCell className={tableClasses.tableCell} key={"parent"}>
+                {item.parent !== undefined && <TableCell className={tableClasses.tableCell} key={"parent"}>
                     <div className={classes.proInfoContainer}>
                         <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
                             {item?.parent ? item?.parent : t('notSet')}
                         </p>
                     </div>
-                </TableCell>
+                </TableCell>}
                 <TableCell className={tableClasses.tableCell} key={"status"}>
                     <div className={classes.proInfoContainer}>
                         <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
@@ -237,13 +330,13 @@ function ProductCategory() {
                         </p>
                     </div>
                 </TableCell>
-                <TableCell className={tableClasses.tableCell} key={"promotion"}>
+                {item.promotion !== undefined && <TableCell className={tableClasses.tableCell} key={"promotion"}>
                     <div className={classes.proInfoContainer}>
                         <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
                             {item.promotion ? t('yes') : t('no')}
                         </p>
                     </div>
-                </TableCell>
+                </TableCell>}
                 <TableCell className={tableClasses.tableCell} key={"publish"}>
                     <div className={classes.proInfoContainer}>
                         <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
@@ -297,14 +390,14 @@ function ProductCategory() {
                                             <MenuList role="menu">
                                                 <MenuItem className={classes.dropdownItem}
                                                           onClick={() => {
-                                                              Router.push('/admin/category/addCategory');
+                                                              setIsShowEdit(true);
                                                           }}
                                                 >
                                                     {t('detail')}
                                                 </MenuItem>
                                                 <MenuItem className={classes.dropdownItem}
                                                           onClick={() => {
-                                                              Router.push('/admin/category/addCategory');
+                                                              setIsShowEdit(true);
                                                           }}
                                                 >
                                                     {t('edit')}
@@ -489,21 +582,7 @@ function ProductCategory() {
                             </Poppers>
                         </FormControl>
                     </div>
-                    <FormControl
-                        className={dashClasses.formControl}
-                        style={{
-                            marginRight: "25px",
-                            position: isMobile ? "static" : "absolute",
-                            right: "0",
-                        }}
-                    >
-                        <Link href={"/admin/category/addCategory"}>
-                            <Button id="update-label" color="green">
-                                {t('category.createCategory')}
-                            </Button>
-                        </Link>
-
-                    </FormControl>
+                    <CreateButton />
                 </div>
                 <ModalCustom
                     width={600}
@@ -543,6 +622,47 @@ function ProductCategory() {
                 </ModalCustom>
             </CardBody>
             <CardFooter>
+                <div className={classes.sideBarContainer}>
+                    <List className={classes.listContainer}>
+                        {CATEGORY_TYPE.map((item, index) => {
+                            return (
+                                // <ListItem className={classNames(
+                                //     classes.itemLink,
+                                //     // selectedTab == item ? classes.sideBarWhiteNormal : classes.sideBarWhiteText,
+                                // )}>
+                                //     <ListItemText
+                                //         primary={item}
+                                //         className={classNames(
+                                //             classes.itemText,
+                                //             selectedTab == item ? classes.sideBarWhiteNormal : classes.sideBarWhiteText,
+                                //         )}
+                                //         disableTypography={true}
+                                //     />
+                                // </ListItem>
+                                <a className={classes.item} onClick={() => setSelectedTab(item)}>
+                                    <ListItem
+                                        button
+                                        className={
+                                            classNames(
+                                                classes.itemLink,
+                                                selectedTab.value === item.value ? classes.white : ""
+                                            )}
+                                    >
+                                        <ListItemText
+                                            primary={item.label}
+                                            className={classNames(
+                                                classes.itemText,
+                                                selectedTab.value === item.value ? classes.whiteFont : ""
+                                            )}
+                                            disableTypography={true}
+                                        />
+                                    </ListItem>
+                                </a>
+                            );
+                        })}
+                    </List>
+
+                </div>
                 <div
                     className={tableClasses.tableResponsive}
                     style={{marginTop: "0", marginLeft: "20px"}}
@@ -551,7 +671,7 @@ function ProductCategory() {
                         {data !== undefined ? (
                             <TableHead className={tableClasses["primary" + "TableHeader"]}>
                                 <TableRow className={tableClasses.tableHeadRow}>
-                                    {TABLE_HEAD.map((prop, key) => {
+                                    {table.tableHead.map((prop, key) => {
                                         return (
                                             <TableCell
                                                 className={
@@ -571,7 +691,7 @@ function ProductCategory() {
                             </TableHead>
                         ) : null}
                         <TableBody>
-                            {CategoryFakeData.map((item, index) => {
+                            {table.tableBody.map((item, index) => {
                                 return renderCategory(item, index);
                             })}
                         </TableBody>
@@ -585,10 +705,21 @@ function ProductCategory() {
                     </div>
                 </div>
             </CardFooter>
+            <ModalCustom
+                width={1000}
+                title={getCreateButtonText()}
+                subTitle={""}
+                // isShow={true}
+                isShow={isShowEdit}
+                handleClose={() => setIsShowEdit(false)}
+            >
+                <AddInformation cancelFunc={() => setIsShowEdit(false)} confirmFunc={() => setIsShowEdit(false)}
+                        selectedTab={selectedTab}/>
+            </ModalCustom>
         </Card>
     );
 }
 
-ProductCategory.layout = Admin;
+ProductOtherInformation.layout = Admin;
 
-export default WithAuthentication(ProductCategory);
+export default WithAuthentication(ProductOtherInformation);

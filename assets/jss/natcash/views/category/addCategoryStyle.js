@@ -58,6 +58,9 @@ const addCategoryStyle = {
     infoText: {
         borderRight: '1px solid #808080',
         paddingRight: '8px'
+    },
+    noMargin: {
+        margin: '0px !important'
     }
 };
 

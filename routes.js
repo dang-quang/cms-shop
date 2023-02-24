@@ -75,6 +75,13 @@ const dashboardRoutes = [
         permission: "product_category",
       },
       {
+        path: "/otherInformation",
+        name: "otherInfo",
+        layout: "/admin",
+        parent: "operation",
+        permission: "product_category",
+      },
+      {
         path: "/product",
         name: "productApproval",
         layout: "/admin",

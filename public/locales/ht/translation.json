@@ -36,6 +36,7 @@
     "shopManagement": "Shop Management",
     "product": "Product",
     "category": "Category",
+    "otherInfo": "Other Information",
     "productApproval": "Product approval",
     "marketing": "Marketing",
     "broadcastMessages": "Broadcast messages",
@@ -71,8 +72,16 @@
     "categoryCode": "Category code",
     "categoryCodeDes": "Please only enter the characters (A-Z), number (0-9); Maximum of 6 characters.",
     "parentCategoryCode": "Parent's category code",
-    "parentCategoryCodeDes": "\"Not set\" if do not have",
+    "parentCategoryCodeDes": "\"Not set\" if do not have"
+  },
+  "otherInformation": {
     "brand": "Brand",
-    "origin": "Origin"
+    "origin": "Origin",
+    "createBrand": "Create brand",
+    "createOrigin": "Create origin",
+    "brandCode": "Brand code",
+    "brandName": "Brand name",
+    "originCode": "Origin code",
+    "originName": "Origin name"
   }
 }

@@ -30,7 +30,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 import adminStyles from "assets/jss/natcash/components/headerLinksStyle.js";
 import tableStyles from "assets/jss/natcash/components/tableStyle.js";
 import dashStyles from "assets/jss/natcash/views/dashboardStyle.js";
-import styles from "assets/jss/natcash/views/category/categoryIndexStyle";
+import styles from "assets/jss/natcash/views/otherInfo/infoIndexStyle";
 import {KeyboardDatePicker, MuiPickersUtilsProvider,} from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import vi from "date-fns/locale/vi";
@@ -108,8 +108,40 @@ const OriginFakeData = [
     }, {
         id: '5',
         code: 'LO',
-        name: 'Lao',
+        name: 'Laos',
         status: true,
+        publish: "2021-10-28T13:20:36+07:00",
+    },
+];
+
+const ProvinceFakeData = [
+    {
+        id: '1',
+        code: 'HN',
+        name: 'Ha Noi',
+        status: true,
+        parent: 'Viet Nam',
+        publish: "2021-10-28T13:20:36+07:00",
+    }, {
+        id: '2',
+        code: 'HCM',
+        name: 'Ho Chi Minh',
+        status: true,
+        parent: 'Viet Nam',
+        publish: "2021-10-28T13:20:36+07:00",
+    }, {
+        id: '3',
+        code: 'BJ',
+        name: 'Běijīng',
+        status: true,
+        parent: 'China',
+        publish: "2021-10-28T13:20:36+07:00",
+    }, {
+        id: '4',
+        code: 'VT',
+        name: 'Vientiane',
+        status: true,
+        parent: 'Laos',
         publish: "2021-10-28T13:20:36+07:00",
     },
 ];
@@ -143,6 +175,16 @@ function ProductOtherInformation() {
         t('action'),
     ];
 
+    const TABLE_PROVENCE_HEAD = [
+        t('qrManagement.stt'),
+        t('category.code'),
+        t('name'),
+        t('category.parent'),
+        t('status'),
+        t('qrManagement.publishTime'),
+        t('action'),
+    ];
+
     const CATEGORY_TYPE = [
         {
             label: t('otherInformation.brand'),
@@ -151,6 +193,10 @@ function ProductOtherInformation() {
         {
             label: t('otherInformation.origin'),
             value: 'origin'
+        },
+        {
+            label: t('otherInformation.provence'),
+            value: 'provence'
         },
     ]
     const [table, setTable] = useState({
@@ -184,6 +230,12 @@ function ProductOtherInformation() {
                 setTable({
                     tableHead: TABLE_BRAND_HEAD,
                     tableBody: OriginFakeData,
+                })
+                return;
+                case CATEGORY_TYPE[2].value:
+                setTable({
+                    tableHead: TABLE_PROVENCE_HEAD,
+                    tableBody: ProvinceFakeData,
                 })
                 return;
             default:
@@ -222,8 +274,10 @@ function ProductOtherInformation() {
         let createText;
         if (selectedTab.value === CATEGORY_TYPE[0].value) {
             createText = t('otherInformation.createBrand');
-        } else {
+        } else if (selectedTab.value === CATEGORY_TYPE[1].value) {
             createText = t('otherInformation.createOrigin');
+        } else {
+            createText = t('otherInformation.createProvence');
         }
         return createText;
     }

@@ -135,5 +135,75 @@ const categoryIndexStyle = {
     cursor: {
         cursor: "pointer",
     },
+    sideBarContainer: {
+        display: 'flex',
+        alignSelf: 'start',
+        width: '12vw',
+        // backgroundColor: primaryColor[0],
+        height: '500px'
+    },
+    itemText: {
+        ...defaultFont,
+        margin: "0",
+        lineHeight: "30px",
+        fontSize: "14px",
+        color: blackColor,
+    },
+    itemLink: {
+        width: "auto",
+        transition: "all 300ms linear",
+        margin: "0 5px",
+        borderRadius: "3px",
+        position: "relative",
+        display: "flex",
+        padding: "10px 15px",
+        backgroundColor: "transparent",
+        ...defaultFont,
+    },
+    item: {
+        position: "relative",
+        display: "block",
+        textDecoration: "none",
+        "&:hover,&:focus,&:visited,&": {
+            color: whiteColor,
+        },
+    },
+    white: {
+        backgroundColor: primaryColor[0],
+        boxShadow:
+            "0 12px 20px -10px rgba(" +
+            hexToRgb(primaryColor[0]) +
+            ",.28), 0 4px 20px 0 rgba(" +
+            hexToRgb(blackColor) +
+            ",.12), 0 7px 8px -5px rgba(" +
+            hexToRgb(primaryColor[0]) +
+            ",.2)",
+        "&:hover,&:focus": {
+            backgroundColor: primaryColor[0],
+            boxShadow:
+                "0 12px 20px -10px rgba(" +
+                hexToRgb(primaryColor[0]) +
+                ",.28), 0 4px 20px 0 rgba(" +
+                hexToRgb(blackColor) +
+                ",.12), 0 7px 8px -5px rgba(" +
+                hexToRgb(primaryColor[0]) +
+                ",.2)",
+        },
+        "& $itemText": {
+            color: grayColor[8],
+        },
+        "& $itemIcon": {
+            color: "rgba(" + hexToRgb(grayColor[8]) + ", 0.8)",
+        },
+    },
+    whiteFont: {
+        color: '#fff !important',
+    },
+    listContainer: {
+        display: 'flex',
+        width: '100%',
+        height: '100%',
+        flexDirection: 'column'
+    }
 };
 export default categoryIndexStyle;

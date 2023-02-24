@@ -30,17 +30,19 @@
   "yes": "Yes",
   "no": "No",
   "errorInput": "Invalid information, please try again",
+  "amount": "Amount",
+  "price": "Price",
   "sideBar": {
     "shop": "Shop",
-    "qrManagement": "QR management",
+    "qrManagement": "QR Management",
     "shopManagement": "Shop Management",
     "product": "Product",
     "category": "Category",
     "otherInfo": "Other Information",
-    "productApproval": "Product approval",
+    "productApproval": "Product Approval",
     "marketing": "Marketing",
-    "broadcastMessages": "Broadcast messages",
-    "smsMessages": "SMS messages",
+    "broadcastMessages": "Broadcast Messages",
+    "smsPackage": "SMS Package",
     "advertisement": "Advertisement",
     "voucher": "Voucher",
     "flashSale": "Flash sale",
@@ -86,11 +88,25 @@
   "otherInformation": {
     "brand": "Brand",
     "origin": "Origin",
+    "provence": "Provence",
     "createBrand": "Create brand",
     "createOrigin": "Create origin",
+    "createProvence": "Create provence",
     "brandCode": "Brand code",
     "brandName": "Brand name",
     "originCode": "Origin code",
-    "originName": "Origin name"
+    "originName": "Origin name",
+    "provenceCode": "Provence code",
+    "provenceName": "Provence name"
+  },
+  "sms": {
+    "createSms": "Create SMS package",
+    "appliedTime": "Applied time",
+    "smsId": "SMS package code",
+    "smsName": "SMS package name",
+    "numberOfSms": "Number of sms",
+    "numberDes": "Number of sms in the package",
+    "priceDes": "Price for 1 subscription to use the package",
+    "appliedTimeDes": "Expiry date of the package"
   }
 }

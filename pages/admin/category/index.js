@@ -1,10 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
 import moment from "moment";
 import Link from "next/link";
 // @material-ui/core components
 import {makeStyles} from "@material-ui/core/styles";
-import {formatNumber} from "../../../utilities/utils";
 // layout for this page
 import Admin from "layouts/Admin.js";
 // core components
@@ -40,16 +38,11 @@ import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import classNames from "classnames";
-import {getRequestPayment, updateConfirmPayment, updateNotePayment} from "../../../utilities/ApiManage";
 import Pagination from "@material-ui/lab/Pagination";
-import {setShowLoader} from "../../../redux/actions/app";
-import {NotificationContainer, NotificationManager,} from "react-light-notifications";
+import {NotificationContainer,} from "react-light-notifications";
 import {primaryColor} from "../../../assets/jss/natcash";
 import {useTranslation} from "react-i18next";
 import Router from "next/router";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 
 const CategoryFakeData = [
     {

@@ -10,28 +10,46 @@ import "react-light-notifications/lib/main.css";
 import Admin from "layouts/Admin.js";
 // core components
 import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import Button from "components/CustomButtons/Button.js";
 import {
     FormControl,
     FormControlLabel,
-    InputAdornment,
     makeStyles,
     Radio,
     RadioGroup,
     TextField,
     withStyles,
 } from "@material-ui/core";
-import WithAuthentication from "components/WithAuthentication/WithAuthentication";
 import FormGroupCustom from "components/FormCustom/FormGroupCustom.js";
 import FormCellCustom from "components/FormCustom/FormCellCustom.js";
-import styles from "assets/jss/natcash/views/category/addCategoryStyle";
+import styles from "assets/jss/natcash/views/otherInfo/addInfoStyle";
 import {useTranslation} from "react-i18next";
-import {Autocomplete} from "@material-ui/lab";
 import _ from 'lodash';
+import {Autocomplete} from "@material-ui/lab";
 
+const listShop = [
+    {
+        id: '1',
+        name: 'Nat shop'
+    }, {
+        id: '2',
+        name: 'Second shop'
+    }, {
+        id: '3',
+        name: 'Third shop'
+    }, {
+        id: '4',
+        name: 'Four shop'
+    }, {
+        id: '5',
+        name: 'Five shop'
+    }, {
+        id: '6',
+        name: 'Six shop'
+    },
+]
 
 function AddInformation({cancelFunc, confirmFunc, selectedTab}) {
     const dispatch = useDispatch();
@@ -129,7 +147,32 @@ function AddInformation({cancelFunc, confirmFunc, selectedTab}) {
                             />
                         </div>
                     </FormCellCustom>
-
+                    <FormCellCustom
+                        label={t('category.parent')}
+                        helperText={t('category.parentCategoryCodeDes')}
+                    >
+                        <div className={classes.formCell}>
+                            <Autocomplete
+                                limitTags={2}
+                                size="small"
+                                options={listShop}
+                                getOptionLabel={(option) => option.name}
+                                onChange={handleChangeValue("parentCategoryCode")}
+                                renderOption={(option) => (
+                                    <React.Fragment>
+                                        <div style={{alignItems: "center"}}>
+                                            <p style={{fontSize: "15px", margin: 0}}>{option.name}</p>
+                                            {/*<p className={classes.txtMemberSelect}>{"@" + option.email.split("@")[0]}</p>*/}
+                                        </div>
+                                    </React.Fragment>
+                                )}
+                                style={{margin: "10px 0px"}}
+                                renderInput={(params) => (
+                                    <TextField {...params} variant="outlined" label={t('category.parent')} placeholder={t('notSet')}/>
+                                )}
+                            />
+                        </div>
+                    </FormCellCustom>
                     <FormCellCustom label={t('status')} helperText={""}>
                         <div className={classes.formCell}>
                             <FormControl component="fieldset">

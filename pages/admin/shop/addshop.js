@@ -27,6 +27,7 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import Button from "components/CustomButtons/Button.js";
 import ImageUpload from "./ImageUpload";
+import { useTranslation } from "react-i18next";
 import {
   Modal,
   Tab,
@@ -103,6 +104,7 @@ function AddShop() {
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [checked, setChecked] = useState([]);
   const [addedProducts, setAddedProducts] = useState([]);
+  const { t } = useTranslation();
 
   const [values, setValues] = React.useState({
     code_type: "all",
@@ -599,19 +601,19 @@ function AddShop() {
 
       <GridContainer>
         <GridItem className={classes.viewItem} xs={12} sm={12} md={8}>
-          <TextField id="outlined-basic" label="Tên cửa hàng" variant="outlined" style={{ width: '100%', marginBottom: 20, }} xs={12} sm={12} md={12} />
+          <TextField id="outlined-basic" label={t('addShop.shopName')} variant="outlined" style={{ width: '100%', marginBottom: 20, }} xs={12} sm={12} md={12} />
 
         </GridItem>
         <GridItem className={classes.viewItemRight} xs={12} sm={12} md={4}>
-          <TextField id="outlined-basic" label="Mã Cửa hàng tham chiếu" variant="outlined" style={{ width: '100%', marginBottom: 20 }} sm={12} />
+          <TextField id="outlined-basic" label={t('addShop.referenceStoreCode')} variant="outlined" style={{ width: '100%', marginBottom: 20 }} sm={12} />
         </GridItem>
 
 
         <GridItem className={classes.viewItem} xs={12} sm={12} md={4}>
-          <TextField id="outlined-basic" label="Điện thoại liên hệ" variant="outlined" style={{ marginBottom: 20, width: '100%', }} xs={12} sm={12} md={8} />
+          <TextField id="outlined-basic" label={t('addShop.phomeNumber')} variant="outlined" style={{ marginBottom: 20, width: '100%', }} xs={12} sm={12} md={8} />
         </GridItem>
         <GridItem className={classes.viewItem} xs={12} sm={12} md={4}>
-          <TextField id="outlined-basic" label="Người liên hệ" variant="outlined" style={{ marginBottom: 20, width: '100%', }} xs={12} sm={12} md={8} />
+          <TextField id="outlined-basic" label={t('addShop.contact')} variant="outlined" style={{ marginBottom: 20, width: '100%', }} xs={12} sm={12} md={8} />
         </GridItem>
         <GridItem className={classes.viewItem} xs={12} sm={12} md={4}>
           <div styles={{ width: '100%', marginBottom: 20, height: 220 , display:'flex'}}>
@@ -621,13 +623,13 @@ function AddShop() {
 
 
         <GridItem className={classes.viewItem} xs={12} sm={12} md={4}>
-          <TextField id="outlined-basic" label="Địa chỉ" variant="outlined" style={{ width: '100%', marginBottom: 20 }} />
+          <TextField id="outlined-basic" label={t('addShop.address')}  variant="outlined" style={{ width: '100%', marginBottom: 20 }} />
         </GridItem>
         <GridItem className={classes.viewItem} xs={12} sm={12} md={4}>
           <TextField
             id="outlined-select-currency"
             select
-            label="Loại cửa hàng"
+            label={t('addShop.typeStore')}
             defaultValue="Select"
             variant="outlined"
             style={{ width: '100%', marginBottom: 20 }}
@@ -648,7 +650,7 @@ function AddShop() {
             hei
             id="outlined-multiline-static"
             rows={4}
-            label="Ghi chú"
+            label={t('addShop.note')}
             variant="outlined"
             style={{ width: '100%', marginBottom: 20 }}
           />

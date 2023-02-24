@@ -33,7 +33,7 @@
   "sideBar": {
     "shop": "Shop",
     "qrManagement": "QR management",
-    "shopManagement": "Shop Management",
+    "shopManagement": "Gestion du magasin",
     "product": "Product",
     "category": "Category",
     "otherInfo": "Other Information",
@@ -60,6 +60,15 @@
     "description": "Shop is mapping with QR. If QR is not connected, do not choose",
     "invalidShop": "Invalid shop, please try again",
     "emptyStatus": "Status is empty, please choose status"
+  },
+  "addShop": {
+    "shopName": "Store Name",
+    "referenceStoreCode":"Reference store code",
+    "phomeNumber": "Phone Number",
+    "contact": "Contact",
+    "address": "Address",
+    "typeStore": "Type Store",
+    "note": "Note"
   },
   "category": {
     "createCategory": "Create category",

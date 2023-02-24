@@ -30,7 +30,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 import adminStyles from "assets/jss/natcash/components/headerLinksStyle.js";
 import tableStyles from "assets/jss/natcash/components/tableStyle.js";
 import dashStyles from "assets/jss/natcash/views/dashboardStyle.js";
-import styles from "assets/jss/natcash/views/qrshop/qrshopIndexStyle";
+import styles from "assets/jss/natcash/views/category/categoryIndexStyle";
 import {KeyboardDatePicker, MuiPickersUtilsProvider,} from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import vi from "date-fns/locale/vi";
@@ -47,55 +47,55 @@ import {NotificationContainer, NotificationManager,} from "react-light-notificat
 import {primaryColor} from "../../../assets/jss/natcash";
 import {useTranslation} from "react-i18next";
 import Router from "next/router";
-import ShopTable from "../../../components/Table/ShopTable";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
-const QrShopFakeData = [
+const CategoryFakeData = [
     {
         id: '1',
-        name: 'Shop 1',
-        link: 'http://shop1/qr1',
+        code: 'SPMT',
+        name: 'Điện tử, công nghệ',
+        parent: null,
         status: true,
+        promotion: true,
         publish: "2021-10-28T13:20:36+07:00",
-        update: "2021-10-28T13:20:36+07:00"
     }, {
         id: '2',
-        name: 'Shop 2',
-        link: 'http://shop1/qr2',
-        status: false,
+        code: 'DDCN',
+        name: 'Đồ dùng cá nhân',
+        parent: null,
+        status: true,
+        promotion: false,
         publish: "2021-10-28T13:20:36+07:00",
-        update: "2021-10-28T13:20:36+07:00"
     }, {
         id: '3',
-        name: 'Shop 3',
-        link: 'http://shop1/qr3',
+        code: 'LAPTOP',
+        name: 'Máy tính xách tay',
+        parent: 'Điện tử, công nghệ',
         status: true,
+        promotion: false,
         publish: "2021-10-28T13:20:36+07:00",
-        update: "2021-10-28T13:20:36+07:00"
     }, {
         id: '4',
-        name: 'Shop 4',
-        link: 'http://shop1/qr4',
-        status: false,
+        code: 'QA',
+        name: 'Quần áo',
+        parent: null,
+        status: true,
+        promotion: true,
         publish: "2021-10-28T13:20:36+07:00",
-        update: "2021-10-28T13:20:36+07:00"
     }, {
         id: '5',
-        name: 'Shop 5',
-        link: 'http://shop1/qr5',
+        code: 'TP',
+        name: 'Thực phẩm',
+        parent: null,
         status: true,
+        promotion: false,
         publish: "2021-10-28T13:20:36+07:00",
-        update: "2021-10-28T13:20:36+07:00"
-    }, {
-        id: '6',
-        name: 'Shop 6',
-        link: 'http://shop1/qr6',
-        status: true,
-        publish: "2021-10-28T13:20:36+07:00",
-        update: "2021-10-28T13:20:36+07:00"
     },
 ];
 
-function QrManagement() {
+function ProductCategory() {
     const useShopStyles = makeStyles(shopStyle);
     const shopClasses = useShopStyles();
     const useStyles = makeStyles(styles);
@@ -115,13 +115,20 @@ function QrManagement() {
 
     const TABLE_HEAD = [
         t('qrManagement.stt'),
-        t('qrManagement.shopName'),
-        t('qrManagement.link'),
+        t('category.code'),
+        t('name'),
+        t('category.parent'),
         t('status'),
+        t('category.applyPromotion'),
         t('qrManagement.publishTime'),
-        t('qrManagement.updateTime'),
         t('action'),
     ];
+
+    const CATEGORY_TYPE = [
+        t('category.productCategory'),
+        t('category.brand'),
+        t('category.origin')
+    ]
 
     const [data, setData] = useState([]);
     const [selectedTitle, setSelectedTitle] = useState("");
@@ -133,30 +140,8 @@ function QrManagement() {
     );
     const [toDate, setToDate] = useState(moment().format());
     const [isMobile, setIsMobile] = useState(false);
+    const [selectedTab, setSelectedTab] = useState(CATEGORY_TYPE[0]);
 
-    const MENU_TITLE_INFO = [
-        {
-            name: t('all'),
-            value: "ALL",
-        },
-        {
-            name: t('qrManagement.notActive'),
-            value: "NOTACTIVE",
-        },
-        {
-            name: t('qrManagement.active'),
-            value: "ACTIVE",
-        },
-    ];
-
-    const menuTitleData = {
-        "ready_to_ship": 51,
-        "processed": 10,
-        "shipped": 47,
-        "to_confirm_receive": 105,
-        "to_return": 0,
-        "cancelled": 519
-    }
     useEffect(() => {
         window.addEventListener(
             "resize",
@@ -219,7 +204,7 @@ function QrManagement() {
         setTxtSearch(event.target.value);
         setCurrentPage(1);
     };
-    const renderShop = (item, index) => {
+    const renderCategory = (item, index) => {
         return (
             <TableRow
                 key={index}
@@ -231,17 +216,25 @@ function QrManagement() {
                         </p>
                     </div>
                 </TableCell>
-                <TableCell className={tableClasses.tableCell} key={"name"}>
+                <TableCell className={tableClasses.tableCell} key={"code"}>
                     <div className={classes.proInfoContainer}>
                         <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
-                            {item.name}
+                            {item.code}
                         </p>
                     </div>
                 </TableCell>
-                <TableCell className={tableClasses.tableCell} key={"link"}>
+                <TableCell className={tableClasses.tableCell} key={"name"}>
                     <div className={classes.proInfoContainer}>
                         <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
-                            {item?.link}
+                            {item?.name}
+                        </p>
+                    </div>
+                </TableCell>
+                <TableCell className={tableClasses.tableCell} key={"parent"}>
+                    <div className={classes.proInfoContainer}>
+                        <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
+                            {console.log('tung', item?.parent)}
+                            {item?.parent ? item?.parent : t('notSet')}
                         </p>
                     </div>
                 </TableCell>
@@ -252,20 +245,17 @@ function QrManagement() {
                         </p>
                     </div>
                 </TableCell>
-                <TableCell className={tableClasses.tableCell} key={"dateupdate"}>
+                <TableCell className={tableClasses.tableCell} key={"promotion"}>
+                    <div className={classes.proInfoContainer}>
+                        <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
+                            {item.promotion ? t('yes') : t('no')}
+                        </p>
+                    </div>
+                </TableCell>
+                <TableCell className={tableClasses.tableCell} key={"publish"}>
                     <div className={classes.proInfoContainer}>
                         <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
                             {moment(item.publish).format("DD/MM/YYYY")}
-                        </p>
-                        {/* <p className={tableClasses.tableCell + " " + classes.txtShopName}>
-            {moment(item.createAt).format("DD/MM/YYYY")}
-             </p> */}
-                    </div>
-                </TableCell>
-                <TableCell className={tableClasses.tableCell} key={"detail"}>
-                    <div className={classes.proInfoContainer}>
-                        <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
-                            {moment(item.update).format("DD/MM/YYYY")}
                         </p>
                     </div>
                 </TableCell>
@@ -315,14 +305,14 @@ function QrManagement() {
                                             <MenuList role="menu">
                                                 <MenuItem className={classes.dropdownItem}
                                                           onClick={() => {
-                                                              Router.push('/admin/qrManagement/addQr');
+                                                              Router.push('/admin/category/addCategory');
                                                           }}
                                                 >
                                                     {t('detail')}
                                                 </MenuItem>
                                                 <MenuItem className={classes.dropdownItem}
                                                           onClick={() => {
-                                                              Router.push('/admin/qrManagement/addQr');
+                                                              Router.push('/admin/category/addCategory');
                                                           }}
                                                 >
                                                     {t('edit')}
@@ -350,34 +340,9 @@ function QrManagement() {
         <Card>
             <NotificationContainer/>
             <CardHeader color="primary">
-                <h4 className={classes.cardTitleWhite}>{t('sideBar.qrManagement')}</h4>
+                <h4 className={classes.cardTitleWhite}>{t('sideBar.category')}</h4>
             </CardHeader>
             <CardBody className={classes.cardBody}>
-                <div className={classes.selectTitleContainer}>
-                    <GridContainer>
-                        {MENU_TITLE_INFO.map((item, index) => {
-                            return (
-                                <div
-                                    className={classes.selectContainer}
-                                    style={{
-                                        backgroundColor:
-                                            selectedTitle.value == item.value ? primaryColor[3] : "",
-                                    }}
-                                    onClick={() => handleTitle(item)}
-                                >
-                                    <p>{item.name}</p>
-                                    {menuTitleData[Object.keys(menuTitleData)[index - 1]] > 0 && (
-                                        <p className={classes.txtNumTitle}>
-                                            {formatNumber(
-                                                menuTitleData[Object.keys(menuTitleData)[index - 1]]
-                                            )}
-                                        </p>
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </GridContainer>
-                </div>
                 <div
                     className={dashClasses.filterSelections + " " + classes.flex_center_between}
                 >
@@ -540,9 +505,9 @@ function QrManagement() {
                             right: "0",
                         }}
                     >
-                        <Link href={"/admin/qrManagement/addQr"}>
+                        <Link href={"/admin/category/addCategory"}>
                             <Button id="update-label" color="green">
-                                {t('qrManagement.createQr')}
+                                {t('category.createCategory')}
                             </Button>
                         </Link>
 
@@ -587,6 +552,47 @@ function QrManagement() {
                 </ModalCustom>
             </CardBody>
             <CardFooter>
+                <div className={classes.sideBarContainer}>
+                    <List className={classes.listContainer}>
+                        {CATEGORY_TYPE.map((item, index) => {
+                            return (
+                                // <ListItem className={classNames(
+                                //     classes.itemLink,
+                                //     // selectedTab == item ? classes.sideBarWhiteNormal : classes.sideBarWhiteText,
+                                // )}>
+                                //     <ListItemText
+                                //         primary={item}
+                                //         className={classNames(
+                                //             classes.itemText,
+                                //             selectedTab == item ? classes.sideBarWhiteNormal : classes.sideBarWhiteText,
+                                //         )}
+                                //         disableTypography={true}
+                                //     />
+                                // </ListItem>
+                                <a className={classes.item} onClick={() => setSelectedTab(item)}>
+                                    <ListItem
+                                        button
+                                        className={
+                                            classNames(
+                                                classes.itemLink,
+                                                selectedTab === item ? classes.white : ""
+                                            )}
+                                    >
+                                        <ListItemText
+                                            primary={item}
+                                            className={classNames(
+                                                classes.itemText,
+                                                selectedTab === item ? classes.whiteFont : ""
+                                            )}
+                                            disableTypography={true}
+                                        />
+                                    </ListItem>
+                                </a>
+                            );
+                        })}
+                    </List>
+
+                </div>
                 <div
                     className={tableClasses.tableResponsive}
                     style={{marginTop: "0", marginLeft: "20px"}}
@@ -615,8 +621,8 @@ function QrManagement() {
                             </TableHead>
                         ) : null}
                         <TableBody>
-                            {QrShopFakeData.map((item, index) => {
-                                return renderShop(item, index);
+                            {CategoryFakeData.map((item, index) => {
+                                return renderCategory(item, index);
                             })}
                         </TableBody>
                     </Table>
@@ -633,6 +639,6 @@ function QrManagement() {
     );
 }
 
-QrManagement.layout = Admin;
+ProductCategory.layout = Admin;
 
-export default WithAuthentication(QrManagement);
+export default WithAuthentication(ProductCategory);

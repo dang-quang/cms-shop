@@ -68,8 +68,8 @@ const dashboardRoutes = [
     permission: "stocks",
     subMenu: [
       {
-        path: "/inventory",
-        name: "categoryManagement",
+        path: "/category",
+        name: "category",
         layout: "/admin",
         parent: "operation",
         permission: "product_category",

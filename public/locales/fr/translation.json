@@ -26,12 +26,16 @@
   "delete" : "Delete",
   "deleteConfirm": "Are you sure you want to delete this item?",
   "updateDate": "Update date",
+  "name": "Name",
+  "yes": "Yes",
+  "no": "No",
+  "errorInput": "Invalid information, please try again",
   "sideBar": {
     "shop": "Shop",
     "qrManagement": "QR management",
     "shopManagement": "Gestion du magasin",
     "product": "Product",
-    "categoryManagement": "Category management",
+    "category": "Category",
     "productApproval": "Product approval",
     "marketing": "Marketing",
     "broadcastMessages": "Broadcast messages",
@@ -64,6 +68,20 @@
     "address": "Address",
     "typeStore": "Type Store",
     "note": "Note"
-
+  },
+  "category": {
+    "createCategory": "Create category",
+    "code": "Code",
+    "parent": "Parent",
+    "applyPromotion": "Apply promotion",
+    "productCategory": "Product Category",
+    "categoryName": "Product category name",
+    "autoProduceCategory": "Automatically produce the category code",
+    "categoryCode": "Category code",
+    "categoryCodeDes": "Please only enter the characters (A-Z), number (0-9); Maximum of 6 characters.",
+    "parentCategoryCode": "Parent's category code",
+    "parentCategoryCodeDes": "\"Not set\" if do not have",
+    "brand": "Brand",
+    "origin": "Origin"
   }
 }

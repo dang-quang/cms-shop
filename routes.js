@@ -175,6 +175,14 @@ const dashboardRoutes = [
     parent: "operation",
     permission: "uiManagement",
   },
+  {
+    path: "/game",
+    name: "game",
+    icon: "dashboard",
+    layout: "/admin",
+    parent: "operation",
+    permission: "uiManagement",
+  },
   // {
   //   path: "/#",
   //   name: "Config",

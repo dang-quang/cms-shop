@@ -164,5 +164,12 @@
     "byPercent": "By percent",
     "promotion": "Promotion",
     "addProducts": "Add products"
+  },
+  "game": {
+    "luckyDraw": "Lucky Draw",
+    "image": "Image",
+    "prize": "Prize",
+    "order": "Order",
+    "style": "Style"
   }
 }

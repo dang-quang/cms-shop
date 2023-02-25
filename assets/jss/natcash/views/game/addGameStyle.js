@@ -1,4 +1,4 @@
-const addInfotyle = {
+const addGameStyle = {
     cardBody: {
         alignItems: "center",
     },
@@ -61,7 +61,52 @@ const addInfotyle = {
     },
     noMargin: {
         margin: '0px !important'
+    },
+    titleFilter: {
+        fontSize: "16px",
+        fontWeight: "500",
+        marginTop: "0",
+    },
+    marginBottom_20: {
+        marginBottom: "20px",
+    },
+    imageForm: {
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+    },
+    imageUpload: {
+        width: "150px",
+        height: "150px",
+        objectFit: "cover",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+    },
+    imageBtn: {
+        border: "1px dashed gray",
+        marginRight: "0px",
+        marginBottom: "10px"
+    },
+    btnClose:{
+        right: "2px",
+        top: "2px",
+        cursor: "pointer",
+        zIndex: "99",
+        color: "rgba(0, 0, 0, 0.54)",
+        position: "absolute",
+        backgroundColor: "white",
+        borderRadius: "999px",
+        "&:hover,&:focus": {
+            backgroundColor: "#ededed",
+        },
+    },
+    imgContainer:{
+        position: "relative",
+        marginRight: "10px",
+        marginBottom: "10px"
     }
 };
 
-export default addInfotyle;
+export default addGameStyle;

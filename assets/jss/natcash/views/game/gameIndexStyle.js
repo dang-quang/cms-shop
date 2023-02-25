@@ -1,6 +1,6 @@
 import {blackColor, defaultFont, grayColor, hexToRgb, primaryColor, whiteColor} from "assets/jss/natcash.js";
 
-const infoIndexStyle = {
+const gameIndexStyle = {
     cardTitleWhite: {
         color: "#FFFFFF",
         marginTop: "0px",
@@ -204,6 +204,11 @@ const infoIndexStyle = {
         width: '100%',
         height: '100%',
         flexDirection: 'column'
+    },
+    gameImage: {
+        width: '80px',
+        height: '80px',
+        objectFit: 'contain'
     }
 };
-export default infoIndexStyle;
+export default gameIndexStyle;

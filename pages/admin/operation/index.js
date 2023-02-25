@@ -1,26 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 // react plugin for creating charts
-import ChartistGraph from "react-chartist";
-import { Doughnut, Line, Bar } from "react-chartjs-2";
+import {Bar, Doughnut, Line} from "react-chartjs-2";
 import Link from "next/link";
 // @material-ui/core
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
-import Store from "@material-ui/icons/Store";
-import Warning from "@material-ui/icons/Warning";
-import DateRange from "@material-ui/icons/DateRange";
-import LocalOffer from "@material-ui/icons/LocalOffer";
-import Update from "@material-ui/icons/Update";
-import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import AccessTime from "@material-ui/icons/AccessTime";
-import Accessibility from "@material-ui/icons/Accessibility";
-import BugReport from "@material-ui/icons/BugReport";
-import Code from "@material-ui/icons/Code";
-import Cloud from "@material-ui/icons/Cloud";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -29,19 +17,12 @@ import Admin from "layouts/Admin.js";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import Tasks from "components/Tasks/Tasks.js";
-import CustomTabs from "components/CustomTabs/CustomTabs.js";
-import Danger from "components/Typography/Danger.js";
-import Success from "components/Typography/Success.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
-import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import WithAuthentication from "components/WithAuthentication/WithAuthentication";
-import CardInfo from "components/CardInfo/CardInfo.js";
 import Button from "components/CustomButtons/Button.js";
-import { bugs, website, server } from "variables/general.js";
 import moment from "moment";
 import tableStyles from "assets/jss/natcash/components/tableStyle.js";
 import taskStyles from "assets/jss/natcash/components/tasksStyle.js";
@@ -50,33 +31,20 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import Checkbox from "@material-ui/core/Checkbox";
-import Check from "@material-ui/icons/Check";
 import useWindowSize from "components/Hooks/useWindowSize.js";
 import dashStyles from "assets/jss/natcash/views/dashboardStyle.js";
+import styles from "assets/jss/natcash/views/dashboardStyle.js";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
 import vi from "date-fns/locale/vi";
-import { addShop, getOperationScreen } from "../../../utilities/ApiManage";
+import {addShop, getOperationScreen} from "../../../utilities/ApiManage";
 
 // utilities
-import { formatCurrency, formatNumber } from "../../../utilities/utils";
-
-import {
-  dailySalesChart,
-  emailsSubscriptionChart,
-  completedTasksChart,
-} from "variables/charts.js";
-import { connect, useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/router";
-
-import styles from "assets/jss/natcash/views/dashboardStyle.js";
+import {formatCurrency, formatNumber} from "../../../utilities/utils";
+import {useSelector} from "react-redux";
+import {useRouter} from "next/router";
+import {useTranslation} from "react-i18next";
 
 function Dashboard() {
   const router = useRouter();
@@ -85,8 +53,6 @@ function Dashboard() {
   const classes = useStyles();
   const useTableStyles = makeStyles(tableStyles);
   const tableClasses = useTableStyles();
-  const useTaskStyles = makeStyles(taskStyles);
-  const taskClasses = useTaskStyles();
   const size = useWindowSize();
   const [showFilter, setShowFilter] = useState(false);
   const useDashStyles = makeStyles(dashStyles);
@@ -105,220 +71,24 @@ function Dashboard() {
   const [filterDate, setFilterDate] = useState("today");
   const [filterEcom, setFilterEcom] = useState("all");
   const [filterShop, setFilterShop] = useState("all");
+  const {t} = useTranslation();
 
-  const CARD_TITLE = [
-    {
-      id: "en",
-      value: [
-        "This month revenue",
-        "Today revenue",
-        "Today orders",
-        "Pending orders",
-      ],
-    },
-    {
-      id: "vi",
-      value: [
-        "Doanh thu tháng này",
-        "Doanh thu hôm nay",
-        "Đơn hàng hôm nay",
-        "Đơn hàng chờ xử lý",
-      ],
-    },
+  const SHOP_TABLE_HEAD = [
+      t('operation.shopInfo'),
+      t('operation.products'),
+      t('operation.orders'),
+      t('operation.unpaidOrders'),
+      t('voucher.revenue'),
+      t('operation.trendL14d'),
   ];
 
-  const CARD_TITLE_2 = [
-    {
-      id: "en",
-      value: ["Traffic", "View", "Convention rate", "Message unreply"],
-    },
-    {
-      id: "vi",
-      value: ["Traffic", "Lượt xem", "Tỷ lệ quy ước", "Tin nhắn chưa trả lời"],
-    },
+  const PRODUCT_TABLE_HEAD = [
+    t('operation.productInfo'),
+    t('operation.itemSold'),
+    t('voucher.revenue'),
+    t('operation.trendL14d'),
   ];
 
-  const BUTTON = [
-    {
-      id: "en",
-      value: ["Today", "This month", "Filter"],
-    },
-    {
-      id: "vi",
-      value: ["Hôm nay", "Tháng này", "Bộ lọc"],
-    },
-  ];
-
-  // Tooltip title
-  const TOOLTIP_TEXT = [
-    {
-      id: "en",
-      value: [
-        "Total buyer paid value of orders during the selected time period, exclusive of all discounts applied, store credit, shipping fees and surcharges.",
-        "Total buyer paid value of orders which are on the way to customers during the selected time period, exclusive of all discounts applied, store credit, shipping fees and surcharges.",
-        "Total buyer paid value of orders which are delivered successfully during the selected time period, exclusive of all discounts applied, store credit, shipping fees and surcharges.",
-        "Total revenue of orders which are canceled, failed to deliver and returned.",
-      ],
-    },
-    {
-      id: "vi",
-      value: [
-        "Doanh thu được tính trên tất cả các đơn hàng  được tạo trong khoảng thời gian được chọn (bao gồm đơn hàng huỷ và hoàn), chưa bao gồm các chi phí như phí vận chuyển và chi phí khuyến mại.",
-        "Tổng doanh thu của tất cả đơn hàng đang trên đường giao cho khách hàng được tạo trong khoảng thời gian được chọn, chưa bao gồm các loại phí như phí vận chuyển và khuyến mãi.",
-        "Tổng doanh thu của tất cả đơn hàng đã giao thành công cho khách hàng được tạo trong khoảng thời gian được chọn, chưa bao gồm các loại phí như phí vận chuyển và khuyến mãi.",
-        "Tổng doanh thu của đơn hàng được tạo trong khoảng thời gian được chọn nhưng bị huỷ, giao hàng thất bại và hàng hoàn.",
-      ],
-    },
-  ];
-
-  const CHART = [
-    {
-      id: "en",
-      value: ["Total revenue", "shipped", "delivered", "CANCELLED & RETURNED"],
-      title: ["Revenue trend", "Revenue by channel"],
-      label: [
-        "Total revenue",
-        "Total cancelled/returned",
-        "Orders",
-        "Orders cancelled/returned",
-      ],
-    },
-    {
-      id: "vi",
-      value: [
-        "Tổng doanh thu",
-        "Đang vận chuyển",
-        "Giao thành công",
-        "Hủy & Hoàn trả",
-      ],
-      title: ["Xu thế doanh thu", "Doanh thu kênh bán"],
-      label: ["Tổng doanh thu", "Tổng hoàn/hủy", "Đơn hàng", "Đơn hoàn/hủy"],
-    },
-  ];
-
-  const SELECT = [
-    {
-      id: "en",
-      value: ["All"],
-      title: ["Channel", "Shop"],
-    },
-    {
-      id: "vi",
-      value: ["Tất cả"],
-      title: ["Kếnh", "Gian hàng"],
-    },
-  ];
-
-  const CARD_HEADER = [
-    {
-      id: "en",
-      value: ["Shop performance", "Best selling products", "Choose filter"],
-      subValue: ["Today", "This month"],
-    },
-    {
-      id: "vi",
-      value: [
-        "Hiệu suất hoạt động của gian hàng",
-        "Sản phẩm bán chạy",
-        "Chọn bộ lọc",
-      ],
-      subValue: ["Hôm nay", "Tháng này"],
-    },
-  ];
-
-  //Table head
-  const TABLE_HEAD = [
-    {
-      id: "en",
-      shop: [
-        "Shop Information",
-        "Products",
-        "Orders",
-        "Pending Orders",
-        "Revenue",
-        "Trend L14D",
-      ],
-      product: ["Product information", "Items sold", "Revenue", "Trend L14D"],
-    },
-    {
-      id: "vi",
-      shop: [
-        "Thông tin gian hàng",
-        "Sản phẩm",
-        "Đơn hàng",
-        "Đơn hàng chờ xử lý",
-        "Doanh thu",
-        "Xu thế 14 ngày",
-      ],
-      product: [
-        "Thông tin sản phẩm",
-        "Đơn hàng",
-        "Doanh thu",
-        "Xu thế 14 ngày",
-      ],
-    },
-  ];
-
-  const language = useSelector((state) => state.app.language);
-  const [text, setText] = useState({
-    id: "en",
-    card_title: CARD_TITLE[0].value,
-    card_title_2: CARD_TITLE_2[0].value,
-    button: BUTTON[0].value,
-    tooltipTxt: TOOLTIP_TEXT[0].value,
-    chart_title: CHART[0].title,
-    chart_value: CHART[0].value,
-    chart_label: CHART[0].label,
-    select_title: SELECT[0].title,
-    select_value: SELECT[0].value,
-    card_header_value: CARD_HEADER[0].value,
-    card_header_subValue: CARD_HEADER[0].subValue,
-    table_head_shop: TABLE_HEAD[0].shop,
-    table_head_product: TABLE_HEAD[0].product,
-  });
-  const listText = [
-    {
-      id: "en",
-      card_title: CARD_TITLE[0].value,
-      card_title_2: CARD_TITLE_2[0].value,
-      button: BUTTON[0].value,
-      tooltipTxt: TOOLTIP_TEXT[0].value,
-      chart_title: CHART[0].title,
-      chart_value: CHART[0].value,
-      chart_label: CHART[0].label,
-      select_title: SELECT[0].title,
-      select_value: SELECT[0].value,
-      card_header_value: CARD_HEADER[0].value,
-      card_header_subValue: CARD_HEADER[0].subValue,
-      table_head_shop: TABLE_HEAD[0].shop,
-      table_head_product: TABLE_HEAD[0].product,
-    },
-    {
-      id: "vi",
-      card_title: CARD_TITLE[1].value,
-      card_title_2: CARD_TITLE_2[1].value,
-      button: BUTTON[1].value,
-      tooltipTxt: TOOLTIP_TEXT[1].value,
-      chart_title: CHART[1].title,
-      chart_value: CHART[1].value,
-      chart_label: CHART[1].label,
-      select_title: SELECT[1].title,
-      select_value: SELECT[1].value,
-      card_header_value: CARD_HEADER[1].value,
-      card_header_subValue: CARD_HEADER[1].subValue,
-      table_head_shop: TABLE_HEAD[1].shop,
-      table_head_product: TABLE_HEAD[1].product,
-    },
-  ];
-
-  useEffect(() => {
-    for (let i = 0; i < listText.length; i++) {
-      if (language == listText[i].id) {
-        setText(listText[i]);
-        break;
-      }
-    }
-  }, [language]);
 
   const getOperationData = async () => {
     var res = await getOperationScreen();
@@ -351,27 +121,27 @@ function Dashboard() {
   const cardInfoData = [
     {
       icon: "monetization_on_outlined",
-      title: text.card_title[0],
+      title: t('operation.monthRevenue'),
       value: revenue ? formatCurrency(revenue?.total_revenue_of_month) : "0",
     },
     {
       icon: "monetization_on_outlined",
-      title: text.card_title[1],
+      title: t('operation.todayRevenue'),
       value: revenue ? formatNumber(revenue?.total_revenue_today) : "0",
     },
     {
       icon: "shopping_cart_outlined",
-      title: text.card_title[2],
+      title: t('operation.monthRevenue'),
       value: revenue ? formatNumber(revenue?.total_order_today) : "0",
     },
     {
       icon: "pending",
-      title: text.card_title[3],
+      title: t('operation.monthRevenue'),
       value: "0",
     },
     {
       icon: "trending_up",
-      title: text.card_title_2[0],
+      title: t('operation.traffic'),
       value:
         filterDate == "today" ? (
           <>{formatNumber(marketing?.traffic)}</>
@@ -381,7 +151,7 @@ function Dashboard() {
     },
     {
       icon: "visibility_outlined",
-      title: text.card_title_2[1],
+      title: t('operation.view'),
       value:
         filterDate == "today" ? (
           <>{formatNumber(marketing?.view)}</>
@@ -391,7 +161,7 @@ function Dashboard() {
     },
     {
       icon: "align_vertical_bottom",
-      title: text.card_title_2[2],
+      title: t('operation.conventionRate'),
       value:
         filterDate == "today" ? (
           <>{formatNumber(marketing?.convention_rate)}</>
@@ -401,7 +171,7 @@ function Dashboard() {
     },
     {
       icon: "announcement",
-      title: text.card_title_2[3],
+      title: t('operation.unreply'),
       value:
         filterDate == "today" ? (
           <>{formatNumber(marketing?.message_unreply)}</>
@@ -488,7 +258,7 @@ function Dashboard() {
       labels: chartLineLabels,
       datasets: [
         {
-          label: text.chart_label[0],
+          label: t('operation.totalRevenue'),
           data: totalRevenueToday,
           fill: false,
           backgroundColor: "rgba(75,192,192,0.2)",
@@ -496,7 +266,7 @@ function Dashboard() {
           yAxisID: "y",
         },
         {
-          label: text.chart_label[1],
+          label: t('operation.totalCancel'),
           data: cancelRevenueToday,
           fill: false,
           backgroundColor: "rgba(255, 99, 132, 0.2)",
@@ -504,7 +274,7 @@ function Dashboard() {
           yAxisID: "y",
         },
         {
-          label: text.chart_label[2],
+          label: t('operation.orders'),
           data: totalOrderToday,
           fill: false,
           backgroundColor: "rgba(153, 102, 255, 0.2)",
@@ -512,7 +282,7 @@ function Dashboard() {
           yAxisID: "y1",
         },
         {
-          label: text.chart_label[3],
+          label: t('operation.ordersCancel'),
           data: cancelOrderToday,
           fill: false,
           backgroundColor: "rgba(255, 206, 86, 0.2)",
@@ -915,7 +685,7 @@ function Dashboard() {
             </div>
           </div>
           <p className={tableClasses.tableCell + " " + classes.txtLienKet}>
-            {language == "vi" ? "Đang hoạt động" : "Active"}
+            {t('active')}
           </p>
         </div>
       </div>
@@ -987,53 +757,15 @@ function Dashboard() {
                 onClick={() => setFilterDate("today")}
                 className={classes.btnFilter}
               >
-                {text.button[0]}
+                {t('operation.today')}
               </Button>
               <Button
                 color={filterDate == "month" ? "info" : "gray"}
                 onClick={() => setFilterDate("month")}
                 className={classes.btnFilter}
               >
-                {text.button[1]}
+                {t('operation.thisMonth')}
               </Button>
-            </div>
-            <div className={classes.filterSelections}>
-              <FormControl className={classes.formControl}>
-                <InputLabel id="ecom-select-label">
-                  {text.select_title[0]}
-                </InputLabel>
-                <Select
-                  labelId="ecom-select-label"
-                  id="ecom-select"
-                  defaultValue={filterEcom}
-                  onChange={handleChangeEcom}
-                >
-                  <MenuItem value={"all"}>{text.select_value[0]}</MenuItem>
-                  {ecomData.map((item) => (
-                    <MenuItem value={item.value} key={item.value}>
-                      {item.title}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl className={classes.formControl}>
-                <InputLabel id="shop-select-label">
-                  {text.select_title[1]}
-                </InputLabel>
-                <Select
-                  labelId="shop-select-label"
-                  id="shop-select"
-                  defaultValue={filterShop}
-                  onChange={handleChangeShop}
-                >
-                  <MenuItem value={"all"}>{text.select_value[0]}</MenuItem>
-                  {shopData.map((item) => (
-                    <MenuItem value={item.shopId} key={item.shopId}>
-                      {item.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
             </div>
           </FormControl>
         )}
@@ -1046,7 +778,7 @@ function Dashboard() {
               style={{ padding: "10px 30px", width: "100px" }}
               onClick={() => setShowFilter(true)}
             >
-              {text.button[2]}
+              {t('filter')}
               <Icon className={classes.btnFilter}>tune</Icon>
             </Button>
             <Modal
@@ -1065,7 +797,7 @@ function Dashboard() {
                 <Card className={classes.modalContainer}>
                   <CardHeader>
                     <h4 className={classes.cardTitleWhite}>
-                      {text.card_header_value[2]}
+                      {t('operation.chooseFilter')}
                     </h4>
                   </CardHeader>
                   <CardBody>
@@ -1081,7 +813,7 @@ function Dashboard() {
                               onClick={() => setFilterDate("today")}
                               className={classes.btnFilterDate}
                             >
-                              {text.button[0]}
+                              {t('operation.today')}
                             </Button>
                           </GridItem>
                           <GridItem xs={6} sm={6} md={6}>
@@ -1090,61 +822,8 @@ function Dashboard() {
                               onClick={() => setFilterDate("month")}
                               className={classes.btnFilterDate}
                             >
-                              {text.button[1]}
+                              {t('operation.thisMonth')}
                             </Button>
-                          </GridItem>
-                        </GridContainer>
-                      </div>
-                      <div>
-                        <GridContainer style={{ margin: "14px 0" }}>
-                          <GridItem xs={12} sm={12} md={12}>
-                            <FormControl className={classes.formControl}>
-                              <InputLabel id="ecom-select-label">
-                                {text.select_title[0]}
-                              </InputLabel>
-                              <Select
-                                labelId="ecom-select-label"
-                                id="ecom-select"
-                                defaultValue={filterEcom}
-                                onChange={handleChangeEcom}
-                              >
-                                <MenuItem value={"all"}>
-                                  {text.select_value[0]}
-                                </MenuItem>
-                                {ecomData.map((item) => (
-                                  <MenuItem value={item.value} key={item.value}>
-                                    {item.title}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-                          </GridItem>
-                        </GridContainer>
-                        <GridContainer style={{ margin: "14px 0" }}>
-                          <GridItem xs={12} sm={12} md={12}>
-                            <FormControl className={classes.formControl}>
-                              <InputLabel id="shop-select-label">
-                                {text.select_title[1]}
-                              </InputLabel>
-                              <Select
-                                labelId="shop-select-label"
-                                id="shop-select"
-                                defaultValue={filterShop}
-                                onChange={handleChangeShop}
-                              >
-                                <MenuItem value={"all"}>
-                                  {text.select_value[0]}
-                                </MenuItem>
-                                {shopData.map((item) => (
-                                  <MenuItem
-                                    value={item.shopId}
-                                    key={item.shopId}
-                                  >
-                                    {item.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
                           </GridItem>
                         </GridContainer>
                       </div>
@@ -1166,12 +845,12 @@ function Dashboard() {
               <Line data={chartData.dataLineChart} options={config} />
             </CardHeader>
             <CardBody>
-              <h4 className={classes.cardTitle2}>{text.chart_title[0]}</h4>
+              <h4 className={classes.cardTitle2}>{t('operation.revenueTrend')}</h4>
               <GridContainer>
                 <GridItem xs={3} sm={3} md={3}>
-                  <Tooltip title={text.tooltipTxt[0]} arrow>
+                  <Tooltip title={t('operation.totalRevenueTip')} arrow>
                     <p className={classes.cardSubtitle}>
-                      {text.chart_value[0]}
+                      {t('operation.totalRevenue')}
                     </p>
                   </Tooltip>
                   <p className={classes.cardMoney}>
@@ -1184,10 +863,10 @@ function Dashboard() {
                   </p>
                 </GridItem>
                 <GridItem xs={3} sm={3} md={3}>
-                  <Tooltip title={text.tooltipTxt[1]} arrow>
+                  <Tooltip title={t('operation.unpaidTip')} arrow>
                     <p className={classes.cardSubtitle}>
                       {" "}
-                      {text.chart_value[1]}
+                      {t('operation.unpaid')}
                     </p>
                   </Tooltip>
                   <p className={classes.cardMoney}>
@@ -1195,10 +874,10 @@ function Dashboard() {
                   </p>
                 </GridItem>
                 <GridItem xs={3} sm={3} md={3}>
-                  <Tooltip title={text.tooltipTxt[2]} arrow>
+                  <Tooltip title={t('operation.paidTip')} arrow>
                     <p className={classes.cardSubtitle}>
                       {" "}
-                      {text.chart_value[2]}
+                      {t('operation.paid')}
                     </p>
                   </Tooltip>
                   <p className={classes.cardMoney}>
@@ -1206,10 +885,10 @@ function Dashboard() {
                   </p>
                 </GridItem>
                 <GridItem xs={3} sm={3} md={3}>
-                  <Tooltip title={text.tooltipTxt[3]} arrow>
+                  <Tooltip title={t('operation.canceledTip')} arrow>
                     <p className={classes.cardSubtitle}>
                       {" "}
-                      {text.chart_value[3]}
+                      {t('operation.cancelAndReturn')}
                     </p>
                   </Tooltip>
                   <p className={classes.cardMoney}>
@@ -1240,7 +919,7 @@ function Dashboard() {
             <CardBody
               style={{ marginBottom: `${size.width < 769 ? "0" : "98px"}` }}
             >
-              <h4 className={classes.cardTitle2}>{text.chart_title[1]}</h4>
+              <h4 className={classes.cardTitle2}>{t('operation.revenueChannel')}</h4>
             </CardBody>
             <CardFooter chart>
               <div className={classes.stats}>
@@ -1256,13 +935,13 @@ function Dashboard() {
           <Card>
             <CardHeader color="warning">
               <h4 className={classes.cardTitleWhite}>
-                {text.card_header_value[0]}
+                {t('operation.shopPerform')}
               </h4>
               <p className={classes.cardCategoryWhite}>
                 {filterDate == "today" ? (
-                  <>{text.card_header_subValue[0]}</>
+                  <>{t('operation.today')}</>
                 ) : (
-                  <>{text.card_header_subValue[1]}</>
+                    <>{t('operation.thisMonth')}</>
                 )}
               </p>
             </CardHeader>
@@ -1274,7 +953,7 @@ function Dashboard() {
                       className={tableClasses["primary" + "TableHeader"]}
                     >
                       <TableRow className={tableClasses.tableHeadRow}>
-                        {text.table_head_shop.map((prop, key) => {
+                        {SHOP_TABLE_HEAD.map((prop, key) => {
                           return (
                             <TableCell
                               className={
@@ -1307,13 +986,13 @@ function Dashboard() {
           <Card>
             <CardHeader color="success">
               <h4 className={classes.cardTitleWhite}>
-                {text.card_header_value[1]}
+                {t('operation.bestSelling')}
               </h4>
               <p className={classes.cardCategoryWhite}>
                 {filterDate == "today" ? (
-                  <>{text.card_header_subValue[0]}</>
+                    <>{t('operation.today')}</>
                 ) : (
-                  <>{text.card_header_subValue[1]}</>
+                    <>{t('operation.thisMonth')}</>
                 )}
               </p>
             </CardHeader>
@@ -1325,7 +1004,7 @@ function Dashboard() {
                       className={tableClasses["primary" + "TableHeader"]}
                     >
                       <TableRow className={tableClasses.tableHeadRow}>
-                        {text.table_head_product.map((prop, key) => {
+                        {PRODUCT_TABLE_HEAD.map((prop, key) => {
                           return (
                             <TableCell
                               className={

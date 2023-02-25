@@ -80,26 +80,21 @@ import imgShop from "assets/img/shop.png";
 import imgProduct from "assets/img/product.png";
 import ModalCustom from "components/ModalCustom/ModalCustom.js";
 import styles from "assets/jss/natcash/views/voucher/addVoucherStyle.js";
+import {useTranslation} from "react-i18next";
 
 function AddVoucherPage() {
   const useStyles = makeStyles(styles);
   const classes = useStyles();
-  const useShopStyles = makeStyles(shopStyle);
-  const shopClasses = useShopStyles();
-  const useAdminStyles = makeStyles(adminStyles);
   const useTableStyles = makeStyles(tableStyles);
-  const adminClasses = useAdminStyles();
   const tableClasses = useTableStyles();
   const useTaskStyles = makeStyles(taskStyles);
   const taskClasses = useTaskStyles();
-  const useDashStyles = makeStyles(dashStyles);
-  const dashClasses = useDashStyles();
   const [isShowModal, setIsShowModal] = useState(false);
   const [filterType, setFilterType] = useState("name");
   const [filterValue, setFilterValue] = useState("");
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [checked, setChecked] = useState([]);
-  const [addedProducts, setAddedProducts] = useState([]);
+  const {t} = useTranslation();
 
   const [values, setValues] = React.useState({
     code_type: "all",
@@ -115,239 +110,18 @@ function AddVoucherPage() {
     order_money_min: "",
     maximum_usage: "",
     display: "many",
-    display_channel: [],
     added_product: [],
     status: "",
   });
 
-  const language = useSelector((state) => state.app.language);
 
   const TABLE_HEAD = [
-    {
-      id: "en",
-      value: ["Product", "Sold", "Original price", "Quantity"],
-    },
-    {
-      id: "vi",
-      value: ["Sản phẩm", "Tồn kho", "Giá gốc", "Số Lượng Hàng"],
-    },
+      t('product'),
+      t('sold'),
+      t('price'),
+      t('quantity')
   ];
 
-  const TABLE_HEAD_2 = [
-    {
-      id: "en",
-      value: ["Product", "Sold", "Price", "Stock"],
-    },
-    {
-      id: "vi",
-      value: ["Sản phẩm", "Đã bán", "Giá", "Kho hàng"],
-    },
-  ];
-
-  const FORM_GROUP_CUSTOM = [
-    {
-      id: "en",
-      value: [
-        "Basic information",
-        "Set up voucher",
-        "Display voucher and applicable products",
-      ],
-    },
-    {
-      id: "vi",
-      value: [
-        "Thông tin cơ bản",
-        "Thiết lập mã giảm giá",
-        "Hiển thị mã giảm giá và các sản phẩm áp dụng",
-      ],
-    },
-  ];
-
-  const FORM_CELL_CUSTOM = [
-    {
-      id: "en",
-      value: [
-        "Code type",
-        "Promotion name",
-        "Voucher code",
-        "Time",
-        "Voucher type",
-        "Discount type | Discount",
-        "Maximum reduction",
-        "Minimum order amount",
-        "Maximum usage",
-        "Setting display",
-        "Applicable products",
-      ],
-    },
-    {
-      id: "vi",
-      value: [
-        "Loại mã",
-        "Tên chương trình",
-        "Mã voucher",
-        "Thời gian",
-        "Loại mã giảm giá",
-        "Loại giảm giá | Mức giảm",
-        "Mức giảm tối đa",
-        "Giá trị đơn hàng tối thiểu",
-        "Lượt sử dụng tối đa",
-        "Thiết lập hiển thị",
-        "Sản phẩm được áp dụng",
-      ],
-    },
-  ];
-
-  const HELPER_TEXT = [
-    {
-      id: "en",
-      value: [
-        "Voucher name not visible to buyers",
-        "Please enter only alphabetic characters (A-Z), numbers (0-9); maximum 5 characters. Full voucher code is:SHOP",
-        "The duration of the promation must not exceed 180 days",
-        "Equivalent: - Shopee Coin",
-        "Total usable vouchers",
-        "Buyer will get -% from the amount paid in Shopee coins. Coin exchange rules: ₫200000 = 20000 Shopee coins.",
-      ],
-    },
-    {
-      id: "vi",
-      value: [
-        "Tên mã giảm giá không hiển thị với người mua",
-        "Vui lòng chỉ nhập các kí tự chữ cái (A-Z), số (0-9); tối đa 5 kí tự. Mã giảm giá đầy đủ là:SHOP",
-        "Thời gian của chương trình không được quá 180 ngày",
-        "Tương đương: - Shopee Xu",
-        "Tổng số Mã giảm giá có thể sử dụng",
-        "Người mua sẽ nhận được -% từ số tiền thanh toán bằng Shopee xu. Quy tắc đổi xu: ₫20000 = 20000 Shopee xu.",
-      ],
-    },
-  ];
-
-  const APPLICABLE_PRODUCTS = [
-    {
-      id: "en",
-      value: ["All products", "Added products"],
-    },
-    {
-      id: "vi",
-      value: ["Tất cả sản phẩm", "Sản phẩm được chọn"],
-    },
-  ];
-
-  const ACTIONS = [
-    {
-      id: "en",
-      button: [
-        "Shopwide voucher",
-        "Product Voucher",
-        "Select product",
-        "Confirm",
-      ],
-      radio: [
-        "Promotion",
-        "Refund Coins",
-        "Limit",
-        "Unlimited",
-        "Show multiple places",
-        "Share via voucher code",
-        "Channels",
-        "Not Public",
-      ],
-      select: ["By amount", "By percent"],
-    },
-    {
-      id: "vi",
-      button: [
-        "Voucher toàn shop",
-        "Voucher sản phẩm",
-        "Chọn sản phẩm",
-        "Xác nhận",
-      ],
-      radio: [
-        "Khuyến mãi",
-        "Hoàn xu",
-        "Giới hạn",
-        "Không giới hạn",
-        "Hiển thị nhiều nơi",
-        "Chia sẻ thông qua mã voucher",
-        "Các kênh",
-        "Không công khai",
-      ],
-      select: ["Theo số tiền", "Theo phần trăm"],
-    },
-  ];
-
-  const POPUP = [
-    {
-      id: "en",
-      title: "Add products",
-      button: ["Search", "Reset", "Confirm"],
-      select: ["By amount", "By percent"],
-    },
-    {
-      id: "vi",
-      title: "Thêm sản phẩm",
-      button: ["Tìm", "Nhập lại", "Xác nhận"],
-      select: ["Theo số tiền", "Theo phần trăm"],
-    },
-  ];
-
-  const checkBoxChannels = [
-    {
-      name: "Shopee Live",
-      value: "live",
-    },
-    {
-      name: "Shopee Feed",
-      value: "feed",
-    },
-  ];
-
-  const listText = [
-    {
-      id: "en",
-      title: "Create new voucher",
-      tableHead: TABLE_HEAD[0].value,
-      tableHead_2: TABLE_HEAD_2[0].value,
-      form_group_custom: FORM_GROUP_CUSTOM[0].value,
-      form_cell_custom: FORM_CELL_CUSTOM[0].value,
-      helper_text: HELPER_TEXT[0].value,
-      placeholder: "Enter here",
-      applicable_products_text: APPLICABLE_PRODUCTS[0].value,
-      buttons: ACTIONS[0].button,
-      radios: ACTIONS[0].radio,
-      selects: ACTIONS[0].select,
-      popup_title: POPUP[0].title,
-      popup_button: POPUP[0].button,
-      popup_select: POPUP[0].select,
-    },
-    {
-      id: "vi",
-      title: "Tạo mã giảm giá mới",
-      tableHead: TABLE_HEAD[1].value,
-      tableHead_2: TABLE_HEAD_2[1].value,
-      form_group_custom: FORM_GROUP_CUSTOM[1].value,
-      form_cell_custom: FORM_CELL_CUSTOM[1].value,
-      helper_text: HELPER_TEXT[1].value,
-      placeholder: "Nhập vào",
-      applicable_products_text: APPLICABLE_PRODUCTS[1].value,
-      buttons: ACTIONS[1].button,
-      radios: ACTIONS[1].radio,
-      selects: ACTIONS[1].select,
-      popup_title: POPUP[1].title,
-      popup_button: POPUP[1].button,
-      popup_select: POPUP[1].select,
-    },
-  ];
-  const [text, setText] = useState(listText[0]);
-  useEffect(() => {
-    for (let i = 0; i < listText.length; i++) {
-      if (language == listText[i].id) {
-        setText(listText[i]);
-        break;
-      }
-    }
-  }, [language]);
 
   //change value input form
   const handleChangeValue = (prop) => (event) => {
@@ -384,16 +158,6 @@ function AddVoucherPage() {
     setFilterValue(event.target.value);
   };
 
-  const handleSetDisplayChannel = (item) => {
-    const currentIndex = values.display_channel.indexOf(item);
-    const newStatus = [...values.display_channel];
-    if (currentIndex === -1) {
-      newStatus.push(item);
-    } else {
-      newStatus.splice(currentIndex, 1);
-    }
-    setValues({ ...values, ["display_channel"]: newStatus });
-  };
 
   const [dataProduct, setDataProduct] = useState([
     {
@@ -543,7 +307,7 @@ function AddVoucherPage() {
               }
             >
               <TableRow className={tableClasses.tableHeadRow}>
-                {text.tableHead.map((prop, key) => {
+                {TABLE_HEAD.map((prop, key) => {
                   return (
                     <TableCell
                       className={
@@ -572,9 +336,9 @@ function AddVoucherPage() {
 
   const FormGroupCustom_1 = () => {
     return (
-      <FormGroupCustom title={text.form_group_custom[0]}>
+      <FormGroupCustom title={t('basicInformation')}>
         {/* Code Type */}
-        <FormCellCustom label={text.form_cell_custom[0]}>
+        <FormCellCustom label={t('voucher.codeType')}>
           <div className={classes.formCell}>
             <Button
               color={"white"}
@@ -587,7 +351,7 @@ function AddVoucherPage() {
               onClick={() => handleChangeCodeType("all")}
             >
               <img className={classes.btnImg} src={imgShop} />
-              <p className={classes.text}>{text.buttons[0]}</p>
+              <p className={classes.text}>{t('voucher.shopWide')}</p>
             </Button>
             <Button
               color={"white"}
@@ -600,14 +364,14 @@ function AddVoucherPage() {
               onClick={() => handleChangeCodeType("product")}
             >
               <img className={classes.btnImg} src={imgProduct} />
-              <p className={classes.text}>{text.buttons[1]}</p>
+              <p className={classes.text}>{t('voucher.productVoucher')}</p>
             </Button>
           </div>
         </FormCellCustom>
         {/* Promotion Name */}
         <FormCellCustom
-          label={text.form_cell_custom[1]}
-          helperText={text.helper_text[0]}
+          label={t('voucher.promotionName')}
+          helperText={t('voucher.nameDes')}
         >
           <div className={classes.formCell}>
             <TextField
@@ -621,15 +385,15 @@ function AddVoucherPage() {
                 value: values.promotion_name,
                 onChange: handleChangeValue("promotion_name"),
               }}
-              placeholder={text.placeholder}
+              placeholder={t('enterHere')}
               autoComplete="off"
             />
           </div>
         </FormCellCustom>
         {/* Voucher Code */}
         <FormCellCustom
-          label={text.form_cell_custom[2]}
-          helperText={text.helper_text[1]}
+            label={t('voucher.voucherCode')}
+          helperText={t('category.categoryCodeDes')}
         >
           <div className={classes.formCell}>
             <FormControl fullWidth variant="outlined" size="small">
@@ -640,7 +404,7 @@ function AddVoucherPage() {
                 startAdornment={
                   <InputAdornment position="start">SHOP</InputAdornment>
                 }
-                placeholder={text.placeholder}
+                placeholder={t('enterHere')}
                 autoComplete="off"
               />
             </FormControl>
@@ -648,8 +412,8 @@ function AddVoucherPage() {
         </FormCellCustom>
         {/* Time */}
         <FormCellCustom
-          label={text.form_cell_custom[3]}
-          helperText={text.helper_text[2]}
+            label={t('time')}
+          helperText={t('voucher.timeDes')}
         >
           <div className={classes.formCell + " " + classes.flex_center}>
             <TextField
@@ -690,9 +454,10 @@ function AddVoucherPage() {
 
   const FormGroupCustom_2 = () => {
     return (
-      <FormGroupCustom title={text.form_group_custom[1]}>
+      <FormGroupCustom title={t('voucher.setUpVoucher')}>
         {/* Voucher type */}
-        <FormCellCustom label={text.form_cell_custom[4]} helperText={""}>
+        <FormCellCustom label={t('voucher.voucherType')}
+                                    helperText={""}>
           <div className={classes.formCell}>
             <FormControl component="fieldset">
               <RadioGroup
@@ -705,12 +470,12 @@ function AddVoucherPage() {
                 <FormControlLabel
                   value={"promotion"}
                   control={<CustomRadio />}
-                  label={text.radios[0]}
+                  label={t('voucher.promotion')}
                 />
                 <FormControlLabel
                   value={"recoin"}
                   control={<CustomRadio />}
-                  label={text.radios[1]}
+                  label={t('voucher.refundPoints')}
                 />
               </RadioGroup>
             </FormControl>
@@ -718,9 +483,9 @@ function AddVoucherPage() {
         </FormCellCustom>
         {/* Discount */}
         <FormCellCustom
-          label={text.form_cell_custom[5]}
+            label={t('voucher.discountType')}
           helperText={
-            values.voucher_type == "recoin" ? text.helper_text[5] : null
+            values.voucher_type == "recoin" ? t('voucher.discountTypeDes') : null
           }
         >
           <div className={classes.formCell}>
@@ -733,8 +498,8 @@ function AddVoucherPage() {
                     value={values.discount_type}
                     onChange={handleChangeValue("discount_type")}
                   >
-                    <MenuItem value={"money"}>{text.selects[0]}</MenuItem>
-                    <MenuItem value={"percent"}>{text.selects[1]}</MenuItem>
+                    <MenuItem value={"money"}>{t('voucher.byAmount')}</MenuItem>
+                    <MenuItem value={"percent"}>{t('voucher.byPercent')}</MenuItem>
                   </Select>
                 </FormControl>
                 <FormControl
@@ -753,7 +518,7 @@ function AddVoucherPage() {
                     }
                     type="number"
                     autoComplete="off"
-                    placeholder={text.placeholder}
+                    placeholder={t('enterHere')}
                   />
                 </FormControl>
               </div>
@@ -773,7 +538,7 @@ function AddVoucherPage() {
                   type="number"
                   autoComplete="off"
                   style={{ flex: 1 }}
-                  placeholder={text.placeholder}
+                  placeholder={t('enterHere')}
                 />
               </FormControl>
             )}
@@ -781,9 +546,9 @@ function AddVoucherPage() {
         </FormCellCustom>
         {/* Discount maximum */}
         <FormCellCustom
-          label={text.form_cell_custom[6]}
+            label={t('voucher.maxReduction')}
           helperText={
-            values.discount_max_type == "limit" ? text.helper_text[3] : null
+            values.discount_max_type == "limit" ? t('voucher.maxReductionDes') : null
           }
         >
           <div className={classes.formCell + " " + classes.flex_center}>
@@ -798,12 +563,12 @@ function AddVoucherPage() {
                 <FormControlLabel
                   value={"limit"}
                   control={<CustomRadio />}
-                  label={text.radios[2]}
+                  label={t('voucher.limit')}
                 />
                 <FormControlLabel
                   value={"unlimited"}
                   control={<CustomRadio />}
-                  label={text.radios[3]}
+                  label={t('voucher.unlimited')}
                 />
               </RadioGroup>
             </FormControl>
@@ -823,14 +588,15 @@ function AddVoucherPage() {
                   type="number"
                   autoComplete="off"
                   style={{ flex: 1 }}
-                  placeholder={text.placeholder}
+                  placeholder={t('enterHere')}
                 />
               </FormControl>
             )}
           </div>
         </FormCellCustom>
         {/* Minimum order value */}
-        <FormCellCustom label={text.form_cell_custom[7]} helperText={""}>
+        <FormCellCustom      label={t('voucher.minOrder')}
+                                    helperText={""}>
           <div className={classes.formCell + " " + classes.flex_center}>
             <FormControl component="fieldset" size="small" style={{ flex: 1 }}>
               <OutlinedInput
@@ -841,15 +607,15 @@ function AddVoucherPage() {
                 type="number"
                 autoComplete="off"
                 style={{ flex: 1 }}
-                placeholder={text.placeholder}
+                placeholder={t('enterHere')}
               />
             </FormControl>
           </div>
         </FormCellCustom>
         {/* Maximum usage */}
         <FormCellCustom
-          label={text.form_cell_custom[8]}
-          helperText={text.helper_text[4]}
+            label={t('voucher.maxUse')}
+            helperText={t('voucher.maxUseDes')}
         >
           <div className={classes.formCell + " " + classes.flex_center}>
             <FormControl component="fieldset" size="small" style={{ flex: 1 }}>
@@ -864,7 +630,7 @@ function AddVoucherPage() {
                   value: values.maximum_usage,
                   onChange: handleChangeValue("maximum_usage"),
                 }}
-                placeholder={text.placeholder}
+                placeholder={t('enterHere')}
                 autoComplete="off"
               />
             </FormControl>
@@ -876,9 +642,10 @@ function AddVoucherPage() {
 
   const FormGroupCustom_3 = () => {
     return (
-      <FormGroupCustom title={text.form_group_custom[2]}>
+      <FormGroupCustom title={t('voucher.displayVoucher')}>
         {/* Display */}
-        <FormCellCustom label={text.form_cell_custom[9]} helperText={""}>
+        <FormCellCustom label={t('voucher.settingDisplay')}
+                                    helperText={""}>
           <div className={classes.formCell}>
             <FormControl component="fieldset">
               <RadioGroup
@@ -891,77 +658,33 @@ function AddVoucherPage() {
                 <FormControlLabel
                   value={"many"}
                   control={<CustomRadio />}
-                  label={text.radios[4]}
+                  label={t('voucher.showMulti')}
                 />
                 {values.code_type == "all" ? (
                   <>
                     <FormControlLabel
                       value={"voucher"}
                       control={<CustomRadio />}
-                      label={text.radios[5]}
-                    />
-                    <FormControlLabel
-                      value={"channels"}
-                      control={<CustomRadio />}
-                      label={text.radios[6]}
+                      label={t('voucher.share')}
                     />
                   </>
                 ) : (
                   <FormControlLabel
                     value={"noPublic"}
                     control={<CustomRadio />}
-                    label={text.radios[7]}
+                    label={t('voucher.notPublic')}
                   />
                 )}
               </RadioGroup>
-              {values.display == "channels" && (
-                <div
-                  className={
-                    classes.checkboxContainer + " " + classes.flex_center
-                  }
-                >
-                  {checkBoxChannels.map((item, index) => {
-                    return (
-                      <div
-                        className={
-                          classes.checkboxItem + " " + classes.flex_center
-                        }
-                        key={index}
-                      >
-                        <Checkbox
-                          checked={
-                            values.display_channel.indexOf(item.value) !== -1
-                          }
-                          tabIndex={-1}
-                          onClick={() => handleSetDisplayChannel(item.value)}
-                          checkedIcon={
-                            <Check className={taskClasses.checkedIcon} />
-                          }
-                          icon={<Check className={taskClasses.uncheckedIcon} />}
-                          classes={{
-                            checked: taskClasses.checked,
-                            root: taskClasses.root,
-                          }}
-                        />
-                        <p
-                          className={classes.text + " " + classes.checkBoxLabel}
-                        >
-                          {item.name}
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
             </FormControl>
           </div>
         </FormCellCustom>
         {/* Applicable products */}
-        <FormCellCustom label={text.form_cell_custom[10]} helperText={""}>
+        <FormCellCustom label={t('voucher.applicable')} helperText={""}>
           <div className={classes.formCell}>
             {values.code_type == "all" ? (
               <p className={classes.text + " " + classes.checkBoxLabel}>
-                {text.applicable_products_text[0]}
+                {t('voucher.allProducts')}
               </p>
             ) : (
               <div
@@ -973,10 +696,10 @@ function AddVoucherPage() {
                   style={{ color: grayColor[0] }}
                 >
                   {values.added_product?.length}{" "}
-                  {text.applicable_products_text[1]}
+                  {t('voucher.addedProducts')}
                 </p>
                 <Button color="primary" onClick={() => setIsShowModal(true)}>
-                  {text.buttons[2]}
+                  {t('voucher.selectProduct')}
                 </Button>
               </div>
             )}
@@ -989,7 +712,7 @@ function AddVoucherPage() {
   return (
     <Card>
       <CardHeader color="primary">
-        <h4 className={classes.cardTitleWhite}>{text.title}</h4>
+        <h4 className={classes.cardTitleWhite}>{t('voucher.createVoucher')}</h4>
       </CardHeader>
       <CardBody className={classes.cardBody}>
         {FormGroupCustom_1()}
@@ -1002,7 +725,7 @@ function AddVoucherPage() {
         )}
         <ModalCustom
           width={1000}
-          title={text.popup_title}
+          title={t('voucher.addProducts')}
           subTitle={""}
           // isShow={true}
           isShow={isShowModal}
@@ -1016,8 +739,8 @@ function AddVoucherPage() {
                 value={filterType}
                 onChange={handleChangeFilterType}
               >
-                <MenuItem value={"name"}>{text.popup_select[0]}</MenuItem>
-                <MenuItem value={"id"}>{text.popup_select[1]}</MenuItem>
+                <MenuItem value={"name"}>{t('voucher.byAmount')}</MenuItem>
+                <MenuItem value={"id"}>{t('voucher.byPercent')}</MenuItem>
               </Select>
             </FormControl>
             <FormControl variant="outlined" size="small" style={{ flex: 1 }}>
@@ -1032,14 +755,14 @@ function AddVoucherPage() {
                   value: filterValue,
                   onChange: handleChangeFilterValue,
                 }}
-                placeholder={text.placeholder}
+                placeholder={t('enterHere')}
                 autoComplete="off"
                 style={{ flex: 1 }}
               />
             </FormControl>
             <div style={{ marginLeft: "10px" }}>
-              <Button color="primary">{text.popup_button[0]}</Button>
-              <Button color="gray">{text.popup_button[1]}</Button>
+              <Button color="primary">{t('search')}</Button>
+              <Button color="gray">{t('reset')}</Button>
             </div>
           </div>
           <div
@@ -1065,7 +788,7 @@ function AddVoucherPage() {
                         }}
                       />
                     </TableCell>
-                    {text.tableHead_2.map((prop, key) => {
+                    {TABLE_HEAD.map((prop, key) => {
                       return (
                         <TableCell
                           className={
@@ -1096,7 +819,7 @@ function AddVoucherPage() {
                     setIsShowModal(false);
                 }}
               >
-                {text.popup_button[2]}
+                {t('confirm')}
               </Button>
             </div>
           </div>
@@ -1104,7 +827,7 @@ function AddVoucherPage() {
       </CardBody>
       <CardFooter className={classes.flex_end}>
         <Button color="primary" onClick={() => handelSubmit()}>
-          {text.buttons[3]}
+          {t('confirm')}
         </Button>
       </CardFooter>
     </Card>

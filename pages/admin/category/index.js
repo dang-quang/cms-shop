@@ -407,7 +407,7 @@ function ProductCategory() {
                                                                 color: primaryColor[0],
                                                             }}
                                                         >
-                                                            {t('updateDate')}
+                                                            {t('chooseDate')}
                                                         </p>
                                                         <div style={{marginTop: "10px"}}>
                                                             <MuiPickersUtilsProvider

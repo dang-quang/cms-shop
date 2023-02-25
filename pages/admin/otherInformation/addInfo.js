@@ -112,8 +112,8 @@ function AddInformation({cancelFunc, confirmFunc, selectedTab}) {
             <CardBody className={classes.cardBody}>
                 <FormGroupCustom title={t('basicInformation')}>
                     <FormCellCustom
-                        label={t(`otherInformation.${selectedTab.value}Code`)}
-                        helperText={t(`otherInformation.${selectedTab.value}Code`)}>
+                        label={t(`category.code`)}
+                        helperText={t(`category.code`)}>
                         <div className={classes.formCell}>
                             <TextField
                                 label={""}
@@ -130,8 +130,8 @@ function AddInformation({cancelFunc, confirmFunc, selectedTab}) {
                         </div>
                     </FormCellCustom>
                     <FormCellCustom
-                        label={t(`otherInformation.${selectedTab.value}Name`)}
-                        helperText={t(`otherInformation.${selectedTab.value}Name`)}>
+                        label={t(`name`)}
+                        helperText={t(`name`)}>
                         <div className={classes.formCell}>
                             <TextField
                                 label={""}

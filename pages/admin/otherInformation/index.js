@@ -218,7 +218,6 @@ function ProductOtherInformation() {
     const [selectedTab, setSelectedTab] = useState(CATEGORY_TYPE[0]);
 
     useEffect(() => {
-        console.log('tung', selectedTab, CATEGORY_TYPE[0])
         switch (selectedTab.value) {
             case CATEGORY_TYPE[0].value:
                 setTable({
@@ -248,8 +247,6 @@ function ProductOtherInformation() {
     }, [selectedTab])
 
     const CreateButton = () => {
-        const createText =  getCreateButtonText();
-
         return (
             <FormControl
                 className={dashClasses.formControl}
@@ -262,24 +259,12 @@ function ProductOtherInformation() {
             >
                 {/*<Link href={"/admin/category/addCategory"} onPress={() => setIsShowEdit(true)}>*/}
                 <Button id="update-label" color="green" >
-                    {createText}
+                    {t('addNew')}
                 </Button>
                 {/*</Link>*/}
 
             </FormControl>
         );
-    }
-
-    const getCreateButtonText = () => {
-        let createText;
-        if (selectedTab.value === CATEGORY_TYPE[0].value) {
-            createText = t('otherInformation.createBrand');
-        } else if (selectedTab.value === CATEGORY_TYPE[1].value) {
-            createText = t('otherInformation.createOrigin');
-        } else {
-            createText = t('otherInformation.createProvence');
-        }
-        return createText;
     }
 
     useEffect(() => {
@@ -761,7 +746,7 @@ function ProductOtherInformation() {
             </CardFooter>
             <ModalCustom
                 width={1000}
-                title={getCreateButtonText()}
+                title={t('addNew')}
                 subTitle={""}
                 // isShow={true}
                 isShow={isShowEdit}

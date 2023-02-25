@@ -58,7 +58,8 @@
     "voucher": "Voucher",
     "flashSale": "Flash sale",
     "operationReport": "Operation Report",
-    "uiManagement": "UI Management"
+    "uiManagement": "UI Management",
+    "game": "Game"
   },
   "qrManagement": {
     "notActive": "Not Active",
@@ -99,16 +100,7 @@
   "otherInformation": {
     "brand": "Brand",
     "origin": "Origin",
-    "provence": "Provence",
-    "createBrand": "Create brand",
-    "createOrigin": "Create origin",
-    "createProvence": "Create provence",
-    "brandCode": "Brand code",
-    "brandName": "Brand name",
-    "originCode": "Origin code",
-    "originName": "Origin name",
-    "provenceCode": "Provence code",
-    "provenceName": "Provence name"
+    "provence": "Provence"
   },
   "sms": {
     "createSms": "Create SMS package",

@@ -116,12 +116,12 @@ function ShopListPage() {
 
   const TABLE_HEAD = [
     t('qrManagement.stt'),
-    'Code',
-    'Name',
-    'Parent',
+    'Shop code',
+    'Shop name',
+    'Address',
+    'Phone',
     'Status',
-    'Apply promotion',
-    'Publish time',
+    'Type',
     t('action'),
   ];
 
@@ -208,6 +208,7 @@ function ShopListPage() {
     setCurrentPage(1);
   };
   const renderShop = (item, index) => {
+    console.log('renderShop', item);
     return (
       <TableRow
         key={index}
@@ -240,14 +241,14 @@ function ShopListPage() {
         <TableCell className={tableClasses.tableCell} key={"shopInfo"}>
         <div className={classes.proInfoContainer}>
           <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
-            {item.partner_id}
+            Ha Noi
           </p>
         </div>
       </TableCell>
         <TableCell className={tableClasses.tableCell} key={"link"}>
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
-            Active
+            0912012344
             </p>
           </div>
         </TableCell>
@@ -261,7 +262,8 @@ function ShopListPage() {
         <TableCell className={tableClasses.tableCell} key={"detail"}>
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
-              {moment(item.update).format("DD/MM/YYYY")}
+            {/* {moment(item.update).format("DD/MM/YYYY")}*/}
+            Clothers
             </p>
           </div>
         </TableCell>

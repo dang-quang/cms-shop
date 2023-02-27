@@ -47,7 +47,7 @@ import {NotificationContainer, NotificationManager,} from "react-light-notificat
 import {primaryColor} from "../../../assets/jss/natcash";
 import {useTranslation} from "react-i18next";
 import Router from "next/router";
-import ShopTable from "../../../components/Table/ShopTable";
+// import ShopTable from "../../../components/Table/ShopTable";
 
 const QrShopFakeData = [
     {

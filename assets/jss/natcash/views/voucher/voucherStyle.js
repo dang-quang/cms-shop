@@ -32,6 +32,8 @@ const voucherStyle = {
   },
   shopFilterContainer: {
     marginBottom: "60px",
+    display: 'flex',
+    alignItems: 'center'
   },
   cardListItemContainer: {
     marginTop: "30px",

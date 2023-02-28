@@ -57,20 +57,13 @@ function Dashboard() {
   const [showFilter, setShowFilter] = useState(false);
   const useDashStyles = makeStyles(dashStyles);
   const dashClasses = useDashStyles();
-  const [storeStatusFilter, setStoreStatusFilter] = useState([]);
   const [fromDate, setFromDate] = useState(moment().format());
   const [toDate, setToDate] = useState(moment().format());
-  const [connectStatusFilter, setConnectStatusFilter] = useState("");
-  const [shopData, setShopData] = React.useState([]);
-  const [shop, setShop] = React.useState("");
   const [revenue, setRevenue] = useState();
   const [marketing, setMarketing] = useState();
   const [shopPerform, setShopPerform] = useState();
   const [listShop, setListShop] = useState();
-  const [doFilter, setDoFilter] = useState(false);
   const [filterDate, setFilterDate] = useState("today");
-  const [filterEcom, setFilterEcom] = useState("all");
-  const [filterShop, setFilterShop] = useState("all");
   const {t} = useTranslation();
 
   const SHOP_TABLE_HEAD = [
@@ -131,12 +124,12 @@ function Dashboard() {
     },
     {
       icon: "shopping_cart_outlined",
-      title: t('operation.monthRevenue'),
+      title: t('operation.todayOrders'),
       value: revenue ? formatNumber(revenue?.total_order_today) : "0",
     },
     {
       icon: "pending",
-      title: t('operation.monthRevenue'),
+      title: t('operation.unpaidOrders'),
       value: "0",
     },
     {
@@ -222,38 +215,38 @@ function Dashboard() {
 
   // Chart Data
   const chartData = {
-    dataDoughnutChart: {
-      labels: ["Shopee", "Lazada"],
-      datasets: [
-        {
-          label: "# of Votes",
-          data:
-            filterDate == "today"
-              ? [revenue?.channel_today.shopee, revenue?.channel_today.lazada]
-              : [
-                  revenue?.channel_of_month.shopee,
-                  revenue?.channel_of_month.lazada,
-                ],
-          backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(255, 206, 86, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
-            "rgba(153, 102, 255, 0.2)",
-            "rgba(255, 159, 64, 0.2)",
-          ],
-          borderColor: [
-            "rgba(255, 99, 132, 1)",
-            "rgba(54, 162, 235, 1)",
-            "rgba(255, 206, 86, 1)",
-            "rgba(75, 192, 192, 1)",
-            "rgba(153, 102, 255, 1)",
-            "rgba(255, 159, 64, 1)",
-          ],
-          borderWidth: 1,
-        },
-      ],
-    },
+    // dataDoughnutChart: {
+    //   labels: ["Shopee", "Lazada"],
+    //   datasets: [
+    //     {
+    //       label: "# of Votes",
+    //       data:
+    //         filterDate == "today"
+    //           ? [revenue?.channel_today.shopee, revenue?.channel_today.lazada]
+    //           : [
+    //               revenue?.channel_of_month.shopee,
+    //               revenue?.channel_of_month.lazada,
+    //             ],
+    //       backgroundColor: [
+    //         "rgba(255, 99, 132, 0.2)",
+    //         "rgba(54, 162, 235, 0.2)",
+    //         "rgba(255, 206, 86, 0.2)",
+    //         "rgba(75, 192, 192, 0.2)",
+    //         "rgba(153, 102, 255, 0.2)",
+    //         "rgba(255, 159, 64, 0.2)",
+    //       ],
+    //       borderColor: [
+    //         "rgba(255, 99, 132, 1)",
+    //         "rgba(54, 162, 235, 1)",
+    //         "rgba(255, 206, 86, 1)",
+    //         "rgba(75, 192, 192, 1)",
+    //         "rgba(153, 102, 255, 1)",
+    //         "rgba(255, 159, 64, 1)",
+    //       ],
+    //       borderWidth: 1,
+    //     },
+    //   ],
+    // },
     dataLineChart: {
       labels: chartLineLabels,
       datasets: [
@@ -315,32 +308,6 @@ function Dashboard() {
     },
   };
 
-  // Ecom data
-  const ecomData = [
-    {
-      title: "Shopee",
-      value: "shopee",
-    },
-    {
-      title: "Lazada",
-      value: "lazada",
-    },
-  ];
-
-  const shopArr = [];
-  const handleChangeEcom = (event) => {
-    setFilterEcom(event.target.value);
-    for (let i = 0; i < listShop?.length; i++) {
-      if (listShop[i].channel == event.target.value) {
-        shopArr.push(listShop[i]);
-        setShopData(shopArr);
-      }
-    }
-  };
-
-  const handleChangeShop = (event) => {
-    setFilterShop(event.target.value);
-  };
 
   //Table Data
   const [data, setData] = useState({
@@ -675,12 +642,12 @@ function Dashboard() {
               marginBottom: "4px",
             }}
           >
-            {shop?.name}
+            {/*sdfdsfasdf*/}
           </p>
           <div className={classes.proContainer}>
             <div className={classes.shopInfoContainer}>
               <p className={tableClasses.tableCell + " " + classes.txtShopName}>
-                {shop?.code}
+                {/*ádfsdaf*/}
               </p>
             </div>
           </div>
@@ -839,7 +806,7 @@ function Dashboard() {
       {/* ---------------------------------------------------------------------------- */}
       <GridContainer>
         {/* Line Chart */}
-        <GridItem xs={12} sm={12} md={8}>
+        <GridItem xs={12} sm={12} md={12}>
           <Card chart>
             <CardHeader>
               <Line data={chartData.dataLineChart} options={config} />
@@ -911,23 +878,23 @@ function Dashboard() {
         </GridItem>
         {/* End Line Chart */}
         {/* Doughnut Chart */}
-        <GridItem xs={12} sm={12} md={4}>
-          <Card chart>
-            <CardHeader>
-              <Doughnut data={chartData.dataDoughnutChart} />
-            </CardHeader>
-            <CardBody
-              style={{ marginBottom: `${size.width < 769 ? "0" : "98px"}` }}
-            >
-              <h4 className={classes.cardTitle2}>{t('operation.revenueChannel')}</h4>
-            </CardBody>
-            <CardFooter chart>
-              <div className={classes.stats}>
-                <AccessTime /> campaign sent 2 days ago
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem>
+        {/*<GridItem xs={12} sm={12} md={4}>*/}
+        {/*  <Card chart>*/}
+        {/*    <CardHeader>*/}
+        {/*      <Doughnut data={chartData.dataDoughnutChart} />*/}
+        {/*    </CardHeader>*/}
+        {/*    <CardBody*/}
+        {/*      style={{ marginBottom: `${size.width < 769 ? "0" : "98px"}` }}*/}
+        {/*    >*/}
+        {/*      <h4 className={classes.cardTitle2}>{t('operation.revenueChannel')}</h4>*/}
+        {/*    </CardBody>*/}
+        {/*    <CardFooter chart>*/}
+        {/*      <div className={classes.stats}>*/}
+        {/*        <AccessTime /> campaign sent 2 days ago*/}
+        {/*      </div>*/}
+        {/*    </CardFooter>*/}
+        {/*  </Card>*/}
+        {/*</GridItem>*/}
         {/* End Doughnut Chart */}
       </GridContainer>
       <GridContainer>

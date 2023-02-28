@@ -59,12 +59,18 @@ import styles from "assets/jss/natcash/views/voucher/voucherStyle.js";
 import imgMoney from "assets/img/money.png";
 import imgPercent from "assets/img/percent.png";
 import {useTranslation} from "react-i18next";
+import CustomInput from "../../../components/CustomInput/CustomInput";
+import Search from "@material-ui/icons/Search";
 
 function VoucherPage() {
   const router = useRouter();
   const size = useWindowSize();
   const useStyles = makeStyles(styles);
   const classes = useStyles();
+  const useDashStyles = makeStyles(dashStyles);
+  const dashClasses = useDashStyles();
+  const useAdminStyles = makeStyles(adminStyles);
+  const adminClasses = useAdminStyles();
   const useShopStyles = makeStyles(shopStyle);
   const shopClasses = useShopStyles();
   const useTableStyles = makeStyles(tableStyles);
@@ -80,8 +86,10 @@ function VoucherPage() {
   const [toDate, setToDate] = useState(moment().format());
   const [isMobile, setIsMobile] = useState(false);
   const [doFilter, setDoFilter] = useState(0);
+  const [doSearch, setDoSearch] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [txtSearch, setTxtSearch] = useState("");
 
-  const language = useSelector((state) => state.app.language);
   const {t} = useTranslation();
 
   const TAB_LIST = [
@@ -100,27 +108,6 @@ function VoucherPage() {
         t('voucher.statusAndTime'),
         t('action'),
   ];
-
-
-  const listText = [
-    {
-      id: "en",
-      voucherType: ["All product", "Product", "Whole shop"],
-    },
-    {
-      id: "vi",
-      voucherType: ["Tất cả sản phẩm", "Sản phẩm", "Toàn shop"],
-    },
-  ];
-  const [text, setText] = useState(listText[0]);
-  useEffect(() => {
-    for (let i = 0; i < listText.length; i++) {
-      if (language == listText[i].id) {
-        setText(listText[i]);
-        break;
-      }
-    }
-  }, [language]);
 
   useEffect(() => {
     window.addEventListener(
@@ -182,10 +169,37 @@ function VoucherPage() {
     setFilterDate(false);
     setDoFilter(0);
   };
+  const handleInputSearch = (event) => {
+    setTxtSearch(event.target.value);
+    setCurrentPage(1);
+  };
 
   const ShopFilter = () => {
     return (
       <div className={classes.shopFilterContainer}>
+        <FormControl className={dashClasses.formControl}>
+          <div style={{marginRight: "15px"}}>
+            <CustomInput
+                formControlProps={{
+                  className:
+                      adminClasses.margin + " " + classes.searchContainer,
+                }}
+                inputProps={{
+                  placeholder: t('findBy'),
+                  onChange: handleInputSearch,
+                }}
+            />
+            <Button
+                color="white"
+                aria-label="edit"
+                justIcon
+                round
+                onClick={() => setDoSearch(!doSearch)}
+            >
+              <Search/>
+            </Button>
+          </div>
+        </FormControl>
         {/* filter date */}
         <FormControl>
           

@@ -219,7 +219,7 @@ function QrManagement() {
         setTxtSearch(event.target.value);
         setCurrentPage(1);
     };
-    const renderShop = (item, index) => {
+    const renderQr = (item, index) => {
         return (
             <TableRow
                 key={index}
@@ -616,7 +616,7 @@ function QrManagement() {
                         ) : null}
                         <TableBody>
                             {QrShopFakeData.map((item, index) => {
-                                return renderShop(item, index);
+                                return renderQr(item, index);
                             })}
                         </TableBody>
                     </Table>

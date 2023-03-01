@@ -62,8 +62,12 @@ import {
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import vi from "date-fns/locale/vi";
-//import { ReactTinyLink } from 'react-tiny-link'
-const ReactTinyLink = dynamic(() => import('react-tiny-link').then((mod) => mod.ReactTinyLink))
+const ReactTinyLink = dynamic(
+    () => {
+      return import("react-tiny-link").then((mod) => mod.ReactTinyLink);
+    },
+    { ssr: false }
+);
 
 function TaskDetailPage() {
   const dispatch = useDispatch();

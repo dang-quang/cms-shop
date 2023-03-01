@@ -11,7 +11,7 @@ import ModalCustom from "../../../../components/ModalCustom/ModalCustom";
 import useLanguage from "../../../../lib/hooks/useLanguage";
 import validateText from "../../../../variables/validate-text";
 import customerStyle from "../../../../assets/jss/natcash/views/customer-style";
-import customerManagementText from "./customer-text";
+import {customerManagementText} from "./customer-text";
 
 const literacyOptions = [
   { title: "Cao đẳng", value: 0 },

@@ -7,7 +7,6 @@ import CardHeader from "../../../components/Card/CardHeader";
 import WithAuthentication from "../../../components/WithAuthentication/WithAuthentication";
 import Admin from "../../../layouts/Admin";
 import useLanguage from "../../../lib/hooks/useLanguage";
-import customerManagementText from "./components/customer-text";
 
 import {
   Button,
@@ -31,6 +30,7 @@ import GridCustom from "../../../components/GridCustom/grid-custom";
 import { Pagination } from "@material-ui/lab";
 import CustomerFormModal from "./components/customer-form-modal";
 import customerStyle from "../../../assets/jss/natcash/views/customer-style";
+import {customerManagementText} from "./components/customer-text";
 
 const departmentOptions = [
   { title: "Tất cả", value: 0 },

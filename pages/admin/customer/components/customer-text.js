@@ -1,4 +1,4 @@
-const customerManagementText = [
+export const customerManagementText = [
   {
     id: "en",
     title: "Customer Management",
@@ -108,5 +108,3 @@ const customerManagementText = [
     },
   },
 ];
-
-export default customerManagementText;

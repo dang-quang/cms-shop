@@ -1,8 +1,9 @@
 import hmacSHA256 from 'crypto-js/hmac-sha256';
 
-export function formatCurrency(number) {
+export function formatCurrency(number, havingCurrency=true) {
   if (!number) return "0₫";
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "₫";
+  let currency = havingCurrency ? " HTG" : "";
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + currency;
 }
 export function formatNumber(number) {
   if (!number) return "0";

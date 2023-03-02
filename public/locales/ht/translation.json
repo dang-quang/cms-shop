@@ -2,7 +2,7 @@
   "english": "English",
   "creole": "Haitian Creole",
   "france": "French",
-  "findBy": "Find by code",
+  "findBy": "Find",
   "status": "Status",
   "from": "From",
   "to": "To",
@@ -206,5 +206,10 @@
     "trendL14d": "Trend L14D",
     "productInfo": "Product information",
     "itemSold": "Item sold"
+  },
+  "productApproval": {
+    "noLink": "No link to product inventory",
+    "createBy": "Create by",
+    "approve": "Approve"
   }
 }

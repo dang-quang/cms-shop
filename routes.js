@@ -107,7 +107,7 @@ const dashboardRoutes = [
       },
       {
         path: "/#",
-        name: "smsMessages",
+        name: "smsPackage",
         layout: "/admin",
         parent: "operation",
         permission: "marketing_sms",

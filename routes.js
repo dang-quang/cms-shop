@@ -157,6 +157,13 @@ const dashboardRoutes = [
         parent: "operation",
         permission: "marketing_flashSale",
       },
+      {
+        path: "/game",
+        name: "game",
+        layout: "/admin",
+        parent: "operation",
+        permission: "game",
+      },
     ],
   },
   {

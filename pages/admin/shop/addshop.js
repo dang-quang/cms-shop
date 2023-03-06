@@ -359,7 +359,7 @@ function AddShop() {
     setValues({ ...values, [prop]: event.target.value });
   };
 
-  const handelSubmit = () => {
+  const handleSubmit = () => {
     setValues({
       ...values,
       ["voucher_code"]: "SHOP" + values.voucher_code,
@@ -673,7 +673,7 @@ function AddShop() {
         {FormGroupCustom_2()}
       </CardBody>
       <CardFooter className={classes.flex_end} style={{ display: 'flex', with: '100%', justifyContent: 'center' }}>
-        <Button color="primary" onClick={() => handelSubmit()}>
+        <Button color="primary" onClick={() => handleSubmit()}>
           {text.buttons[3]}
         </Button>
       </CardFooter>

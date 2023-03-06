@@ -84,7 +84,7 @@ function AddInformation({cancelFunc, confirmFunc, selectedTab}) {
     }, []);
 
 
-    const handelSubmit = async () => {
+    const handleSubmit = async () => {
         if (_.isEmpty(values.infoCode) || _.isEmpty(values.infoName) || _.isEmpty(values.status)) {
             // validate shop
             NotificationManager.error({
@@ -204,7 +204,7 @@ function AddInformation({cancelFunc, confirmFunc, selectedTab}) {
                 <Button color="gray" onClick={() => cancelFunc()}>
                     {t('cancel')}
                 </Button>
-                <Button color="primary" onClick={() => handelSubmit()}>
+                <Button color="primary" onClick={() => handleSubmit()}>
                     {t('confirm')}
                 </Button>
             </CardFooter>

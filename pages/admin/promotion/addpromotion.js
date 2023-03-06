@@ -632,7 +632,7 @@ function AddPromotionPage() {
     setChecked_2([]);
   };
 
-  const handelSubmit = async () => {
+  const handleSubmit = async () => {
     let isValidTime =
       moment(values.time_to).unix() > moment(values.time_from).unix();
     if (!values.shop_id) {
@@ -1445,7 +1445,7 @@ function AddPromotionPage() {
         <NotificationContainer />
       </CardBody>
       <CardFooter className={classes.flex_end}>
-        <Button color="primary" onClick={() => handelSubmit()}>
+        <Button color="primary" onClick={() => handleSubmit()}>
           {text.buttons[1]}
         </Button>
       </CardFooter>

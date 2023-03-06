@@ -89,7 +89,7 @@ function AddProductCategory() {
     }, []);
 
 
-    const handelSubmit = async () => {
+    const handleSubmit = async () => {
         if (_.isEmpty(values.category) || _.isEmpty(values.autoCode) || _.isEmpty(values.categoryCode)
             || _.isEmpty(values.promotion)) {
             // validate shop
@@ -240,7 +240,7 @@ function AddProductCategory() {
                 <Button color="gray" onClick={() => Router.back()}>
                     {t('cancel')}
                 </Button>
-                <Button color="primary" onClick={() => handelSubmit()}>
+                <Button color="primary" onClick={() => handleSubmit()}>
                     {t('confirm')}
                 </Button>
             </CardFooter>

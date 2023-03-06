@@ -416,7 +416,7 @@ function VoucherDetailPage() {
     setValues({ ...values, [prop]: event.target.value });
   };
 
-  const handelSubmit = () => {
+  const handleSubmit = () => {
     setValues({
       ...values,
       ["voucher_code"]: "SHOP" + values.voucher_code,
@@ -1194,7 +1194,7 @@ function VoucherDetailPage() {
       <CardFooter className={classes.flex_end}>
         <Button
           color="primary"
-          onClick={() => handelSubmit()}
+          onClick={() => handleSubmit()}
           disabled={upcoming}
         >
           {text.buttons[3]}

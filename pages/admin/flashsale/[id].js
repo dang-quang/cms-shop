@@ -884,7 +884,7 @@ function FlashSaleDetailPage() {
     setChecked_2([]);
   };
 
-  const handelSubmit = () => {
+  const handleSubmit = () => {
     alert("hi");
   };
 
@@ -1558,10 +1558,10 @@ function FlashSaleDetailPage() {
         </ModalCustom>
       </CardBody>
       <CardFooter className={classes.flex_end}>
-        <Button color="gray" onClick={() => handelSubmit()}>
+        <Button color="gray" onClick={() => handleSubmit()}>
           {text.buttons[1]}
         </Button>
-        <Button color="primary" onClick={() => handelSubmit()}>
+        <Button color="primary" onClick={() => handleSubmit()}>
           {text.buttons[2]}
         </Button>
       </CardFooter>

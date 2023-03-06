@@ -750,7 +750,7 @@ function DealShockDetailPage() {
     setValues({ ...values, [prop]: event.target.value });
   };
 
-  const handelSubmit = () => {
+  const handleSubmit = () => {
     setValues({
       ...values,
       ["voucher_code"]: "SHOP" + values.voucher_code,
@@ -2127,10 +2127,10 @@ function DealShockDetailPage() {
         {FormGroupCustom_3()}
       </CardBody>
       <CardFooter className={classes.flex_end}>
-        <Button color="gray" onClick={() => handelSubmit()}>
+        <Button color="gray" onClick={() => handleSubmit()}>
           {text.buttons[3]}
         </Button>
-        <Button color="primary" onClick={() => handelSubmit()}>
+        <Button color="primary" onClick={() => handleSubmit()}>
           {text.buttons[4]}
         </Button>
       </CardFooter>

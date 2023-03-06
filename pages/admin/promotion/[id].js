@@ -650,7 +650,7 @@ function PromotionDetailPage() {
     setChecked_2([]);
   };
 
-  const handelSubmit = async () => {
+  const handleSubmit = async () => {
     let isValidTime =
       moment(values.time_to).unix() > moment(values.time_from).unix();
     if (!values.shop_id) {
@@ -1487,7 +1487,7 @@ function PromotionDetailPage() {
       </CardBody>
       {pStatus != "Finished" && (
         <CardFooter className={classes.flex_end}>
-          <Button color="primary" onClick={() => handelSubmit()}>
+          <Button color="primary" onClick={() => handleSubmit()}>
             {text.buttons[1]}
           </Button>
         </CardFooter>

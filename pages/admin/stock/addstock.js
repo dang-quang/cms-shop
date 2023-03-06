@@ -190,7 +190,7 @@ function AddWarehousePage() {
     track: {},
   })(Switch);
 
-  const handelSubmit = async () => {
+  const handleSubmit = async () => {
     dispatch(setShowLoader(true));
     let res = await createNewStock(values)
     dispatch(setShowLoader(false));
@@ -350,7 +350,7 @@ function AddWarehousePage() {
         <NotificationContainer />
       </CardBody>
       <CardFooter className={classes.flex_end}>
-        <Button color="primary" onClick={handelSubmit}>{text.actions.button[0]}</Button>
+        <Button color="primary" onClick={handleSubmit}>{text.actions.button[0]}</Button>
       </CardFooter>
     </Card>
   );

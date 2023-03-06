@@ -611,7 +611,7 @@ function AddDealShockPage() {
     setCurrentPage(value);
     setIsCheckAll(false);
   };
-  const handelSubmit = async () => {
+  const handleSubmit = async () => {
     let isOk = false;
 
     if (!values.deal_type.length) {
@@ -2116,7 +2116,7 @@ function AddDealShockPage() {
         <Button color="gray" >
           {text.buttons[3]}
         </Button>
-        <Button color="primary" onClick={() => handelSubmit()}>
+        <Button color="primary" onClick={() => handleSubmit()}>
           {text.buttons[4]}
         </Button>
       </CardFooter>

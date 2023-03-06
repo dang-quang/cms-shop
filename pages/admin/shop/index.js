@@ -52,46 +52,52 @@ import { activeCrm, addShop, getAllShop, getShopConnectCrmUrl, syncProduct, upda
 const QrShopFakeData = [
   {
     id: '1',
+    code: 'OFC',
     name: 'Shop 1',
-    link: 'http://shop1/qr1',
+    address: 'Canada',
+    phone: '0937478432',
+    type: 'Clothes',
     status: true,
-    publish: "2021-10-28T13:20:36+07:00",
-    update: "2021-10-28T13:20:36+07:00"
   }, {
     id: '2',
+    code: 'ANLA',
     name: 'Shop 2',
-    link: 'http://shop1/qr2',
+    address: 'Laos',
     status: true,
-    publish: "2021-10-28T13:20:36+07:00",
-    update: "2021-10-28T13:20:36+07:00"
+    phone: '0937478432',
+    type: 'PC'
   }, {
     id: '3',
+    code: 'SMN',
     name: 'Shop 3',
-    link: 'http://shop1/qr3',
+    address: 'Los Angeles',
     status: true,
-    publish: "2021-10-28T13:20:36+07:00",
-    update: "2021-10-28T13:20:36+07:00"
+    phone: '2034785821',
+    type: 'Laptop'
   }, {
     id: '4',
+    code: 'VN33XYZ',
     name: 'Shop 4',
-    link: 'http://shop1/qr4',
+    address: 'Beijing',
     status: true,
-    publish: "2021-10-28T13:20:36+07:00",
-    update: "2021-10-28T13:20:36+07:00"
+    phone: '88899273',
+    type: 'Car'
   }, {
     id: '5',
     name: 'Shop 5',
-    link: 'http://shop1/qr5',
+    code: 'HSJET',
+    address: 'Ho Chi Minh',
     status: true,
-    publish: "2021-10-28T13:20:36+07:00",
-    update: "2021-10-28T13:20:36+07:00"
+    phone: '222444566',
+    type: 'Cook'
   }, {
     id: '6',
     name: 'Shop 6',
-    link: 'http://shop1/qr6',
+    code: 'ALTER',
+    address: 'Ha noi',
     status: true,
-    publish: "2021-10-28T13:20:36+07:00",
-    update: "2021-10-28T13:20:36+07:00"
+    phone: '3487584848',
+    type: 'Apple'
   },
 ];
 

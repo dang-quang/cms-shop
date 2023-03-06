@@ -128,7 +128,7 @@ function AddVoucherPage() {
     setValues({ ...values, [prop]: event.target.value });
   };
 
-  const handelSubmit = () => {
+  const handleSubmit = () => {
     setValues({
       ...values,
       ["voucher_code"]: "SHOP" + values.voucher_code,
@@ -826,7 +826,7 @@ function AddVoucherPage() {
         </ModalCustom>
       </CardBody>
       <CardFooter className={classes.flex_end}>
-        <Button color="primary" onClick={() => handelSubmit()}>
+        <Button color="primary" onClick={() => handleSubmit()}>
           {t('confirm')}
         </Button>
       </CardFooter>

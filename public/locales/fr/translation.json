@@ -44,6 +44,7 @@
   "time": "Time",
   "search": "Search",
   "filter": "Filter",
+  "netError": "Network Error",
   "sideBar": {
     "shop": "Shop",
     "qrManagement": "QR Management",

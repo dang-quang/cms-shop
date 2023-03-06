@@ -691,7 +691,7 @@ function PurchaseOrderDetailPage() {
     }
   };
 
-  const handelSubmit = async (type) => {
+  const handleSubmit = async (type) => {
     if (type === "finished") {
       let obj = values;
       obj.status = type;
@@ -1715,7 +1715,7 @@ function PurchaseOrderDetailPage() {
           </Button>
         )}
         {POStatus !== "finished" && (
-          <Button onClick={() => handelSubmit("draft")}>
+          <Button onClick={() => handleSubmit("draft")}>
             {text.actions.button[3]}
           </Button>
         )}
@@ -1736,7 +1736,7 @@ function PurchaseOrderDetailPage() {
         ) : (
           <React.Fragment>
             {POStatus !== "finished" && (
-              <Button color="primary" onClick={() => handelSubmit("finished")}>
+              <Button color="primary" onClick={() => handleSubmit("finished")}>
                 {text.actions.button[5]}
               </Button>
             )}

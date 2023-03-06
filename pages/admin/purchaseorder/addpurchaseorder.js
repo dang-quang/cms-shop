@@ -661,7 +661,7 @@ function AddPurchaseOrderPage() {
     }
   };
 
-  const handelSubmit = async (type) => {
+  const handleSubmit = async (type) => {
     if (type === "finished") {
       let obj = values
       obj.status = type
@@ -1667,7 +1667,7 @@ function AddPurchaseOrderPage() {
             {text.actions.button[2]}
           </Button>
         )}
-        <Button onClick={() => handelSubmit("draft")}>
+        <Button onClick={() => handleSubmit("draft")}>
           {text.actions.button[3]}
         </Button>
         {currentStep == 2 && (
@@ -1685,7 +1685,7 @@ function AddPurchaseOrderPage() {
             {text.actions.button[4]}
           </Button>
         ) : (
-          <Button color="primary" onClick={() => handelSubmit("finished")}>
+          <Button color="primary" onClick={() => handleSubmit("finished")}>
             {text.actions.button[5]}
           </Button>
         )}

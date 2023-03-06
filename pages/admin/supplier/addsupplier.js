@@ -146,7 +146,7 @@ function AddSupplierPage() {
     setValues({ ...values, [prop]: event.target.value });
   };
 
-  const handelSubmit = async () => {
+  const handleSubmit = async () => {
     dispatch(setShowLoader(true));
     let res = await createNewSupplier(values)
     dispatch(setShowLoader(false));
@@ -351,7 +351,7 @@ function AddSupplierPage() {
         <NotificationContainer />
       </CardBody>
       <CardFooter className={classes.flex_end}>
-        <Button color="primary" onClick={handelSubmit}>{text.actions.button[0]}</Button>
+        <Button color="primary" onClick={handleSubmit}>{text.actions.button[0]}</Button>
       </CardFooter>
     </Card>
   );

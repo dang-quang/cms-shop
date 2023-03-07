@@ -52,7 +52,7 @@ function* loadBootstrap() {
       showSidebar: true
     });
   }
-  const token = localStorage.getItem("TOKEN");
+  const token = localStorage.getItem("LOGINTOKEN");
   const language = localStorage.getItem("LANGUAGE") || 'en';
   const channel = localStorage.getItem("CHANNEL");
   if (channel) {
@@ -67,17 +67,7 @@ function* loadBootstrap() {
       language: language
     });
   }
-  if (token) {
-    const res = yield call(getUserProfile);
-    if (res?.email) {
-      yield put(userLoginSuccess(res));
-    }
-    else {
-      yield put(userLogout())
-      yield put(push('/admin/login'));
-    }
-  }
-  else {
+  if (!token) {
     yield put(push('/admin/login'));
   }
 }

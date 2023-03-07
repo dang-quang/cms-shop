@@ -46,6 +46,394 @@ import {useSelector} from "react-redux";
 import {useRouter} from "next/router";
 import {useTranslation} from "react-i18next";
 
+const fakeData = {
+  "revenue": [
+    {
+      "date_of_report": 1631795098,
+      "total_revenue_of_month": 60000000,
+      "cancel_revenue_of_month": 3600000,
+      "total_order_of_month": 216,
+      "cancel_order_of_month": 24,
+      "total_revenue_today": 4000000,
+      "cancel_revenue_today": 300000,
+      "total_order_today": 18,
+      "cancel_order_today": 2,
+      "_id": "6149df9972e2a06734a790a4",
+      "bus": "stt",
+      "shop_id": null,
+      "channel_of_month": {
+        "shopee": 200,
+        "lazada": 16
+      },
+      "channel_today": {
+        "shopee": 12,
+        "lazada": 6
+      },
+      "data_month": [
+        {
+          "date_of_report": 1630499098,
+          "total_revenue_of_month": 65802882,
+          "cancel_revenue_of_month": 8449194,
+          "total_order_of_month": 758,
+          "cancel_order_of_month": 75,
+          "total_revenue_today": 8774973,
+          "cancel_revenue_today": 49128,
+          "total_order_today": 99,
+          "cancel_order_today": 3,
+          "channel_of_month": {
+            "shopee": 200,
+            "lazada": 16
+          },
+          "channel_today": {
+            "shopee": 12,
+            "lazada": 6
+          }
+        },
+        {
+          "date_of_report": 1630585498,
+          "total_revenue_of_month": 73993253,
+          "cancel_revenue_of_month": 9426763,
+          "total_order_of_month": 222,
+          "cancel_order_of_month": 62,
+          "total_revenue_today": 6708554,
+          "cancel_revenue_today": 98321,
+          "total_order_today": 79,
+          "cancel_order_today": 2,
+          "channel_of_month": {
+            "shopee": 200,
+            "lazada": 16
+          },
+          "channel_today": {
+            "shopee": 12,
+            "lazada": 6
+          }
+        },
+        {
+          "date_of_report": 1630671898,
+          "total_revenue_of_month": 45893760,
+          "cancel_revenue_of_month": 5143840,
+          "total_order_of_month": 181,
+          "cancel_order_of_month": 22,
+          "total_revenue_today": 7428809,
+          "cancel_revenue_today": 25246,
+          "total_order_today": 86,
+          "cancel_order_today": 3,
+          "channel_of_month": {
+            "shopee": 200,
+            "lazada": 16
+          },
+          "channel_today": {
+            "shopee": 12,
+            "lazada": 6
+          }
+        },
+        {
+          "date_of_report": 1630758298,
+          "total_revenue_of_month": 89601887,
+          "cancel_revenue_of_month": 7579046,
+          "total_order_of_month": 878,
+          "cancel_order_of_month": 89,
+          "total_revenue_today": 6347389,
+          "cancel_revenue_today": 98119,
+          "total_order_today": 81,
+          "cancel_order_today": 3,
+          "channel_of_month": {
+            "shopee": 200,
+            "lazada": 16
+          },
+          "channel_today": {
+            "shopee": 12,
+            "lazada": 6
+          }
+        },
+        {
+          "date_of_report": 1630844698,
+          "total_revenue_of_month": 94752290,
+          "cancel_revenue_of_month": 4004539,
+          "total_order_of_month": 267,
+          "cancel_order_of_month": 44,
+          "total_revenue_today": 6198427,
+          "cancel_revenue_today": 6972,
+          "total_order_today": 29,
+          "cancel_order_today": 3,
+          "channel_of_month": {
+            "shopee": 200,
+            "lazada": 16
+          },
+          "channel_today": {
+            "shopee": 12,
+            "lazada": 6
+          }
+        },
+        {
+          "date_of_report": 1630931098,
+          "total_revenue_of_month": 42114634,
+          "cancel_revenue_of_month": 6900388,
+          "total_order_of_month": 99,
+          "cancel_order_of_month": 64,
+          "total_revenue_today": 9187075,
+          "cancel_revenue_today": 53890,
+          "total_order_today": 12,
+          "cancel_order_today": 3,
+          "channel_of_month": {
+            "shopee": 200,
+            "lazada": 16
+          },
+          "channel_today": {
+            "shopee": 12,
+            "lazada": 6
+          }
+        },
+        {
+          "date_of_report": 1631017498,
+          "total_revenue_of_month": 86209317,
+          "cancel_revenue_of_month": 6843025,
+          "total_order_of_month": 185,
+          "cancel_order_of_month": 36,
+          "total_revenue_today": 4445861,
+          "cancel_revenue_today": 45309,
+          "total_order_today": 56,
+          "cancel_order_today": 3,
+          "channel_of_month": {
+            "shopee": 200,
+            "lazada": 16
+          },
+          "channel_today": {
+            "shopee": 12,
+            "lazada": 6
+          }
+        },
+        {
+          "date_of_report": 1631103898,
+          "total_revenue_of_month": 40521220,
+          "cancel_revenue_of_month": 9602749,
+          "total_order_of_month": 329,
+          "cancel_order_of_month": 10,
+          "total_revenue_today": 9656144,
+          "cancel_revenue_today": 9150,
+          "total_order_today": 96,
+          "cancel_order_today": 2,
+          "channel_of_month": {
+            "shopee": 200,
+            "lazada": 16
+          },
+          "channel_today": {
+            "shopee": 12,
+            "lazada": 6
+          }
+        },
+        {
+          "date_of_report": 1631190298,
+          "total_revenue_of_month": 50794374,
+          "cancel_revenue_of_month": 6661639,
+          "total_order_of_month": 63,
+          "cancel_order_of_month": 69,
+          "total_revenue_today": 6517278,
+          "cancel_revenue_today": 43508,
+          "total_order_today": 23,
+          "cancel_order_today": 1,
+          "channel_of_month": {
+            "shopee": 200,
+            "lazada": 16
+          },
+          "channel_today": {
+            "shopee": 12,
+            "lazada": 6
+          }
+        },
+        {
+          "date_of_report": 1631276698,
+          "total_revenue_of_month": 53045756,
+          "cancel_revenue_of_month": 6357861,
+          "total_order_of_month": 184,
+          "cancel_order_of_month": 55,
+          "total_revenue_today": 4099613,
+          "cancel_revenue_today": 54208,
+          "total_order_today": 12,
+          "cancel_order_today": 2,
+          "channel_of_month": {
+            "shopee": 200,
+            "lazada": 16
+          },
+          "channel_today": {
+            "shopee": 12,
+            "lazada": 6
+          }
+        },
+        {
+          "date_of_report": 1631363098,
+          "total_revenue_of_month": 96672568,
+          "cancel_revenue_of_month": 4371265,
+          "total_order_of_month": 94,
+          "cancel_order_of_month": 77,
+          "total_revenue_today": 9006927,
+          "cancel_revenue_today": 73462,
+          "total_order_today": 9,
+          "cancel_order_today": 2,
+          "channel_of_month": {
+            "shopee": 200,
+            "lazada": 16
+          },
+          "channel_today": {
+            "shopee": 12,
+            "lazada": 6
+          }
+        },
+        {
+          "date_of_report": 1631449498,
+          "total_revenue_of_month": 98019576,
+          "cancel_revenue_of_month": 8645454,
+          "total_order_of_month": 361,
+          "cancel_order_of_month": 70,
+          "total_revenue_today": 7910143,
+          "cancel_revenue_today": 82326,
+          "total_order_today": 30,
+          "cancel_order_today": 1,
+          "channel_of_month": {
+            "shopee": 200,
+            "lazada": 16
+          },
+          "channel_today": {
+            "shopee": 12,
+            "lazada": 6
+          }
+        },
+        {
+          "date_of_report": 1631535898,
+          "total_revenue_of_month": 87530508,
+          "cancel_revenue_of_month": 6036690,
+          "total_order_of_month": 232,
+          "cancel_order_of_month": 47,
+          "total_revenue_today": 9138725,
+          "cancel_revenue_today": 63929,
+          "total_order_today": 86,
+          "cancel_order_today": 3,
+          "channel_of_month": {
+            "shopee": 200,
+            "lazada": 16
+          },
+          "channel_today": {
+            "shopee": 12,
+            "lazada": 6
+          }
+        },
+        {
+          "date_of_report": 1631622298,
+          "total_revenue_of_month": 97712136,
+          "cancel_revenue_of_month": 7424254,
+          "total_order_of_month": 273,
+          "cancel_order_of_month": 66,
+          "total_revenue_today": 4333544,
+          "cancel_revenue_today": 71042,
+          "total_order_today": 38,
+          "cancel_order_today": 2,
+          "channel_of_month": {
+            "shopee": 200,
+            "lazada": 16
+          },
+          "channel_today": {
+            "shopee": 12,
+            "lazada": 6
+          }
+        },
+        {
+          "date_of_report": 1631708698,
+          "total_revenue_of_month": 53717479,
+          "cancel_revenue_of_month": 9848431,
+          "total_order_of_month": 135,
+          "cancel_order_of_month": 30,
+          "total_revenue_today": 8573630,
+          "cancel_revenue_today": 94847,
+          "total_order_today": 84,
+          "cancel_order_today": 1,
+          "channel_of_month": {
+            "shopee": 200,
+            "lazada": 16
+          },
+          "channel_today": {
+            "shopee": 12,
+            "lazada": 6
+          }
+        }
+      ],
+      "__v": 0
+    }
+  ],
+  "marketing": [
+    {
+      "date_of_report": 1631795098,
+      "_id": "6149df4a95f56845a8f71c75",
+      "bus": "stt",
+      "shop_id": null,
+      "traffic": 69,
+      "view": 699,
+      "convention_rate": 12.5,
+      "message_unreply": 24,
+      "traffic_of_month": 69,
+      "view_of_month": 699,
+      "convention_rate_of_month": 12.5,
+      "message_unreply_of_month": 24,
+      "__v": 0
+    }
+  ],
+  "shop_perform": [
+    {
+      "date_of_report": 1631795098,
+      "last_14days_of_month": [],
+      "_id": "6149df4a95f56845a8f71c74",
+      "bus": "stt",
+      "shop_id": null,
+      "item": 169,
+      "order": 18,
+      "revenue": 4000000,
+      "pending": 2,
+      "item_of_month": 169,
+      "order_of_month": 18,
+      "revenue_of_month": 4000000,
+      "pending_of_month": 2,
+      "__v": 0
+    }
+  ],
+  "shop": [
+    {
+      "_id": "61404c62ce6737ed2d193735",
+      "shopId": 54435575,
+      "channel": "shopee",
+      "icon": "https://www.freepnglogos.com/uploads/shopee-logo/shopee-bag-logo-free-transparent-icon-17.png",
+      "avatar": "https://cf.shopee.vn/file/af4d8775fc8a526c58ce085d3760181d",
+      "name": "Hệ Thống Cửa Hàng Mẹ Và Bé Shop Trẻ Thơ",
+      "code": "OFC"
+    },
+    {
+      "_id": "61404c91ce6737ed2d19373a",
+      "shopId": 119716298,
+      "channel": "shopee",
+      "icon": "https://www.freepnglogos.com/uploads/shopee-logo/shopee-bag-logo-free-transparent-icon-17.png",
+      "avatar": "https://cf.shopee.vn/file/8a1a938dbab79d2023d80b264d4141d1",
+      "name": "AnlaBaby Shop",
+      "code": "ANLA"
+    },
+    {
+      "_id": "61404cadce6737ed2d19373d",
+      "shopId": 358814233,
+      "channel": "shopee",
+      "icon": "https://www.freepnglogos.com/uploads/shopee-logo/shopee-bag-logo-free-transparent-icon-17.png",
+      "avatar": "https://cf.shopee.vn/file/bf72c9e92772550522b1527f940d8886",
+      "name": "Shop Trẻ Thơ KNIC",
+      "code": "SMN"
+    },
+    {
+      "_id": "61466d07430c42235083580d",
+      "shopId": 200166558032,
+      "avatar": "https://cdn.chanhtuoi.com/uploads/2020/06/logo-lazada-2.png",
+      "channel": "lazada",
+      "code": "VN33W4SRV7",
+      "icon": "https://cdn.chanhtuoi.com/uploads/2020/06/logo-lazada-2.png",
+      "name": "Shop Trẻ Thơ KNIC"
+    }
+  ]
+};
+
 function Dashboard() {
   const router = useRouter();
   const { shop_id, code } = router.query;
@@ -84,11 +472,11 @@ function Dashboard() {
 
 
   const getOperationData = async () => {
-    var res = await getOperationScreen();
-    setRevenue(res.data.revenue[0]);
-    setListShop(res.data.shop);
-    setShopPerform(res.data.shop_perform);
-    setMarketing(res.data.marketing[0]);
+    // var res = await getOperationScreen();
+    setRevenue(fakeData.revenue[0]);
+    setListShop(fakeData.shop);
+    setShopPerform(fakeData.shop_perform);
+    setMarketing(fakeData.marketing[0]);
   };
 
   useEffect(() => {

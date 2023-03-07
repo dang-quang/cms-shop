@@ -21,15 +21,17 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import {Close} from "@material-ui/icons";
+import {getShopQrDetail, saveGames} from "../../../utilities/ApiManage";
+import Router from "next/router";
 
-function AddGame({cancelFunc, confirmFunc, selectedTab}) {
+function AddGame({closeDialog, selectedTab, id}) {
     const dispatch = useDispatch();
     const useStyles = makeStyles(styles);
     const classes = useStyles();
     const {t} = useTranslation();
     const [selectedImages, setSelectedImages] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]);
-    const [values, setValues] = React.useState({
+    const [values, setValues] = useState({
         code: "",
         name: "",
         prize: "",
@@ -83,27 +85,49 @@ function AddGame({cancelFunc, confirmFunc, selectedTab}) {
     };
 
     const handleSubmit = async () => {
-        if (_.isEmpty(values.infoCode) || _.isEmpty(values.infoName) || _.isEmpty(values.status)) {
-            // validate shop
+        if (_.isEmpty(values.code) || _.isEmpty(values.name) || _.isEmpty(values.prize) ||
+            _.isEmpty(values.quantity) || _.isEmpty(values.amount) || _.isEmpty(values.order)
+            || _.isEmpty(values.style)) {
             NotificationManager.error({
                 title: t('error'),
                 message: t('errorInput'),
             });
         } else {
-            // dispatch(setShowLoader(true));
-            // let res = await createNewPromotionMarketing(values);
-            // dispatch(setShowLoader(false));
-            // if (res.code === 200) {
-            //     Router.push("/admin/promotion");
-            // } else {
-            //     NotificationManager.error({
-            //         title: t('error'),
-            //         message: res.message ? res.message.text : "Error",
-            //     });
-            // }
-            confirmFunc();
+            dispatch(setShowLoader(true));
+            const code = values.code;
+            const name = values.name;
+            const type = selectedTab;
+            const startTime = "16/02/2023 00:00:00";
+            const endTime = "22/02/2023 00:00:00";
+            const description = "Lucky Wheel";
+            const image = "";
+            const amount = 100000;
+            const res = await saveGames(code, name, type, startTime, endTime, description, image, amount);
+            dispatch(setShowLoader(false));
+            if (res.code === 200) {
+                Router.push("/admin/game");
+            } else {
+                NotificationManager.error({
+                    title: t('error'),
+                    message: res.message ? res.message.text : "Error",
+                });
+            }
+            closeDialog();
         }
     };
+
+    const onGetGameDetail = async () => {
+        dispatch(setShowLoader(true));
+        const res = await getShopQrDetail(id);
+        dispatch(setShowLoader(false));
+        if (res.code === 200) {
+        } else {
+            NotificationManager.error({
+                title: t('error'),
+                message: res.message ? res.message.text : "Error",
+            });
+        }
+    }
 
     return (
         <Card className={classes.noMargin}>
@@ -283,7 +307,7 @@ function AddGame({cancelFunc, confirmFunc, selectedTab}) {
                 </div>
             </CardBody>
             <CardFooter className={classes.flex_end}>
-                <Button color="gray" onClick={() => cancelFunc()}>
+                <Button color="gray" onClick={() => closeDialog()}>
                     {t('cancel')}
                 </Button>
                 <Button color="primary" onClick={() => handleSubmit()}>

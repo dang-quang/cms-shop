@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import Router from "next/router";
+import Router, {useRouter} from "next/router";
 import {setShowLoader} from "../../../redux/actions/app";
 import {useDispatch} from "react-redux";
 import moment from "moment";
@@ -25,7 +25,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import {Autocomplete} from "@material-ui/lab";
-import {saveShopQr} from "../../../utilities/ApiManage";
+import {getShopQrDetail, saveShopQr} from "../../../utilities/ApiManage";
 
 const listShop = [
     {
@@ -49,7 +49,9 @@ const listShop = [
     },
 ]
 
-function AddQrShop() {
+function ShopQrDetailPage() {
+    const router = useRouter();
+    const { id } = router.query;
     const dispatch = useDispatch();
     const useStyles = makeStyles(styles);
     const classes = useStyles();
@@ -81,7 +83,25 @@ function AddQrShop() {
         dispatch(setShowLoader(false));
     }, []);
 
-
+    const onGetQrDetail = async () => {
+        if (!id) {
+            NotificationManager.error({
+                title: t('error'),
+                message: t('netError'),
+            });
+        } else {
+            dispatch(setShowLoader(true));
+            const res = await getShopQrDetail(id);
+            dispatch(setShowLoader(false));
+            if (res.code === 200) {
+            } else {
+                NotificationManager.error({
+                    title: t('error'),
+                    message: res.message ? res.message.text : "Error",
+                });
+            }
+        }
+    }
 
     const handleSubmit = async () => {
         if (!selectedShop) {
@@ -116,6 +136,7 @@ function AddQrShop() {
                     message: res.message ? res.message.text : "Error",
                 });
             }
+            // Router.push("/admin/qrManagement");
         }
     };
 
@@ -227,6 +248,6 @@ function AddQrShop() {
     );
 }
 
-AddQrShop.layout = Admin;
+ShopQrDetailPage.layout = Admin;
 
-export default WithAuthentication(AddQrShop);
+export default WithAuthentication(ShopQrDetailPage);

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import moment from "moment";
 import Link from "next/link";
 // @material-ui/core components
@@ -40,7 +40,7 @@ import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import classNames from "classnames";
-import {getRequestPayment, updateConfirmPayment, updateNotePayment} from "../../../utilities/ApiManage";
+import {deleteShopQr, getListShopQr} from "../../../utilities/ApiManage";
 import Pagination from "@material-ui/lab/Pagination";
 import {setShowLoader} from "../../../redux/actions/app";
 import {NotificationContainer, NotificationManager,} from "react-light-notifications";
@@ -99,7 +99,7 @@ function QrManagement() {
     const useShopStyles = makeStyles(shopStyle);
     const shopClasses = useShopStyles();
     const useStyles = makeStyles(styles);
-    const [isShowModal, setIsShowModal] = useState(false);
+    const [isShowModal, setIsShowModal] = useState(null);
     const useAdminStyles = makeStyles(adminStyles);
     const useTableStyles = makeStyles(tableStyles);
     const adminClasses = useAdminStyles();
@@ -133,6 +133,7 @@ function QrManagement() {
     );
     const [toDate, setToDate] = useState(moment().format());
     const [isMobile, setIsMobile] = useState(false);
+    const dispatch = useDispatch();
 
     const MENU_TITLE_INFO = [
         {
@@ -166,32 +167,45 @@ function QrManagement() {
             false
         );
     }, []);
-    // useEffect(async () => {
-    //     dispatch(setShowLoader(true));
-    //     setChecked([]);
-    //     let params = {};
-    //     params.current_page = currentPage;
-    //     if (txtSearch) {
-    //         params.order_sn = txtSearch;
-    //     }
-    //     if (doFilter) {
-    //         params.fromDate = moment(fromDate).unix();
-    //         params.toDate = moment(toDate).unix();
-    //     }
-    //     if (selectedTitle.value) {
-    //         params.status = selectedTitle.value;
-    //     }
-    //     const res = await getRequestPayment();
-    //
-    //     if (res.status == 0 && res?.list) {
-    //         if (res.list.length > 0) {
-    //             setData(res.list);
-    //         }
-    //         // setCurrentPage(res.data.data_page.current_page);
-    //         // setTotalPage(res.data.data_page.total_page);
-    //     }
-    //     dispatch(setShowLoader(false));
-    // }, [doSearch, doFilter, selectedTitle, currentPage]);
+    useEffect(async () => {
+        dispatch(setShowLoader(true));
+        let params = {};
+        params.current_page = currentPage;
+        if (txtSearch) {
+            params.keyWord = txtSearch;
+        }
+        if (doFilter) {
+            params.fromDate = moment(fromDate).unix();
+            params.toDate = moment(toDate).unix();
+        }
+        if (selectedTitle.value) {
+            params.status = selectedTitle.value;
+        }
+        const res = await getListShopQr(params);
+        console.log('tung', params, res);
+        // if (res.status == 0 && res?.list) {
+        //     if (res.list.length > 0) {
+        //         setData(res.list);
+        //     }
+        //     // setCurrentPage(res.data.data_page.current_page);
+        //     // setTotalPage(res.data.data_page.total_page);
+        // }
+        dispatch(setShowLoader(false));
+    }, [doSearch, doFilter, selectedTitle, currentPage]);
+
+    const onDeleteQrShop = async () => {
+        dispatch(setShowLoader(true));
+        const res = await deleteShopQr(isShowModal);
+        if (res.code === 200) {
+            Router.push("/admin/qrManagement");
+        } else {
+            NotificationManager.error({
+                title: t('error'),
+                message: res.message ? res.message.text : "Error",
+            });
+        }
+        dispatch(setShowLoader(false));
+    }
     const resetFilterDate = () => {
         setFromDate(moment().subtract(30, "days").format());
         setToDate(moment().format());
@@ -329,7 +343,7 @@ function QrManagement() {
                                                 </MenuItem>
                                                 <MenuItem className={classes.dropdownItem}
                                                           onClick={() => {
-                                                              setIsShowModal(true);
+                                                              setIsShowModal(item.id);
                                                           }}
                                                 >
                                                     {t('delete')}
@@ -554,7 +568,7 @@ function QrManagement() {
                     subTitle={""}
                     // isShow={true}
                     isShow={isShowModal}
-                    handleClose={() => setIsShowModal(false)}
+                    handleClose={() => setIsShowModal(null)}
                 >
                     <div className={classes.flex_center}>
                         <FormControl variant="outlined" size="small" style={{flex: 1}}>
@@ -570,7 +584,7 @@ function QrManagement() {
                         <div className={classes.buttonContainer}>
                             <Button
                                 color="primary"
-                                onClick={() => {}}
+                                onClick={onDeleteQrShop}
                             >
                                 {t('submit')}
                             </Button>
@@ -578,7 +592,7 @@ function QrManagement() {
                         <div className={classes.buttonContainer}>
                             <Button
                                 color="gray"
-                                onClick={() => setIsShowModal(false)}
+                                onClick={() => setIsShowModal(null)}
                             >
                                 {t('cancel')}
                             </Button>

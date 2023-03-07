@@ -217,6 +217,7 @@
     "login": "Login",
     "userName": "Username",
     "pass": "Password",
-    "loginError": "Please enter Username and Password!"
+    "loginError": "Please enter Username and Password!",
+    "incorrect": "Username or Password is incorrect!"
   }
 }

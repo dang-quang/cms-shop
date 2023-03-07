@@ -1,4 +1,5 @@
 import hmacSHA256 from 'crypto-js/hmac-sha256';
+import forge from 'node-forge';
 
 export function formatCurrency(number, havingCurrency=true) {
   if (!number) return "0₫";
@@ -74,21 +75,20 @@ export function previewUploadImage(e) {
 
 export const encryptString = async (text, publicRsa = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtHUg6FifQflG3uRAK1LsW3J+PSw6IxNbnHqZFHqiFxOtlqg80HOORW4hifSUS0wF+oW20wRdqI4RhJ2ddh8NX1psDX4KYw1OZkI8oiXSUc8Ang+fqaYLC1OkT8yBGV6OBGneetgTbqNdOr6QuHADtKzzd2DorPyKkU/V95t5TE4go9JtRV/nxqkpvf0KVz+/DdVsQzXs2o5DkLKLELZwaouCtCbZv8LDOXWTHtE6hHQaF4kPcNUPXfFt8yWt+k6vVH6XFaAJQlurpl7ukCio9y5ETitFXhQa4uMAoKwgQsj0FzYwTvZi/OjLBjjsy9eFizOzTDD0bUWoDNMvfK+UfQIDAQAB') => {
   const PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----\n${publicRsa}\n-----END PUBLIC KEY-----`;
-  const JSEncrypt = (await import('jsencrypt')).default;
-
   try {
-    const encrypt = new JSEncrypt();
-    encrypt.setPublicKey(PUBLIC_KEY);
-    const encrypted = encrypt.encrypt(text);
-    return encrypted.replace(/(\r\n|\n|\r)/gm, '').trim()
+    const publicKeyObj = forge.pki.publicKeyFromPem(PUBLIC_KEY);
+    const encrypted = publicKeyObj.encrypt(forge.util.encodeUtf8(text), 'RSAES-PKCS1-V1_5');
+    return forge.util.encode64(encrypted).replace(/(\r\n|\n|\r)/gm, '').trim();
   } catch (error) {
-    return `${publicRsa}`;
+    console.error(error);
+    return null;
   }
 };
 
 export const encryptSha256 = async (text, signature) => {
   try {
-    const hash = hmacSHA256(text, signature);
+    const hash = hmacSHA256(text, signature).toString();
+    console.log('dvht1', hash)
     return hash;
 
   } catch (error) {
@@ -98,15 +98,10 @@ export const encryptSha256 = async (text, signature) => {
 
 export const decryptString = async (text, privateRsa) => {
   const PRIVATE_KEY = `-----BEGIN RSA PRIVATE KEY-----\n${privateRsa}\n-----END RSA PRIVATE KEY-----`;
-  const JSEncrypt = (await import('jsencrypt')).default;
-
   try {
-    const encrypt = new JSEncrypt();
-    encrypt.setPrivateKey(PRIVATE_KEY);
-    const encrypted = encrypt.decrypt(text);
-
-    return encrypted.replace(/(\r\n|\n|\r)/gm, '').trim()
+    const privateKey = forge.pki.privateKeyFromPem(PRIVATE_KEY);
+    const decryptedData = privateKey.decrypt(forge.util.decode64(text), 'RSAES-PKCS1-V1_5');
   } catch (error) {
-    return `${privateRsa}`;
+      return `${privateRsa}`;
   }
 };

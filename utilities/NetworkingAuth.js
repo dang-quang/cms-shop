@@ -14,7 +14,7 @@ import {
 let accessToken = "";
 
 export async function getAccessToken() {
-  const newToken = await localStorage.getItem("TOKEN");
+  const newToken = await localStorage.getItem("LOGINTOKEN");
   if (newToken) {
     accessToken = newToken;
   }

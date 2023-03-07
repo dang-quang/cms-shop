@@ -38,13 +38,17 @@ import Paper from "@material-ui/core/Paper";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import classNames from "classnames";
 import Pagination from "@material-ui/lab/Pagination";
-import {NotificationContainer,} from "react-light-notifications";
+import {NotificationContainer, NotificationManager,} from "react-light-notifications";
 import {primaryColor} from "../../../assets/jss/natcash";
 import {useTranslation} from "react-i18next";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import AddInformation from "./addGame";
+import {useDispatch} from "react-redux";
+import {setShowLoader} from "../../../redux/actions/app";
+import {deleteGames, deleteShopQr, getListGames} from "../../../utilities/ApiManage";
+import Router from "next/router";
 
 const LuckyFakeData = [
     {
@@ -90,7 +94,7 @@ function ProductOtherInformation() {
     const useShopStyles = makeStyles(shopStyle);
     const shopClasses = useShopStyles();
     const useStyles = makeStyles(styles);
-    const [isShowModal, setIsShowModal] = useState(false);
+    const [isShowModal, setIsShowModal] = useState(null);
     const useAdminStyles = makeStyles(adminStyles);
     const useTableStyles = makeStyles(tableStyles);
     const adminClasses = useAdminStyles();
@@ -104,6 +108,7 @@ function ProductOtherInformation() {
     const [filterDate, setFilterDate] = useState(false);
     const [isShowEdit, setIsShowEdit] = useState(false);
     const {t} = useTranslation();
+    const dispatch = useDispatch();
 
 
     const TABLE_LUCKY_HEAD = [
@@ -141,7 +146,7 @@ function ProductOtherInformation() {
     const [toDate, setToDate] = useState(moment().format());
     const [isMobile, setIsMobile] = useState(false);
     const [selectedTab, setSelectedTab] = useState(CATEGORY_TYPE[0]);
-
+    const [selectedId, setSelectedId] = useState(null);
     useEffect(() => {
         switch (selectedTab.value) {
             case CATEGORY_TYPE[0].value:
@@ -170,11 +175,9 @@ function ProductOtherInformation() {
                     right: "0",
                 }}
             >
-                {/*<Link href={"/admin/category/addCategory"} onPress={() => setIsShowEdit(true)}>*/}
                 <Button id="update-label" color="green" >
                     {t('addNew')}
                 </Button>
-                {/*</Link>*/}
 
             </FormControl>
         );
@@ -189,32 +192,46 @@ function ProductOtherInformation() {
             false
         );
     }, []);
-    // useEffect(async () => {
-    //     dispatch(setShowLoader(true));
-    //     setChecked([]);
-    //     let params = {};
-    //     params.current_page = currentPage;
-    //     if (txtSearch) {
-    //         params.order_sn = txtSearch;
-    //     }
-    //     if (doFilter) {
-    //         params.fromDate = moment(fromDate).unix();
-    //         params.toDate = moment(toDate).unix();
-    //     }
-    //     if (selectedTitle.value) {
-    //         params.status = selectedTitle.value;
-    //     }
-    //     const res = await getRequestPayment();
-    //
-    //     if (res.status == 0 && res?.list) {
-    //         if (res.list.length > 0) {
-    //             setData(res.list);
-    //         }
-    //         // setCurrentPage(res.data.data_page.current_page);
-    //         // setTotalPage(res.data.data_page.total_page);
-    //     }
-    //     dispatch(setShowLoader(false));
-    // }, [doSearch, doFilter, selectedTitle, currentPage]);
+
+    useEffect(async () => {
+        dispatch(setShowLoader(true));
+        let params = {};
+        params.current_page = currentPage;
+        if (txtSearch) {
+            params.order_sn = txtSearch;
+        }
+        if (doFilter) {
+            params.fromDate = moment(fromDate).unix();
+            params.toDate = moment(toDate).unix();
+        }
+        if (selectedTitle.value) {
+            params.status = selectedTitle.value;
+        }
+        const res = await getListGames(params);
+        //
+        // if (res.status == 0 && res?.list) {
+        //     if (res.list.length > 0) {
+        //         setData(res.list);
+        //     }
+        //     // setCurrentPage(res.data.data_page.current_page);
+        //     // setTotalPage(res.data.data_page.total_page);
+        // }
+        dispatch(setShowLoader(false));
+    }, [doSearch, doFilter, selectedTitle, currentPage]);
+
+    const onDeleteGame = async () => {
+        dispatch(setShowLoader(true));
+        const res = await deleteGames(isShowModal);
+        if (res.code === 200) {
+            Router.push("/admin/game");
+        } else {
+            NotificationManager.error({
+                title: t('error'),
+                message: res.message ? res.message.text : "Error",
+            });
+        }
+        dispatch(setShowLoader(false));
+    }
     const resetFilterDate = () => {
         setFromDate(moment().subtract(30, "days").format());
         setToDate(moment().format());
@@ -242,7 +259,7 @@ function ProductOtherInformation() {
         setTxtSearch(event.target.value);
         setCurrentPage(1);
     };
-    const renderCategory = (item, index) => {
+    const renderGame = (item, index) => {
         return (
             <TableRow
                 key={index}
@@ -347,6 +364,7 @@ function ProductOtherInformation() {
                                                 <MenuItem className={classes.dropdownItem}
                                                           onClick={() => {
                                                               setIsShowEdit(true);
+                                                              setSelectedId(item.id);
                                                           }}
                                                 >
                                                     {t('detail')}
@@ -354,13 +372,14 @@ function ProductOtherInformation() {
                                                 <MenuItem className={classes.dropdownItem}
                                                           onClick={() => {
                                                               setIsShowEdit(true);
+                                                              setSelectedId(item.id);
                                                           }}
                                                 >
                                                     {t('edit')}
                                                 </MenuItem>
                                                 <MenuItem className={classes.dropdownItem}
                                                           onClick={() => {
-                                                              setIsShowModal(true);
+                                                              setIsShowModal(item.id);
                                                           }}
                                                 >
                                                     {t('delete')}
@@ -546,7 +565,7 @@ function ProductOtherInformation() {
                     subTitle={""}
                     // isShow={true}
                     isShow={isShowModal}
-                    handleClose={() => setIsShowModal(false)}
+                    handleClose={() => setIsShowModal(null)}
                 >
                     <div className={classes.flex_center}>
                         <FormControl variant="outlined" size="small" style={{flex: 1}}>
@@ -562,14 +581,14 @@ function ProductOtherInformation() {
                         <div className={classes.buttonContainer}>
                             <Button
                                 color="primary"
-                                onClick={() => {}}>
+                                onClick={onDeleteGame}>
                                 {t('submit')}
                             </Button>
                         </div>
                         <div className={classes.buttonContainer}>
                             <Button
                                 color="gray"
-                                onClick={() => setIsShowModal(false)}
+                                onClick={() => setIsShowModal(null)}
                             >
                                 {t('cancel')}
                             </Button>
@@ -648,7 +667,7 @@ function ProductOtherInformation() {
                         ) : null}
                         <TableBody>
                             {table.tableBody.map((item, index) => {
-                                return renderCategory(item, index);
+                                return renderGame(item, index);
                             })}
                         </TableBody>
                     </Table>
@@ -667,10 +686,15 @@ function ProductOtherInformation() {
                 subTitle={""}
                 // isShow={true}
                 isShow={isShowEdit}
-                handleClose={() => setIsShowEdit(false)}
-            >
-                <AddInformation cancelFunc={() => setIsShowEdit(false)} confirmFunc={() => setIsShowEdit(false)}
-                        selectedTab={selectedTab}/>
+                handleClose={() => {
+                    setIsShowEdit(false);
+                    setSelectedId(null)
+                }}>
+                <AddInformation closeDialog={() => {
+                    setIsShowEdit(false);
+                    setSelectedId(null)
+                }} selectedTab={selectedTab}
+                    id={selectedId}/>
             </ModalCustom>
         </Card>
     );

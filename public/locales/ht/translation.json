@@ -212,5 +212,11 @@
     "noLink": "No link to product inventory",
     "createBy": "Create by",
     "approve": "Approve"
+  },
+  "login": {
+    "login": "Login",
+    "userName": "Username",
+    "pass": "Password",
+    "loginError": "Please enter Username and Password!"
   }
 }

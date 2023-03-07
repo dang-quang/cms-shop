@@ -46,6 +46,7 @@ const loginStyle = {
   btnLogin: {
     width: "100%",
     margin: "30px 0 !important",
+    textTransform: 'uppercase'
   },
   btnTest: {
     margin: "0 !important",

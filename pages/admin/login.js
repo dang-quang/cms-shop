@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useSelector } from "react-redux";
+import React, {useCallback, useEffect, useState} from "react";
+import {connect, useSelector} from "react-redux";
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 // core components
 import styles from "assets/jss/natcash/views/loginStyle.js";
 import GridItem from "components/Grid/GridItem.js";
@@ -12,66 +12,31 @@ import Form from "components/Form/Form.js";
 import FormHeader from "components/Form/FormHeader.js";
 import FormBody from "components/Form/FormBody.js";
 import backgroundImage from "assets/img/login-background-min.png";
-import {
-  NotificationContainer,
-  NotificationManager,
-} from "react-light-notifications";
-import { connect } from "react-redux";
-import { userLogin } from "../../redux/actions/user";
+import {NotificationContainer, NotificationManager,} from "react-light-notifications";
+import {userLogin} from "../../redux/actions/user";
 import PageLoader from "components/PageLoader/PageLoader.js";
 import {initData} from "../../utilities/ApiManage";
-import {encryptString, encryptSha256} from "../../utilities/utils";
+import {encryptSha256, encryptString} from "../../utilities/utils";
+import {buildKey} from "../../utilities/const";
+import {useTranslation} from "react-i18next";
 
 function login(props) {
   const useStyles = makeStyles(styles);
   const classes = useStyles();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const language = useSelector((state) => state.app.language);
   const showLoader = useSelector((state) => state.app.showLoader);
-  const [text, setText] = useState({
-    id: "en",
-    title: "Login",
-    txtUser: "Username",
-    txtPass: "Password",
-    btnLog: "LOGIN",
-    txtErr: "Please enter Username and Password!",
-  });
-  const listText = [
-    {
-      id: "en",
-      title: "Login",
-      txtUser: "Username",
-      txtPass: "Password",
-      btnLog: "LOGIN",
-      txtErr: "Please enter Username and Password!",
-    },
-    {
-      id: "vi",
-      title: "Đăng nhập",
-      txtUser: "Tài khoản",
-      txtPass: "Mật khẩu",
-      btnLog: "ĐĂNG NHẬP",
-      txtErr: "Vui lòng nhập Tài khoản và Mật khẩu",
-    },
-  ];
-  useEffect(() => {
-    for (let i = 0; i < listText.length; i++) {
-      if (language == listText[i].id) {
-        setText(listText[i]);
-        break;
-      }
-    }
-  }, [language]);
+  const {t} = useTranslation();
+
   const handleLogin = useCallback(async () => {
     if (!username || !password) {
       return NotificationManager.error({
-        title: text.title,
-        message: text.txtErr,
+        title: t('login.login'),
+        message: t('login.loginError'),
       });
     }
 
-    const initToken = await encryptString(`${localStorage.getItem("DEVICEID")}##vn.supper.app.apigw`);
+    const initToken = await encryptString(`${localStorage.getItem("DEVICEID")}##${buildKey}`);
     localStorage.setItem("INITTOKEN", initToken);
 
     const responseInit = await initData();
@@ -108,12 +73,6 @@ function login(props) {
 
   }, [])
 
-  // const getBlogData = async () => {
-  //   const response = await getHomeBlog();
-  //   console.log('tung', response);
-
-  // }
-
   const onChangeUsername = (e) => {
     setUsername(e.target.value);
   };
@@ -132,12 +91,12 @@ function login(props) {
       <NotificationContainer />
       {showLoader && <PageLoader />}
       <Form className={classes.loginContainer}>
-        <FormHeader title={text.title} />
+        <FormHeader title={t('login.login')} />
         <FormBody>
           <GridContainer style={{ padding: "0 30px" }}>
             <GridItem xs={12} sm={12} md={12}>
               <CustomInput
-                labelText={text.txtUser}
+                labelText={t('login.userName')}
                 id="username"
                 formControlProps={{
                   fullWidth: true,
@@ -149,7 +108,7 @@ function login(props) {
                 }}
               />
               <CustomInput
-                labelText={text.txtPass}
+                labelText={t('login.pass')}
                 id="password"
                 formControlProps={{
                   fullWidth: true,
@@ -166,22 +125,8 @@ function login(props) {
                 onClick={() => handleLogin()}
                 color="primary"
               >
-                {text.btnLog}
+                {t('login.login')}
               </Button>
-              {/* <Button
-                className={classes.btnTest}
-                onClick={() => handleLogin()}
-                color="primary"
-              >
-                {text.btnLog}
-              </Button>
-              <Button
-                className={classes.btnTest}
-                onClick={() => getBlogData()}
-                color="primary"
-              >
-                Call API
-              </Button> */}
             </GridItem>
           </GridContainer>
         </FormBody>

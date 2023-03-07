@@ -464,7 +464,7 @@ function ProductOtherInformation() {
         <Card>
             <NotificationContainer/>
             <CardHeader color="primary">
-                <h4 className={classes.cardTitleWhite}>{t('sideBar.category')}</h4>
+                <h4 className={classes.cardTitleWhite}>{t('sideBar.otherInfo')}</h4>
             </CardHeader>
             <CardBody className={classes.cardBody}>
                 <div

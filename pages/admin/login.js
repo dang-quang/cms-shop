@@ -54,7 +54,7 @@ function login(props) {
       });
     }
 
-    const encAccessToken = await encryptString(`${localStorage.getItem("DEVICEID")}##vn.supper.app.apigw`,
+    const encAccessToken = await encryptString(`${localStorage.getItem("DEVICEID")}##${buildKey}`,
     localStorage.getItem("RSAPUBLIC"));
     localStorage.setItem("ENCACCESSTOKEN", encAccessToken);
     

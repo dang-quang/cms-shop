@@ -1,20 +1,3 @@
-/*!
-
-=========================================================
-* natcash Platform v1.1.0 based on Material Dashboard React v1.9.0
-=========================================================
-
-* Product Page: https://www.microtec.vn/product/natcash
-* Copyright 2021 Microtec (https://www.microtec.vn)
-* Licensed under MIT (https://github.com/creativetimofficial/natcash/blob/master/LICENSE.md)
-
-* Coded by Microtec
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React, { useEffect } from "react";
 import { connect, Provider } from "react-redux";
 import store from "../redux/store";

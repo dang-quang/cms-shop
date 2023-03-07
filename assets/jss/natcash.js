@@ -1,19 +1,3 @@
-/*!
-
- =========================================================
- * * natcash Platform v1.1.0 based on Material Dashboard React v1.9.0
- =========================================================
-
- * Product Page: http://www.microtec.vn/product/natcash
- * Copyright 2021 Microtec (http://www.microtec.vn)
- * Licensed under MIT (https://github.com/creativetimofficial/natcash/blob/master/LICENSE.md)
-
- =========================================================
-
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
- */
-
 // ##############################
 // // // Function that converts from hex color to rgb color
 // // // Example: input = #9c27b0 => output = 156, 39, 176

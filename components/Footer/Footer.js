@@ -38,19 +38,6 @@ export default function Footer(props) {
             </ListItem>
           </List>
         </div>
-        <p className={classes.right}>
-          <span>
-            &copy; {1900 + new Date().getYear()}{" "}
-            <a
-              href="https://www.microtec.vn?ref=njsmd-footer"
-              target="_blank"
-              className={classes.a}
-            >
-              Microtec
-            </a>
-            , ecommerce do not hard
-          </span>
-        </p>
       </div>
     </footer>
   );

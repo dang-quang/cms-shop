@@ -88,7 +88,6 @@ export const encryptString = async (text, publicRsa = 'MIIBIjANBgkqhkiG9w0BAQEFA
 export const encryptSha256 = async (text, signature) => {
   try {
     const hash = hmacSHA256(text, signature).toString();
-    console.log('dvht1', hash)
     return hash;
 
   } catch (error) {
@@ -101,6 +100,7 @@ export const decryptString = async (text, privateRsa) => {
   try {
     const privateKey = forge.pki.privateKeyFromPem(PRIVATE_KEY);
     const decryptedData = privateKey.decrypt(forge.util.decode64(text), 'RSAES-PKCS1-V1_5');
+    return decryptedData;
   } catch (error) {
       return `${privateRsa}`;
   }

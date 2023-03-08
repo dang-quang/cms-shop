@@ -54,20 +54,30 @@ function* loadBootstrap() {
   }
   const token = localStorage.getItem("LOGINTOKEN");
   const language = localStorage.getItem("LANGUAGE") || 'en';
-  const channel = localStorage.getItem("CHANNEL");
-  if (channel) {
-    yield put({
-      type: CHANNEL,
-      channel: channel
-    });
-  }
+  // const channel = localStorage.getItem("CHANNEL");
+  // if (channel) {
+  //   yield put({
+  //     type: CHANNEL,
+  //     channel: channel
+  //   });
+  // }
   if (language) {
     yield put({
       type: CHANGE_LANGUAGE,
       language: language
     });
   }
-  if (!token) {
+  if (token) {
+    const res = yield call(getUserProfile);
+    if (res?.userInfo) {
+      yield put(userLoginSuccess(res?.userInfo));
+    }
+    else {
+      yield put(userLogout())
+      yield put(push('/admin/login'));
+    }
+  }
+  else {
     yield put(push('/admin/login'));
   }
 }

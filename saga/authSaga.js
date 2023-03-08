@@ -23,8 +23,6 @@ function* userLoginSaga(action) {
       if (loginResponse?.accessToken && loginResponse?.status === 0) {
         localStorage.setItem("ACCESSSTOKEN", loginResponse.accessToken);
         yield put(userLoginSuccess(loginResponse?.userInfo));
-        console.log('tung', loginResponse)
-
         const decrypt = yield call(decryptString, loginResponse.accessToken, localStorage.getItem("RSAPRIVATE"));
         const encrypt = yield call(encryptString, decrypt, localStorage.getItem("RSAPUBLIC"));
 

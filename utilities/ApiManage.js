@@ -18,19 +18,10 @@ import {BASE_API_URL} from "./const";
 
 let stagingUrl = "https://node.tigerate.com/v1";
 let baseUrl = stagingUrl;
-const seckey = "D62D94DBA65E";
 const deviceModel = "iPhone 13";
 const osName = "iOS";
 const osVersion = "15.4";
 const appVersion = "0.1";
-
-export function getSignature() {
-    let timestamp = moment().format("YYYY-MM-DD HH:mm:ssZ");
-    return {
-        timestamp: timestamp,
-        signature: md5(timestamp + seckey),
-    };
-}
 
 function getUserInfoRedux() {
     return store.getState().user.userInfo;
@@ -49,7 +40,7 @@ export function verifyLogin(email, phone, answer) {
 }
 
 export function getUserProfile() {
-    return getWithCheckingToken(`${baseUrl}/users/me`, {});
+    return postWithCheckingToken(`${BASE_API_URL}/user/info`, {}, {});
 }
 
 export function getShopConnectURL(channel) {
@@ -451,10 +442,6 @@ export function updateShippingFee(obj) {
     );
 }
 
-export function deleteShippingFee(id) {
-    return postWithCheckingToken(`${baseUrl}/shipping_fee/${id}`, {}, {});
-}
-
 //Deal Shock
 export function getAllDealShock(obj) {
     return postWithCheckingToken(
@@ -798,11 +785,6 @@ export function getListShopQr(keyWord, fromDate, toDate, status) {
     return postWithCheckingToken(
         `${BASE_API_URL}/shop-qr/list`,
         {
-            "x-device-id": localStorage.getItem("DEVICEID"),
-            language: localStorage.getItem("LANGUAGE"),
-            Authorization: `${localStorage.getItem(
-                "ENCACCESSTOKEN"
-            )}##${localStorage.getItem("LOGINTOKEN")}`,
         },
         {
             keyWord: keyWord,
@@ -817,11 +799,6 @@ export function getShopQrDetail(id) {
     return postWithCheckingToken(
         `${BASE_API_URL}/shop-qr/get`,
         {
-            "x-device-id": localStorage.getItem("DEVICEID"),
-            language: localStorage.getItem("LANGUAGE"),
-            Authorization: `${localStorage.getItem(
-                "ENCACCESSTOKEN"
-            )}##${localStorage.getItem("LOGINTOKEN")}`,
         },
         {
            id: id
@@ -833,11 +810,6 @@ export function saveShopQr(code, name, type, description, image, value, pointExc
     return postWithCheckingToken(
         `${BASE_API_URL}/shop-qr/save`,
         {
-            "x-device-id": localStorage.getItem("DEVICEID"),
-            language: localStorage.getItem("LANGUAGE"),
-            Authorization: `${localStorage.getItem(
-                "ENCACCESSTOKEN"
-            )}##${localStorage.getItem("LOGINTOKEN")}`,
         },
         {
             code: code,
@@ -856,11 +828,6 @@ export function deleteShopQr(id) {
     return postWithCheckingToken(
         `${BASE_API_URL}/shop-qr/delete`,
         {
-            "x-device-id": localStorage.getItem("DEVICEID"),
-            language: localStorage.getItem("LANGUAGE"),
-            Authorization: `${localStorage.getItem(
-                "ENCACCESSTOKEN"
-            )}##${localStorage.getItem("LOGINTOKEN")}`,
         },
         {
             id: id
@@ -872,11 +839,6 @@ export function updateQrStatus(id, status) {
     return postWithCheckingToken(
         `${BASE_API_URL}/shop-qr/update-status`,
         {
-            "x-device-id": localStorage.getItem("DEVICEID"),
-            language: localStorage.getItem("LANGUAGE"),
-            Authorization: `${localStorage.getItem(
-                "ENCACCESSTOKEN"
-            )}##${localStorage.getItem("LOGINTOKEN")}`,
         },
         {
             id: id,
@@ -889,11 +851,6 @@ export function getListGames(keyWord, fromDate, toDate, status) {
     return postWithCheckingToken(
         `${BASE_API_URL}/games/list`,
         {
-            "x-device-id": localStorage.getItem("DEVICEID"),
-            language: localStorage.getItem("LANGUAGE"),
-            Authorization: `${localStorage.getItem(
-                "ENCACCESSTOKEN"
-            )}##${localStorage.getItem("LOGINTOKEN")}`,
         },
         {
             keyWord: keyWord,
@@ -908,11 +865,6 @@ export function saveGames(code, name, type, startTime, endTime, description, ima
     return postWithCheckingToken(
         `${BASE_API_URL}/games/save`,
         {
-            "x-device-id": localStorage.getItem("DEVICEID"),
-            language: localStorage.getItem("LANGUAGE"),
-            Authorization: `${localStorage.getItem(
-                "ENCACCESSTOKEN"
-            )}##${localStorage.getItem("LOGINTOKEN")}`,
         },
         {
             code: code,
@@ -931,11 +883,6 @@ export function deleteGames(id) {
     return postWithCheckingToken(
         `${BASE_API_URL}/games/delete`,
         {
-            "x-device-id": localStorage.getItem("DEVICEID"),
-            language: localStorage.getItem("LANGUAGE"),
-            Authorization: `${localStorage.getItem(
-                "ENCACCESSTOKEN"
-            )}##${localStorage.getItem("LOGINTOKEN")}`,
         },
         {
             id: id
@@ -947,11 +894,6 @@ export function getGameDetail(id) {
     return postWithCheckingToken(
         `${BASE_API_URL}/games/get`,
         {
-            "x-device-id": localStorage.getItem("DEVICEID"),
-            language: localStorage.getItem("LANGUAGE"),
-            Authorization: `${localStorage.getItem(
-                "ENCACCESSTOKEN"
-            )}##${localStorage.getItem("LOGINTOKEN")}`,
         },
         {
             id: id

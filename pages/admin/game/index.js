@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import moment from "moment";
 // @material-ui/core components
 import {makeStyles} from "@material-ui/core/styles";
@@ -38,17 +38,19 @@ import Paper from "@material-ui/core/Paper";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import classNames from "classnames";
 import Pagination from "@material-ui/lab/Pagination";
-import {NotificationContainer, NotificationManager,} from "react-light-notifications";
+import {NotificationContainer, NotificationManager,} from "react-light-notifications";``
 import {primaryColor} from "../../../assets/jss/natcash";
 import {useTranslation} from "react-i18next";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import AddInformation from "./addGame";
+import AddPrize from "./addPrize";
 import {useDispatch} from "react-redux";
 import {setShowLoader} from "../../../redux/actions/app";
-import {deleteGames, deleteShopQr, getListGames} from "../../../utilities/ApiManage";
+import {deleteGames, deletePrize, deleteShopQr, getListGames, getPrizesList} from "../../../utilities/ApiManage";
 import Router from "next/router";
+import AddGame from "./addGame";
+import {formatNumber} from "../../../utilities/utils";
 
 const LuckyFakeData = [
     {
@@ -109,7 +111,8 @@ function ProductOtherInformation() {
     const [isShowEdit, setIsShowEdit] = useState(false);
     const {t} = useTranslation();
     const dispatch = useDispatch();
-
+    const [showUpdate, setShowUpdate] = useState(false);
+    const [selectedTitle, setSelectedTitle] = useState("");
 
     const TABLE_LUCKY_HEAD = [
         t('qrManagement.stt'),
@@ -123,12 +126,21 @@ function ProductOtherInformation() {
         t('action')
     ];
 
-    const CATEGORY_TYPE = [
+    const MENU_TITLE_INFO = [
         {
-            label: t('game.luckyDraw'),
-            value: 'luckyDraw'
+            name: t('all'),
+            value: null,
         },
-    ]
+        {
+            name: t('qrManagement.notActive'),
+            value: 0,
+        },
+        {
+            name: t('qrManagement.active'),
+            value: 1,
+        },
+    ];
+
     const [table, setTable] = useState({
         tableHead: [],
         tableBody: []
@@ -136,7 +148,6 @@ function ProductOtherInformation() {
 
 
     const [data, setData] = useState([]);
-    const [selectedTitle, setSelectedTitle] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
     const [txtSearch, setTxtSearch] = useState("");
@@ -145,11 +156,14 @@ function ProductOtherInformation() {
     );
     const [toDate, setToDate] = useState(moment().format());
     const [isMobile, setIsMobile] = useState(false);
-    const [selectedTab, setSelectedTab] = useState(CATEGORY_TYPE[0]);
+    const [selectedTab, setSelectedTab] = useState({});
     const [selectedId, setSelectedId] = useState(null);
+    const [listGame, setListGame] = useState([]);
+    const [isGameDialog, setIsGameDialog] = useState("");
+
     useEffect(() => {
-        switch (selectedTab.value) {
-            case CATEGORY_TYPE[0].value:
+        switch (selectedTab?.code) {
+            case "LUCCKY_WHEEL":
                 setTable({
                     tableHead: TABLE_LUCKY_HEAD,
                     tableBody: LuckyFakeData,
@@ -164,25 +178,6 @@ function ProductOtherInformation() {
         }
     }, [selectedTab])
 
-    const CreateButton = () => {
-        return (
-            <FormControl
-                className={dashClasses.formControl}
-                onClick={() => setIsShowEdit(true)}
-                style={{
-                    marginRight: "25px",
-                    position: isMobile ? "static" : "absolute",
-                    right: "0",
-                }}
-            >
-                <Button id="update-label" color="green" >
-                    {t('addNew')}
-                </Button>
-
-            </FormControl>
-        );
-    }
-
     useEffect(() => {
         window.addEventListener(
             "resize",
@@ -195,33 +190,54 @@ function ProductOtherInformation() {
 
     useEffect(async () => {
         dispatch(setShowLoader(true));
-        let params = {};
-        params.current_page = currentPage;
-        if (txtSearch) {
-            params.order_sn = txtSearch;
-        }
+        const status = selectedTitle.value;
+        let from;
+        let to;
+        let key;
         if (doFilter) {
-            params.fromDate = moment(fromDate).unix();
-            params.toDate = moment(toDate).unix();
+            from = moment(fromDate).format('YYYY-MM-DD');
+            to = moment(toDate).format('YYYY-MM-DD');
         }
-        if (selectedTitle.value) {
-            params.status = selectedTitle.value;
+        if (txtSearch) {
+            key = txtSearch;
         }
-        const res = await getListGames(params);
-        //
-        // if (res.status == 0 && res?.list) {
+        const res = await getListGames(key, from, to, status);
+        if (res.status === 0 && res?.list) {
+           setListGame(res?.list);
+           setSelectedTab(res?.list[0]);
+        }
+        dispatch(setShowLoader(false));
+    }, [doSearch, doFilter, selectedTitle]);
+
+    useEffect(async () => {
+        dispatch(setShowLoader(true));
+        // let params = {};
+        // params.current_page = currentPage;
+        if (selectedTab?.id) {
+            const res = await getPrizesList(selectedTab.id);
+            console.log('tung', res, selectedTab.id)
+        }
+
+        // if (res.status === 0 && res?.list) {
         //     if (res.list.length > 0) {
         //         setData(res.list);
         //     }
         //     // setCurrentPage(res.data.data_page.current_page);
         //     // setTotalPage(res.data.data_page.total_page);
         // }
+
+
         dispatch(setShowLoader(false));
-    }, [doSearch, doFilter, selectedTitle, currentPage]);
+    }, [selectedTab]);
 
     const onDeleteGame = async () => {
         dispatch(setShowLoader(true));
-        const res = await deleteGames(isShowModal);
+        let res;
+        if (isShowModal.type === "game") {
+            res = await deleteGames(isShowModal.id);
+        } else {
+            res = await deletePrize(isShowModal.id);
+        }
         if (res.code === 200) {
             Router.push("/admin/game");
         } else {
@@ -240,6 +256,10 @@ function ProductOtherInformation() {
     };
     const handleSelectPage = (event, value) => {
         setCurrentPage(value);
+    };
+    const handleTab = (item) => {
+        setSelectedTab(item);
+        setCurrentPage(1);
     };
     const handleTitle = (item) => {
         setSelectedTitle(item);
@@ -379,7 +399,7 @@ function ProductOtherInformation() {
                                                 </MenuItem>
                                                 <MenuItem className={classes.dropdownItem}
                                                           onClick={() => {
-                                                              setIsShowModal(item.id);
+                                                              setIsShowModal({id: item.id, type: "prize"});
                                                           }}
                                                 >
                                                     {t('delete')}
@@ -403,6 +423,24 @@ function ProductOtherInformation() {
                 <h4 className={classes.cardTitleWhite}>{t('sideBar.game')}</h4>
             </CardHeader>
             <CardBody className={classes.cardBody}>
+                <div className={classes.selectTitleContainer}>
+                    <GridContainer>
+                        {MENU_TITLE_INFO.map((item, index) => {
+                            return (
+                                <div
+                                    className={classes.selectContainer}
+                                    style={{
+                                        backgroundColor:
+                                            selectedTitle.value == item.value ? primaryColor[3] : "",
+                                    }}
+                                    onClick={() => handleTitle(item)}
+                                >
+                                    <p>{item.name}</p>
+                                </div>
+                            );
+                        })}
+                    </GridContainer>
+                </div>
                 <div
                     className={dashClasses.filterSelections + " " + classes.flex_center_between}
                 >
@@ -557,7 +595,90 @@ function ProductOtherInformation() {
                             </Poppers>
                         </FormControl>
                     </div>
-                    <CreateButton />
+                    <FormControl
+                        className={dashClasses.formControl}
+                        onClick={() => setIsShowEdit(true)}
+                        style={{
+                            marginRight: "25px",
+                            position: isMobile ? "static" : "absolute",
+                            right: "0",
+                        }}
+                    >
+                        <Button id="update-label" color="green" >
+                            {t('game.addNewPrize')}
+                        </Button>
+
+                    </FormControl>
+                    <FormControl
+                        className={dashClasses.formControl}
+                        style={{
+                            marginRight: isMobile ? "10px" : "180px",
+                            position: isMobile ? "static" : "absolute",
+                            right: "0",
+                        }}
+                    >
+                        <Button
+                            id="update-label"
+                            color="primary"
+                            onClick={() => setShowUpdate(true)}
+                        >
+                            {t('action')}
+                            <Icon className={classes.btnFilter}>expand_more_outlined</Icon>
+                        </Button>
+                        <Poppers
+                            open={Boolean(showUpdate)}
+                            anchorEl={showUpdate}
+                            transition
+                            disablePortal
+                            className={
+                                classNames({ [classes.popperClose]: !showUpdate }) +
+                                " " +
+                                classes.popperUpdate
+                            }
+                        >
+                            {({ TransitionProps, placement }) => (
+                                <Grow
+                                    {...TransitionProps}
+                                    id="notification-menu-list-grow"
+                                    style={{
+                                        transformOrigin:
+                                            placement === "bottom" ? "center top" : "center bottom",
+                                    }}
+                                >
+                                    <Paper>
+                                        <ClickAwayListener onClickAway={() => setShowUpdate(false)}>
+                                            <MenuList role="menu">
+                                                <MenuItem
+                                                    className={classes.dropdownItem}
+                                                    onClick={() => {
+                                                        setIsGameDialog("addNewGame")
+                                                    }}
+                                                >
+                                                    {t('game.addNewGame')}
+                                                </MenuItem>
+                                                <MenuItem
+                                                    className={classes.dropdownItem}
+                                                    onClick={() => {
+                                                        setIsGameDialog("editGame")
+                                                    }}
+                                                >
+                                                    {t('game.editGame')}
+                                                </MenuItem>
+                                                <MenuItem
+                                                    className={classes.dropdownItem}
+                                                    onClick={() => {
+                                                        setIsShowModal({id: selectedTab.id, type: "game"});
+                                                    }}
+                                                >
+                                                    {t('game.deleteGame')}
+                                                </MenuItem>
+                                            </MenuList>
+                                        </ClickAwayListener>
+                                    </Paper>
+                                </Grow>
+                            )}
+                        </Poppers>
+                    </FormControl>
                 </div>
                 <ModalCustom
                     width={600}
@@ -599,35 +720,22 @@ function ProductOtherInformation() {
             <CardFooter>
                 <div className={classes.sideBarContainer}>
                     <List className={classes.listContainer}>
-                        {CATEGORY_TYPE.map((item, index) => {
+                        {listGame.map((item, index) => {
                             return (
-                                // <ListItem className={classNames(
-                                //     classes.itemLink,
-                                //     // selectedTab == item ? classes.sideBarWhiteNormal : classes.sideBarWhiteText,
-                                // )}>
-                                //     <ListItemText
-                                //         primary={item}
-                                //         className={classNames(
-                                //             classes.itemText,
-                                //             selectedTab == item ? classes.sideBarWhiteNormal : classes.sideBarWhiteText,
-                                //         )}
-                                //         disableTypography={true}
-                                //     />
-                                // </ListItem>
-                                <a className={classes.item} onClick={() => setSelectedTab(item)}>
+                                <a className={classes.item} onClick={() => handleTab(item)}>
                                     <ListItem
                                         button
                                         className={
                                             classNames(
                                                 classes.itemLink,
-                                                selectedTab.value === item.value ? classes.white : ""
+                                                selectedTab?.code === item.code ? classes.white : ""
                                             )}
                                     >
                                         <ListItemText
-                                            primary={item.label}
+                                            primary={item.name}
                                             className={classNames(
                                                 classes.itemText,
-                                                selectedTab.value === item.value ? classes.whiteFont : ""
+                                                selectedTab?.code === item.code ? classes.whiteFont : ""
                                             )}
                                             disableTypography={true}
                                         />
@@ -682,7 +790,7 @@ function ProductOtherInformation() {
             </CardFooter>
             <ModalCustom
                 width={1000}
-                title={t('addNew')}
+                title={t('game.addNewPrize')}
                 subTitle={""}
                 // isShow={true}
                 isShow={isShowEdit}
@@ -690,11 +798,24 @@ function ProductOtherInformation() {
                     setIsShowEdit(false);
                     setSelectedId(null)
                 }}>
-                <AddInformation closeDialog={() => {
+                <AddPrize closeDialog={() => {
                     setIsShowEdit(false);
                     setSelectedId(null)
                 }} selectedTab={selectedTab}
                     id={selectedId}/>
+            </ModalCustom>
+            <ModalCustom
+                width={1000}
+                title={t(`game.${isGameDialog}`)}
+                subTitle={""}
+                // isShow={true}
+                isShow={!_.isEmpty(isGameDialog)}
+                handleClose={() => {
+                  setIsGameDialog("");
+                }}>
+                <AddGame closeDialog={() => {
+                    setIsGameDialog("");
+                }} selectedTab={isGameDialog === "editGame" ? selectedTab : undefined}/>
             </ModalCustom>
         </Card>
     );

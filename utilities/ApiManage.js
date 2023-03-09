@@ -853,7 +853,7 @@ export function getListGames(keyWord, fromDate, toDate, status) {
         {
         },
         {
-            keyWord: keyWord,
+            keyword: keyWord,
             fromDate: fromDate,
             toDate: toDate,
             status: status
@@ -882,8 +882,27 @@ export function saveGames(code, name, type, startTime, endTime, description, ima
 export function deleteGames(id) {
     return postWithCheckingToken(
         `${BASE_API_URL}/games/delete`,
+        {},
         {
-        },
+            id: id
+        }
+    );
+}
+
+export function getPrizesList(id) {
+    return postWithCheckingToken(
+        `${BASE_API_URL}/games/list-prizes`,
+        {},
+        {
+            id: id
+        }
+    );
+}
+
+export function deletePrize(id) {
+    return postWithCheckingToken(
+        `${BASE_API_URL}/prizes/delete`,
+        {},
         {
             id: id
         }

@@ -172,7 +172,11 @@
     "image": "Image",
     "prize": "Prize",
     "order": "Order",
-    "style": "Style"
+    "style": "Style",
+    "addNewGame": "Add new game",
+    "addNewPrize": "Add new prize",
+    "editGame": "Edit game",
+    "deleteGame": "Delete game"
   },
   "operation": {
     "monthRevenue": "This month revenue",

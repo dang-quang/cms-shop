@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {connect, useSelector} from "react-redux";
+import {connect, useDispatch, useSelector} from "react-redux";
 // @material-ui/core components
 import {makeStyles} from "@material-ui/core/styles";
 // core components
@@ -19,6 +19,7 @@ import {initData} from "../../utilities/ApiManage";
 import {encryptSha256, encryptString} from "../../utilities/utils";
 import {buildKey} from "../../utilities/const";
 import {useTranslation} from "react-i18next";
+import {setShowLoader} from "../../redux/actions/app";
 
 function login(props) {
   const useStyles = makeStyles(styles);
@@ -27,6 +28,7 @@ function login(props) {
   const [password, setPassword] = useState("");
   const showLoader = useSelector((state) => state.app.showLoader);
   const {t} = useTranslation();
+  const dispatch = useDispatch();
 
   const handleLogin = useCallback(async () => {
     if (!username || !password) {
@@ -35,6 +37,7 @@ function login(props) {
         message: t('login.loginError'),
       });
     }
+    dispatch(setShowLoader(true));
 
     const initToken = await encryptString(`${localStorage.getItem("DEVICEID")}##${buildKey}`);
     localStorage.setItem("INITTOKEN", initToken);
@@ -61,6 +64,7 @@ function login(props) {
     const text = `${username}${password}`;
     const signatureKey = await encryptSha256(text, localStorage.getItem("RSASIGNATURE"));
     localStorage.setItem("SIGNATUREKEY", signatureKey);
+    dispatch(setShowLoader(false));
 
     props.userLogin(username, password);
   }, [username, password]);

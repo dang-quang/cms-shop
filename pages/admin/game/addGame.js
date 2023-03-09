@@ -23,8 +23,11 @@ import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import {Close} from "@material-ui/icons";
 import {getShopQrDetail, saveGames} from "../../../utilities/ApiManage";
 import Router from "next/router";
+import {grayColor} from "../../../assets/jss/natcash";
+import FormCellCustom from "../../../components/FormCustom/FormCellCustom";
+import moment from "moment/moment";
 
-function AddGame({closeDialog, selectedTab, id}) {
+function AddGame({closeDialog, selectedTab}) {
     const dispatch = useDispatch();
     const useStyles = makeStyles(styles);
     const classes = useStyles();
@@ -34,11 +37,12 @@ function AddGame({closeDialog, selectedTab, id}) {
     const [values, setValues] = useState({
         code: "",
         name: "",
-        prize: "",
-        quantity: "",
-        amount: "",
-        order: "",
-        style: "",
+        type: "",
+        time_from: moment().format("yyyy-MM-DDThh:mm"),
+        time_to: moment().add(1, "hours").format("yyyy-MM-DDThh:mm"),
+        description: "",
+        image: "",
+        amount: ""
     });
     const handleChangeValue = (prop) => (event) => {
         setValues({...values, [prop]: event.target.value});
@@ -56,7 +60,7 @@ function AddGame({closeDialog, selectedTab, id}) {
             return (
                 <div className={classes.imgContainer}>
                     <Close className={classes.btnClose} onClick={() => handleRemoveImage(photo)}/>
-                    <img src={photo} alt="" key={photo} className={classes.imageUpload} />
+                    <img src={photo} alt="" key={photo} className={classes.imageUpload}/>
                 </div>
             );
         });
@@ -75,7 +79,7 @@ function AddGame({closeDialog, selectedTab, id}) {
             const filesArray = Array.from(e.target.files).map((file) =>
                 URL.createObjectURL(file)
             );
-            const files = Array.from(e.target.files).map((file) =>file);
+            const files = Array.from(e.target.files).map((file) => file);
             setSelectedFiles((prevFiles) => prevFiles.concat(files));
             setSelectedImages((prevImages) => prevImages.concat(filesArray));
             Array.from(e.target.files).map(
@@ -85,9 +89,9 @@ function AddGame({closeDialog, selectedTab, id}) {
     };
 
     const handleSubmit = async () => {
-        if (_.isEmpty(values.code) || _.isEmpty(values.name) || _.isEmpty(values.prize) ||
-            _.isEmpty(values.quantity) || _.isEmpty(values.amount) || _.isEmpty(values.order)
-            || _.isEmpty(values.style)) {
+        if (_.isEmpty(values.code) || _.isEmpty(values.name) || _.isEmpty(values.type) ||
+            _.isEmpty(values.startTime) || _.isEmpty(values.endTime) || _.isEmpty(values.description)
+            || _.isEmpty(values.image) || _.isEmpty(values.amount)) {
             NotificationManager.error({
                 title: t('error'),
                 message: t('errorInput'),
@@ -96,7 +100,7 @@ function AddGame({closeDialog, selectedTab, id}) {
             dispatch(setShowLoader(true));
             const code = values.code;
             const name = values.name;
-            const type = selectedTab;
+            const type = values.type;
             const startTime = "16/02/2023 00:00:00";
             const endTime = "22/02/2023 00:00:00";
             const description = "Lucky Wheel";
@@ -145,7 +149,7 @@ function AddGame({closeDialog, selectedTab, id}) {
                                 fullWidth
                                 inputProps={{
                                     value: values.code,
-                                    onChange: (e) => handleChangeValue("code", e.target.value),
+                                    onChange: handleChangeValue("code"),
                                 }}
                                 className={classes.marginBottom_20}
                                 autoComplete="off"
@@ -160,7 +164,7 @@ function AddGame({closeDialog, selectedTab, id}) {
                                 fullWidth
                                 inputProps={{
                                     value: values.name,
-                                    onChange: (e) => handleChangeValue("name", e.target.value),
+                                    onChange: handleChangeValue("name"),
                                 }}
                                 className={classes.marginBottom_20}
                                 autoComplete="off"
@@ -171,44 +175,19 @@ function AddGame({closeDialog, selectedTab, id}) {
                         <GridItem xs={12} sm={6} md={6}>
                             <TextField
                                 // error={validateSku ? false : true}
-                                id="prize"
-                                label={t(`game.prize`)}
+                                id="type"
+                                label={t(`voucher.type`)}
                                 variant="outlined"
                                 size="small"
                                 fullWidth
                                 inputProps={{
-                                    value: values.prize,
-                                    onChange: (e) => handleChangeValue("prize", e.target.value),
+                                    value: values.type,
+                                    onChange: handleChangeValue("type"),
                                 }}
                                 className={classes.marginBottom_20}
                                 autoComplete="off"
                             />
                         </GridItem>
-                        <GridItem xs={12} sm={6} md={6}>
-                            <FormControl
-                                fullWidth
-                                className={classes.marginBottom_20}
-                                variant="outlined"
-                                size="small"
-                            >
-                                <InputLabel htmlFor="quantity">
-                                    {t(`quantity`)}
-                                </InputLabel>
-                                <OutlinedInput
-                                    id="quantity"
-                                    value={values.quantity}
-                                    onChange={(e) => handleChangeValue("quantity", e.target.value)}
-                                    startAdornment={
-                                        <InputAdornment position="start">₫</InputAdornment>
-                                    }
-                                    labelWidth={70}
-                                    type="number"
-                                    autoComplete="off"
-                                />
-                            </FormControl>
-                        </GridItem>
-                    </GridContainer>
-                    <GridContainer>
                         <GridItem xs={12} sm={6} md={6}>
                             <FormControl
                                 fullWidth
@@ -222,30 +201,7 @@ function AddGame({closeDialog, selectedTab, id}) {
                                 <OutlinedInput
                                     id="amount"
                                     value={values.amount}
-                                    onChange={(e) => handleChangeValue("amount", e.target.value)}
-                                    startAdornment={
-                                        <InputAdornment position="start">₫</InputAdornment>
-                                    }
-                                    labelWidth={70}
-                                    type="number"
-                                    autoComplete="off"
-                                />
-                            </FormControl>
-                        </GridItem>
-                        <GridItem xs={12} sm={6} md={6}>
-                            <FormControl
-                                fullWidth
-                                className={classes.marginBottom_20}
-                                variant="outlined"
-                                size="small"
-                            >
-                                <InputLabel htmlFor="order">
-                                    {t(`game.order`)}
-                                </InputLabel>
-                                <OutlinedInput
-                                    id="order"
-                                    value={values.order}
-                                    onChange={(e) => handleChangeValue("order", e.target.value)}
+                                    onChange={handleChangeValue("amount")}
                                     startAdornment={
                                         <InputAdornment position="start">₫</InputAdornment>
                                     }
@@ -256,22 +212,63 @@ function AddGame({closeDialog, selectedTab, id}) {
                             </FormControl>
                         </GridItem>
                     </GridContainer>
+                    <GridContainer>
+                        <GridItem xs={12} sm={12} md={12} style={{marginTop: '15px'}}>
+                            <FormCellCustom
+                                label={t('time')}
+                                // helperText={t('voucher.timeDes')}
+                            >
+                                <div className={classes.formCell + " " + classes.flex_center}>
+                                    <TextField
+                                        id="datetime-local"
+                                        // label="Next appointment"
+                                        type="datetime-local"
+                                        value={values.time_from}
+                                        onChange={handleChangeValue("time_from")}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                    />
+                                    <span
+                                        style={{
+                                            margin: "0 15px",
+                                            width: "15px",
+                                            height: "2px",
+                                            backgroundColor: grayColor[0],
+                                            display: "block",
+                                        }}
+                                    ></span>
+                                    <TextField
+                                        id="datetime-local"
+                                        // label="Next appointment"
+                                        type="datetime-local"
+                                        value={values.time_to}
+                                        onChange={handleChangeValue("time_to")}
+                                        className={classes.textField}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                    />
+                                </div>
+                            </FormCellCustom>
+                        </GridItem>
+                    </GridContainer>
                 </div>
                 <div>
-                    <p className={classes.titleFilter}>{t(`game.style`)}</p>
+                    <p className={classes.titleFilter}>{t(`description`)}</p>
                     <GridContainer>
                         <GridItem xs={12} sm={12} md={12}>
                             <TextField
                                 multiline
                                 id="input3"
-                                label={t(`game.style`)}
+                                label={t(`description`)}
                                 variant="outlined"
                                 size="small"
                                 fullWidth
                                 rows={4}
                                 inputProps={{
-                                    value: values.style,
-                                    onChange: (e) => handleChangeValue("style", e.target.value),
+                                    value: values.description,
+                                    onChange: handleChangeValue("description"),
                                 }}
                                 className={classes.marginBottom_20}
                                 autoComplete="off"
@@ -288,7 +285,7 @@ function AddGame({closeDialog, selectedTab, id}) {
                             id="icon-button-file"
                             type="file"
                             multiple
-                            style={{ display: "none" }}
+                            style={{display: "none"}}
                             onChange={handleImageChange}
                         />
                         <label
@@ -300,7 +297,7 @@ function AddGame({closeDialog, selectedTab, id}) {
                                 aria-label="upload picture"
                                 component="span"
                             >
-                                <PhotoCamera />
+                                <PhotoCamera/>
                             </IconButton>
                         </label>
                     </div>

@@ -51,46 +51,7 @@ import {deleteGames, deletePrize, deleteShopQr, getListGames, getPrizesList} fro
 import Router from "next/router";
 import AddGame from "./addGame";
 import {formatNumber} from "../../../utilities/utils";
-
-const LuckyFakeData = [
-    {
-        id: '1',
-        image: 'https://source.unsplash.com/random/200x200?sig=1',
-        name: 'This is game',
-        prize: "10 HTG",
-        quantity: 30,
-        amount: 30,
-        order: 1,
-        style: "backgroundColor: 'red'"
-    },   {
-        id: '2',
-        image: 'https://source.unsplash.com/random/200x200?sig=1',
-        name: 'This is game',
-        prize: "10 HTG",
-        quantity: 30,
-        amount: 30,
-        order: 1,
-        style: "backgroundColor: 'red'"
-    },   {
-        id: '3',
-        image: 'https://source.unsplash.com/random/200x200?sig=1',
-        name: 'This is game',
-        prize: "10 HTG",
-        quantity: 30,
-        amount: 30,
-        order: 1,
-        style: "backgroundColor: 'red'"
-    },   {
-        id: '4',
-        image: 'https://source.unsplash.com/random/200x200?sig=1',
-        name: 'This is game',
-        prize: "10 HTG",
-        quantity: 30,
-        amount: 30,
-        order: 1,
-        style: "backgroundColor: 'red'"
-    },
-];
+import imgGift from "assets/img/gift.png";
 
 function ProductOtherInformation() {
     const useShopStyles = makeStyles(shopStyle);
@@ -162,23 +123,6 @@ function ProductOtherInformation() {
     const [isGameDialog, setIsGameDialog] = useState("");
 
     useEffect(() => {
-        switch (selectedTab?.code) {
-            case "LUCCKY_WHEEL":
-                setTable({
-                    tableHead: TABLE_LUCKY_HEAD,
-                    tableBody: LuckyFakeData,
-                })
-                return;
-            default:
-                setTable({
-                    tableHead: [],
-                    tableBody: [],
-                })
-                return;
-        }
-    }, [selectedTab])
-
-    useEffect(() => {
         window.addEventListener(
             "resize",
             () => {
@@ -215,17 +159,16 @@ function ProductOtherInformation() {
         // params.current_page = currentPage;
         if (selectedTab?.id) {
             const res = await getPrizesList(selectedTab.id);
-            console.log('tung', res, selectedTab.id)
+            if (res.status === 0 && res?.infoList) {
+                if (res.infoList.length > 0) {
+                    setTable({tableHead: TABLE_LUCKY_HEAD, tableBody: res.infoList.sort((a,b) => a.id - b.id)})
+                }
+                // setCurrentPage(res.data.data_page.current_page);
+                // setTotalPage(res.data.data_page.total_page);
+            }
+        } else {
+            setTable({tableHead: [], tableBody: []});
         }
-
-        // if (res.status === 0 && res?.list) {
-        //     if (res.list.length > 0) {
-        //         setData(res.list);
-        //     }
-        //     // setCurrentPage(res.data.data_page.current_page);
-        //     // setTotalPage(res.data.data_page.total_page);
-        // }
-
 
         dispatch(setShowLoader(false));
     }, [selectedTab]);
@@ -293,7 +236,7 @@ function ProductOtherInformation() {
                 </TableCell>
                 <TableCell className={tableClasses.tableCell} key={"image"}>
                     <div className={classes.proInfoContainer}>
-                        <img src={item.image} className={classes.gameImage}/>
+                        <img src={item?.image ? item.image : imgGift} className={classes.gameImage}/>
                     </div>
                 </TableCell>
                 <TableCell className={tableClasses.tableCell} key={"name"}>
@@ -306,7 +249,7 @@ function ProductOtherInformation() {
                 <TableCell className={tableClasses.tableCell} key={"prize"}>
                     <div className={classes.proInfoContainer}>
                         <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
-                            {item.prize}
+                            {item.value}
                         </p>
                     </div>
                 </TableCell>
@@ -327,7 +270,7 @@ function ProductOtherInformation() {
                 <TableCell className={tableClasses.tableCell} key={"order"}>
                     <div className={classes.proInfoContainer}>
                         <p className={tableClasses.tableCell + " " + classes.txtOrderInfo}>
-                            {item.order}
+                            {item.levels}
                         </p>
                     </div>
                 </TableCell><TableCell className={tableClasses.tableCell} key={"style"}>

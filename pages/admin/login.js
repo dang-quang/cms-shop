@@ -37,12 +37,14 @@ function login(props) {
         message: t('login.loginError'),
       });
     }
-    dispatch(setShowLoader(true));
 
     const initToken = await encryptString(`${localStorage.getItem("DEVICEID")}##${buildKey}`);
     localStorage.setItem("INITTOKEN", initToken);
 
+    dispatch(setShowLoader(true));
     const responseInit = await initData();
+    dispatch(setShowLoader(false));
+
     if (responseInit.signatureKey && responseInit.rsaPublicKey && responseInit.rsaPrivateKey) {
       localStorage.setItem("RSAPUBLIC",responseInit.rsaPublicKey);
       localStorage.setItem("RSAPRIVATE",responseInit.rsaPrivateKey);
@@ -64,7 +66,6 @@ function login(props) {
     const text = `${username}${password}`;
     const signatureKey = await encryptSha256(text, localStorage.getItem("RSASIGNATURE"));
     localStorage.setItem("SIGNATUREKEY", signatureKey);
-    dispatch(setShowLoader(false));
 
     props.userLogin(username, password);
   }, [username, password]);

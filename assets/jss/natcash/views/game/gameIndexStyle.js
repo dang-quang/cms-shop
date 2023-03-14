@@ -209,6 +209,9 @@ const gameIndexStyle = {
         width: '80px',
         height: '80px',
         objectFit: 'contain'
-    }
+    },
+    popperNav: {
+        marginTop: "55px",
+    },
 };
 export default gameIndexStyle;

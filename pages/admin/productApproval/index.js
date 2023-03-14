@@ -371,32 +371,32 @@ function ProductApproval() {
         );
     }, []);
 
-    useEffect(async () => {
-        dispatch(setShowLoader(true))
-        const res = await getProductScreen()
-        setData(res.data.item_list)
-        setTotalPage(res.data.data_page.total_page)
-        dispatch(setShowLoader(false))
-    }, []);
-
-    useEffect(async () => {
-        dispatch(setShowLoader(true));
-        setChecked([]);
-        let params = {};
-        params.current_page = currentPage;
-        if (txtSearch) {
-            params.keyword = txtSearch;
-        }
-        if (doFilter) {
-            params.time_from = moment(fromDate).unix();
-            params.time_to = moment(toDate).unix();
-        }
-
-        const res = await getProductList(params)
-        setData(res.data.item_list)
-        setTotalPage(res.data.data_page.total_page)
-        dispatch(setShowLoader(false))
-    }, [doSearch, doFilter, currentPage]);
+    // useEffect(async () => {
+    //     dispatch(setShowLoader(true))
+    //     // const res = await getProductScreen()
+    //     // setData(res.data.item_list)
+    //     // setTotalPage(res.data.data_page.total_page)
+    //     dispatch(setShowLoader(false))
+    // }, []);
+    //
+    // useEffect(async () => {
+    //     dispatch(setShowLoader(true));
+    //     setChecked([]);
+    //     let params = {};
+    //     params.current_page = currentPage;
+    //     if (txtSearch) {
+    //         params.keyword = txtSearch;
+    //     }
+    //     if (doFilter) {
+    //         params.time_from = moment(fromDate).unix();
+    //         params.time_to = moment(toDate).unix();
+    //     }
+    //
+    //     // const res = await getProductList(params)
+    //     // setData(res.data.item_list)
+    //     // setTotalPage(res.data.data_page.total_page)
+    //     dispatch(setShowLoader(false))
+    // }, [doSearch, doFilter, currentPage]);
 
     const resetFilterDate = () => {
         setFromDate(moment().subtract(30, "days").format());

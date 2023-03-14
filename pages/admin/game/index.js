@@ -386,8 +386,12 @@ function ProductOtherInformation() {
                 </div>
                 <div
                     className={dashClasses.filterSelections + " " + classes.flex_center_between}
+                    style={{
+                        marginLeft: "25px",
+                        position: "relative",
+                        display: "block",
+                    }}
                 >
-                    <div>
                         <FormControl className={dashClasses.formControl}>
                             <div style={{marginRight: "15px"}}>
                                 <CustomInput
@@ -537,12 +541,11 @@ function ProductOtherInformation() {
                                 )}
                             </Poppers>
                         </FormControl>
-                    </div>
                     <FormControl
                         className={dashClasses.formControl}
                         onClick={() => setIsShowEdit(true)}
                         style={{
-                            marginRight: "25px",
+                            marginRight: "180px",
                             position: isMobile ? "static" : "absolute",
                             right: "0",
                         }}
@@ -555,10 +558,10 @@ function ProductOtherInformation() {
                     <FormControl
                         className={dashClasses.formControl}
                         style={{
-                            marginRight: isMobile ? "10px" : "180px",
+                            marginRight: "25px",
                             position: isMobile ? "static" : "absolute",
                             right: "0",
-                        }}
+                            }}
                     >
                         <Button
                             id="update-label"
@@ -576,7 +579,7 @@ function ProductOtherInformation() {
                             className={
                                 classNames({ [classes.popperClose]: !showUpdate }) +
                                 " " +
-                                classes.popperUpdate
+                                classes.popperNav
                             }
                         >
                             {({ TransitionProps, placement }) => (
@@ -623,6 +626,7 @@ function ProductOtherInformation() {
                         </Poppers>
                     </FormControl>
                 </div>
+
                 <ModalCustom
                     width={600}
                     title={t('confirmation')}

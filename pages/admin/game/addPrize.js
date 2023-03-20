@@ -21,7 +21,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import {Close} from "@material-ui/icons";
-import {getShopQrDetail, saveGames} from "../../../utilities/ApiManage";
+import {getShopQrDetail, saveGames, savePrizes} from "../../../utilities/ApiManage";
 import Router from "next/router";
 
 function AddPrize({closeDialog, selectedTab, id}) {
@@ -86,23 +86,26 @@ function AddPrize({closeDialog, selectedTab, id}) {
 
     const handleSubmit = async () => {
         if (_.isEmpty(values.code) || _.isEmpty(values.name) || _.isEmpty(values.prize) ||
-            _.isEmpty(values.quantity) || _.isEmpty(values.amount) || _.isEmpty(values.order)
-            || _.isEmpty(values.style)) {
+            _.isEmpty(values.quantity) || _.isEmpty(values.amount) || _.isEmpty(values.order)) {
             NotificationManager.error({
                 title: t('error'),
                 message: t('errorInput'),
             });
         } else {
             dispatch(setShowLoader(true));
-            const code = values.code;
-            const name = values.name;
-            const type = selectedTab;
-            const startTime = "16/02/2023 00:00:00";
-            const endTime = "22/02/2023 00:00:00";
-            const description = "Lucky Wheel";
+            const code = "PRIZES_11";
+            const name = "+1 Turn";
+            const game = selectedTab.id;
+            const type = "+1 Turn";
+            const description = "+1 Turn";
+            const quantity = 2;
+            const value = 1;
+            const startTime = "2023-03-09";
+            const endTime = "2023-03-19";
             const image = "";
-            const amount = 100000;
-            const res = await saveGames(code, name, type, startTime, endTime, description, image, amount);
+            const amount = 1000;
+            const levels = 12;
+            const res = await savePrizes(code, type, name, description, amount, startTime);
             dispatch(setShowLoader(false));
             if (res.code === 200) {
                 Router.push("/admin/game");

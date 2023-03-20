@@ -879,6 +879,22 @@ export function saveGames(code, name, type, startTime, endTime, description, ima
     );
 }
 
+export function savePrizes(code, type, name, description, value, startTime) {
+    return postWithCheckingToken(
+        `${BASE_API_URL}/prizes/save`,
+        {
+        },
+        {
+            code: "PRIZES_11",
+            type: "+1 Turn",
+            name: "+1 Turn",
+            description: "+1 Turn",
+            value: 100,
+            pointExchange: 10
+        }
+    );
+}
+
 export function deleteGames(id) {
     return postWithCheckingToken(
         `${BASE_API_URL}/games/delete`,

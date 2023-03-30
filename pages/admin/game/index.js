@@ -53,7 +53,7 @@ import AddGame from "./addGame";
 import {formatNumber} from "../../../utilities/utils";
 import imgGift from "assets/img/gift.png";
 
-function ProductOtherInformation() {
+function Game() {
     const useShopStyles = makeStyles(shopStyle);
     const shopClasses = useShopStyles();
     const useStyles = makeStyles(styles);
@@ -768,6 +768,6 @@ function ProductOtherInformation() {
     );
 }
 
-ProductOtherInformation.layout = Admin;
+Game.layout = Admin;
 
-export default WithAuthentication(ProductOtherInformation);
+export default WithAuthentication(Game);

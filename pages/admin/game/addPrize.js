@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
-import {setShowLoader} from "../../../redux/actions/app";
-import {useDispatch} from "react-redux";
-import {NotificationManager,} from "react-light-notifications";
+import React, { useEffect, useState } from "react";
+import { setShowLoader } from "../../../redux/actions/app";
+import { useDispatch } from "react-redux";
+import { NotificationManager, } from "react-light-notifications";
 import "react-light-notifications/lib/main.css";
 // @material-ui/core components
 // layout for this page
@@ -10,9 +10,9 @@ import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import Button from "components/CustomButtons/Button.js";
-import {FormControl, makeStyles, OutlinedInput, TextField,} from "@material-ui/core";
+import { FormControl, makeStyles, OutlinedInput, TextField, } from "@material-ui/core";
 import styles from "assets/jss/natcash/views/game/addGameStyle";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import _ from 'lodash';
 import GridContainer from "../../../components/Grid/GridContainer";
 import GridItem from "../../../components/Grid/GridItem";
@@ -20,28 +20,33 @@ import InputLabel from "@material-ui/core/InputLabel";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
-import {Close} from "@material-ui/icons";
-import {getShopQrDetail, saveGames, savePrizes} from "../../../utilities/ApiManage";
+import { Close } from "@material-ui/icons";
+import { getShopQrDetail, saveGames, savePrizes } from "../../../utilities/ApiManage";
 import Router from "next/router";
 
-function AddPrize({closeDialog, selectedTab, id}) {
+function AddPrize({ closeDialog, selectedTab, id }) {
     const dispatch = useDispatch();
     const useStyles = makeStyles(styles);
     const classes = useStyles();
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [selectedImages, setSelectedImages] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]);
+    const [base64Image, setBase64Image] = useState('');
     const [values, setValues] = useState({
         code: "",
+        giftType:"",
         name: "",
-        prize: "",
+        description:"",
+        percent: "", 
+        type: "",
+        image:"",
+        value:"",
+        pointExchange:"",
+        gameId: id,
         quantity: "",
-        amount: "",
-        order: "",
-        style: "",
     });
     const handleChangeValue = (prop) => (event) => {
-        setValues({...values, [prop]: event.target.value});
+        setValues({ ...values, [prop]: event.target.value });
     };
 
 
@@ -55,7 +60,7 @@ function AddPrize({closeDialog, selectedTab, id}) {
         return source.map((photo) => {
             return (
                 <div className={classes.imgContainer}>
-                    <Close className={classes.btnClose} onClick={() => handleRemoveImage(photo)}/>
+                    <Close className={classes.btnClose} onClick={() => handleRemoveImage(photo)} />
                     <img src={photo} alt="" key={photo} className={classes.imageUpload} />
                 </div>
             );
@@ -71,11 +76,20 @@ function AddPrize({closeDialog, selectedTab, id}) {
         setSelectedFiles(newListFiles)
     }
     const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const arr = reader.result.split(",");
+                setBase64Image(arr[1]);
+            };
+            reader.readAsDataURL(file);
+        }
         if (e.target.files) {
             const filesArray = Array.from(e.target.files).map((file) =>
                 URL.createObjectURL(file)
             );
-            const files = Array.from(e.target.files).map((file) =>file);
+            const files = Array.from(e.target.files).map((file) => file);
             setSelectedFiles((prevFiles) => prevFiles.concat(files));
             setSelectedImages((prevImages) => prevImages.concat(filesArray));
             Array.from(e.target.files).map(
@@ -85,38 +99,53 @@ function AddPrize({closeDialog, selectedTab, id}) {
     };
 
     const handleSubmit = async () => {
-        if (_.isEmpty(values.code) || _.isEmpty(values.name) || _.isEmpty(values.prize) ||
-            _.isEmpty(values.quantity) || _.isEmpty(values.amount) || _.isEmpty(values.order)) {
-            NotificationManager.error({
-                title: t('error'),
-                message: t('errorInput'),
-            });
-        } else {
+
+        console.log('values.code', values.code)
+        // if (_.isEmpty(values.code) || _.isEmpty(values.name) || _.isEmpty(values.prize) ||
+        //     _.isEmpty(values.quantity) || _.isEmpty(values.amount) || _.isEmpty(values.order)) {
+        //     NotificationManager.error({
+        //         title: t('error'),
+        //         message: t('errorInput'),
+        //     });
+        // } else {
             dispatch(setShowLoader(true));
-            const code = "PRIZES_11";
-            const name = "+1 Turn";
-            const game = selectedTab.id;
-            const type = "+1 Turn";
-            const description = "+1 Turn";
-            const quantity = 2;
-            const value = 1;
-            const startTime = "2023-03-09";
-            const endTime = "2023-03-19";
-            const image = "";
-            const amount = 1000;
-            const levels = 12;
-            const res = await savePrizes(code, type, name, description, amount, startTime);
+            const code = values.code;
+            const giftType = values.giftType;
+            const name = values.name;
+            const description = values.description;
+            const percent= values.percent; 
+            const type= 1;
+            const image=base64Image;
+            const pointExchange= 3.3;
+            const gameId= id;
+            const quantity= 100;
+            const res = await savePrizes(
+                {
+                    code: code,
+                    giftType: giftType,
+                    name: name,
+                    description: description,
+                    percent: percent, 
+                    type: 1,
+                    image:base64Image,
+                    value: 4.4,
+                    pointExchange: 3.3,
+                    gameId: id,
+                    quantity: 100,
+                }
+            );
+            console.log('savePrizes==>',  res);
             dispatch(setShowLoader(false));
-            if (res.code === 200) {
-                Router.push("/admin/game");
-            } else {
-                NotificationManager.error({
-                    title: t('error'),
-                    message: res.message ? res.message.text : "Error",
-                });
-            }
-            closeDialog();
-        }
+            // if (res.code === 200) {
+            //     Router.push("/admin/game");
+            // } else {
+            //     NotificationManager.error({
+            //         title: t('error'),
+            //         message: res.message ? res.message.text : "Error",
+            //     });
+            // }
+            // closeDialog();
+        // }
     };
 
     const onGetGameDetail = async () => {
@@ -138,7 +167,7 @@ function AddPrize({closeDialog, selectedTab, id}) {
                 <div>
                     <p className={classes.titleFilter}>{t('basicInformation')}</p>
                     <GridContainer>
-                        <GridItem xs={12} sm={4} md={4}>
+                    <GridItem xs={12} sm={4} md={4}>
                             <TextField
                                 // error={validateSku ? false : true}
                                 id="code"
@@ -156,14 +185,14 @@ function AddPrize({closeDialog, selectedTab, id}) {
                         </GridItem>
                         <GridItem xs={12} sm={8} md={8}>
                             <TextField
-                                id="name"
-                                label={t(`name`)}
+                                id="giftType"
+                                label={`giftType`}
                                 variant="outlined"
                                 size="small"
                                 fullWidth
                                 inputProps={{
-                                    value: values.name,
-                                    onChange: handleChangeValue("name"),
+                                    value: values.giftType,
+                                    onChange: handleChangeValue("giftType"),
                                 }}
                                 className={classes.marginBottom_20}
                                 autoComplete="off"
@@ -174,15 +203,13 @@ function AddPrize({closeDialog, selectedTab, id}) {
                         <GridItem xs={12} sm={6} md={6}>
                             <TextField
                                 // error={validateSku ? false : true}
-                                id="prize"
-                                label={t(`game.prize`)}
+                                id="name"
+                                label={`name`}
                                 variant="outlined"
                                 size="small"
                                 fullWidth
-                                inputProps={{
-                                    value: values.prize,
-                                    onChange: handleChangeValue("prize"),
-                                }}
+                                value={values.name}
+                                onChange={handleChangeValue("name")}
                                 className={classes.marginBottom_20}
                                 autoComplete="off"
                             />
@@ -194,15 +221,15 @@ function AddPrize({closeDialog, selectedTab, id}) {
                                 variant="outlined"
                                 size="small"
                             >
-                                <InputLabel htmlFor="quantity">
-                                    {t(`quantity`)}
+                                <InputLabel htmlFor="percent">
+                                    {'percent'}
                                 </InputLabel>
                                 <OutlinedInput
-                                    id="quantity"
-                                    value={values.quantity}
-                                    onChange={handleChangeValue("quantity")}
+                                    id="percent"
+                                    value={values.percent}
+                                    onChange={handleChangeValue("percent")}
                                     startAdornment={
-                                        <InputAdornment position="start">₫</InputAdornment>
+                                        <InputAdornment position="start">%</InputAdornment>
                                     }
                                     labelWidth={70}
                                     type="number"
@@ -219,16 +246,16 @@ function AddPrize({closeDialog, selectedTab, id}) {
                                 variant="outlined"
                                 size="small"
                             >
-                                <InputLabel htmlFor="amount">
-                                    {t(`amount`)}
+                                <InputLabel htmlFor="type">
+                                    {'type'}
                                 </InputLabel>
                                 <OutlinedInput
-                                    id="amount"
-                                    value={values.amount}
-                                    onChange={handleChangeValue("amount")}
-                                    startAdornment={
-                                        <InputAdornment position="start">₫</InputAdornment>
-                                    }
+                                    id="type"
+                                    value={values.type}
+                                    onChange={handleChangeValue("type")}
+                                    // startAdornment={
+                                    //     <InputAdornment position="start">1</InputAdornment>
+                                    // }
                                     labelWidth={70}
                                     type="number"
                                     autoComplete="off"
@@ -242,16 +269,64 @@ function AddPrize({closeDialog, selectedTab, id}) {
                                 variant="outlined"
                                 size="small"
                             >
-                                <InputLabel htmlFor="order">
-                                    {t(`game.order`)}
+                                <InputLabel htmlFor="value">
+                                    {'value'}
                                 </InputLabel>
                                 <OutlinedInput
-                                    id="order"
-                                    value={values.order}
-                                    onChange={handleChangeValue("order")}
-                                    startAdornment={
-                                        <InputAdornment position="start">₫</InputAdornment>
-                                    }
+                                    id="value"
+                                    value={values.value}
+                                    onChange={handleChangeValue("value")}
+                                    // startAdornment={
+                                    //     <InputAdornment position="start">₫</InputAdornment>
+                                    // }
+                                    labelWidth={70}
+                                    type="number"
+                                    autoComplete="off"
+                                />
+                            </FormControl>
+                        </GridItem>
+                    </GridContainer>
+                    <GridContainer>
+                        <GridItem xs={12} sm={6} md={6}>
+                            <FormControl
+                                fullWidth
+                                className={classes.marginBottom_20}
+                                variant="outlined"
+                                size="small"
+                            >
+                                <InputLabel htmlFor="pointExchange">
+                                    {'pointExchange'}
+                                </InputLabel>
+                                <OutlinedInput
+                                    id="pointExchange"
+                                    value={values.pointExchange}
+                                    onChange={handleChangeValue("pointExchange")}
+                                    // startAdornment={
+                                    //     <InputAdornment position="start">1</InputAdornment>
+                                    // }
+                                    labelWidth={70}
+                                    type="number"
+                                    autoComplete="off"
+                                />
+                            </FormControl>
+                        </GridItem>
+                        <GridItem xs={12} sm={6} md={6}>
+                            <FormControl
+                                fullWidth
+                                className={classes.marginBottom_20}
+                                variant="outlined"
+                                size="small"
+                            >
+                                <InputLabel htmlFor="quantity">
+                                    {'quantity'}
+                                </InputLabel>
+                                <OutlinedInput
+                                    id="quantity"
+                                    value={values.quantity}
+                                    onChange={handleChangeValue("quantity")}
+                                    // startAdornment={
+                                    //     <InputAdornment position="start">₫</InputAdornment>
+                                    // }
                                     labelWidth={70}
                                     type="number"
                                     autoComplete="off"
@@ -261,20 +336,20 @@ function AddPrize({closeDialog, selectedTab, id}) {
                     </GridContainer>
                 </div>
                 <div>
-                    <p className={classes.titleFilter}>{t(`game.style`)}</p>
+                    <p className={classes.titleFilter}>{'description'}</p>
                     <GridContainer>
                         <GridItem xs={12} sm={12} md={12}>
                             <TextField
                                 multiline
                                 id="input3"
-                                label={t(`game.style`)}
+                                label={'description'}
                                 variant="outlined"
                                 size="small"
                                 fullWidth
                                 rows={4}
                                 inputProps={{
-                                    value: values.style,
-                                    onChange: handleChangeValue("style"),
+                                    value: values.description,
+                                    onChange: handleChangeValue("description"),
                                 }}
                                 className={classes.marginBottom_20}
                                 autoComplete="off"

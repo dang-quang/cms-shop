@@ -1,11 +1,11 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import moment from "moment";
 // @material-ui/core components
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 // layout for this page
 import Admin from "layouts/Admin.js";
 // core components
-import {Icon} from "@material-ui/core";
+import { Icon } from "@material-ui/core";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
@@ -28,7 +28,7 @@ import adminStyles from "assets/jss/natcash/components/headerLinksStyle.js";
 import tableStyles from "assets/jss/natcash/components/tableStyle.js";
 import dashStyles from "assets/jss/natcash/views/dashboardStyle.js";
 import styles from "assets/jss/natcash/views/game/gameIndexStyle";
-import {KeyboardDatePicker, MuiPickersUtilsProvider,} from "@material-ui/pickers";
+import { KeyboardDatePicker, MuiPickersUtilsProvider, } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import vi from "date-fns/locale/vi";
 import Poppers from "@material-ui/core/Popper";
@@ -38,19 +38,19 @@ import Paper from "@material-ui/core/Paper";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import classNames from "classnames";
 import Pagination from "@material-ui/lab/Pagination";
-import {NotificationContainer, NotificationManager,} from "react-light-notifications";``
-import {primaryColor} from "../../../assets/jss/natcash";
-import {useTranslation} from "react-i18next";
+import { NotificationContainer, NotificationManager, } from "react-light-notifications"; ``
+import { primaryColor } from "../../../assets/jss/natcash";
+import { useTranslation } from "react-i18next";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import AddPrize from "./addPrize";
-import {useDispatch} from "react-redux";
-import {setShowLoader} from "../../../redux/actions/app";
-import {deleteGames, deletePrize, deleteShopQr, getListGames, getPrizesList} from "../../../utilities/ApiManage";
+import { useDispatch } from "react-redux";
+import { setShowLoader } from "../../../redux/actions/app";
+import { deleteGames, deletePrize, deleteShopQr, getListGames, getPrizesList } from "../../../utilities/ApiManage";
 import Router from "next/router";
 import AddGame from "./addGame";
-import {formatNumber} from "../../../utilities/utils";
+import { formatNumber } from "../../../utilities/utils";
 import imgGift from "assets/img/gift.png";
 
 function Game() {
@@ -70,7 +70,7 @@ function Game() {
     const [doSearch, setDoSearch] = useState(false);
     const [filterDate, setFilterDate] = useState(false);
     const [isShowEdit, setIsShowEdit] = useState(false);
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const dispatch = useDispatch();
     const [showUpdate, setShowUpdate] = useState(false);
     const [selectedTitle, setSelectedTitle] = useState("");
@@ -147,8 +147,8 @@ function Game() {
         }
         const res = await getListGames(key, from, to, status);
         if (res.status === 0 && res?.list) {
-           setListGame(res?.list);
-           setSelectedTab(res?.list[0]);
+            setListGame(res?.list);
+            setSelectedTab(res?.list[0]);
         }
         dispatch(setShowLoader(false));
     }, [doSearch, doFilter, selectedTitle]);
@@ -159,15 +159,20 @@ function Game() {
         // params.current_page = currentPage;
         if (selectedTab?.id) {
             const res = await getPrizesList(selectedTab.id);
-            if (res.status === 0 && res?.infoList) {
-                if (res.infoList.length > 0) {
-                    setTable({tableHead: TABLE_LUCKY_HEAD, tableBody: res.infoList.sort((a,b) => a.id - b.id)})
-                }
+            console.log('getPrizesList', res.code === "MSG_SUCCESS" && res.infoList !== null);
+            if (res.code === "MSG_SUCCESS") {
+                // if (res.infoList.length > 0) {
+                setTable(
+                    {
+                        tableHead: res.infoList === null ? [] : TABLE_LUCKY_HEAD,
+                        tableBody: res.infoList === null ? [] : res.infoList.sort((a, b) => a.id - b.id)
+                    })
+                // }
                 // setCurrentPage(res.data.data_page.current_page);
                 // setTotalPage(res.data.data_page.total_page);
             }
         } else {
-            setTable({tableHead: [], tableBody: []});
+            setTable({ tableHead: [], tableBody: [] });
         }
 
         dispatch(setShowLoader(false));
@@ -181,7 +186,7 @@ function Game() {
         } else {
             res = await deletePrize(isShowModal.id);
         }
-        if (res.code === 200) {
+        if (res.code === "MSG_SUCCESS") {
             Router.push("/admin/game");
         } else {
             NotificationManager.error({
@@ -203,10 +208,13 @@ function Game() {
     const handleTab = (item) => {
         setSelectedTab(item);
         setCurrentPage(1);
+        setSelectedId(item.id);
+
     };
     const handleTitle = (item) => {
         setSelectedTitle(item);
         setCurrentPage(1);
+        setSelectedId(item.id);
     };
     const handleAction = (item) => {
         const currentIndex = showAction.indexOf(item);
@@ -236,7 +244,7 @@ function Game() {
                 </TableCell>
                 <TableCell className={tableClasses.tableCell} key={"image"}>
                     <div className={classes.proInfoContainer}>
-                        <img src={item?.image ? item.image : imgGift} className={classes.gameImage}/>
+                        <img src={item?.image ? item.image : imgGift} className={classes.gameImage} />
                     </div>
                 </TableCell>
                 <TableCell className={tableClasses.tableCell} key={"name"}>
@@ -312,7 +320,7 @@ function Game() {
                                 classes.actionPopperNav
                             }
                         >
-                            {({TransitionProps, placement}) => (
+                            {({ TransitionProps, placement }) => (
                                 <Grow
                                     {...TransitionProps}
                                     id={"action-list-grow" + item?.order_sn}
@@ -325,25 +333,25 @@ function Game() {
                                         <ClickAwayListener onClickAway={() => handleAction(item)}>
                                             <MenuList role="menu">
                                                 <MenuItem className={classes.dropdownItem}
-                                                          onClick={() => {
-                                                              setIsShowEdit(true);
-                                                              setSelectedId(item.id);
-                                                          }}
+                                                    onClick={() => {
+                                                        setIsShowEdit(true);
+                                                        setSelectedId(item.id);
+                                                    }}
                                                 >
                                                     {t('detail')}
                                                 </MenuItem>
                                                 <MenuItem className={classes.dropdownItem}
-                                                          onClick={() => {
-                                                              setIsShowEdit(true);
-                                                              setSelectedId(item.id);
-                                                          }}
+                                                    onClick={() => {
+                                                        setIsShowEdit(true);
+                                                        setSelectedId(item.id);
+                                                    }}
                                                 >
                                                     {t('edit')}
                                                 </MenuItem>
                                                 <MenuItem className={classes.dropdownItem}
-                                                          onClick={() => {
-                                                              setIsShowModal({id: item.id, type: "prize"});
-                                                          }}
+                                                    onClick={() => {
+                                                        setIsShowModal({ id: item.id, type: "prize" });
+                                                    }}
                                                 >
                                                     {t('delete')}
                                                 </MenuItem>
@@ -361,7 +369,7 @@ function Game() {
 
     return (
         <Card>
-            <NotificationContainer/>
+            <NotificationContainer />
             <CardHeader color="primary">
                 <h4 className={classes.cardTitleWhite}>{t('sideBar.game')}</h4>
             </CardHeader>
@@ -392,155 +400,155 @@ function Game() {
                         display: "block",
                     }}
                 >
-                        <FormControl className={dashClasses.formControl}>
-                            <div style={{marginRight: "15px"}}>
-                                <CustomInput
-                                    formControlProps={{
-                                        className:
-                                            adminClasses.margin + " " + classes.searchContainer,
-                                    }}
-                                    inputProps={{
-                                        placeholder: t('findBy'),
-                                        onChange: handleInputSearch,
-                                    }}
-                                />
-                                <Button
-                                    color="white"
-                                    aria-label="edit"
-                                    justIcon
-                                    round
-                                    onClick={() => setDoSearch(!doSearch)}
-                                >
-                                    <Search/>
-                                </Button>
-                            </div>
-                        </FormControl>
-                        <FormControl className={dashClasses.formControl}
-                                     style={{marginRight: "25px"}}>
+                    <FormControl className={dashClasses.formControl}>
+                        <div style={{ marginRight: "15px" }}>
+                            <CustomInput
+                                formControlProps={{
+                                    className:
+                                        adminClasses.margin + " " + classes.searchContainer,
+                                }}
+                                inputProps={{
+                                    placeholder: t('findBy'),
+                                    onChange: handleInputSearch,
+                                }}
+                            />
                             <Button
                                 color="white"
-                                id={"filter-date-label"}
-                                aria-owns={filterDate ? "filter-date" : null}
-                                aria-haspopup="true"
-                                className={classes.filteTritle}
-                                onClick={() => setFilterDate(true)}
+                                aria-label="edit"
+                                justIcon
+                                round
+                                onClick={() => setDoSearch(!doSearch)}
                             >
-                                {moment(fromDate).format("DD/MM/yyyy") +
-                                    " - " +
-                                    moment(toDate).format("DD/MM/yyyy")}
+                                <Search />
                             </Button>
-                            <Poppers
-                                open={Boolean(filterDate)}
-                                anchorEl={filterDate}
-                                transition
-                                disablePortal
-                                className={
-                                    classNames({
-                                        [classes.popperClose]: filterDate != true,
-                                    }) +
-                                    " " +
-                                    classes.datePopperNav
-                                }
-                            >
-                                {({TransitionProps, placement}) => (
-                                    <Grow
-                                        {...TransitionProps}
-                                        id={"filter-date"}
-                                        style={{
-                                            transformOrigin:
-                                                placement === "bottom" ? "center top" : "center bottom",
-                                        }}
-                                    >
-                                        <Paper>
-                                            <ClickAwayListener
-                                                onClickAway={() => setFilterDate(false)}
-                                            >
-                                                <div style={{width: isMobile ? "190px" : "460px"}}>
-                                                    <div
-                                                        style={{padding: "7px 15px", borderRadius: "4px"}}
+                        </div>
+                    </FormControl>
+                    <FormControl className={dashClasses.formControl}
+                        style={{ marginRight: "25px" }}>
+                        <Button
+                            color="white"
+                            id={"filter-date-label"}
+                            aria-owns={filterDate ? "filter-date" : null}
+                            aria-haspopup="true"
+                            className={classes.filteTritle}
+                            onClick={() => setFilterDate(true)}
+                        >
+                            {moment(fromDate).format("DD/MM/yyyy") +
+                                " - " +
+                                moment(toDate).format("DD/MM/yyyy")}
+                        </Button>
+                        <Poppers
+                            open={Boolean(filterDate)}
+                            anchorEl={filterDate}
+                            transition
+                            disablePortal
+                            className={
+                                classNames({
+                                    [classes.popperClose]: filterDate != true,
+                                }) +
+                                " " +
+                                classes.datePopperNav
+                            }
+                        >
+                            {({ TransitionProps, placement }) => (
+                                <Grow
+                                    {...TransitionProps}
+                                    id={"filter-date"}
+                                    style={{
+                                        transformOrigin:
+                                            placement === "bottom" ? "center top" : "center bottom",
+                                    }}
+                                >
+                                    <Paper>
+                                        <ClickAwayListener
+                                            onClickAway={() => setFilterDate(false)}
+                                        >
+                                            <div style={{ width: isMobile ? "190px" : "460px" }}>
+                                                <div
+                                                    style={{ padding: "7px 15px", borderRadius: "4px" }}
+                                                >
+                                                    <p
+                                                        style={{
+                                                            margin: 0,
+                                                            fontSize: "17px",
+                                                            fontWeight: "400",
+                                                            color: primaryColor[0],
+                                                        }}
                                                     >
-                                                        <p
-                                                            style={{
-                                                                margin: 0,
-                                                                fontSize: "17px",
-                                                                fontWeight: "400",
-                                                                color: primaryColor[0],
+                                                        {t('chooseDate')}
+                                                    </p>
+                                                    <div style={{ marginTop: "10px" }}>
+                                                        <MuiPickersUtilsProvider
+                                                            utils={DateFnsUtils}
+                                                            locale={vi}
+                                                        >
+                                                            <GridContainer>
+                                                                <KeyboardDatePicker
+                                                                    disableToolbar
+                                                                    variant="inline"
+                                                                    format="dd/MM/yyyy"
+                                                                    margin="normal"
+                                                                    id="date-picker-inline"
+                                                                    label={t('from')}
+                                                                    value={fromDate}
+                                                                    onChange={(value) => setFromDate(value)}
+                                                                    KeyboardButtonProps={{
+                                                                        "aria-label": "change date",
+                                                                    }}
+                                                                    style={{ margin: "0 40px", width: "150px" }}
+                                                                />
+                                                                <KeyboardDatePicker
+                                                                    disableToolbar
+                                                                    variant="inline"
+                                                                    format="dd/MM/yyyy"
+                                                                    margin="normal"
+                                                                    id="date-picker-inline"
+                                                                    label={t('to')}
+                                                                    value={toDate}
+                                                                    onChange={(value) => setToDate(value)}
+                                                                    KeyboardButtonProps={{
+                                                                        "aria-label": "change date",
+                                                                    }}
+                                                                    style={{ margin: "0 40px", width: "150px" }}
+                                                                />
+                                                            </GridContainer>
+                                                        </MuiPickersUtilsProvider>
+                                                    </div>
+                                                    <div
+                                                        style={{
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            marginTop: "15px",
+                                                            justifyContent: "flex-end",
+                                                        }}
+                                                    >
+                                                        <Button
+                                                            color="white"
+                                                            size="sm"
+                                                            style={{ marginRight: "10px" }}
+                                                            onClick={() => resetFilterDate()}
+                                                        >
+                                                            {t('reset')}
+                                                        </Button>
+                                                        <Button
+                                                            color="primary"
+                                                            size="sm"
+                                                            onClick={() => {
+                                                                setDoFilter(doFilter + 1);
+                                                                setFilterDate(false);
                                                             }}
                                                         >
-                                                            {t('chooseDate')}
-                                                        </p>
-                                                        <div style={{marginTop: "10px"}}>
-                                                            <MuiPickersUtilsProvider
-                                                                utils={DateFnsUtils}
-                                                                locale={vi}
-                                                            >
-                                                                <GridContainer>
-                                                                    <KeyboardDatePicker
-                                                                        disableToolbar
-                                                                        variant="inline"
-                                                                        format="dd/MM/yyyy"
-                                                                        margin="normal"
-                                                                        id="date-picker-inline"
-                                                                        label={t('from')}
-                                                                        value={fromDate}
-                                                                        onChange={(value) => setFromDate(value)}
-                                                                        KeyboardButtonProps={{
-                                                                            "aria-label": "change date",
-                                                                        }}
-                                                                        style={{margin: "0 40px", width: "150px"}}
-                                                                    />
-                                                                    <KeyboardDatePicker
-                                                                        disableToolbar
-                                                                        variant="inline"
-                                                                        format="dd/MM/yyyy"
-                                                                        margin="normal"
-                                                                        id="date-picker-inline"
-                                                                        label={t('to')}
-                                                                        value={toDate}
-                                                                        onChange={(value) => setToDate(value)}
-                                                                        KeyboardButtonProps={{
-                                                                            "aria-label": "change date",
-                                                                        }}
-                                                                        style={{margin: "0 40px", width: "150px"}}
-                                                                    />
-                                                                </GridContainer>
-                                                            </MuiPickersUtilsProvider>
-                                                        </div>
-                                                        <div
-                                                            style={{
-                                                                display: "flex",
-                                                                alignItems: "center",
-                                                                marginTop: "15px",
-                                                                justifyContent: "flex-end",
-                                                            }}
-                                                        >
-                                                            <Button
-                                                                color="white"
-                                                                size="sm"
-                                                                style={{marginRight: "10px"}}
-                                                                onClick={() => resetFilterDate()}
-                                                            >
-                                                                {t('reset')}
-                                                            </Button>
-                                                            <Button
-                                                                color="primary"
-                                                                size="sm"
-                                                                onClick={() => {
-                                                                    setDoFilter(doFilter + 1);
-                                                                    setFilterDate(false);
-                                                                }}
-                                                            >
-                                                                {t('apply')}
-                                                            </Button>
-                                                        </div>
+                                                            {t('apply')}
+                                                        </Button>
                                                     </div>
                                                 </div>
-                                            </ClickAwayListener>
-                                        </Paper>
-                                    </Grow>
-                                )}
-                            </Poppers>
-                        </FormControl>
+                                            </div>
+                                        </ClickAwayListener>
+                                    </Paper>
+                                </Grow>
+                            )}
+                        </Poppers>
+                    </FormControl>
                     <FormControl
                         className={dashClasses.formControl}
                         onClick={() => setIsShowEdit(true)}
@@ -561,7 +569,7 @@ function Game() {
                             marginRight: "25px",
                             position: isMobile ? "static" : "absolute",
                             right: "0",
-                            }}
+                        }}
                     >
                         <Button
                             id="update-label"
@@ -613,7 +621,7 @@ function Game() {
                                                 <MenuItem
                                                     className={classes.dropdownItem}
                                                     onClick={() => {
-                                                        setIsShowModal({id: selectedTab.id, type: "game"});
+                                                        setIsShowModal({ id: selectedTab.id, type: "game" });
                                                     }}
                                                 >
                                                     {t('game.deleteGame')}
@@ -636,15 +644,15 @@ function Game() {
                     handleClose={() => setIsShowModal(null)}
                 >
                     <div className={classes.flex_center}>
-                        <FormControl variant="outlined" size="small" style={{flex: 1}}>
-                            <p style={{flex: 1}}>
+                        <FormControl variant="outlined" size="small" style={{ flex: 1 }}>
+                            <p style={{ flex: 1 }}>
                                 {t('deleteConfirm')}
                             </p>
                         </FormControl>
                     </div>
                     <div
                         className={tableClasses.tableResponsive}
-                        style={{marginTop: "0", flexDirection: "row-reverse", display: 'flex',}}
+                        style={{ marginTop: "0", flexDirection: "row-reverse", display: 'flex', }}
                     >
                         <div className={classes.buttonContainer}>
                             <Button
@@ -695,7 +703,7 @@ function Game() {
                 </div>
                 <div
                     className={tableClasses.tableResponsive}
-                    style={{marginTop: "0", marginLeft: "20px"}}
+                    style={{ marginTop: "0", marginLeft: "20px" }}
                 >
                     <Table className={tableClasses.table}>
                         {data !== undefined ? (
@@ -726,13 +734,16 @@ function Game() {
                             })}
                         </TableBody>
                     </Table>
-                    <div style={{margin: "15px 0"}}>
-                        <Pagination
-                            count={totalPage}
-                            page={currentPage}
-                            onChange={handleSelectPage}
-                        />
-                    </div>
+                    {table.tableBody.length > 0 ? (
+                        <div style={{ margin: "15px 0" }}>
+                            <Pagination
+                                count={totalPage}
+                                page={currentPage}
+                                onChange={handleSelectPage}
+                            />
+                        </div>
+                    ) : null}
+
                 </div>
             </CardFooter>
             <ModalCustom
@@ -749,7 +760,7 @@ function Game() {
                     setIsShowEdit(false);
                     setSelectedId(null)
                 }} selectedTab={selectedTab}
-                    id={selectedId}/>
+                    id={selectedId} />
             </ModalCustom>
             <ModalCustom
                 width={1000}
@@ -758,11 +769,14 @@ function Game() {
                 // isShow={true}
                 isShow={!_.isEmpty(isGameDialog)}
                 handleClose={() => {
-                  setIsGameDialog("");
-                }}>
-                <AddGame closeDialog={() => {
                     setIsGameDialog("");
-                }} selectedTab={isGameDialog === "editGame" ? selectedTab : undefined}/>
+                }}>
+                <AddGame
+                    closeDialog={() => {
+                        setIsGameDialog("");
+                    }}
+                    selectedTab={isGameDialog === "editGame" ? selectedTab : undefined}
+                />
             </ModalCustom>
         </Card>
     );

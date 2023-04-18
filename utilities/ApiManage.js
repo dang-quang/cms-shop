@@ -879,19 +879,43 @@ export function saveGames(code, name, type, startTime, endTime, description, ima
     );
 }
 
-export function savePrizes(code, type, name, description, value, startTime) {
+export function editGames(id, code, name, type, startTime, endTime, description, image, amount) {
+    console.log('editGames', {
+        id: id,
+        code: code,
+        name: name,
+        type: type,
+        startTime: startTime,
+        endTime: endTime,
+        description: description,
+        image: image,
+        amount: amount
+    });
+    return postWithCheckingToken(
+        `${BASE_API_URL}/games/save`,
+        {
+        },
+        {
+            id: id,
+            code: code,
+            name: name,
+            type: type,
+            startTime: startTime,
+            endTime: endTime,
+            description: description,
+            image: image,
+            amount: amount
+        }
+    );
+}
+
+export function savePrizes(obj) {
+    console.log('savePrizes parma==>', obj);
     return postWithCheckingToken(
         `${BASE_API_URL}/prizes/save`,
         {
         },
-        {
-            code: "PRIZES_11",
-            type: "+1 Turn",
-            name: "+1 Turn",
-            description: "+1 Turn",
-            value: 100,
-            pointExchange: 10
-        }
+        obj
     );
 }
 

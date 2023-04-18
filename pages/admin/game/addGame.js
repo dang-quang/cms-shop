@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
-import {setShowLoader} from "../../../redux/actions/app";
-import {useDispatch} from "react-redux";
-import {NotificationManager,} from "react-light-notifications";
+import React, { useEffect, useState } from "react";
+import { setShowLoader } from "../../../redux/actions/app";
+import { useDispatch } from "react-redux";
+import { NotificationManager, } from "react-light-notifications";
 import "react-light-notifications/lib/main.css";
 // @material-ui/core components
 // layout for this page
@@ -10,9 +10,9 @@ import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import Button from "components/CustomButtons/Button.js";
-import {FormControl, makeStyles, OutlinedInput, TextField,} from "@material-ui/core";
+import { FormControl, makeStyles, OutlinedInput, TextField, } from "@material-ui/core";
 import styles from "assets/jss/natcash/views/game/addGameStyle";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import _ from 'lodash';
 import GridContainer from "../../../components/Grid/GridContainer";
 import GridItem from "../../../components/Grid/GridItem";
@@ -20,34 +20,37 @@ import InputLabel from "@material-ui/core/InputLabel";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
-import {Close} from "@material-ui/icons";
-import {getShopQrDetail, saveGames} from "../../../utilities/ApiManage";
+import { Close } from "@material-ui/icons";
+import { getShopQrDetail, saveGames, editGames } from "../../../utilities/ApiManage";
 import Router from "next/router";
-import {grayColor} from "../../../assets/jss/natcash";
+import { grayColor } from "../../../assets/jss/natcash";
 import FormCellCustom from "../../../components/FormCustom/FormCellCustom";
 import moment from "moment/moment";
+import { BASE_API_URL } from "utilities/const.js";
 
-function AddGame({closeDialog, selectedTab}) {
+function AddGame({ closeDialog, selectedTab }) {
+    console.log('selectedTab', selectedTab);
     const dispatch = useDispatch();
     const useStyles = makeStyles(styles);
     const classes = useStyles();
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [selectedImages, setSelectedImages] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]);
+    const [base64Image, setBase64Image] = useState('');
+
     const [values, setValues] = useState({
-        code: "",
-        name: "",
-        type: "",
-        time_from: moment().format("yyyy-MM-DDThh:mm"),
-        time_to: moment().add(1, "hours").format("yyyy-MM-DDThh:mm"),
-        description: "",
-        image: "",
-        amount: ""
+        code: selectedTab ? selectedTab.code : "",
+        name: selectedTab ? selectedTab.name : "",
+        type: selectedTab ? selectedTab.type : "",
+        startTime: selectedTab ? moment(selectedTab.startTime).format("yyyy-MM-DDThh:mm") : moment().format("yyyy-MM-DDThh:mm"),
+        endTime: selectedTab ? moment(selectedTab.endTime).format("yyyy-MM-DDThh:mm") : moment().format("yyyy-MM-DDThh:mm"),
+        description: selectedTab ? selectedTab.description : "",
+        image: selectedTab ? BASE_API_URL + '/assets/' + selectedTab.image : '',
+        amount: selectedTab ? selectedTab.amount+"" : "",
     });
     const handleChangeValue = (prop) => (event) => {
-        setValues({...values, [prop]: event.target.value});
+        setValues({ ...values, [prop]: event.target.value });
     };
-
 
     useEffect(() => {
         dispatch(setShowLoader(true));
@@ -55,12 +58,21 @@ function AddGame({closeDialog, selectedTab}) {
         dispatch(setShowLoader(false));
     }, []);
 
+
+    useEffect(() => {
+        if (selectedTab) {
+            setSelectedImages([selectedTab ? BASE_API_URL + '/assets/' + selectedTab.image : '']);
+        handleImageChangeLink();
+
+        }
+    }, []);
+
     const renderPhotos = (source) => {
         return source.map((photo) => {
             return (
                 <div className={classes.imgContainer}>
-                    <Close className={classes.btnClose} onClick={() => handleRemoveImage(photo)}/>
-                    <img src={photo} alt="" key={photo} className={classes.imageUpload}/>
+                    <Close className={classes.btnClose} onClick={() => handleRemoveImage(photo)} />
+                    <img src={photo} alt="" key={photo} className={classes.imageUpload} />
                 </div>
             );
         });
@@ -74,7 +86,18 @@ function AddGame({closeDialog, selectedTab}) {
         setSelectedImages(newListImages)
         setSelectedFiles(newListFiles)
     }
+
     const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const arr = reader.result.split(",");
+                setBase64Image(arr[1]);
+            };
+            reader.readAsDataURL(file);
+        }
+
         if (e.target.files) {
             const filesArray = Array.from(e.target.files).map((file) =>
                 URL.createObjectURL(file)
@@ -87,28 +110,53 @@ function AddGame({closeDialog, selectedTab}) {
             );
         }
     };
+    async function handleImageChangeLink  (){
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        const str = BASE_API_URL + '/assets/' + selectedTab.image;
+        img.src = str;
+        img.onload = async () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          const dataURL = canvas.toDataURL('image/png');
+          setBase64Image(dataURL.replace(/^data:image\/(png|jpg);base64,/, ''));
+        };
+      };
 
     const handleSubmit = async () => {
+        // console.log('values', values);
         if (_.isEmpty(values.code) || _.isEmpty(values.name) || _.isEmpty(values.type) ||
-            _.isEmpty(values.startTime) || _.isEmpty(values.endTime) || _.isEmpty(values.description)
-            || _.isEmpty(values.image) || _.isEmpty(values.amount)) {
+            _.isEmpty(selectedTab ? selectedTab.image : base64Image) || _.isEmpty(values.startTime) 
+            || _.isEmpty(values.endTime) || _.isEmpty(values.description) || _.isEmpty(values.amount)) {
             NotificationManager.error({
                 title: t('error'),
                 message: t('errorInput'),
             });
         } else {
             dispatch(setShowLoader(true));
+            const id = selectedTab ? selectedTab.id : null;
             const code = values.code;
             const name = values.name;
             const type = values.type;
-            const startTime = "16/02/2023 00:00:00";
-            const endTime = "22/02/2023 00:00:00";
-            const description = "Lucky Wheel";
-            const image = "";
-            const amount = 100000;
-            const res = await saveGames(code, name, type, startTime, endTime, description, image, amount);
+            const startTime = moment(values.startTime).format('DD/MM/yyyy');
+            const endTime = moment(values.endTime).format('DD/MM/yyyy');
+            const description = values.description;
+            const image = base64Image;
+            const amount = values.amount;
+            let res;
+
+            if(selectedTab){
+                 res = await editGames(id,code, name, type, startTime, endTime, description, image, amount);
+            }else{
+                 res = await saveGames(code, name, type, startTime, endTime, description, image, amount);
+            }
+            console.log('response', res);
+
             dispatch(setShowLoader(false));
-            if (res.code === 200) {
+            if (res.code === 'MSG_SUCCESS') {
                 Router.push("/admin/game");
             } else {
                 NotificationManager.error({
@@ -213,18 +261,18 @@ function AddGame({closeDialog, selectedTab}) {
                         </GridItem>
                     </GridContainer>
                     <GridContainer>
-                        <GridItem xs={12} sm={12} md={12} style={{marginTop: '15px'}}>
+                        <GridItem xs={12} sm={12} md={12} style={{ marginTop: '15px' }}>
                             <FormCellCustom
                                 label={t('time')}
-                                // helperText={t('voucher.timeDes')}
+                            // helperText={t('voucher.timeDes')}
                             >
                                 <div className={classes.formCell + " " + classes.flex_center}>
                                     <TextField
                                         id="datetime-local"
                                         // label="Next appointment"
                                         type="datetime-local"
-                                        value={values.time_from}
-                                        onChange={handleChangeValue("time_from")}
+                                        value={values.startTime}
+                                        onChange={handleChangeValue("startTime")}
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
@@ -242,8 +290,8 @@ function AddGame({closeDialog, selectedTab}) {
                                         id="datetime-local"
                                         // label="Next appointment"
                                         type="datetime-local"
-                                        value={values.time_to}
-                                        onChange={handleChangeValue("time_to")}
+                                        value={values.endTime}
+                                        onChange={handleChangeValue("endTime")}
                                         className={classes.textField}
                                         InputLabelProps={{
                                             shrink: true,
@@ -284,8 +332,8 @@ function AddGame({closeDialog, selectedTab}) {
                             accept="image/*"
                             id="icon-button-file"
                             type="file"
-                            multiple
-                            style={{display: "none"}}
+                            // multiple
+                            style={{ display: "none" }}
                             onChange={handleImageChange}
                         />
                         <label
@@ -297,7 +345,7 @@ function AddGame({closeDialog, selectedTab}) {
                                 aria-label="upload picture"
                                 component="span"
                             >
-                                <PhotoCamera/>
+                                <PhotoCamera />
                             </IconButton>
                         </label>
                     </div>

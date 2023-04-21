@@ -87,11 +87,11 @@ function Game() {
     t('qrManagement.stt'),
     t('game.image'),
     t('name'),
-    t('game.prize'),
+    // t('game.prize'),
     t('quantity'),
     t('amount'),
     t('game.order'),
-    t('game.style'),
+    // t('game.style'),
     t('action'),
   ];
 
@@ -271,11 +271,11 @@ function Game() {
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{item?.name}</p>
           </div>
         </TableCell>
-        <TableCell className={tableClasses.tableCell} key={'prize'}>
+        {/* <TableCell className={tableClasses.tableCell} key={'prize'}>
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{item.value}</p>
           </div>
-        </TableCell>
+        </TableCell> */}
         <TableCell className={tableClasses.tableCell} key={'quantity'}>
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{item.quantity}</p>
@@ -291,11 +291,11 @@ function Game() {
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{item.levels}</p>
           </div>
         </TableCell>
-        <TableCell className={tableClasses.tableCell} key={'style'}>
+        {/* <TableCell className={tableClasses.tableCell} key={'style'}>
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{item.style}</p>
           </div>
-        </TableCell>
+        </TableCell> */}
         <TableCell className={tableClasses.tableCell}>
           <div className={classes.text + ' ' + classes.infoTextStatus + ' ' + classes.flex_center}>
             <a
@@ -378,22 +378,6 @@ function Game() {
         <h4 className={classes.cardTitleWhite}>{t('sideBar.game')}</h4>
       </CardHeader>
       <CardBody className={classes.cardBody}>
-        <div className={classes.selectTitleContainer}>
-          <GridContainer>
-            {MENU_TITLE_INFO.map((item, index) => {
-              return (
-                <div
-                  className={classes.selectContainer}
-                  style={{
-                    backgroundColor: selectedTitle.value == item.value ? primaryColor[3] : '',
-                  }}
-                  onClick={() => handleTitle(item)}>
-                  <p>{item.name}</p>
-                </div>
-              );
-            })}
-          </GridContainer>
-        </div>
         <div
           className={dashClasses.filterSelections + ' ' + classes.flex_center_between}
           style={{

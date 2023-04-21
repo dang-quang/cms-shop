@@ -326,7 +326,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                     /> */}
                       <div className={classes.marginBottom_20}>
                         <Dropdown
-                          title="giftType"
+                          title="Gift Type"
                           options={giftTypeOptions}
                           value={values.giftType}
                           handleOnChange={handleChange('giftType')}
@@ -340,7 +340,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                       <TextField
                         // error={validateSku ? false : true}
                         id="name"
-                        label={`name`}
+                        label="Name"
                         variant="outlined"
                         size="small"
                         fullWidth
@@ -356,7 +356,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                         className={classes.marginBottom_20}
                         variant="outlined"
                         size="small">
-                        <InputLabel htmlFor="percent">{'percent'}</InputLabel>
+                        <InputLabel htmlFor="percent">{'Percent'}</InputLabel>
                         <OutlinedInput
                           id="percent"
                           value={values.percent}
@@ -391,7 +391,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                     </FormControl> */}
                       <div className={classes.marginBottom_20}>
                         <Dropdown
-                          title="type"
+                          title="Type"
                           options={typeOptions}
                           value={values.type}
                           handleOnChange={handleChange('type')}
@@ -404,7 +404,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                         className={classes.marginBottom_20}
                         variant="outlined"
                         size="small">
-                        <InputLabel htmlFor="value">{'value'}</InputLabel>
+                        <InputLabel htmlFor="value">{'Value'}</InputLabel>
                         <OutlinedInput
                           id="value"
                           value={values.value}
@@ -426,7 +426,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                         className={classes.marginBottom_20}
                         variant="outlined"
                         size="small">
-                        <InputLabel htmlFor="pointExchange">{'pointExchange'}</InputLabel>
+                        <InputLabel htmlFor="pointExchange">{'Point Exchange'}</InputLabel>
                         <OutlinedInput
                           id="pointExchange"
                           value={values.pointExchange}
@@ -446,7 +446,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                         className={classes.marginBottom_20}
                         variant="outlined"
                         size="small">
-                        <InputLabel htmlFor="quantity">{'quantity'}</InputLabel>
+                        <InputLabel htmlFor="quantity">{'Quantity'}</InputLabel>
                         <OutlinedInput
                           id="quantity"
                           value={values.quantity}
@@ -468,7 +468,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                         className={classes.marginBottom_20}
                         variant="outlined"
                         size="small">
-                        <InputLabel htmlFor="levels">{'levels'}</InputLabel>
+                        <InputLabel htmlFor="levels">{'Levels'}</InputLabel>
                         <OutlinedInput
                           id="levels"
                           value={values.levels}
@@ -488,7 +488,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                         className={classes.marginBottom_20}
                         variant="outlined"
                         size="small">
-                        <InputLabel htmlFor="alert">{'alert'}</InputLabel>
+                        <InputLabel htmlFor="alert">{'Alert'}</InputLabel>
                         <OutlinedInput
                           id="alert"
                           value={values.alert}
@@ -510,7 +510,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                       <TextField
                         multiline
                         id="input3"
-                        label={'description'}
+                        label={'Description'}
                         variant="outlined"
                         size="small"
                         fullWidth

@@ -121,7 +121,7 @@ function GameReport() {
       dispatch(setShowLoader(false));
       if (res && res.code === 'MSG_SUCCESS') {
         setGameRewards(res.list === null ? [] : res.list.sort((a, b) => b.playDate - a.playDate));
-        //setTotalPage(res.data.data_page.total_page);
+        setTotalPage(3);
       }
     })();
   }, []);
@@ -138,19 +138,19 @@ function GameReport() {
       if (doFilter) {
         from = moment(filterDate.fromDate).format(formatDate);
         to = moment(filterDate.toDate).format(formatDate);
-        const res = await getGameResultReward({
-          keyWord: key,
-          fromDate: from,
-          toDate: to,
-          page: 1,
-        });
-        if (res.status === 0 && res?.list) {
-          setGameRewards(res.list === null ? [] : res.list.sort((a, b) => b.playDate - a.playDate));
-        }
+      }
+      const res = await getGameResultReward({
+        keyWord: key,
+        fromDate: from,
+        toDate: to,
+        page: currentPage,
+      });
+      if (res.status === 0 && res?.list) {
+        setGameRewards(res.list === null ? [] : res.list.sort((a, b) => b.playDate - a.playDate));
       }
       dispatch(setShowLoader(false));
     })();
-  }, [doSearch, filterDate, doFilter]);
+  }, [doSearch, filterDate, doFilter, currentPage]);
 
   const handleSelectPage = (event, value) => {
     setCurrentPage(value);
@@ -171,7 +171,7 @@ function GameReport() {
             {gameName}
           </TableCell>
           <TableCell className={tableClasses.tableCell} key="playDate">
-            {moment(playDate).format(formatDate)}
+            {moment(playDate).format('YYYY-MM-DD, h:mm:ss')}
           </TableCell>
         </TableRow>
       </React.Fragment>

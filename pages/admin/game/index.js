@@ -620,7 +620,7 @@ function Game() {
           <List className={classes.listContainer}>
             {listGame.map((item, index) => {
               return (
-                <a className={classes.item} onClick={() => handleTab(item)}>
+                <a key={index} className={classes.item} onClick={() => handleTab(item)}>
                   <ListItem
                     button
                     className={classNames(

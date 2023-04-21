@@ -62,7 +62,8 @@
     "flashSale": "Flash sale",
     "operationReport": "Operation Report",
     "uiManagement": "UI Management",
-    "game": "Game"
+    "game": "Game",
+    "gameReport": "Game Report"
   },
   "qrManagement": {
     "notActive": "Not Active",
@@ -179,6 +180,13 @@
     "updatePrize": "Update prize",
     "editGame": "Edit game",
     "deleteGame": "Delete game"
+  },
+  "gameReport": {
+    "gameReward": "Game Reward",
+    "phoneNumber": "Phone Number",
+    "fullName": "Full Name",
+    "prize": "Prize",
+    "date": "Date"
   },
   "operation": {
     "monthRevenue": "This month revenue",

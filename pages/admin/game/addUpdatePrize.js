@@ -27,6 +27,7 @@ import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import Dropdown from '../../../components/Dropdown/dropdown';
 import { BASE_API_URL } from 'utilities/const.js';
+import useWindowSize from 'components/Hooks/useWindowSize.js';
 
 const initialValues = {
   id: '',
@@ -79,6 +80,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
   const useStyles = makeStyles(styles);
   const classes = useStyles();
   const { t } = useTranslation();
+  const size = useWindowSize();
   const [selectedImages, setSelectedImages] = useState([]);
   // const [selectedFiles, setSelectedFiles] = useState([]);
 
@@ -283,7 +285,11 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
           }
         }, [_prize]);
         return (
-          <Form>
+          <div
+            style={{
+              height: window.innerHeight - 150 + 'px',
+              overflowY: 'auto',
+            }}>
             <Card className={classes.noMargin}>
               <CardBody className={classes.cardBody}>
                 <div>
@@ -318,12 +324,15 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                       className={classes.marginBottom_20}
                       autoComplete="off"
                     /> */}
-                      <Dropdown
-                        title="giftType"
-                        options={giftTypeOptions}
-                        value={values.giftType}
-                        handleOnChange={handleChange('giftType')}
-                      />
+                      <div className={classes.marginBottom_20}>
+                        <Dropdown
+                          title="giftType"
+                          options={giftTypeOptions}
+                          value={values.giftType}
+                          handleOnChange={handleChange('giftType')}
+                          className={classes.marginBottom_20}
+                        />
+                      </div>
                     </GridItem>
                   </GridContainer>
                   <GridContainer>
@@ -380,12 +389,14 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                         autoComplete="off"
                       />
                     </FormControl> */}
-                      <Dropdown
-                        title="type"
-                        options={typeOptions}
-                        value={values.type}
-                        handleOnChange={handleChange('type')}
-                      />
+                      <div className={classes.marginBottom_20}>
+                        <Dropdown
+                          title="type"
+                          options={typeOptions}
+                          value={values.type}
+                          handleOnChange={handleChange('type')}
+                        />
+                      </div>
                     </GridItem>
                     <GridItem xs={12} sm={6} md={6}>
                       <FormControl
@@ -517,22 +528,27 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                 <div>
                   <p className={classes.titleFilter}>{t(`game.image`)}</p>
                   <div className={classes.imageForm}>
-                    {renderPhotos(selectedImages)}
-                    <input
-                      accept="image/*"
-                      id="icon-button-file"
-                      type="file"
-                      multiple
-                      style={{ display: 'none' }}
-                      onChange={(e) => handleImageChange(e, setFieldValue)}
-                    />
-                    <label
-                      htmlFor="icon-button-file"
-                      className={classes.imageUpload + ' ' + classes.imageBtn}>
-                      <IconButton color="primary" aria-label="upload picture" component="span">
-                        <PhotoCamera />
-                      </IconButton>
-                    </label>
+                    {selectedImages.length > 0 ? (
+                      renderPhotos(selectedImages)
+                    ) : (
+                      <>
+                        <input
+                          accept="image/*"
+                          id="icon-button-file"
+                          type="file"
+                          multiple
+                          style={{ display: 'none' }}
+                          onChange={(e) => handleImageChange(e, setFieldValue)}
+                        />
+                        <label
+                          htmlFor="icon-button-file"
+                          className={classes.imageUpload + ' ' + classes.imageBtn}>
+                          <IconButton color="primary" aria-label="upload picture" component="span">
+                            <PhotoCamera />
+                          </IconButton>
+                        </label>
+                      </>
+                    )}
                   </div>
                 </div>
               </CardBody>
@@ -545,7 +561,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                 </Button>
               </CardFooter>
             </Card>
-          </Form>
+          </div>
         );
       }}
     </Formik>

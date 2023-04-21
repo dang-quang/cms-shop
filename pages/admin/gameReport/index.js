@@ -157,7 +157,8 @@ function GameReport() {
   };
 
   const renderReward = (item, index) => {
-    const { fullName, gameName, playDate, msisdn } = item;
+    const { fullName, gameName, playDate, msisdn, name } = item;
+    console.log('renderReward', item);
     return (
       <React.Fragment key={index}>
         <TableRow className={tableClasses.tableBodyRow}>
@@ -170,8 +171,11 @@ function GameReport() {
           <TableCell className={tableClasses.tableCell} key="gameName">
             {gameName}
           </TableCell>
+          <TableCell className={tableClasses.tableCell} key="name">
+            {name}
+          </TableCell>
           <TableCell className={tableClasses.tableCell} key="playDate">
-            {moment(playDate).format('YYYY-MM-DD, h:mm:ss')}
+            {moment(playDate).format('YYYY-MM-DD, hh:mm:ss')}
           </TableCell>
         </TableRow>
       </React.Fragment>

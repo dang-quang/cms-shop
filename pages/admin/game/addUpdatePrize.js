@@ -10,10 +10,16 @@ import Card from 'components/Card/Card.js';
 import CardBody from 'components/Card/CardBody.js';
 import CardFooter from 'components/Card/CardFooter.js';
 import Button from 'components/CustomButtons/Button.js';
-import { FormControl, makeStyles, OutlinedInput, TextField } from '@material-ui/core';
+import {
+  FormControl,
+  FormHelperText,
+  makeStyles,
+  OutlinedInput,
+  TextField,
+} from '@material-ui/core';
 import styles from 'assets/jss/natcash/views/game/addGameStyle';
 import { useTranslation } from 'react-i18next';
-import _ from 'lodash';
+import _, { isEmpty } from 'lodash';
 import GridContainer from '../../../components/Grid/GridContainer';
 import GridItem from '../../../components/Grid/GridItem';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -66,6 +72,10 @@ const giftTypeOptions = [
     value: 'SMS_GIFT',
   },
   {
+    title: 'Data gift',
+    value: 'DATA_GIFT',
+  },
+  {
     title: 'Mins gift',
     value: 'MINS_GIFT',
   },
@@ -74,6 +84,38 @@ const giftTypeOptions = [
     value: 'OTHER',
   },
 ];
+
+const codeOptions = {
+  WALLET_GIFT: [
+    { title: 'LK10KMON', value: 'LK10KMON' },
+    { title: 'LK1KMON', value: 'LK1KMON' },
+    { title: 'LK500MON', value: 'LK500MON' },
+    { title: 'LK100MON', value: 'LK100MON' },
+  ],
+  SMS_GIFT: [{ title: 'LK10SMS', value: 'LK10SMS' }],
+  DATA_GIFT: [
+    { title: 'LK50MB', value: 'LK50MB' },
+    { title: 'LK100MB', value: 'LK100MB' },
+    { title: 'LK500MB', value: 'LK500MB' },
+    { title: 'LK1GB', value: 'LK1GB' },
+  ],
+  MINS_GIFT: [{ title: 'LK3MIN', value: 'LK3MIN' }],
+  OTHER: [{ title: 'OTHER', value: 'OTHER' }],
+};
+
+const valueOptions = {
+  LK10KMON: 10000,
+  LK1KMON: 1000,
+  LK500MON: 500,
+  LK100MON: 100,
+  LK10SMS: 10,
+  LK50MB: 50,
+  LK100MB: 100,
+  LK500MB: 500,
+  LK1GB: 1,
+  LK3MIN: 3,
+  OTHER: 1,
+};
 
 function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) {
   const dispatch = useDispatch();
@@ -163,106 +205,84 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
     levels,
     alert,
   }) => {
-    if (
-      _.isEmpty(code) ||
-      _.isEmpty(giftType) ||
-      _.isEmpty(name) ||
-      _.isEmpty(alert) ||
-      _.isEmpty(image) ||
-      !_.isNumber(type) ||
-      !_.isNumber(percent) ||
-      !_.isNumber(value) ||
-      !_.isNumber(quantity) ||
-      !_.isNumber(levels)
-    ) {
-      NotificationManager.error({
-        title: t('error'),
-        message: t('errorInput'),
+    dispatch(setShowLoader(true));
+    if (_prize) {
+      const res = await savePrizes({
+        id: id,
+        gameId: game_id,
+        code: code,
+        giftType: giftType,
+        name: name,
+        description: description,
+        percent: percent,
+        type: type,
+        image: image,
+        value: value,
+        pointExchange: pointExchange,
+        quantity: quantity,
+        levels: levels,
+        alert: alert,
       });
-    } else {
-      dispatch(setShowLoader(true));
-
-      if (_prize) {
-        const res = await savePrizes({
-          id: id,
-          gameId: game_id,
-          code: code,
-          giftType: giftType,
-          name: name,
-          description: description,
-          percent: percent,
-          type: type,
-          image: image,
-          value: value,
-          pointExchange: pointExchange,
-          quantity: quantity,
-          levels: levels,
-          alert: alert,
-        });
-        dispatch(setShowLoader(false));
-        if (res.code === 'MSG_SUCCESS') {
-          Router.push('/admin/game');
-          onUpdated();
-        } else {
-          NotificationManager.error({
-            title: t('error'),
-            message: res.message ? res.message.text : 'Error',
-          });
-        }
-        closeDialog();
+      dispatch(setShowLoader(false));
+      if (res.code === 'MSG_SUCCESS') {
+        Router.push('/admin/game');
+        onUpdated();
       } else {
-        const res = await savePrizes({
-          gameId: game_id,
-          code: code,
-          giftType: giftType,
-          name: name,
-          description: description,
-          percent: percent,
-          type: type,
-          image: image,
-          value: value,
-          pointExchange: pointExchange,
-          quantity: quantity,
-          levels: levels,
-          alert: alert,
+        NotificationManager.error({
+          title: t('error'),
+          message: res.message ? res.message.text : 'Error',
         });
-
-        dispatch(setShowLoader(false));
-        if (res.code === 200) {
-          Router.push('/admin/game');
-        } else {
-          NotificationManager.error({
-            title: t('error'),
-            message: res.message ? res.message.text : 'Error',
-          });
-        }
-        closeDialog();
       }
+      closeDialog();
+    } else {
+      const res = await savePrizes({
+        gameId: game_id,
+        code: code,
+        giftType: giftType,
+        name: name,
+        description: description,
+        percent: percent,
+        type: type,
+        image: image,
+        value: value,
+        pointExchange: pointExchange,
+        quantity: quantity,
+        levels: levels,
+        alert: alert,
+      });
+      dispatch(setShowLoader(false));
+      if (res.code === 200) {
+        Router.push('/admin/game');
+      } else {
+        NotificationManager.error({
+          title: t('error'),
+          message: res.message ? res.message.text : 'Error',
+        });
+      }
+      closeDialog();
     }
   };
 
-  // TODO validation schema message
+  //Todo Validation Schema
   const addUpdatePrizeValidationSchema = yup.object().shape({
-    code: yup.string().required(t('errorInput')),
-    giftType: yup.string().required(t('errorInput')),
-    name: yup.string().required(t('errorInput')),
-    percent: yup.string().required(t('errorInput')),
-    type: yup.string().required(t('errorInput')),
-    value: yup.string().required(t('errorInput')),
-    pointExchange: yup.string().required(t('errorInput')),
-    quantity: yup.string().required(t('errorInput')),
-    levels: yup.string().required(t('errorInput')),
-    alert: yup.string().required(t('errorInput')),
-    description: yup.string().required(t('errorInput')),
+    giftType: yup.string().required(t('errorGiftTypeRequire')),
+    code: yup.string().required(t('errorCodeRequire')),
+    name: yup.string().required(t('errorNameRequire')),
+    percent: yup.string().required(t('errorPercentRequire')),
+    type: yup.string().required(t('errorTypeRequire')),
+    value: yup.string().required(t('errorValueRequire')),
+    quantity: yup.string().required(t('errorQuantityRequire')),
+    levels: yup.string().required(t('errorLevelsRequire')),
+    alert: yup.string().required(t('errorAlertRequire')),
   });
 
   return (
     <Formik
-      //validationSchema={addUpdatePrizeValidationSchema}
+      validationSchema={addUpdatePrizeValidationSchema}
       enableReinitialize={true}
       initialValues={prize ? prize : initialValues}
       onSubmit={handleSubmitPrize}>
-      {({ handleChange, handleSubmit, setFieldValue, values }) => {
+      {({ handleChange, handleSubmit, setFieldValue, values, errors }) => {
         React.useEffect(() => {
           if (_prize) {
             const str = BASE_API_URL + '/assets/' + values.image;
@@ -284,8 +304,9 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
             };
           }
         }, [_prize]);
+
         return (
-          <div
+          <Form
             style={{
               height: window.innerHeight - 150 + 'px',
               overflowY: 'auto',
@@ -295,8 +316,39 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                 <div>
                   <p className={classes.titleFilter}>{t('basicInformation')}</p>
                   <GridContainer>
-                    <GridItem xs={12} sm={4} md={4}>
-                      <TextField
+                    <GridItem xs={12} sm={6} md={6}>
+                      <div className={classes.marginBottom_20}>
+                        <Dropdown
+                          title="Gift Type"
+                          options={giftTypeOptions}
+                          value={values.giftType}
+                          handleOnChange={handleChange('giftType')}
+                          className={classes.marginBottom_20}
+                          helperErrorText={errors.giftType || ''}
+                        />
+                      </div>
+                    </GridItem>
+                    <GridItem xs={12} sm={6} md={6}>
+                      <Dropdown
+                        title="Code"
+                        options={codeOptions[values.giftType]}
+                        value={values.code}
+                        handleOnChange={(e) => {
+                          setFieldValue('code', e.target.value);
+                          setFieldValue('value', valueOptions[e.target.value]);
+                        }}
+                        className={classes.marginBottom_20}
+                        onFocus={() => {
+                          if (_.isEmpty(values.giftType)) {
+                            NotificationManager.error({
+                              title: t('error'),
+                              message: 'Please select gift type',
+                            });
+                          }
+                        }}
+                        helperErrorText={errors.code || ''}
+                      />
+                      {/* <TextField
                         id="code"
                         label={t(`category.code`)}
                         variant="outlined"
@@ -308,31 +360,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                         }}
                         className={classes.marginBottom_20}
                         autoComplete="off"
-                      />
-                    </GridItem>
-                    <GridItem xs={12} sm={8} md={8}>
-                      {/* <TextField
-                      id="giftType"
-                      label={`giftType`}
-                      variant="outlined"
-                      size="small"
-                      fullWidth
-                      inputProps={{
-                        value: values.giftType,
-                        onChange: handleChange('giftType'),
-                      }}
-                      className={classes.marginBottom_20}
-                      autoComplete="off"
-                    /> */}
-                      <div className={classes.marginBottom_20}>
-                        <Dropdown
-                          title="Gift Type"
-                          options={giftTypeOptions}
-                          value={values.giftType}
-                          handleOnChange={handleChange('giftType')}
-                          className={classes.marginBottom_20}
-                        />
-                      </div>
+                      /> */}
                     </GridItem>
                   </GridContainer>
                   <GridContainer>
@@ -348,6 +376,11 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                         onChange={handleChange('name')}
                         className={classes.marginBottom_20}
                         autoComplete="off"
+                        helperText={
+                          errors.name && (
+                            <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText>
+                          )
+                        }
                       />
                     </GridItem>
                     <GridItem xs={12} sm={6} md={6}>
@@ -360,11 +393,20 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                         <OutlinedInput
                           id="percent"
                           value={values.percent}
+                          // onChange={(e) => {
+                          //   const value = e.target.value;
+                          //   const numberRegex = /^[+]?\d*\.?\d+(?!.*--.*)$/;
+
+                          //   if (numberRegex.test(value) || value === null) {
+                          //     setFieldValue('percent', value);
+                          //   }
+                          // }}
                           onChange={handleChange('percent')}
                           startAdornment={<InputAdornment position="start">%</InputAdornment>}
                           labelWidth={70}
                           type="number"
                           autoComplete="off"
+                          //helperText={errors.percent || ''}
                         />
                       </FormControl>
                     </GridItem>
@@ -395,6 +437,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                           options={typeOptions}
                           value={values.type}
                           handleOnChange={handleChange('type')}
+                          helperErrorText={errors.type || ''}
                         />
                       </div>
                     </GridItem>
@@ -504,7 +547,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                   </GridContainer>
                 </div>
                 <div>
-                  <p className={classes.titleFilter}>{'description'}</p>
+                  <p className={classes.titleFilter}>{'Description'}</p>
                   <GridContainer>
                     <GridItem xs={12} sm={12} md={12}>
                       <TextField
@@ -561,7 +604,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                 </Button>
               </CardFooter>
             </Card>
-          </div>
+          </Form>
         );
       }}
     </Formik>

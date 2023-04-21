@@ -4,10 +4,10 @@ import {
   InputLabel,
   makeStyles,
   MenuItem,
-  Select
-} from "@material-ui/core";
-import React from "react";
-import styles from "./style";
+  Select,
+} from '@material-ui/core';
+import React from 'react';
+import styles from './style';
 
 function Dropdown({
   title,
@@ -16,6 +16,8 @@ function Dropdown({
   defaultValue,
   value,
   helperErrorText,
+  onFocus,
+  disabled,
 }) {
   const useStyles = makeStyles(styles);
   const classes = useStyles();
@@ -24,10 +26,14 @@ function Dropdown({
       error={helperErrorText}
       variant="outlined"
       size="small"
-      className={classes.form_control}
-    >
+      className={classes.form_control}>
       <InputLabel className={classes.input_label}>{title}</InputLabel>
-      <Select value={value} defaultValue={defaultValue} onChange={handleOnChange}>
+      <Select
+        disabled={disabled}
+        value={value}
+        defaultValue={defaultValue}
+        onChange={handleOnChange}
+        onFocus={onFocus}>
         {options?.map((item, index) => (
           <MenuItem value={item.value} key={index}>
             {item.title}
@@ -35,9 +41,7 @@ function Dropdown({
         ))}
       </Select>
       {helperErrorText && (
-        <FormHelperText style={{ color: "red" }}>
-          {helperErrorText}
-        </FormHelperText>
+        <FormHelperText style={{ color: 'red' }}>{helperErrorText}</FormHelperText>
       )}
     </FormControl>
   );

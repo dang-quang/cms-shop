@@ -158,7 +158,6 @@ function GameReport() {
 
   const renderReward = (item, index) => {
     const { fullName, gameName, playDate, msisdn, name } = item;
-    console.log('renderReward', item);
     return (
       <React.Fragment key={index}>
         <TableRow className={tableClasses.tableBodyRow}>

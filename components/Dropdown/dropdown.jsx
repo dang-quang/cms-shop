@@ -22,28 +22,30 @@ function Dropdown({
   const useStyles = makeStyles(styles);
   const classes = useStyles();
   return (
-    <FormControl
-      error={helperErrorText}
-      variant="outlined"
-      size="small"
-      className={classes.form_control}>
-      <InputLabel className={classes.input_label}>{title}</InputLabel>
-      <Select
-        disabled={disabled}
-        value={value}
-        defaultValue={defaultValue}
-        onChange={handleOnChange}
-        onFocus={onFocus}>
-        {options?.map((item, index) => (
-          <MenuItem value={item.value} key={index}>
-            {item.title}
-          </MenuItem>
-        ))}
-      </Select>
+    <div>
+      <FormControl
+        error={helperErrorText}
+        variant="outlined"
+        size="small"
+        className={classes.form_control}>
+        <InputLabel className={classes.input_label}>{title}</InputLabel>
+        <Select
+          disabled={disabled}
+          value={value}
+          defaultValue={defaultValue}
+          onChange={handleOnChange}
+          onFocus={onFocus}>
+          {options?.map((item, index) => (
+            <MenuItem value={item.value} key={index}>
+              {item.title}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       {helperErrorText && (
         <FormHelperText style={{ color: 'red' }}>{helperErrorText}</FormHelperText>
       )}
-    </FormControl>
+    </div>
   );
 }
 

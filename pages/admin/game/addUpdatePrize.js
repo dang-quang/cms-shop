@@ -117,14 +117,13 @@ const valueOptions = {
   OTHER: 1,
 };
 
-function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) {
+function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
   const dispatch = useDispatch();
   const useStyles = makeStyles(styles);
   const classes = useStyles();
   const { t } = useTranslation();
   const size = useWindowSize();
   const [selectedImages, setSelectedImages] = useState([]);
-  // const [selectedFiles, setSelectedFiles] = useState([]);
 
   const game_id = gameId;
   const _prize = prize;
@@ -135,25 +134,12 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
     dispatch(setShowLoader(false));
   }, []);
 
-  const renderPhotos = (source) => {
-    return source.map((photo, index) => {
-      return (
-        <div key={index} className={classes.imgContainer}>
-          <Close className={classes.btnClose} onClick={() => handleRemoveImage(photo)} />
-          <img src={photo} alt="" key={photo} className={classes.imageUpload} />
-        </div>
-      );
-    });
-  };
-
-  const handleRemoveImage = (photo) => {
+  const handleRemoveImage = (photo, setFieldValue) => {
     const currentIndex = selectedImages.indexOf(photo);
     const newListImages = [...selectedImages];
-    //const newListFiles = [...selectedFiles];
     newListImages.splice(currentIndex, 1);
-    //newListFiles.splice(currentIndex, 1);
     setSelectedImages(newListImages);
-    //setSelectedFiles(newListFiles);
+    setFieldValue('image', '');
   };
 
   const handleImageChange = (e, setFieldValue) => {
@@ -168,8 +154,6 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
     }
     if (e.target.files) {
       const filesArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
-      //const files = Array.from(e.target.files).map((file) => file);
-      //setSelectedFiles((prevFiles) => prevFiles.concat(files));
       setSelectedImages(filesArray);
       Array.from(e.target.files).map(
         (file) => URL.revokeObjectURL(file) // avoid memory leak
@@ -262,22 +246,36 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
       closeDialog();
     }
   };
-
   //Todo Validation Schema
   const addUpdatePrizeValidationSchema = yup.object().shape({
     giftType: yup.string().required(t('errorGiftTypeRequire')),
     code: yup.string().required(t('errorCodeRequire')),
     name: yup.string().required(t('errorNameRequire')),
-    percent: yup.string().required(t('errorPercentRequire')),
+    percent: yup
+      .string()
+      .matches(/^\d+(\.\d+)?$/, t('errorInvalid'))
+      .required(t('errorPercentRequire')),
     type: yup.string().required(t('errorTypeRequire')),
-    value: yup.string().required(t('errorValueRequire')),
-    quantity: yup.string().required(t('errorQuantityRequire')),
-    levels: yup.string().required(t('errorLevelsRequire')),
+    value: yup
+      .string()
+      .matches(/^\d+(\.\d+)?$/, t('errorInvalid'))
+      .required(t('errorValueRequire')),
+    quantity: yup
+      .string()
+      .matches(/^\d+(\.\d+)?$/, t('errorInvalid'))
+      .required(t('errorQuantityRequire')),
+    levels: yup
+      .string()
+      .matches(/^\d+(\.\d+)?$/, t('errorInvalid'))
+      .required(t('errorLevelsRequire')),
     alert: yup.string().required(t('errorAlertRequire')),
+    pointExchange: yup.string().matches(/^\d+(\.\d+)?$/, t('errorInvalid')),
+    image: yup.string().required(t('errorImageRequire')),
   });
 
   return (
     <Formik
+      validateOnChange={false}
       validationSchema={addUpdatePrizeValidationSchema}
       enableReinitialize={true}
       initialValues={prize ? prize : initialValues}
@@ -323,55 +321,45 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                           options={giftTypeOptions}
                           value={values.giftType}
                           handleOnChange={handleChange('giftType')}
-                          className={classes.marginBottom_20}
                           helperErrorText={errors.giftType || ''}
                         />
                       </div>
                     </GridItem>
                     <GridItem xs={12} sm={6} md={6}>
-                      {/* <Dropdown
-                        title="Code"
-                        options={codeOptions[values.giftType]}
-                        value={values.code}
-                        handleOnChange={(e) => {
-                          setFieldValue('code', e.target.value);
-                          setFieldValue('value', valueOptions[e.target.value]);
-                        }}
-                        className={classes.marginBottom_20}
-                        onFocus={() => {
-                          if (_.isEmpty(values.giftType)) {
-                            NotificationManager.error({
-                              title: t('error'),
-                              message: 'Please select gift type',
-                            });
-                          }
-                        }}
-                        helperErrorText={errors.code || ''}
-                      /> */}
-                      <TextField
-                        id="code"
-                        label={t(`category.code`)}
-                        variant="outlined"
-                        size="small"
-                        fullWidth
-                        inputProps={{
-                          value: values.code,
-                          onChange: handleChange('code'),
-                        }}
-                        className={classes.marginBottom_20}
-                        autoComplete="off"
-                        helperText={
-                          errors.name && (
-                            <FormHelperText style={{ color: 'red' }}>{errors.code}</FormHelperText>
-                          )
-                        }
-                      />
+                      <div className={classes.marginBottom_20}>
+                        {/* <Dropdown
+                          title="Code"
+                          options={codeOptions[values.giftType]}
+                          value={values.code}
+                          handleOnChange={(e) => {
+                            setFieldValue('code', e.target.value);
+                            setFieldValue('value', valueOptions[e.target.value]);
+                          }}
+                          helperErrorText={errors.code || ''}
+                        /> */}
+                        <TextField
+                          className={classes.marginBottom_20}
+                          error={!!errors.name}
+                          id="code"
+                          label="Code"
+                          variant="outlined"
+                          size="small"
+                          fullWidth
+                          value={values.name}
+                          onChange={handleChange('code')}
+                          autoComplete="off"
+                        />
+                        {errors.name && (
+                          <FormHelperText style={{ color: 'red' }}>{errors.code}</FormHelperText>
+                        )}
+                      </div>
                     </GridItem>
                   </GridContainer>
                   <GridContainer>
                     <GridItem xs={12} sm={6} md={6}>
                       <TextField
-                        // error={validateSku ? false : true}
+                        className={classes.marginBottom_20}
+                        error={!!errors.name}
                         id="name"
                         label="Name"
                         variant="outlined"
@@ -379,68 +367,42 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                         fullWidth
                         value={values.name}
                         onChange={handleChange('name')}
-                        className={classes.marginBottom_20}
                         autoComplete="off"
-                        helperText={
-                          errors.name && (
-                            <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText>
-                          )
-                        }
                       />
+                      {errors.name && (
+                        <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText>
+                      )}
                     </GridItem>
                     <GridItem xs={12} sm={6} md={6}>
-                      <FormControl
-                        fullWidth
-                        className={classes.marginBottom_20}
-                        variant="outlined"
-                        size="small">
-                        <InputLabel htmlFor="percent">{'Percent'}</InputLabel>
-                        <OutlinedInput
-                          id="percent"
-                          value={values.percent}
-                          // onChange={(e) => {
-                          //   const value = e.target.value;
-                          //   const numberRegex = /^[+]?\d*\.?\d+(?!.*--.*)$/;
-
-                          //   if (numberRegex.test(value) || value === null) {
-                          //     setFieldValue('percent', value);
-                          //   }
-                          // }}
-                          onChange={handleChange('percent')}
-                          startAdornment={<InputAdornment position="start">%</InputAdornment>}
-                          labelWidth={70}
-                          type="number"
-                          autoComplete="off"
-                          //helperText={errors.percent || ''}
-                          helperText={
-                            errors.name && (
-                              <FormHelperText style={{ color: 'red' }}>{errors.code}</FormHelperText>
-                            )
-                          }
-                        />
-                      </FormControl>
+                      <div className={classes.marginBottom_20}>
+                        <FormControl fullWidth variant="outlined" size="small">
+                          <InputLabel error={!!errors.percent} htmlFor="percent">
+                            {'Percent'}
+                          </InputLabel>
+                          <OutlinedInput
+                            id="percent"
+                            value={values.percent}
+                            onChange={handleChange('percent')}
+                            startAdornment={
+                              <InputAdornment position="start">
+                                <p style={{ color: !!errors.percent && 'red' }}>%</p>
+                              </InputAdornment>
+                            }
+                            labelWidth={70}
+                            type="number"
+                            autoComplete="off"
+                            style={{ color: !!errors.percent && 'red' }}
+                            error={!!errors.percent}
+                          />
+                        </FormControl>
+                        {!!errors.percent && (
+                          <FormHelperText style={{ color: 'red' }}>{errors.percent}</FormHelperText>
+                        )}
+                      </div>
                     </GridItem>
                   </GridContainer>
                   <GridContainer>
                     <GridItem xs={12} sm={6} md={6}>
-                      {/* <FormControl
-                      fullWidth
-                      className={classes.marginBottom_20}
-                      variant="outlined"
-                      size="small">
-                      <InputLabel htmlFor="type">{'type'}</InputLabel>
-                      <OutlinedInput
-                        id="type"
-                        value={values.type}
-                        onChange={handleChange('type')}
-                        // startAdornment={
-                        //     <InputAdornment position="start">1</InputAdornment>
-                        // }
-                        labelWidth={70}
-                        type="number"
-                        autoComplete="off"
-                      />
-                    </FormControl> */}
                       <div className={classes.marginBottom_20}>
                         <Dropdown
                           title="Type"
@@ -452,137 +414,157 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                       </div>
                     </GridItem>
                     <GridItem xs={12} sm={6} md={6}>
-                      <FormControl
-                        fullWidth
-                        className={classes.marginBottom_20}
-                        variant="outlined"
-                        size="small">
-                        <InputLabel htmlFor="value">{'Value'}</InputLabel>
-                        <OutlinedInput
-                          id="value"
-                          value={values.value}
-                          onChange={handleChange('value')}
-                          // startAdornment={
-                          //     <InputAdornment position="start">₫</InputAdornment>
-                          // }
-                          labelWidth={70}
-                          type="number"
-                          autoComplete="off"
-                        />
-                      </FormControl>
+                      <div className={classes.marginBottom_20}>
+                        <FormControl fullWidth variant="outlined" size="small">
+                          <InputLabel error={!!errors.value} htmlFor="value">
+                            {'Value'}
+                          </InputLabel>
+                          <OutlinedInput
+                            id="value"
+                            value={values.value}
+                            onChange={handleChange('value')}
+                            labelWidth={70}
+                            type="number"
+                            autoComplete="off"
+                            style={{ color: !!errors.value && 'red' }}
+                            error={!!errors.value}
+                          />
+                        </FormControl>
+                        {!!errors.value && (
+                          <FormHelperText style={{ color: 'red' }}>{errors.value}</FormHelperText>
+                        )}
+                      </div>
                     </GridItem>
                   </GridContainer>
                   <GridContainer>
                     <GridItem xs={12} sm={6} md={6}>
-                      <FormControl
-                        fullWidth
-                        className={classes.marginBottom_20}
-                        variant="outlined"
-                        size="small">
-                        <InputLabel htmlFor="pointExchange">{'Point Exchange'}</InputLabel>
-                        <OutlinedInput
-                          id="pointExchange"
-                          value={values.pointExchange}
-                          onChange={handleChange('pointExchange')}
-                          // startAdornment={
-                          //     <InputAdornment position="start">1</InputAdornment>
-                          // }
-                          labelWidth={70}
-                          type="number"
-                          autoComplete="off"
-                        />
-                      </FormControl>
+                      <div className={classes.marginBottom_20}>
+                        <FormControl fullWidth variant="outlined" size="small">
+                          <InputLabel error={!!errors.pointExchange} htmlFor="pointExchange">
+                            {'Point Exchange'}
+                          </InputLabel>
+                          <OutlinedInput
+                            id="pointExchange"
+                            value={values.pointExchange}
+                            onChange={handleChange('pointExchange')}
+                            labelWidth={70}
+                            type="number"
+                            autoComplete="off"
+                            style={{ color: !!errors.pointExchange && 'red' }}
+                            error={!!errors.pointExchange}
+                          />
+                        </FormControl>
+                        {!!errors.pointExchange && (
+                          <FormHelperText style={{ color: 'red' }}>
+                            {errors.pointExchange}
+                          </FormHelperText>
+                        )}
+                      </div>
                     </GridItem>
                     <GridItem xs={12} sm={6} md={6}>
-                      <FormControl
-                        fullWidth
-                        className={classes.marginBottom_20}
-                        variant="outlined"
-                        size="small">
-                        <InputLabel htmlFor="quantity">{'Quantity'}</InputLabel>
-                        <OutlinedInput
-                          id="quantity"
-                          value={values.quantity}
-                          onChange={handleChange('quantity')}
-                          // startAdornment={
-                          //     <InputAdornment position="start">₫</InputAdornment>
-                          // }
-                          labelWidth={70}
-                          type="number"
-                          autoComplete="off"
-                        />
-                      </FormControl>
+                      <div className={classes.marginBottom_20}>
+                        <FormControl fullWidth variant="outlined" size="small">
+                          <InputLabel error={!!errors.quantity} htmlFor="quantity">
+                            {'Quantity'}
+                          </InputLabel>
+                          <OutlinedInput
+                            id="quantity"
+                            value={values.quantity}
+                            onChange={handleChange('quantity')}
+                            labelWidth={70}
+                            type="number"
+                            autoComplete="off"
+                            style={{ color: !!errors.quantity && 'red' }}
+                            error={!!errors.quantity}
+                          />
+                        </FormControl>
+                        {!!errors.quantity && (
+                          <FormHelperText style={{ color: 'red' }}>
+                            {errors.quantity}
+                          </FormHelperText>
+                        )}
+                      </div>
                     </GridItem>
                   </GridContainer>
                   <GridContainer>
                     <GridItem xs={12} sm={6} md={6}>
-                      <FormControl
-                        fullWidth
-                        className={classes.marginBottom_20}
-                        variant="outlined"
-                        size="small">
-                        <InputLabel htmlFor="levels">{'Levels'}</InputLabel>
-                        <OutlinedInput
-                          id="levels"
-                          value={values.levels}
-                          onChange={handleChange('levels')}
-                          // startAdornment={
-                          //     <InputAdornment position="start">1</InputAdornment>
-                          // }
-                          labelWidth={70}
-                          type="number"
-                          autoComplete="off"
-                        />
-                      </FormControl>
+                      <div className={classes.marginBottom_20}>
+                        <FormControl fullWidth variant="outlined" size="small">
+                          <InputLabel error={!!errors.levels} htmlFor="levels">
+                            {'Levels'}
+                          </InputLabel>
+                          <OutlinedInput
+                            id="levels"
+                            value={values.levels}
+                            onChange={handleChange('levels')}
+                            labelWidth={70}
+                            type="number"
+                            autoComplete="off"
+                            style={{ color: !!errors.levels && 'red' }}
+                            error={!!errors.levels}
+                          />
+                        </FormControl>
+                        {!!errors.levels && (
+                          <FormHelperText style={{ color: 'red' }}>{errors.levels}</FormHelperText>
+                        )}
+                      </div>
                     </GridItem>
                     <GridItem xs={12} sm={6} md={6}>
-                      <FormControl
-                        fullWidth
-                        className={classes.marginBottom_20}
-                        variant="outlined"
-                        size="small">
-                        <InputLabel htmlFor="alert">{'Alert'}</InputLabel>
-                        <OutlinedInput
-                          id="alert"
-                          value={values.alert}
-                          onChange={handleChange('alert')}
-                          // startAdornment={
-                          //     <InputAdornment position="start">₫</InputAdornment>
-                          // }
-                          labelWidth={70}
-                          autoComplete="off"
-                        />
-                      </FormControl>
+                      <div className={classes.marginBottom_20}>
+                        <FormControl fullWidth variant="outlined" size="small">
+                          <InputLabel error={!!errors.alert} htmlFor="alert">
+                            {'Alert'}
+                          </InputLabel>
+                          <OutlinedInput
+                            id="alert"
+                            value={values.alert}
+                            onChange={handleChange('alert')}
+                            labelWidth={70}
+                            autoComplete="off"
+                            error={!!errors.alert}
+                          />
+                        </FormControl>
+                        {errors.alert && (
+                          <FormHelperText style={{ color: 'red' }}>{errors.alert}</FormHelperText>
+                        )}
+                      </div>
                     </GridItem>
                   </GridContainer>
                 </div>
-                <div>
-                  <p className={classes.titleFilter}>{'Description'}</p>
-                  <GridContainer>
-                    <GridItem xs={12} sm={12} md={12}>
-                      <TextField
-                        multiline
-                        id="input3"
-                        label={'Description'}
-                        variant="outlined"
-                        size="small"
-                        fullWidth
-                        rows={4}
-                        inputProps={{
-                          value: values.description,
-                          onChange: handleChange('description'),
-                        }}
-                        className={classes.marginBottom_20}
-                        autoComplete="off"
-                      />
-                    </GridItem>
-                  </GridContainer>
-                </div>
+                <p className={classes.titleFilter}>{'Description'}</p>
+                <GridContainer>
+                  <GridItem xs={12} sm={12} md={12}>
+                    <TextField
+                      multiline
+                      id="input3"
+                      label={'Description'}
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      inputProps={{
+                        value: values.description,
+                        onChange: handleChange('description'),
+                      }}
+                      className={classes.marginBottom_20}
+                      autoComplete="off"
+                    />
+                  </GridItem>
+                </GridContainer>
                 <div>
                   <p className={classes.titleFilter}>{t(`game.image`)}</p>
                   <div className={classes.imageForm}>
                     {selectedImages.length > 0 ? (
-                      renderPhotos(selectedImages)
+                      selectedImages.map((photo, index) => {
+                        return (
+                          <div key={index} className={classes.imgContainer}>
+                            <Close
+                              className={classes.btnClose}
+                              onClick={() => handleRemoveImage(photo, setFieldValue)}
+                            />
+                            <img src={photo} alt="" key={photo} className={classes.imageUpload} />
+                          </div>
+                        );
+                      })
                     ) : (
                       <>
                         <input
@@ -595,6 +577,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                         />
                         <label
                           htmlFor="icon-button-file"
+                          style={{ borderColor: !!errors.image && 'red' }}
                           className={classes.imageUpload + ' ' + classes.imageBtn}>
                           <IconButton color="primary" aria-label="upload picture" component="span">
                             <PhotoCamera />

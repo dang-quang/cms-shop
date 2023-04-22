@@ -253,8 +253,11 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
     name: yup.string().required(t('errorNameRequire')),
     percent: yup
       .string()
+      .required(t('errorPercentRequire'))
       .matches(/^\d+(\.\d+)?$/, t('errorInvalid'))
-      .required(t('errorPercentRequire')),
+      .test('maxPercent', t('errorPercentMax'), function (value) {
+        return parseFloat(value) <= 100;
+      }),
     type: yup.string().required(t('errorTypeRequire')),
     value: yup
       .string()
@@ -317,7 +320,7 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
                     <GridItem xs={12} sm={6} md={6}>
                       <div className={classes.marginBottom_20}>
                         <Dropdown
-                          title="Gift Type"
+                          title={t('gift_type')}
                           options={giftTypeOptions}
                           value={values.giftType}
                           handleOnChange={handleChange('giftType')}
@@ -327,7 +330,7 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
                     </GridItem>
                     <GridItem xs={12} sm={6} md={6}>
                       <div className={classes.marginBottom_20}>
-                        {/* <Dropdown
+                        <Dropdown
                           title="Code"
                           options={codeOptions[values.giftType]}
                           value={values.code}
@@ -336,22 +339,7 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
                             setFieldValue('value', valueOptions[e.target.value]);
                           }}
                           helperErrorText={errors.code || ''}
-                        /> */}
-                        <TextField
-                          className={classes.marginBottom_20}
-                          error={!!errors.name}
-                          id="code"
-                          label="Code"
-                          variant="outlined"
-                          size="small"
-                          fullWidth
-                          value={values.name}
-                          onChange={handleChange('code')}
-                          autoComplete="off"
                         />
-                        {errors.name && (
-                          <FormHelperText style={{ color: 'red' }}>{errors.code}</FormHelperText>
-                        )}
                       </div>
                     </GridItem>
                   </GridContainer>
@@ -361,7 +349,7 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
                         className={classes.marginBottom_20}
                         error={!!errors.name}
                         id="name"
-                        label="Name"
+                        label={t('name')}
                         variant="outlined"
                         size="small"
                         fullWidth
@@ -377,7 +365,7 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
                       <div className={classes.marginBottom_20}>
                         <FormControl fullWidth variant="outlined" size="small">
                           <InputLabel error={!!errors.percent} htmlFor="percent">
-                            {'Percent'}
+                            {t('percent')}
                           </InputLabel>
                           <OutlinedInput
                             id="percent"
@@ -405,7 +393,7 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
                     <GridItem xs={12} sm={6} md={6}>
                       <div className={classes.marginBottom_20}>
                         <Dropdown
-                          title="Type"
+                          title={t('type')}
                           options={typeOptions}
                           value={values.type}
                           handleOnChange={handleChange('type')}
@@ -417,7 +405,7 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
                       <div className={classes.marginBottom_20}>
                         <FormControl fullWidth variant="outlined" size="small">
                           <InputLabel error={!!errors.value} htmlFor="value">
-                            {'Value'}
+                            {t('value')}
                           </InputLabel>
                           <OutlinedInput
                             id="value"
@@ -441,7 +429,7 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
                       <div className={classes.marginBottom_20}>
                         <FormControl fullWidth variant="outlined" size="small">
                           <InputLabel error={!!errors.pointExchange} htmlFor="pointExchange">
-                            {'Point Exchange'}
+                            {t('point_exchange')}
                           </InputLabel>
                           <OutlinedInput
                             id="pointExchange"
@@ -465,7 +453,7 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
                       <div className={classes.marginBottom_20}>
                         <FormControl fullWidth variant="outlined" size="small">
                           <InputLabel error={!!errors.quantity} htmlFor="quantity">
-                            {'Quantity'}
+                            {t('quantity')}
                           </InputLabel>
                           <OutlinedInput
                             id="quantity"
@@ -491,7 +479,7 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
                       <div className={classes.marginBottom_20}>
                         <FormControl fullWidth variant="outlined" size="small">
                           <InputLabel error={!!errors.levels} htmlFor="levels">
-                            {'Levels'}
+                            {t('levels')}
                           </InputLabel>
                           <OutlinedInput
                             id="levels"
@@ -513,7 +501,7 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
                       <div className={classes.marginBottom_20}>
                         <FormControl fullWidth variant="outlined" size="small">
                           <InputLabel error={!!errors.alert} htmlFor="alert">
-                            {'Alert'}
+                            {t('alert')}
                           </InputLabel>
                           <OutlinedInput
                             id="alert"
@@ -531,13 +519,13 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
                     </GridItem>
                   </GridContainer>
                 </div>
-                <p className={classes.titleFilter}>{'Description'}</p>
+                <p className={classes.titleFilter}>{t('description')}</p>
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={12}>
                     <TextField
                       multiline
                       id="input3"
-                      label={'Description'}
+                      label={t('description')}
                       variant="outlined"
                       size="small"
                       fullWidth

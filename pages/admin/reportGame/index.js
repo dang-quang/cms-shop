@@ -78,6 +78,8 @@ function GameReport() {
   const [isMobile, setIsMobile] = React.useState(false);
   const [currentPage, setCurrentPage] = React.useState(1);
   const [totalPage, setTotalPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(1);
+  const [totalRecords, setTotalRecords] = React.useState(1);
 
   React.useEffect(() => {
     window.addEventListener(
@@ -123,6 +125,8 @@ function GameReport() {
       if (res && res.code === 'MSG_SUCCESS') {
         setGameRewards(res?.data.results === null ? [] : res?.data.results.sort((a, b) => b.playDate - a.playDate));
         setTotalPage(res?.data.totalPages);
+        setPageSize(res?.data.pageSize);
+        setTotalRecords(res?.data.totalRecords);
       }
     })();
   }, []);
@@ -151,6 +155,8 @@ function GameReport() {
         // setGameRewards(res.data.results === null ? [] : res.data.results.sort((a, b) => b.playDate - a.playDate));
         setGameRewards(res.data.results === null ? [] : res.data.results);
         setTotalPage(res?.data.totalPages);
+        setPageSize(res?.data.pageSize);
+        setTotalRecords(res?.data.totalRecords);
       }else{
         NotificationManager.error({
           title: t('error'),
@@ -369,6 +375,8 @@ function GameReport() {
               {gameRewards.length > 0 ? (
                 <div style={{ margin: '15px 0' }}>
                   <Pagination count={totalPage} page={currentPage} onChange={handleSelectPage} />
+                  <div>Total Page: {totalPage}</div>
+                  <div>Page Size: {pageSize}</div>
                 </div>
               ) : null}
             </div>

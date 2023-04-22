@@ -803,11 +803,17 @@ export function updateQrStatus(id, status) {
 }
 
 export function getListGames(keyWord, fromDate, toDate, status) {
+  console.log('list game=>>>>>>', {
+    keyWord: keyWord,
+    fromDate: fromDate,
+    toDate: toDate,
+    status: status,
+  });
   return postWithCheckingToken(
     `${BASE_API_URL}/games/list`,
     {},
     {
-      keyword: keyWord,
+      keyWord: keyWord,
       fromDate: fromDate,
       toDate: toDate,
       status: status,

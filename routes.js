@@ -148,8 +148,8 @@ const dashboardRoutes = [
         permission: 'game',
       },
       {
-        path: '/gameReport',
-        name: 'gameReport',
+        path: '/reportGame',
+        name: 'reportGame',
         layout: '/admin',
         parent: 'operation',
         permission: 'gameReport',

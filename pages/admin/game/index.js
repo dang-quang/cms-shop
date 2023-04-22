@@ -82,6 +82,7 @@ function Game() {
   const [showUpdate, setShowUpdate] = useState(false);
   const [selectedTitle, setSelectedTitle] = useState('');
   const [selectedPrize, setSelectedPrize] = React.useState(null);
+  const formatDate = 'YYYY-MM-DD';
 
   const TABLE_LUCKY_HEAD = [
     t('qrManagement.stt'),
@@ -90,7 +91,7 @@ function Game() {
     // t('game.prize'),
     t('quantity'),
     t('amount'),
-    t('game.order'),
+    t('game.levels'),
     // t('game.style'),
     t('action'),
   ];
@@ -144,17 +145,26 @@ function Game() {
     let to;
     let key;
     if (doFilter) {
-      from = moment(fromDate).format('YYYY-MM-DD');
-      to = moment(toDate).format('YYYY-MM-DD');
+      from = moment(fromDate).format(formatDate);
+      to = moment(toDate).format(formatDate);
     }
     if (txtSearch) {
       key = txtSearch;
     }
     const res = await getListGames(key, from, to, status);
-    if (res.status === 0 && res?.list) {
-      setListGame(res?.list);
-      setSelectedTab(res?.list[0]);
-      setSelectedId(res?.list[0].id);
+    console.log('getListGames', res)
+    if (res.code === "MSG_SUCCESS") {
+      if(res?.list.length > 0){
+
+        setListGame(res?.list);
+        setSelectedTab(res?.list[0]);
+        setSelectedId(res?.list[0].id);
+      }else{
+        NotificationManager.error({
+          title: t('error'),
+          message: `The game doesn't exist`,
+        });
+      }
     }
     dispatch(setShowLoader(false));
   }, [doSearch, doFilter, selectedTitle]);
@@ -170,7 +180,7 @@ function Game() {
         // if (res.infoList.length > 0) {
         setTable({
           tableHead: res.infoList === null ? [] : TABLE_LUCKY_HEAD,
-          tableBody: res.infoList === null ? [] : res.infoList.sort((a, b) => a.id - b.id),
+          tableBody: res.infoList === null ? [] : res.infoList.sort((a, b) => a.levels - b.levels),
         });
 
         // }

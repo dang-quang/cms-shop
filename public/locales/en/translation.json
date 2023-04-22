@@ -72,7 +72,7 @@
     "operationReport": "Operation Report",
     "uiManagement": "UI Management",
     "game": "Game",
-    "gameReport": "Game Report"
+    "reportGame": "Game Report"
   },
   "qrManagement": {
     "notActive": "Not Active",
@@ -193,6 +193,7 @@
   "gameReport": {
     "gameReward": "Game Reward",
     "phoneNumber": "Phone Number",
+    "game": "Game",
     "fullName": "Full Name",
     "prize": "Prize",
     "date": "Date"

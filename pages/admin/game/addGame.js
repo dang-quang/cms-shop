@@ -41,16 +41,16 @@ function AddGame({ closeDialog, selectedTab }) {
   const [values, setValues] = useState({
     code: selectedTab ? selectedTab.code : '',
     name: selectedTab ? selectedTab.name : '',
-    type: selectedTab ? selectedTab.type : '',
+    type: 0,
     startTime: selectedTab
-      ? moment(selectedTab.startTime).format('yyyy-MM-DDThh:mm')
-      : moment().format('yyyy-MM-DDThh:mm'),
+      ? moment(selectedTab.startTime).format('yyyy-MM-DD HH:mm')
+      : moment().format('yyyy-MM-DD HH:mm'),
     endTime: selectedTab
-      ? moment(selectedTab.endTime).format('yyyy-MM-DDThh:mm')
-      : moment().format('yyyy-MM-DDThh:mm'),
+      ? moment(selectedTab.endTime).format('yyyy-MM-DD HH:mm')
+      : moment().format('yyyy-MM-DD HH:mm'),
     description: selectedTab ? selectedTab.description : '',
     image: selectedTab ? BASE_API_URL + '/assets/' + selectedTab.image : '',
-    amount: selectedTab ? selectedTab.amount + '' : '',
+    amount: 0,
   });
   const handleChangeValue = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
@@ -86,6 +86,7 @@ function AddGame({ closeDialog, selectedTab }) {
     newListImages.splice(currentIndex, 1);
     newListFiles.splice(currentIndex, 1);
     setSelectedImages(newListImages);
+    setBase64Image('');
     setSelectedFiles(newListFiles);
   };
 
@@ -127,20 +128,31 @@ function AddGame({ closeDialog, selectedTab }) {
   }
 
   const handleSubmit = async () => {
-    // console.log('values', values);
+    console.log('handleSubmit====>', moment(values.startTime).isBefore(moment(values.endTime)));
+    console.log('handleSubmit====>', moment(values.startTime), '--', (moment(values.endTime)));
     if (
       _.isEmpty(values.code) ||
       _.isEmpty(values.name) ||
-      _.isEmpty(values.type) ||
+      // _.isEmpty(values.type) ||
       _.isEmpty(selectedTab ? selectedTab.image : base64Image) ||
       _.isEmpty(values.startTime) ||
       _.isEmpty(values.endTime) ||
-      _.isEmpty(values.description) ||
-      _.isEmpty(values.amount)
+      _.isEmpty(values.description)
+      // _.isEmpty(values.amount)
     ) {
       NotificationManager.error({
         title: t('error'),
         message: t('errorInput'),
+      });
+    } else if (moment(values.endTime).isBefore(moment(values.startTime))) {
+      NotificationManager.error({
+        title: t('error'),
+        message: `The start date cannot be greater than the end date`,
+      });
+    } else if (!selectedTab && _.isEmpty(base64Image)) {
+      NotificationManager.error({
+        title: t('error'),
+        message: `Please choose game photo`,
       });
     } else {
       dispatch(setShowLoader(true));
@@ -165,13 +177,13 @@ function AddGame({ closeDialog, selectedTab }) {
       dispatch(setShowLoader(false));
       if (res.code === 'MSG_SUCCESS') {
         Router.push('/admin/game');
+        closeDialog();
       } else {
         NotificationManager.error({
           title: t('error'),
-          message: res.message ? res.message.text : 'Error',
+          message: res.message ? res.message : 'Error',
         });
       }
-      closeDialog();
     }
   };
 
@@ -231,7 +243,7 @@ function AddGame({ closeDialog, selectedTab }) {
                 />
               </GridItem>
             </GridContainer>
-            <GridContainer>
+            {/* <GridContainer>
               <GridItem xs={12} sm={6} md={6}>
                 <TextField
                   // error={validateSku ? false : true}
@@ -266,12 +278,12 @@ function AddGame({ closeDialog, selectedTab }) {
                   />
                 </FormControl>
               </GridItem>
-            </GridContainer>
+            </GridContainer> */}
             <GridContainer>
               <GridItem xs={12} sm={12} md={12} style={{ marginTop: '15px' }}>
                 <FormCellCustom
                   label={t('time')}
-                  // helperText={t('voucher.timeDes')}
+                // helperText={t('voucher.timeDes')}
                 >
                   <div className={classes.formCell + ' ' + classes.flex_center}>
                     <TextField

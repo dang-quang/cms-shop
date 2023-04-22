@@ -180,6 +180,8 @@ export default function Sidebar(props) {
                           [' ' + classes[color]]: activeRoute(item.layout + item.path),
                         });
 
+                        // console.log('tung', listSubItemClasses, activeRoute(item.layout + item.path), item.path, item.layout);
+
                         return item.path === '/' ? null : (
                           <Link href={item.layout + item.path} key={'key2_' + key2}>
                             <a className={activePro + classes.item}>

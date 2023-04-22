@@ -329,7 +329,7 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                       </div>
                     </GridItem>
                     <GridItem xs={12} sm={6} md={6}>
-                      <Dropdown
+                      {/* <Dropdown
                         title="Code"
                         options={codeOptions[values.giftType]}
                         value={values.code}
@@ -347,8 +347,8 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                           }
                         }}
                         helperErrorText={errors.code || ''}
-                      />
-                      {/* <TextField
+                      /> */}
+                      <TextField
                         id="code"
                         label={t(`category.code`)}
                         variant="outlined"
@@ -360,7 +360,12 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                         }}
                         className={classes.marginBottom_20}
                         autoComplete="off"
-                      /> */}
+                        helperText={
+                          errors.name && (
+                            <FormHelperText style={{ color: 'red' }}>{errors.code}</FormHelperText>
+                          )
+                        }
+                      />
                     </GridItem>
                   </GridContainer>
                   <GridContainer>
@@ -407,6 +412,11 @@ function addUpdatePrize({ closeDialog, selectedTab, gameId, prize, onUpdated }) 
                           type="number"
                           autoComplete="off"
                           //helperText={errors.percent || ''}
+                          helperText={
+                            errors.name && (
+                              <FormHelperText style={{ color: 'red' }}>{errors.code}</FormHelperText>
+                            )
+                          }
                         />
                       </FormControl>
                     </GridItem>

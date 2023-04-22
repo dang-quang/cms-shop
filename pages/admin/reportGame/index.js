@@ -104,6 +104,7 @@ function GameReport() {
   const GAME_REWARD_TABLE_HEAD = [
     t('gameReport.phoneNumber'),
     t('gameReport.fullName'),
+    t('gameReport.game'),
     t('gameReport.prize'),
     t('gameReport.date'),
   ];
@@ -120,8 +121,8 @@ function GameReport() {
 
       dispatch(setShowLoader(false));
       if (res && res.code === 'MSG_SUCCESS') {
-        setGameRewards(res.list === null ? [] : res.list.sort((a, b) => b.playDate - a.playDate));
-        setTotalPage(3);
+        setGameRewards(res?.data.results === null ? [] : res?.data.results.sort((a, b) => b.playDate - a.playDate));
+        setTotalPage(res?.data.totalPages);
       }
     })();
   }, []);
@@ -145,8 +146,16 @@ function GameReport() {
         toDate: to,
         page: currentPage,
       });
-      if (res.status === 0 && res?.list) {
-        setGameRewards(res.list === null ? [] : res.list.sort((a, b) => b.playDate - a.playDate));
+      console.log('getGameResultReward', res);
+      if (res.code === "MSG_SUCCESS" && res?.data && res?.data.results) {
+        // setGameRewards(res.data.results === null ? [] : res.data.results.sort((a, b) => b.playDate - a.playDate));
+        setGameRewards(res.data.results === null ? [] : res.data.results);
+        setTotalPage(res?.data.totalPages);
+      }else{
+        NotificationManager.error({
+          title: t('error'),
+          message: `No search data exists`,
+        });
       }
       dispatch(setShowLoader(false));
     })();
@@ -158,7 +167,6 @@ function GameReport() {
 
   const renderReward = (item, index) => {
     const { fullName, gameName, playDate, msisdn, name } = item;
-    console.log('renderReward', item);
     return (
       <React.Fragment key={index}>
         <TableRow className={tableClasses.tableBodyRow}>
@@ -175,7 +183,7 @@ function GameReport() {
             {name}
           </TableCell>
           <TableCell className={tableClasses.tableCell} key="playDate">
-            {moment(playDate).format('YYYY-MM-DD, hh:mm:ss')}
+            {moment(playDate).format('YYYY-MM-DD, HH:mm:ss')}
           </TableCell>
         </TableRow>
       </React.Fragment>

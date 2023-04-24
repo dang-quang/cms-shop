@@ -921,3 +921,17 @@ export function getGameResultReward(obj) {
   console.log('game result reward parma ===>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/games/result-reward`, {}, obj);
 }
+
+export function requestsGetCategoryList(obj) {
+  console.log('get category list parma==>', obj);
+  return postWithCheckingToken(`${BASE_API_URL}/cms-category/list`, {}, obj);
+}
+
+export function requestCreateEditCategory(obj) {
+  console.log('save category parma==>', obj);
+  return postWithCheckingToken(`${BASE_API_URL}/cms-category/save`, {}, obj);
+}
+
+export function requestDeleteCategory(id) {
+  return postWithCheckingToken(`${BASE_API_URL}/cms-category/delete`, {}, { id: id });
+}

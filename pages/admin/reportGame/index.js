@@ -95,8 +95,7 @@ function GameReport() {
   };
 
   const resetFilterDate = React.useCallback(() => {
-    setFilterDate({ ...filterDate, fromDate: FROM_DATE });
-    setFilterDate({ ...filterDate, toDate: TO_DATE });
+    setFilterDate({ fromDate: FROM_DATE, toDate: TO_DATE });
     setShowDate(false);
     setDoFilter(0);
   }, [filterDate]);
@@ -121,7 +120,11 @@ function GameReport() {
 
       dispatch(setShowLoader(false));
       if (res && res.code === 'MSG_SUCCESS') {
-        setGameRewards(res?.data.results === null ? [] : res?.data.results.sort((a, b) => b.playDate - a.playDate));
+        setGameRewards(
+          res?.data.results === null
+            ? []
+            : res?.data.results.sort((a, b) => b.playDate - a.playDate)
+        );
         setTotalPage(res?.data.totalPages);
       }
     })();
@@ -146,12 +149,11 @@ function GameReport() {
         toDate: to,
         page: currentPage,
       });
-      console.log('getGameResultReward', res);
-      if (res.code === "MSG_SUCCESS" && res?.data && res?.data.results) {
+      if (res.code === 'MSG_SUCCESS' && res?.data && res?.data.results) {
         // setGameRewards(res.data.results === null ? [] : res.data.results.sort((a, b) => b.playDate - a.playDate));
         setGameRewards(res.data.results === null ? [] : res.data.results);
         setTotalPage(res?.data.totalPages);
-      }else{
+      } else {
         NotificationManager.error({
           title: t('error'),
           message: `No search data exists`,

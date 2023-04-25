@@ -128,6 +128,9 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
   const game_id = gameId;
   const _prize = prize;
 
+  console.log('addUpdatePrize', gameId);
+  console.log('_prize', _prize);
+
   useEffect(() => {
     dispatch(setShowLoader(true));
     // getShop();
@@ -208,13 +211,14 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
         alert: alert,
       });
       dispatch(setShowLoader(false));
+      console.log('onUpdated', res);
       if (res.code === 'MSG_SUCCESS') {
         Router.push('/admin/game');
         onUpdated();
       } else {
         NotificationManager.error({
           title: t('error'),
-          message: res.message ? res.message.text : 'Error',
+          message: res.message ? res.message : 'Error',
         });
       }
       closeDialog();
@@ -235,12 +239,12 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
         alert: alert,
       });
       dispatch(setShowLoader(false));
-      if (res.code === 200) {
+      if (res.code === "MSG_SUCCESS") {
         Router.push('/admin/game');
       } else {
         NotificationManager.error({
           title: t('error'),
-          message: res.message ? res.message.text : 'Error',
+          message: res.message ? res.message : 'Error',
         });
       }
       closeDialog();
@@ -330,7 +334,7 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
                     </GridItem>
                     <GridItem xs={12} sm={6} md={6}>
                       <div className={classes.marginBottom_20}>
-                        <Dropdown
+                        {/* <Dropdown
                           title="Code"
                           options={codeOptions[values.giftType]}
                           value={values.code}
@@ -339,7 +343,22 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
                             setFieldValue('value', valueOptions[e.target.value]);
                           }}
                           helperErrorText={errors.code || ''}
-                        />
+                        /> */}
+                         <TextField
+                        className={classes.marginBottom_20}
+                        error={!!errors.name}
+                        id="code"
+                        label={t('Code')}
+                        variant="outlined"
+                        size="small"
+                        fullWidth
+                        value={values.code}
+                        onChange={handleChange('code')}
+                        autoComplete="off"
+                      />
+                      {errors.name && (
+                        <FormHelperText style={{ color: 'red' }}>{errors.code}</FormHelperText>
+                      )}
                       </div>
                     </GridItem>
                   </GridContainer>

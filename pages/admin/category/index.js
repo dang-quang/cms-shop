@@ -103,30 +103,25 @@ function ProductCategory() {
     );
   }, []);
 
-  React.useEffect(() => {
-    (async () => {
-      dispatch(setShowLoader(true));
-      const res = await requestsGetCategoryList({
-        keyWord: '',
-        fromDate: FROM_DATE,
-        toDate: TO_DATE,
-        page: 1,
-      });
+  // React.useEffect(() => {
+  //   (async () => {
+  //     dispatch(setShowLoader(true));
+  //     const res = await requestsGetCategoryList({ page: 1 });
 
-      dispatch(setShowLoader(false));
-      if (res && res.code === 'MSG_SUCCESS') {
-        setCategories(res?.result.results === null ? [] : res?.result.results);
-        setTotalPage(res.result.totalPages);
-        setTotalRecords(res.result.totalRecords);
-      }
-    })();
-  }, []);
+  //     dispatch(setShowLoader(false));
+  //     if (res && res.code === 'MSG_SUCCESS') {
+  //       setCategories(res?.result.results === null ? [] : res?.result.results);
+  //       setTotalPage(res.result.totalPages);
+  //       setTotalRecords(res.result.totalRecords);
+  //     }
+  //   })();
+  // }, []);
 
   React.useEffect(() => {
     (async () => {
       dispatch(setShowLoader(true));
-      let from = FROM_DATE;
-      let to = TO_DATE;
+      let from;
+      let to;
       let key;
       if (search) {
         key = search;
@@ -141,6 +136,7 @@ function ProductCategory() {
         toDate: to,
         page: currentPage,
       });
+      console.log('quang debug  2 =======>', res);
       if (res.code === 'MSG_SUCCESS' && res.result && res.result.results) {
         setCategories(res.result.results === null ? [] : res.result.results);
         setTotalPage(res?.result.totalPages);

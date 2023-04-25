@@ -75,14 +75,19 @@ function AddProductCategory({ onUpdated }) {
 
         const res = await requestsGetParentCategory();
 
-        if (res && res.code === 'MSG_SUCCESS') {
-          setParentCategories(res.data);
+        if (res.code === 'MSG_SUCCESS' && res.data && res.data.length > 0) {
+          if (category) {
+            const list = res.data.filter((e) => e.id !== parseInt(category.id));
+            setParentCategories(list);
+          } else {
+            setParentCategories(res.data);
+          }
         }
       } finally {
         dispatch(setShowLoader(false));
       }
     })();
-  }, []);
+  }, [category]);
 
   const handleRemoveImage = (photo, setFieldValue) => {
     const currentIndex = selectedImages.indexOf(photo);
@@ -116,11 +121,12 @@ function AddProductCategory({ onUpdated }) {
       try {
         dispatch(setShowLoader(true));
         if (category) {
+          console.log('quang debug parentId =====>', parentId);
           const res = await requestCreateEditCategory({
             id,
             name,
             code: code,
-            parentId,
+            parentId: parentId && parentId.id,
             promotion: promotion === 'true' ? 1 : 0,
             image,
           });
@@ -138,7 +144,7 @@ function AddProductCategory({ onUpdated }) {
           const res = await requestCreateEditCategory({
             name: name,
             code: code,
-            parentId: parentId,
+            parentId: parentId && parentId.id,
             promotion: promotion === 'true' ? 1 : 0,
             image,
           });
@@ -205,11 +211,12 @@ function AddProductCategory({ onUpdated }) {
           }
 
           if (category && category.parentId) {
-            const parentId = parentCategories.find((i) => i.id === category.parentId);
-
-            setFieldValue('parentId', parentId);
+            setFieldValue('parentId', {
+              id: parseInt(category.parentId),
+              name: category.parentName,
+            });
           }
-        }, [category, parentCategories]);
+        }, [category]);
 
         return (
           <Form>
@@ -275,9 +282,10 @@ function AddProductCategory({ onUpdated }) {
                       <Autocomplete
                         limitTags={2}
                         size="small"
-                        options={parentCategories}
+                        value={values.parentId}
+                        options={parentCategories || [{ name: '', id: '' }]}
                         getOptionLabel={(option) => option.name}
-                        onChange={(event, newValue) => setFieldValue('parentId', newValue.id)}
+                        onChange={(event, newValue) => setFieldValue('parentId', newValue)}
                         renderOption={(option) => (
                           <React.Fragment>
                             <div style={{ alignItems: 'center' }}>

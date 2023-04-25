@@ -136,7 +136,6 @@ function ProductCategory() {
         toDate: to,
         page: currentPage,
       });
-      console.log('quang debug  2 =======>', res);
       if (res.code === 'MSG_SUCCESS' && res.result && res.result.results) {
         setCategories(res.result.results === null ? [] : res.result.results);
         setTotalPage(res?.result.totalPages);

@@ -51,6 +51,7 @@
   "errorAlertRequire": "Alert is required",
   "errorImageRequire": "Image is required",
   "errorPercentMax": "Percentage must be less than or equal to 100",
+  "errorLevelExists": "Level already exists. Please choose a different level.",
   "amount": "Amount",
   "price": "Price",
   "happening": "Happening",

@@ -219,6 +219,7 @@ const gameIndexStyle = {
   },
   popperNav: {
     marginTop: '55px',
+    zIndex: 1,
   },
 };
 export default gameIndexStyle;

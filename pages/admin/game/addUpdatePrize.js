@@ -117,7 +117,7 @@ const valueOptions = {
   OTHER: 1,
 };
 
-function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
+function addUpdatePrize({ closeDialog, gameId, prize, onUpdated, listLevels }) {
   const dispatch = useDispatch();
   const useStyles = makeStyles(styles);
   const classes = useStyles();
@@ -239,7 +239,7 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
         alert: alert,
       });
       dispatch(setShowLoader(false));
-      if (res.code === "MSG_SUCCESS") {
+      if (res.code === 'MSG_SUCCESS') {
         Router.push('/admin/game');
       } else {
         NotificationManager.error({
@@ -250,6 +250,7 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
       closeDialog();
     }
   };
+
   //Todo Validation Schema
   const addUpdatePrizeValidationSchema = yup.object().shape({
     giftType: yup.string().required(t('errorGiftTypeRequire')),
@@ -273,8 +274,11 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
       .required(t('errorQuantityRequire')),
     levels: yup
       .string()
+      .required(t('errorLevelsRequire'))
       .matches(/^\d+(\.\d+)?$/, t('errorInvalid'))
-      .required(t('errorLevelsRequire')),
+      .test('levels', t('errorLevelExists'), function (value) {
+        return !listLevels.includes(Number(value));
+      }),
     alert: yup.string().required(t('errorAlertRequire')),
     pointExchange: yup.string().matches(/^\d+(\.\d+)?$/, t('errorInvalid')),
     image: yup.string().required(t('errorImageRequire')),
@@ -344,21 +348,21 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated }) {
                           }}
                           helperErrorText={errors.code || ''}
                         /> */}
-                         <TextField
-                        className={classes.marginBottom_20}
-                        error={!!errors.name}
-                        id="code"
-                        label={t('Code')}
-                        variant="outlined"
-                        size="small"
-                        fullWidth
-                        value={values.code}
-                        onChange={handleChange('code')}
-                        autoComplete="off"
-                      />
-                      {errors.name && (
-                        <FormHelperText style={{ color: 'red' }}>{errors.code}</FormHelperText>
-                      )}
+                        <TextField
+                          className={classes.marginBottom_20}
+                          error={!!errors.name}
+                          id="code"
+                          label={t('Code')}
+                          variant="outlined"
+                          size="small"
+                          fullWidth
+                          value={values.code}
+                          onChange={handleChange('code')}
+                          autoComplete="off"
+                        />
+                        {errors.name && (
+                          <FormHelperText style={{ color: 'red' }}>{errors.code}</FormHelperText>
+                        )}
                       </div>
                     </GridItem>
                   </GridContainer>

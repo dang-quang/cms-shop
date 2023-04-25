@@ -127,6 +127,7 @@ function Game() {
   const [selectedId, setSelectedId] = useState(null);
   const [listGame, setListGame] = useState([]);
   const [isGameDialog, setIsGameDialog] = useState('');
+  const [listLevels, setListLevels] = React.useState([]);
 
   useEffect(() => {
     window.addEventListener(
@@ -152,14 +153,13 @@ function Game() {
       key = txtSearch;
     }
     const res = await getListGames(key, from, to, status);
-    console.log('getListGames', res)
-    if (res.code === "MSG_SUCCESS") {
-      if(res?.list.length > 0){
-
+    console.log('getListGames', res);
+    if (res.code === 'MSG_SUCCESS') {
+      if (res?.list.length > 0) {
         setListGame(res?.list);
         setSelectedTab(res?.list[0]);
         setSelectedId(res?.list[0].id);
-      }else{
+      } else {
         NotificationManager.error({
           title: t('error'),
           message: `The game doesn't exist`,
@@ -182,6 +182,13 @@ function Game() {
           tableHead: res.infoList === null ? [] : TABLE_LUCKY_HEAD,
           tableBody: res.infoList === null ? [] : res.infoList.sort((a, b) => a.levels - b.levels),
         });
+
+        if (res.infoList && res.infoList.length > 0) {
+          let list = res.infoList.map((e) => {
+            return e.levels;
+          });
+          setListLevels(list);
+        }
 
         // }
         // setCurrentPage(res.data.data_page.current_page);
@@ -557,6 +564,7 @@ function Game() {
               anchorEl={showUpdate}
               transition
               disablePortal
+              style={{ zIndex: 1 }}
               className={
                 classNames({ [classes.popperClose]: !showUpdate }) + ' ' + classes.popperNav
               }>
@@ -700,6 +708,7 @@ function Game() {
           setSelectedPrize(null);
         }}>
         <AddUpdatePrize
+          listLevels={listLevels}
           closeDialog={() => {
             setIsShowEdit(false);
             // setSelectedId(null);

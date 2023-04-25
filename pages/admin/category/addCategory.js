@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { setShowLoader } from '../../../redux/actions/app';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
@@ -17,6 +17,7 @@ import Button from 'components/CustomButtons/Button.js';
 import {
   FormControl,
   FormControlLabel,
+  IconButton,
   InputAdornment,
   makeStyles,
   Radio,
@@ -31,51 +32,31 @@ import styles from 'assets/jss/natcash/views/category/addCategoryStyle';
 import { useTranslation } from 'react-i18next';
 import { Autocomplete } from '@material-ui/lab';
 import _ from 'lodash';
-import { requestCreateEditCategory } from '../../../utilities/ApiManage';
+import { requestCreateEditCategory, requestsGetParentCategory } from '../../../utilities/ApiManage';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
-
-const listShop = [
-  {
-    id: '1',
-    name: 'Nat shop',
-  },
-  {
-    id: '2',
-    name: 'Second shop',
-  },
-  {
-    id: '3',
-    name: 'Third shop',
-  },
-  {
-    id: '4',
-    name: 'Four shop',
-  },
-  {
-    id: '5',
-    name: 'Five shop',
-  },
-  {
-    id: '6',
-    name: 'Six shop',
-  },
-];
+import { Close, PhotoCamera } from '@material-ui/icons';
+import { BASE_API_URL } from '../../../utilities/const';
 
 const initialValues = {
   id: '',
   name: '',
-  autoCode: false,
   code: '',
-  parentId: '',
-  promotion: false,
+  image: '',
+  promotion: '',
 };
 
-function AddProductCategory({ category, onUpdated }) {
+function AddProductCategory({ onUpdated }) {
   const dispatch = useDispatch();
   const useStyles = makeStyles(styles);
   const classes = useStyles();
   const { t } = useTranslation();
+
+  const router = useRouter();
+  const category = !_.isEmpty(router.query) ? router.query : undefined;
+
+  const [selectedImages, setSelectedImages] = React.useState([]);
+  const [parentCategories, setParentCategories] = React.useState([]);
 
   const CustomRadio = withStyles({
     root: {
@@ -87,55 +68,105 @@ function AddProductCategory({ category, onUpdated }) {
     checked: {},
   })((props) => <Radio color="default" {...props} />);
 
-  const _category = category;
+  React.useEffect(() => {
+    (async () => {
+      try {
+        dispatch(setShowLoader(true));
 
-  const handleSubmitCategory = async ({ id, name, autoCode, code, parentId, promotion }) => {
-    dispatch(setShowLoader(true));
-    if (_category) {
-      const res = await requestCreateEditCategory({
-        id,
-        name,
-        code,
-        parentId,
-        promotion,
-      });
-      dispatch(setShowLoader(false));
-      if (res.code === 'MSG_SUCCESS') {
-        Router.push('/admin/category');
-        onUpdated();
-      } else {
-        NotificationManager.error({
-          title: t('error'),
-          message: res.message ? res.message.text : 'Error',
-        });
+        const res = await requestsGetParentCategory();
+
+        if (res && res.code === 'MSG_SUCCESS') {
+          setParentCategories(res.data);
+        }
+      } finally {
+        dispatch(setShowLoader(false));
       }
-      closeDialog();
-    } else {
-      const res = await requestCreateEditCategory({
-        name,
-        code,
-        parentId,
-        promotion,
-      });
-      dispatch(setShowLoader(false));
-      if (res.code === 200) {
-        Router.push('/admin/category');
-      } else {
-        NotificationManager.error({
-          title: t('error'),
-          message: res.message ? res.message.text : 'Error',
-        });
-      }
-      closeDialog();
+    })();
+  }, []);
+
+  const handleRemoveImage = (photo, setFieldValue) => {
+    const currentIndex = selectedImages.indexOf(photo);
+    const newListImages = [...selectedImages];
+    newListImages.splice(currentIndex, 1);
+    setSelectedImages(newListImages);
+    setFieldValue('image', '');
+  };
+
+  const handleImageChange = (e, setFieldValue) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const arr = reader.result.split(',');
+        setFieldValue('image', arr[1]);
+      };
+      reader.readAsDataURL(file);
+    }
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
+      setSelectedImages(filesArray);
+      Array.from(e.target.files).map(
+        (file) => URL.revokeObjectURL(file) // avoid memory leak
+      );
     }
   };
 
-  //Todo Validation Schema
+  const handleSubmitCategory = React.useCallback(
+    async ({ id, name, code, parentId, promotion, image }) => {
+      try {
+        dispatch(setShowLoader(true));
+        if (category) {
+          const res = await requestCreateEditCategory({
+            id,
+            name,
+            code: code,
+            parentId,
+            promotion: promotion === 'true' ? 1 : 0,
+            image,
+          });
+          if (res.code === 'MSG_SUCCESS') {
+            Router.push('/admin/category');
+            onUpdated();
+          } else {
+            NotificationManager.error({
+              title: t('error'),
+              message: res.message ? res.message.text : 'Error',
+            });
+          }
+          closeDialog();
+        } else {
+          const res = await requestCreateEditCategory({
+            name: name,
+            code: code,
+            parentId: parentId,
+            promotion: promotion === 'true' ? 1 : 0,
+            image,
+          });
+          dispatch(setShowLoader(false));
+          if (res.code === 'MSG_SUCCESS') {
+            Router.push('/admin/category');
+          } else {
+            NotificationManager.error({
+              title: t('error'),
+              message: res.message ? res.message.text : 'Error',
+            });
+          }
+          closeDialog();
+        }
+      } finally {
+        dispatch(setShowLoader(false));
+      }
+    },
+    [category]
+  );
+
   const addUpdateCategoryValidationSchema = yup.object().shape({
     name: yup.string().required(t('errorNameRequire')),
-    code: yup.string().required(t('errorCodeRequire')),
-    parentId: yup.string().required(t('errorTypeRequire')),
-    promotion: yup.string().required(t('errorImageRequire')),
+    code: yup
+      .string()
+      .required(t('errorCodeRequire'))
+      .matches(/^[A-Z0-9]{1,5}$/, t('category.categoryCodeDes')),
+    promotion: yup.boolean().required(t('errorPromotionRequire')),
   });
 
   return (
@@ -146,11 +177,47 @@ function AddProductCategory({ category, onUpdated }) {
       initialValues={category ? category : initialValues}
       onSubmit={handleSubmitCategory}>
       {({ handleChange, handleSubmit, setFieldValue, values, errors }) => {
+        React.useEffect(() => {
+          if (category && category.promotion === '1') {
+            setFieldValue('promotion', 'true');
+          } else {
+            setFieldValue('promotion', 'false');
+          }
+
+          if (category && category.image) {
+            const str = BASE_API_URL + '/assets/' + category.image;
+
+            setSelectedImages([str]);
+
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.src = str;
+            img.onload = async () => {
+              const canvas = document.createElement('canvas');
+              canvas.width = img.width;
+              canvas.height = img.height;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0);
+              const dataURL = canvas.toDataURL('image/png');
+
+              setFieldValue('image', dataURL.replace(/^data:image\/(png|jpg);base64,/, ''));
+            };
+          }
+
+          if (category && category.parentId) {
+            const parentId = parentCategories.find((i) => i.id === category.parentId);
+
+            setFieldValue('parentId', parentId);
+          }
+        }, [category, parentCategories]);
+
         return (
           <Form>
             <Card>
               <CardHeader color="primary">
-                <h4 className={classes.cardTitleWhite}>{t('category.createCategory')}</h4>
+                <h4 className={classes.cardTitleWhite}>
+                  {category ? 'Edit Category' : t('category.createCategory')}
+                </h4>
               </CardHeader>
               <CardBody className={classes.cardBody}>
                 <FormGroupCustom title={t('basicInformation')}>
@@ -174,30 +241,10 @@ function AddProductCategory({ category, onUpdated }) {
                       />
                     </div>
                   </FormCellCustom>
-                  <FormCellCustom label={t('category.autoProduceCategory')} helperText={''}>
-                    <div className={classes.formCell}>
-                      <FormControl component="fieldset">
-                        <RadioGroup
-                          value={values.autoCode}
-                          onChange={handleChange('autoCode')}
-                          className={classes.flex_center}>
-                          <FormControlLabel
-                            value={'Yes'}
-                            control={<CustomRadio />}
-                            label={t('yes')}
-                          />
-                          <FormControlLabel
-                            value={'No'}
-                            control={<CustomRadio />}
-                            label={t('no')}
-                          />
-                        </RadioGroup>
-                      </FormControl>
-                    </div>
-                  </FormCellCustom>
                   <FormCellCustom
+                    error={!!errors.code}
                     label={t('category.categoryCode')}
-                    helperText={t('category.categoryCodeDes')}>
+                    helperText={errors.code ? errors.code : t('category.categoryCodeDes')}>
                     <div className={classes.formCell}>
                       <TextField
                         label={''}
@@ -208,6 +255,7 @@ function AddProductCategory({ category, onUpdated }) {
                           value: values.code,
                           onChange: handleChange('code'),
                         }}
+                        error={!!errors.code}
                         placeholder={t('enterHere')}
                         autoComplete="off"
                         InputProps={{
@@ -227,14 +275,13 @@ function AddProductCategory({ category, onUpdated }) {
                       <Autocomplete
                         limitTags={2}
                         size="small"
-                        options={listShop}
+                        options={parentCategories}
                         getOptionLabel={(option) => option.name}
-                        onChange={handleChange('parentId')}
+                        onChange={(event, newValue) => setFieldValue('parentId', newValue.id)}
                         renderOption={(option) => (
                           <React.Fragment>
                             <div style={{ alignItems: 'center' }}>
                               <p style={{ fontSize: '15px', margin: 0 }}>{option.name}</p>
-                              {/*<p className={classes.txtMemberSelect}>{"@" + option.email.split("@")[0]}</p>*/}
                             </div>
                           </React.Fragment>
                         )}
@@ -250,27 +297,69 @@ function AddProductCategory({ category, onUpdated }) {
                       />
                     </div>
                   </FormCellCustom>
-                  <FormCellCustom label={t('category.applyPromotion')} helperText={''}>
+                  <FormCellCustom
+                    error={!!errors.promotion}
+                    label={t('category.applyPromotion')}
+                    helperText={!!errors.promotion && errors.promotion}>
                     <div className={classes.formCell}>
                       <FormControl component="fieldset">
                         <RadioGroup
-                          aria-label="shop"
-                          name="shop1"
+                          aria-label="promotion"
+                          name="promotion"
                           value={values.promotion}
                           onChange={handleChange('promotion')}
                           className={classes.flex_center}>
                           <FormControlLabel
-                            value={'Yes'}
+                            value="true"
                             control={<CustomRadio />}
                             label={t('yes')}
                           />
                           <FormControlLabel
-                            value={'No'}
+                            value="false"
                             control={<CustomRadio />}
                             label={t('no')}
                           />
                         </RadioGroup>
                       </FormControl>
+                    </div>
+                  </FormCellCustom>
+                  <FormCellCustom label={t('image')} helperText={''}>
+                    <div className={classes.imageForm}>
+                      {selectedImages.length > 0 ? (
+                        selectedImages.map((photo, index) => {
+                          return (
+                            <div key={index} className={classes.imgContainer}>
+                              <Close
+                                className={classes.btnClose}
+                                onClick={() => handleRemoveImage(photo, setFieldValue)}
+                              />
+                              <img src={photo} alt="" key={photo} className={classes.imageUpload} />
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <>
+                          <input
+                            accept="image/*"
+                            id="icon-button-file"
+                            type="file"
+                            multiple
+                            style={{ display: 'none' }}
+                            onChange={(e) => handleImageChange(e, setFieldValue)}
+                          />
+                          <label
+                            htmlFor="icon-button-file"
+                            style={{ borderColor: !!errors.image && 'red' }}
+                            className={classes.imageUpload + ' ' + classes.imageBtn}>
+                            <IconButton
+                              color="primary"
+                              aria-label="upload picture"
+                              component="span">
+                              <PhotoCamera />
+                            </IconButton>
+                          </label>
+                        </>
+                      )}
                     </div>
                   </FormCellCustom>
                 </FormGroupCustom>

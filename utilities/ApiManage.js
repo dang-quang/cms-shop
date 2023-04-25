@@ -935,3 +935,7 @@ export function requestCreateEditCategory(obj) {
 export function requestDeleteCategory(id) {
   return postWithCheckingToken(`${BASE_API_URL}/cms-category/delete`, {}, { id: id });
 }
+
+export function requestsGetParentCategory() {
+  return postWithCheckingToken(`${BASE_API_URL}/cms-category/dropdown`, {}, {});
+}

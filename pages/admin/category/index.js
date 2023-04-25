@@ -46,54 +46,8 @@ import Router from 'next/router';
 import { requestsGetCategoryList, requestDeleteCategory } from '../../../utilities/ApiManage';
 import { useDispatch } from 'react-redux';
 import { setShowLoader } from '../../../redux/actions/app';
-
-const CategoryFakeData = [
-  {
-    id: '1',
-    code: 'SPMT',
-    name: 'Điện tử, công nghệ',
-    parent: null,
-    status: true,
-    promotion: true,
-    publish: '2021-10-28T13:20:36+07:00',
-  },
-  {
-    id: '2',
-    code: 'DDCN',
-    name: 'Đồ dùng cá nhân',
-    parent: null,
-    status: true,
-    promotion: false,
-    publish: '2021-10-28T13:20:36+07:00',
-  },
-  {
-    id: '3',
-    code: 'LAPTOP',
-    name: 'Máy tính xách tay',
-    parent: 'Điện tử, công nghệ',
-    status: true,
-    promotion: false,
-    publish: '2021-10-28T13:20:36+07:00',
-  },
-  {
-    id: '4',
-    code: 'QA',
-    name: 'Quần áo',
-    parent: null,
-    status: true,
-    promotion: true,
-    publish: '2021-10-28T13:20:36+07:00',
-  },
-  {
-    id: '5',
-    code: 'TP',
-    name: 'Thực phẩm',
-    parent: null,
-    status: true,
-    promotion: false,
-    publish: '2021-10-28T13:20:36+07:00',
-  },
-];
+import { BASE_API_URL } from '../../../utilities/const';
+import imgGift from 'assets/img/gift.png';
 
 function ProductCategory() {
   const dispatch = useDispatch();
@@ -117,20 +71,19 @@ function ProductCategory() {
   const [categories, setCategories] = React.useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [search, setSearch] = useState('');
+  const [totalRecords, setTotalRecords] = React.useState(0);
+  const [search, setSearch] = React.useState('');
   const [isMobile, setIsMobile] = useState(false);
   const [showDate, setShowDate] = React.useState(false);
-  const [filterDate, setFilterDate] = React.useState({
-    fromDate: moment().subtract(30, 'days').format(formatDate),
-    toDate: moment().format(formatDate),
-  });
+  const [filterDate, setFilterDate] = React.useState({ fromDate: FROM_DATE, toDate: TO_DATE });
   const [selectedCategory, setSelectedCategory] = React.useState(null);
   const [showAction, setShowAction] = useState([]);
-  const [doFilter, setDoFilter] = useState(0);
+  const [doFilter, setDoFilter] = useState(false);
   const [doSearch, setDoSearch] = useState(false);
 
   const TABLE_HEAD = [
     t('qrManagement.stt'),
+    t('image'),
     t('category.code'),
     t('name'),
     t('category.parent'),
@@ -154,7 +107,7 @@ function ProductCategory() {
     (async () => {
       dispatch(setShowLoader(true));
       const res = await requestsGetCategoryList({
-        keyword: '',
+        keyWord: '',
         fromDate: FROM_DATE,
         toDate: TO_DATE,
         page: 1,
@@ -162,12 +115,9 @@ function ProductCategory() {
 
       dispatch(setShowLoader(false));
       if (res && res.code === 'MSG_SUCCESS') {
-        // setCategories(
-        //   res?.data.results === null
-        //     ? []
-        //     : res?.data.results.sort((a, b) => b.playDate - a.playDate)
-        // );
-        //setTotalPage(res?.data.totalPages);
+        setCategories(res?.result.results === null ? [] : res?.result.results);
+        setTotalPage(res.result.totalPages);
+        setTotalRecords(res.result.totalRecords);
       }
     })();
   }, []);
@@ -175,8 +125,8 @@ function ProductCategory() {
   React.useEffect(() => {
     (async () => {
       dispatch(setShowLoader(true));
-      let from;
-      let to;
+      let from = FROM_DATE;
+      let to = TO_DATE;
       let key;
       if (search) {
         key = search;
@@ -191,10 +141,10 @@ function ProductCategory() {
         toDate: to,
         page: currentPage,
       });
-      if (res.code === 'MSG_SUCCESS' && res?.data && res?.data.results) {
-        // setGameRewards(res.data.results === null ? [] : res.data.results.sort((a, b) => b.playDate - a.playDate));
-        setCategories(res.data.results === null ? [] : res.data.results);
-        //setTotalPage(res?.data.totalPages);
+      if (res.code === 'MSG_SUCCESS' && res.result && res.result.results) {
+        setCategories(res.result.results === null ? [] : res.result.results);
+        setTotalPage(res?.result.totalPages);
+        setTotalRecords(res.result.totalRecords);
       } else {
         NotificationManager.error({
           title: t('error'),
@@ -208,7 +158,7 @@ function ProductCategory() {
   const resetFilterDate = React.useCallback(() => {
     setFilterDate({ fromDate: FROM_DATE, toDate: TO_DATE });
     setShowDate(false);
-    setDoFilter(0);
+    setDoFilter(false);
   }, [filterDate]);
 
   const handleSelectPage = React.useCallback((event, value) => {
@@ -234,10 +184,10 @@ function ProductCategory() {
   const handleDeleteCategory = React.useCallback(async () => {
     dispatch(setShowLoader(true));
 
-    res = await requestDeleteCategory(selectedCategory.id);
+    const res = await requestDeleteCategory(selectedCategory.id);
     if (res.code === 'MSG_SUCCESS') {
       setSelectedCategory(null);
-      Router.push('/admin/game');
+      Router.push('/admin/category');
     } else {
       NotificationManager.error({
         title: t('error'),
@@ -245,51 +195,61 @@ function ProductCategory() {
       });
     }
     dispatch(setShowLoader(false));
-  }, []);
+  }, [selectedCategory]);
 
   const renderCategory = (item, index) => {
+    const { code, publishDate, id, image, name, parentId, promotion, status } = item;
+
+    const str = BASE_API_URL + '/assets/' + image;
+
     return (
       <TableRow key={index} className={tableClasses.tableBodyRow}>
         <TableCell className={tableClasses.tableCell} key={'id'}>
           <div className={classes.proInfoContainer}>
-            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{item.id}</p>
+            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{id}</p>
           </div>
+        </TableCell>
+        <TableCell className={tableClasses.tableCell} key={'image'}>
+          <img
+            src={image ? str : imgGift}
+            style={{ width: 80, height: 80, objectFit: 'contain' }}
+          />
         </TableCell>
         <TableCell className={tableClasses.tableCell} key={'code'}>
           <div className={classes.proInfoContainer}>
-            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{item.code}</p>
+            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{code}</p>
           </div>
         </TableCell>
         <TableCell className={tableClasses.tableCell} key={'name'}>
           <div className={classes.proInfoContainer}>
-            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{item?.name}</p>
+            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{name}</p>
           </div>
         </TableCell>
-        <TableCell className={tableClasses.tableCell} key={'parent'}>
+        <TableCell className={tableClasses.tableCell} key={'parentId'}>
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>
-              {item?.parent ? item?.parent : t('notSet')}
+              {parentId ? parentId : t('notSet')}
             </p>
           </div>
         </TableCell>
         <TableCell className={tableClasses.tableCell} key={'status'}>
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>
-              {item.status ? t('qrManagement.active') : t('qrManagement.notActive')}
+              {status === 1 ? t('qrManagement.active') : t('qrManagement.notActive')}
             </p>
           </div>
         </TableCell>
         <TableCell className={tableClasses.tableCell} key={'promotion'}>
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>
-              {item.promotion ? t('yes') : t('no')}
+              {promotion ? t('yes') : t('no')}
             </p>
           </div>
         </TableCell>
-        <TableCell className={tableClasses.tableCell} key={'publish'}>
+        <TableCell className={tableClasses.tableCell} key={'publishDate'}>
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>
-              {moment(item.publish).format('DD/MM/YYYY')}
+              {moment(publishDate).format('DD/MM/YYYY')}
             </p>
           </div>
         </TableCell>
@@ -301,8 +261,8 @@ function ProductCategory() {
                 tableClasses.tableCell + ' ' + classes.txtOrderCode + ' ' + classes.cursor
               }>
               <Button
-                id={'action-label' + item?.id}
-                aria-owns={showAction.indexOf(item) !== -1 ? 'action-list-grow' + item?.id : null}
+                id={'action-label' + id}
+                aria-owns={showAction.indexOf(item) !== -1 ? 'action-list-grow' + id : null}
                 aria-haspopup="true"
                 color="white"
                 size="sm"
@@ -325,7 +285,7 @@ function ProductCategory() {
               {({ TransitionProps, placement }) => (
                 <Grow
                   {...TransitionProps}
-                  id={'action-list-grow' + item?.order_sn}
+                  id={'action-list-grow' + id}
                   style={{
                     transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
                   }}>
@@ -342,14 +302,17 @@ function ProductCategory() {
                         <MenuItem
                           className={classes.dropdownItem}
                           onClick={() => {
-                            Router.push('/admin/category/addCategory');
+                            Router.push({
+                              pathname: '/admin/category/addCategory',
+                              query: item,
+                            });
                           }}>
                           {t('edit')}
                         </MenuItem>
                         <MenuItem
                           className={classes.dropdownItem}
                           onClick={() => {
-                            selectedCategory(item);
+                            setSelectedCategory(item);
                             setIsShowModal(true);
                           }}>
                           {t('delete')}
@@ -496,7 +459,7 @@ function ProductCategory() {
                                 color="primary"
                                 size="sm"
                                 onClick={() => {
-                                  setDoFilter(doFilter + 1);
+                                  setDoFilter(true);
                                   setShowDate(false);
                                 }}>
                                 {t('apply')}
@@ -574,7 +537,7 @@ function ProductCategory() {
               </TableHead>
             )}
             <TableBody>
-              {CategoryFakeData.map((item, index) => {
+              {categories.map((item, index) => {
                 return renderCategory(item, index);
               })}
             </TableBody>

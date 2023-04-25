@@ -91,7 +91,7 @@ function Game() {
     // t('game.prize'),
     t('quantity'),
     t('amount'),
-    t('game.levels'),
+    `Levels`,
     // t('game.style'),
     t('action'),
   ];

@@ -90,7 +90,7 @@ function Game() {
     t('name'),
     // t('game.prize'),
     t('quantity'),
-    t('amount'),
+    // t('amount'),
     `Levels`,
     // t('game.style'),
     t('action'),
@@ -241,6 +241,7 @@ function Game() {
     setSelectedTab(item);
     setCurrentPage(1);
     setSelectedId(item.id);
+    console.log('handleTab game', item.id);
   };
   const handleTitle = (item) => {
     setSelectedTitle(item);
@@ -291,11 +292,11 @@ function Game() {
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{item.quantity}</p>
           </div>
         </TableCell>
-        <TableCell className={tableClasses.tableCell} key={'amount'}>
+        {/* <TableCell className={tableClasses.tableCell} key={'amount'}>
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{item.amount}</p>
           </div>
-        </TableCell>
+        </TableCell> */}
         <TableCell className={tableClasses.tableCell} key={'order'}>
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{item.levels}</p>
@@ -356,8 +357,9 @@ function Game() {
                         <MenuItem
                           className={classes.dropdownItem}
                           onClick={() => {
+                            console.log('onClick', item);
                             setIsShowEdit(true);
-                            setSelectedId(item.id);
+                            // setSelectedId(item.id);
                             setSelectedPrize(item);
                           }}>
                           {t('edit')}
@@ -694,13 +696,13 @@ function Game() {
         isShow={isShowEdit}
         handleClose={() => {
           setIsShowEdit(false);
-          setSelectedId(null);
+          // setSelectedId(null);
           setSelectedPrize(null);
         }}>
         <AddUpdatePrize
           closeDialog={() => {
             setIsShowEdit(false);
-            setSelectedId(null);
+            // setSelectedId(null);
             setSelectedPrize(null);
           }}
           onUpdated={handleGetPrizesList}

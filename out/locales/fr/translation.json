@@ -172,6 +172,7 @@
     "image": "Image",
     "prize": "Prize",
     "order": "Order",
+    "levels": "Levels",
     "style": "Style",
     "addNewGame": "Add new game",
     "addNewPrize": "Add new prize",

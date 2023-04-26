@@ -121,7 +121,6 @@ function AddProductCategory({ onUpdated }) {
       try {
         dispatch(setShowLoader(true));
         if (category) {
-          console.log('quang debug parentId =====>', parentId);
           const res = await requestCreateEditCategory({
             id,
             name,

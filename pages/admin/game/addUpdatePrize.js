@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { setShowLoader } from '../../../redux/actions/app';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NotificationManager } from 'react-light-notifications';
 import 'react-light-notifications/lib/main.css';
 // @material-ui/core components
@@ -27,13 +27,12 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { Close } from '@material-ui/icons';
-import { getShopQrDetail, saveGames, savePrizes } from '../../../utilities/ApiManage';
+import { getShopQrDetail, savePrizes } from '../../../utilities/ApiManage';
 import Router from 'next/router';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import Dropdown from '../../../components/Dropdown/dropdown';
 import { BASE_API_URL } from 'utilities/const.js';
-import useWindowSize from 'components/Hooks/useWindowSize.js';
 
 const initialValues = {
   id: '',
@@ -117,25 +116,15 @@ const valueOptions = {
   OTHER: 1,
 };
 
-function addUpdatePrize({ closeDialog, gameId, prize, onUpdated, listLevels }) {
+function addUpdatePrize({ closeDialog, prize, onUpdated, listLevels }) {
   const dispatch = useDispatch();
   const useStyles = makeStyles(styles);
   const classes = useStyles();
   const { t } = useTranslation();
-  const size = useWindowSize();
   const [selectedImages, setSelectedImages] = useState([]);
+  const game_id = useSelector((state) => state.app.selectedGameTab.id);
 
-  const game_id = gameId;
   const _prize = prize;
-
-  console.log('addUpdatePrize', gameId);
-  console.log('_prize', _prize);
-
-  useEffect(() => {
-    dispatch(setShowLoader(true));
-    // getShop();
-    dispatch(setShowLoader(false));
-  }, []);
 
   const handleRemoveImage = (photo, setFieldValue) => {
     const currentIndex = selectedImages.indexOf(photo);
@@ -211,7 +200,6 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated, listLevels }) {
         alert: alert,
       });
       dispatch(setShowLoader(false));
-      console.log('onUpdated', res);
       if (res.code === 'MSG_SUCCESS') {
         Router.push('/admin/game');
         onUpdated();
@@ -277,7 +265,8 @@ function addUpdatePrize({ closeDialog, gameId, prize, onUpdated, listLevels }) {
       .required(t('errorLevelsRequire'))
       .matches(/^\d+(\.\d+)?$/, t('errorInvalid'))
       .test('levels', t('errorLevelExists'), function (value) {
-        return !listLevels.includes(Number(value));
+        const list = listLevels.filter((item) => item !== prize.levels);
+        return !list.includes(Number(value));
       }),
     alert: yup.string().required(t('errorAlertRequire')),
     pointExchange: yup.string().matches(/^\d+(\.\d+)?$/, t('errorInvalid')),

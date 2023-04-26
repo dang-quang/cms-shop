@@ -27,9 +27,9 @@ import { grayColor } from '../../../assets/jss/natcash';
 import FormCellCustom from '../../../components/FormCustom/FormCellCustom';
 import moment from 'moment/moment';
 import { BASE_API_URL } from 'utilities/const.js';
+import { useWindowDimensions } from 'hooks';
 
 function AddGame({ closeDialog, selectedTab }) {
-  console.log('selectedTab', selectedTab);
   const dispatch = useDispatch();
   const useStyles = makeStyles(styles);
   const classes = useStyles();
@@ -37,6 +37,7 @@ function AddGame({ closeDialog, selectedTab }) {
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [base64Image, setBase64Image] = useState('');
+  const { height } = useWindowDimensions();
 
   const [values, setValues] = useState({
     code: selectedTab ? selectedTab.code : '',
@@ -129,7 +130,7 @@ function AddGame({ closeDialog, selectedTab }) {
 
   const handleSubmit = async () => {
     console.log('handleSubmit====>', moment(values.startTime).isBefore(moment(values.endTime)));
-    console.log('handleSubmit====>', moment(values.startTime), '--', (moment(values.endTime)));
+    console.log('handleSubmit====>', moment(values.startTime), '--', moment(values.endTime));
     if (
       _.isEmpty(values.code) ||
       _.isEmpty(values.name) ||
@@ -283,7 +284,7 @@ function AddGame({ closeDialog, selectedTab }) {
               <GridItem xs={12} sm={12} md={12} style={{ marginTop: '15px' }}>
                 <FormCellCustom
                   label={t('time')}
-                // helperText={t('voucher.timeDes')}
+                  // helperText={t('voucher.timeDes')}
                 >
                   <div className={classes.formCell + ' ' + classes.flex_center}>
                     <TextField
@@ -331,7 +332,6 @@ function AddGame({ closeDialog, selectedTab }) {
                   variant="outlined"
                   size="small"
                   fullWidth
-                  rows={4}
                   inputProps={{
                     value: values.description,
                     onChange: handleChangeValue('description'),

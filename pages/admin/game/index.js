@@ -45,8 +45,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import AddUpdatePrize from './addUpdatePrize';
-import { useDispatch } from 'react-redux';
-import { setShowLoader } from '../../../redux/actions/app';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedGameTab, setShowLoader } from '../../../redux/actions/app';
 import {
   deleteGames,
   deletePrize,
@@ -123,11 +123,10 @@ function Game() {
   const [fromDate, setFromDate] = useState(moment().subtract(30, 'days').format());
   const [toDate, setToDate] = useState(moment().format());
   const [isMobile, setIsMobile] = useState(false);
-  const [selectedTab, setSelectedTab] = useState({});
-  const [selectedId, setSelectedId] = useState(null);
   const [listGame, setListGame] = useState([]);
   const [isGameDialog, setIsGameDialog] = useState('');
   const [listLevels, setListLevels] = React.useState([]);
+  const selectedGameTab = useSelector((state) => state.app.selectedGameTab);
 
   useEffect(() => {
     window.addEventListener(
@@ -153,12 +152,12 @@ function Game() {
       key = txtSearch;
     }
     const res = await getListGames(key, from, to, status);
-    console.log('getListGames', res);
     if (res.code === 'MSG_SUCCESS') {
       if (res?.list.length > 0) {
         setListGame(res?.list);
-        setSelectedTab(res?.list[0]);
-        setSelectedId(res?.list[0].id);
+        if (!selectedGameTab) {
+          dispatch(setSelectedGameTab(res?.list[0]));
+        }
       } else {
         NotificationManager.error({
           title: t('error'),
@@ -167,14 +166,14 @@ function Game() {
       }
     }
     dispatch(setShowLoader(false));
-  }, [doSearch, doFilter, selectedTitle]);
+  }, [doSearch, doFilter, selectedTitle, selectedGameTab]);
 
   useEffect(async () => {
     dispatch(setShowLoader(true));
     // let params = {};
     // params.current_page = currentPage;
-    if (selectedTab?.id) {
-      const res = await getPrizesList(selectedTab.id);
+    if (selectedGameTab && selectedGameTab.id) {
+      const res = await getPrizesList(selectedGameTab.id);
       //console.log('getPrizesList', res.code === 'MSG_SUCCESS' && res.infoList !== null);
       if (res.code === 'MSG_SUCCESS') {
         // if (res.infoList.length > 0) {
@@ -199,12 +198,12 @@ function Game() {
     }
 
     dispatch(setShowLoader(false));
-  }, [selectedTab]);
+  }, [selectedGameTab]);
 
   const handleGetPrizesList = React.useCallback(async () => {
     dispatch(setShowLoader(true));
-    if (selectedTab.id) {
-      const res = await getPrizesList(selectedTab.id);
+    if (selectedGameTab && selectedGameTab.id) {
+      const res = await getPrizesList(selectedGameTab.id);
       if (res.code === 'MSG_SUCCESS') {
         setTable({
           tableHead: res.infoList === null ? [] : TABLE_LUCKY_HEAD,
@@ -215,7 +214,7 @@ function Game() {
       setTable({ tableHead: [], tableBody: [] });
     }
     dispatch(setShowLoader(false));
-  }, [selectedTab]);
+  }, [selectedGameTab]);
 
   const onDeleteGame = async () => {
     dispatch(setShowLoader(true));
@@ -245,15 +244,12 @@ function Game() {
     setCurrentPage(value);
   };
   const handleTab = (item) => {
-    setSelectedTab(item);
+    dispatch(setSelectedGameTab(item));
     setCurrentPage(1);
-    setSelectedId(item.id);
-    console.log('handleTab game', item.id);
   };
   const handleTitle = (item) => {
     setSelectedTitle(item);
     setCurrentPage(1);
-    setSelectedId(item.id);
   };
   const handleAction = (item) => {
     const currentIndex = showAction.indexOf(item);
@@ -353,20 +349,11 @@ function Game() {
                   <Paper>
                     <ClickAwayListener onClickAway={() => handleAction(item)}>
                       <MenuList role="menu">
-                        {/* <MenuItem
-                          className={classes.dropdownItem}
-                          onClick={() => {
-                            setIsShowEdit(true);
-                            setSelectedId(item.id);
-                          }}>
-                          {t('detail')}
-                        </MenuItem> */}
                         <MenuItem
                           className={classes.dropdownItem}
                           onClick={() => {
                             console.log('onClick', item);
                             setIsShowEdit(true);
-                            // setSelectedId(item.id);
                             setSelectedPrize(item);
                           }}>
                           {t('edit')}
@@ -535,10 +522,7 @@ function Game() {
           </FormControl>
           <FormControl
             className={dashClasses.formControl}
-            onClick={() => {
-              setIsShowEdit(true);
-              setSelectedId(selectedTab.id);
-            }}
+            onClick={() => setIsShowEdit(true)}
             style={{
               marginRight: '180px',
               position: isMobile ? 'static' : 'absolute',
@@ -595,7 +579,7 @@ function Game() {
                         <MenuItem
                           className={classes.dropdownItem}
                           onClick={() => {
-                            setIsShowModal({ id: selectedTab.id, type: 'game' });
+                            setIsShowModal({ id: selectedGameTab.id, type: 'game' });
                           }}>
                           {t('game.deleteGame')}
                         </MenuItem>
@@ -645,13 +629,13 @@ function Game() {
                     button
                     className={classNames(
                       classes.itemLink,
-                      selectedTab?.code === item.code ? classes.white : ''
+                      selectedGameTab?.code === item.code ? classes.white : ''
                     )}>
                     <ListItemText
                       primary={item.name}
                       className={classNames(
                         classes.itemText,
-                        selectedTab?.code === item.code ? classes.whiteFont : ''
+                        selectedGameTab?.code === item.code ? classes.whiteFont : ''
                       )}
                       disableTypography={true}
                     />
@@ -700,31 +684,25 @@ function Game() {
         width={1000}
         title={selectedPrize ? t('game.updatePrize') : t('game.addNewPrize')}
         subTitle={''}
-        // isShow={true}
         isShow={isShowEdit}
         handleClose={() => {
           setIsShowEdit(false);
-          // setSelectedId(null);
           setSelectedPrize(null);
         }}>
         <AddUpdatePrize
           listLevels={listLevels}
           closeDialog={() => {
             setIsShowEdit(false);
-            // setSelectedId(null);
             setSelectedPrize(null);
           }}
           onUpdated={handleGetPrizesList}
           prize={selectedPrize}
-          selectedTab={selectedTab}
-          gameId={selectedId}
         />
       </ModalCustom>
       <ModalCustom
         width={1000}
         title={t(`game.${isGameDialog}`)}
         subTitle={''}
-        // isShow={true}
         isShow={!_.isEmpty(isGameDialog)}
         handleClose={() => {
           setIsGameDialog('');
@@ -733,7 +711,7 @@ function Game() {
           closeDialog={() => {
             setIsGameDialog('');
           }}
-          selectedTab={isGameDialog === 'editGame' ? selectedTab : undefined}
+          selectedTab={isGameDialog === 'editGame' ? selectedGameTab : undefined}
         />
       </ModalCustom>
     </Card>

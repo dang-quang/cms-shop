@@ -24,7 +24,7 @@ function Dropdown({
   return (
     <div>
       <FormControl
-        error={helperErrorText}
+        error={!!helperErrorText}
         variant="outlined"
         size="small"
         className={classes.form_control}>

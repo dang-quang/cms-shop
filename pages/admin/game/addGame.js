@@ -204,7 +204,7 @@ function AddGame({ closeDialog, selectedTab }) {
   return (
     <div
       style={{
-        height: window.innerHeight - 150 + 'px',
+        height: height - 150 + 'px',
         overflowY: 'auto',
       }}>
       <Card className={classes.noMargin}>

@@ -33,6 +33,7 @@ import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import Dropdown from '../../../components/Dropdown/dropdown';
 import { BASE_API_URL } from 'utilities/const.js';
+import { useWindowDimensions } from 'hooks';
 
 const initialValues = {
   id: '',
@@ -123,6 +124,7 @@ function addUpdatePrize({ closeDialog, prize, onUpdated, listLevels }) {
   const { t } = useTranslation();
   const [selectedImages, setSelectedImages] = useState([]);
   const game_id = useSelector((state) => state.app.selectedGameTab.id);
+  const { height } = useWindowDimensions();
 
   const _prize = prize;
 
@@ -306,7 +308,7 @@ function addUpdatePrize({ closeDialog, prize, onUpdated, listLevels }) {
         return (
           <Form
             style={{
-              height: window.innerHeight - 150 + 'px',
+              height: height - 150 + 'px',
               overflowY: 'auto',
             }}>
             <Card className={classes.noMargin}>

@@ -81,7 +81,7 @@
   "addShop": {
     "shopName": "Store Name",
     "referenceStoreCode": "Reference store code",
-    "phomeNumber": "Phone Number",
+    "phoneNumber": "Phone Number",
     "contact": "Contact",
     "address": "Address",
     "typeStore": "Type Store",

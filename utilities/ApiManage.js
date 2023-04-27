@@ -939,3 +939,22 @@ export function requestDeleteCategory(id) {
 export function requestsGetParentCategory() {
   return postWithCheckingToken(`${BASE_API_URL}/cms-category/dropdown`, {}, {});
 }
+
+export function requestsGetShopList(obj) {
+  console.log('get shop list parma==>', obj);
+  return postWithCheckingToken(`${BASE_API_URL}/cms-shop/list`, {}, obj);
+}
+
+export function requestsCreateEditShop(obj) {
+  console.log('save shop parma==>', obj);
+  return postWithCheckingToken(`${BASE_API_URL}/cms-shop/save`, {}, obj);
+}
+
+export function requestDeleteShop(obj) {
+  console.log('delete shop parma==>', obj);
+  return postWithCheckingToken(`${BASE_API_URL}/cms-shop/delete`, {}, obj);
+}
+
+export function requestGetOwnerShop() {
+  return postWithCheckingToken(`${BASE_API_URL}/user/list`, {}, {});
+}

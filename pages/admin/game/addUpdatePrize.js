@@ -285,7 +285,7 @@ function addUpdatePrize({ closeDialog, prize, onUpdated, listLevels }) {
       {({ handleChange, handleSubmit, setFieldValue, values, errors }) => {
         React.useEffect(() => {
           if (_prize) {
-            const str = BASE_API_URL + '/assets/' + values.image;
+            const str = BASE_API_URL + '/assets/' + _prize.image;
 
             setSelectedImages([str]);
 

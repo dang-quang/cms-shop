@@ -52,6 +52,17 @@
   "errorImageRequire": "Image is required",
   "errorPercentMax": "Percentage must be less than or equal to 100",
   "errorLevelExists": "Level already exists. Please choose a different level.",
+  "errorShopNameRequire": "Shop name is required",
+  "errorShopCodeRequire": "Shop code is required",
+  "errorAddressRequire": "Address is required",
+  "errorPhoneRequire": "Phone number is required",
+  "errorInvalidPhone": "Invalid phone number",
+  "errorContactRequire": "Contact is required",
+  "errorShopTypeRequire": "Shop type is required",
+  "errorDescriptionRequire": "Description is required",
+  "errorOwnerShopRequire": "Owner Shop is required",
+  "errorEmailRequire": "Email is required",
+  "errorInvalidEmail": "Invalid email format. Please try again.",
   "amount": "Amount",
   "price": "Price",
   "happening": "Happening",
@@ -104,11 +115,13 @@
   "addShop": {
     "shopName": "Store Name",
     "referenceStoreCode": "Reference store code",
-    "phomeNumber": "Phone Number",
+    "phoneNumber": "Phone Number",
     "contact": "Contact",
     "address": "Address",
     "typeStore": "Type Store",
-    "note": "Note"
+    "note": "Note",
+    "ownerShop": "Owner Shop",
+    "email": "Email"
   },
   "category": {
     "createCategory": "Create category",

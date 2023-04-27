@@ -82,7 +82,7 @@ const dashboardRoutes = [
     permission: 'marketing',
     subMenu: [
       {
-        path: '/#',
+        path: '/broadcastMessages',
         name: 'broadcastMessages',
         layout: '/admin',
         parent: 'operation',

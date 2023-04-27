@@ -271,7 +271,6 @@ function AddShop() {
                           value={values.phone}
                           onChange={handleChange('phone')}
                           autoComplete="off"
-                          type="number"
                           error={!!errors.phone}
                           helperText={errors.phone}
                         />

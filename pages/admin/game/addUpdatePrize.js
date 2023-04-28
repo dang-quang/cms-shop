@@ -123,8 +123,10 @@ function addUpdatePrize({ closeDialog, prize, onUpdated, listLevels }) {
   const classes = useStyles();
   const { t } = useTranslation();
   const [selectedImages, setSelectedImages] = useState([]);
-  const game_id = useSelector((state) => state.app.selectedGameTab.id);
+  const game = useSelector((state) => state.app.selectedGameTab);
   const { height } = useWindowDimensions();
+
+  console.log('quang debut game ======>', game);
 
   const _prize = prize;
 
@@ -157,7 +159,7 @@ function addUpdatePrize({ closeDialog, prize, onUpdated, listLevels }) {
 
   const onGetGameDetail = async () => {
     dispatch(setShowLoader(true));
-    const res = await getShopQrDetail(game_id);
+    const res = await getShopQrDetail(game.id);
     dispatch(setShowLoader(false));
     if (res.code === 200) {
     } else {
@@ -187,7 +189,7 @@ function addUpdatePrize({ closeDialog, prize, onUpdated, listLevels }) {
     if (_prize) {
       const res = await savePrizes({
         id: id,
-        gameId: game_id,
+        gameId: game.id,
         code: code,
         giftType: giftType,
         name: name,
@@ -214,7 +216,7 @@ function addUpdatePrize({ closeDialog, prize, onUpdated, listLevels }) {
       closeDialog();
     } else {
       const res = await savePrizes({
-        gameId: game_id,
+        gameId: game.id,
         code: code,
         giftType: giftType,
         name: name,

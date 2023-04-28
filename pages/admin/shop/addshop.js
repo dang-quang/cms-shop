@@ -177,11 +177,10 @@ function AddShop() {
       .string()
       .required(t('errorPhoneRequire'))
       .matches(/^[0-9-+s()]*$/, t('errorInvalidPhone')),
-    ownerShop: yup.string().required(t('errorContactRequire')),
     address: yup.string().required(t('errorAddressRequire')),
     shopCode: yup.string().required(t('errorShopCodeRequire')),
     shopType: yup.string().required(t('errorShopTypeRequire')),
-    ownerShop: yup.object().required(t('errorOwnerShopRequire')),
+    //ownerShop: yup.object().required(t('errorOwnerShopRequire')),
     email: yup.string().required(t('errorEmailRequire')).email(t('errorInvalidEmail')),
     //description: yup.string().required('errorDescriptionRequire'),
     //avatar: yup.string().required(t('errorImageRequire')),

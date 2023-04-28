@@ -188,19 +188,6 @@ function AddGame({ closeDialog, selectedTab }) {
     }
   };
 
-  const onGetGameDetail = async () => {
-    dispatch(setShowLoader(true));
-    const res = await getShopQrDetail(id);
-    dispatch(setShowLoader(false));
-    if (res.code === 200) {
-    } else {
-      NotificationManager.error({
-        title: t('error'),
-        message: res.message ? res.message.text : 'Error',
-      });
-    }
-  };
-
   return (
     <div
       style={{

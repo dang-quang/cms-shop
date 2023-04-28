@@ -126,8 +126,6 @@ function addUpdatePrize({ closeDialog, prize, onUpdated, listLevels }) {
   const game = useSelector((state) => state.app.selectedGameTab);
   const { height } = useWindowDimensions();
 
-  console.log('quang debut game ======>', game);
-
   const _prize = prize;
 
   const handleRemoveImage = (photo, setFieldValue) => {

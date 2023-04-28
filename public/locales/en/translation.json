@@ -121,7 +121,9 @@
     "typeStore": "Type Store",
     "note": "Note",
     "ownerShop": "Owner Shop",
-    "email": "Email"
+    "email": "Email",
+    "create_new_shop": "Create new shop",
+    "edit_shop": "Edit shop"
   },
   "category": {
     "createCategory": "Create category",

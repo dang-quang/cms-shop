@@ -1,9 +1,8 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import moment from 'moment';
 import { NotificationManager } from 'react-light-notifications';
 import 'react-light-notifications/lib/main.css';
-import Admin from 'layouts/Admin.js';
+import Admin from 'layouts/Admin';
 import Card from 'components/Card/Card.js';
 import CardHeader from 'components/Card/CardHeader.js';
 import CardBody from 'components/Card/CardBody.js';
@@ -23,12 +22,27 @@ import * as yup from 'yup';
 import { useWindowDimensions } from 'hooks';
 import { isEmpty } from 'lodash';
 import { requestGetOwnerShop, requestsCreateEditShop } from 'utilities/ApiManage';
-import { Router, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { Close } from '@material-ui/icons';
-import { BASE_API_URL } from 'utilities/const';
 import { setShowLoader } from 'redux/actions/app';
+import { BASE_API_URL } from 'utilities/const';
+import { IShop, IUser } from 'constants/types';
 
-const initialValues = {
+interface FormValue {
+  id: string;
+  shopName: string;
+  shopCode: string;
+  address: string;
+  phone: string;
+  avatar?: string;
+  shopType: string;
+  description: string;
+  status: number;
+  email: string;
+  ownerShop?: any;
+}
+
+const initialValues: FormValue = {
   id: '',
   shopName: '',
   shopCode: '',
@@ -37,7 +51,7 @@ const initialValues = {
   avatar: '',
   shopType: '',
   description: '',
-  status: false,
+  status: 0,
   email: '',
 };
 function AddShop() {
@@ -48,12 +62,12 @@ function AddShop() {
   const { height } = useWindowDimensions();
 
   const refInput = React.useRef(null);
-
   const router = useRouter();
+
   const shop = !isEmpty(router.query) ? router.query : undefined;
 
-  const [selectedImages, setSelectedImages] = React.useState([]);
-  const [users, setUser] = React.useState([]);
+  const [selectedImages, setSelectedImages] = React.useState<string[]>([]);
+  const [users, setUsers] = React.useState<IUser[]>([]);
 
   React.useEffect(() => {
     (async () => {
@@ -61,7 +75,7 @@ function AddShop() {
         dispatch(setShowLoader(true));
         const res = await requestGetOwnerShop();
         if (res && res.code === 'MSG_SUCCESS') {
-          setUser(res.data);
+          setUsers(res.data);
         }
       } finally {
         dispatch(setShowLoader(false));
@@ -70,7 +84,10 @@ function AddShop() {
   }, []);
 
   const handleRemoveImage = React.useCallback(
-    (photo, setFieldValue) => {
+    (
+      photo: string,
+      setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void
+    ) => {
       const currentIndex = selectedImages.indexOf(photo);
       const newListImages = [...selectedImages];
       newListImages.splice(currentIndex, 1);
@@ -80,24 +97,30 @@ function AddShop() {
     [selectedImages]
   );
 
-  const handleImageChange = React.useCallback((e, setFieldValue) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const arr = reader.result.split(',');
-        setFieldValue('avatar', arr[1]);
-      };
-      reader.readAsDataURL(file);
-    }
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
-      setSelectedImages(filesArray);
-      Array.from(e.target.files).map(
-        (file) => URL.revokeObjectURL(file) // avoid memory leak
-      );
-    }
-  }, []);
+  const handleImageChange = React.useCallback(
+    (
+      e: React.ChangeEvent<HTMLInputElement>,
+      setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void
+    ) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const arr = reader.result.split(',');
+          setFieldValue('avatar', arr[1]);
+        };
+        reader.readAsDataURL(file);
+      }
+      if (e.target.files) {
+        const filesArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
+        setSelectedImages(filesArray);
+        Array.from(e.target.files).map(
+          (file) => URL.revokeObjectURL(file) // avoid memory leak
+        );
+      }
+    },
+    []
+  );
 
   const handleSubmitShop = React.useCallback(
     async ({
@@ -112,7 +135,7 @@ function AddShop() {
       description,
       status,
       email,
-    }) => {
+    }: FormValue) => {
       try {
         dispatch(setShowLoader(true));
         if (shop) {
@@ -127,18 +150,16 @@ function AddShop() {
             ownerShop: ownerShop.id,
             avatar,
             description,
-            status: status === true ? 1 : 0,
+            status,
           });
           if (res && res.code === 'MSG_SUCCESS') {
-            Router.push('/admin/shop');
-            onUpdated();
+            router.push('/admin/shop');
           } else {
             NotificationManager.error({
               title: t('error'),
               message: res.message ? res.message.text : 'Error',
             });
           }
-          closeDialog();
         } else {
           const res = await requestsCreateEditShop({
             shopName,
@@ -150,18 +171,17 @@ function AddShop() {
             ownerShop: ownerShop.id,
             avatar,
             description,
-            status: status === true ? 1 : 0,
+            status,
           });
           dispatch(setShowLoader(false));
           if (res && res.code === 'MSG_SUCCESS') {
-            Router.push('/admin/shop');
+            router.push('/admin/shop');
           } else {
             NotificationManager.error({
               title: t('error'),
               message: res.message ? res.message.text : 'Error',
             });
           }
-          closeDialog();
         }
       } finally {
         dispatch(setShowLoader(false));
@@ -217,21 +237,14 @@ function AddShop() {
             }
 
             if (shop.ownerShop) {
-              const user = users.find((i) => {
-                i.ownerShop === parseInt(shop.ownerShop);
+              setFieldValue('ownerShop', {
+                id: shop.ownerShop,
+                fullName: shop.nameOwnerShop,
+                msisdn: '',
               });
-
-              if (!user) {
-                return;
-              }
-              setFieldValue('ownerShop', user);
             }
 
-            if (shop.status && shop.status === 1) {
-              setFieldValue('status', true);
-            } else {
-              setFieldValue('status', false);
-            }
+            setFieldValue('status', parseInt(shop.status));
           }
         }, [shop, users]);
 
@@ -239,7 +252,9 @@ function AddShop() {
           <Form style={{ height: height - 150 + 'px', overflowY: 'auto' }}>
             <Card>
               <CardHeader color="primary">
-                <h4 className={classes.cardTitleWhite}>Create new shop</h4>
+                <h4 className={classes.cardTitleWhite}>
+                  {shop ? t('addShop.edit_shop') : t('addShop.create_new_shop')}
+                </h4>
               </CardHeader>
               <CardBody className={classes.cardBody} style={{ paddingBottom: 20 }}>
                 <GridContainer>
@@ -315,7 +330,6 @@ function AddShop() {
                       </GridItem>
                     </GridContainer>
                     <Autocomplete
-                      label={t('addShop.ownerShop')}
                       id="ownerShop"
                       autoComplete
                       options={users || []}
@@ -325,9 +339,6 @@ function AddShop() {
                         setFieldValue('ownerShop', value);
                       }}
                       getOptionLabel={({ fullName, msisdn }) =>
-                        `Name: ${fullName} - Phone number: ${msisdn}`
-                      }
-                      getOptionSelected={({ fullName, msisdn }) =>
                         `Name: ${fullName} - Phone number: ${msisdn}`
                       }
                       renderInput={(params) => (
@@ -355,8 +366,14 @@ function AddShop() {
                       style={{ width: '100%', marginBottom: 20 }}
                     />
                     <Switch
-                      checked={values.status}
-                      onChange={handleChange('status')}
+                      checked={values.status === 1 ? true : false}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setFieldValue('status', 1);
+                        } else {
+                          setFieldValue('status', 0);
+                        }
+                      }}
                       name="status"
                       color="primary"
                     />

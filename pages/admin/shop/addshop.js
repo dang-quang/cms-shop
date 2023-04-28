@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import { NotificationManager } from 'react-light-notifications';
 import 'react-light-notifications/lib/main.css';
@@ -9,9 +9,8 @@ import CardHeader from 'components/Card/CardHeader.js';
 import CardBody from 'components/Card/CardBody.js';
 import CardFooter from 'components/Card/CardFooter.js';
 import Button from 'components/CustomButtons/Button.js';
-import ImageUpload from './ImageUpload';
 import { useTranslation } from 'react-i18next';
-import { MenuItem, makeStyles, TextField, FormHelperText, Switch } from '@material-ui/core';
+import { makeStyles, TextField, Switch } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
@@ -155,9 +154,7 @@ function AddShop() {
           });
           dispatch(setShowLoader(false));
           if (res && res.code === 'MSG_SUCCESS') {
-            setTimeout(() => {
-              Router.push('/admin/shop');
-            }, 200);
+            Router.push('/admin/shop');
           } else {
             NotificationManager.error({
               title: t('error'),
@@ -184,7 +181,7 @@ function AddShop() {
     address: yup.string().required(t('errorAddressRequire')),
     shopCode: yup.string().required(t('errorShopCodeRequire')),
     shopType: yup.string().required(t('errorShopTypeRequire')),
-    ownerShop: yup.string().required(t('errorOwnerShopRequire')),
+    ownerShop: yup.object().required(t('errorOwnerShopRequire')),
     email: yup.string().required(t('errorEmailRequire')).email(t('errorInvalidEmail')),
     //description: yup.string().required('errorDescriptionRequire'),
     //avatar: yup.string().required(t('errorImageRequire')),

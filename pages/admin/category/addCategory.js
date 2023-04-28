@@ -32,11 +32,11 @@ import styles from 'assets/jss/natcash/views/category/addCategoryStyle';
 import { useTranslation } from 'react-i18next';
 import { Autocomplete } from '@material-ui/lab';
 import _ from 'lodash';
-import { requestCreateEditCategory, requestsGetParentCategory } from '../../../utilities/ApiManage';
+import { requestCreateEditCategory, requestsGetParentCategory } from 'utilities/ApiManage';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { Close, PhotoCamera } from '@material-ui/icons';
-import { BASE_API_URL } from '../../../utilities/const';
+import { BASE_API_URL } from 'utilities/const';
 
 const initialValues = {
   id: '',

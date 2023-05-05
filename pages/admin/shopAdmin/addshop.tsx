@@ -9,7 +9,7 @@ import CardBody from 'components/Card/CardBody.js';
 import CardFooter from 'components/Card/CardFooter.js';
 import Button from 'components/CustomButtons/Button.js';
 import { useTranslation } from 'react-i18next';
-import { makeStyles, TextField, Switch } from '@material-ui/core';
+import { makeStyles, TextField, Switch, FormGroup, FormControlLabel } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
@@ -51,7 +51,7 @@ const initialValues: FormValue = {
   avatar: '',
   shopType: '',
   description: '',
-  status: 0,
+  status: 1,
   email: '',
 };
 function AddShop() {
@@ -216,7 +216,7 @@ function AddShop() {
   return (
     <Formik
       validateOnChange={false}
-      //validationSchema={addUpdateShopValidationSchema}
+      validationSchema={addUpdateShopValidationSchema}
       enableReinitialize={true}
       initialValues={shop ? shop : initialValues}
       onSubmit={handleSubmitShop}>
@@ -372,18 +372,25 @@ function AddShop() {
                       minRows={4}
                       style={{ width: '100%', marginBottom: 20 }}
                     />
-                    <Switch
-                      checked={values.status === 1 ? true : false}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setFieldValue('status', 1);
-                        } else {
-                          setFieldValue('status', 0);
+                    <FormGroup>
+                      <FormControlLabel
+                        label={t('status')}
+                        control={
+                          <Switch
+                            checked={values.status === 1 ? true : false}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setFieldValue('status', 1);
+                              } else {
+                                setFieldValue('status', 0);
+                              }
+                            }}
+                            name="status"
+                            color="primary"
+                          />
                         }
-                      }}
-                      name="status"
-                      color="primary"
-                    />
+                      />
+                    </FormGroup>
                   </GridItem>
                   <GridItem className={classes.viewItem} xs={12} sm={12} md={4}>
                     <TextField

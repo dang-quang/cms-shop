@@ -24,5 +24,5 @@
     "incremental": true
   },
   "exclude": ["node_modules"],
-  "include": [".", "next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.js", "next.config.js"]
+  "include": ["next-env.d.ts", "pages/**/*", "src/**/*"]
 }

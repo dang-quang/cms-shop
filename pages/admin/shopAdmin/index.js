@@ -45,7 +45,7 @@ import { setShowLoader } from 'redux/actions/app';
 import { NotificationContainer, NotificationManager } from 'react-light-notifications';
 import { primaryColor } from 'assets/jss/natcash';
 import { useTranslation } from 'react-i18next';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 function ShopListPage() {
   const useShopStyles = makeStyles(shopStyle);
   const shopClasses = useShopStyles();
@@ -60,6 +60,7 @@ function ShopListPage() {
   const useDashStyles = makeStyles(dashStyles);
   const dashClasses = useDashStyles();
   const formatDate = 'YYYY-MM-DD';
+  const router = useRouter();
 
   const FROM_DATE = moment().subtract(30, 'days').format(formatDate);
   const TO_DATE = moment().format(formatDate);
@@ -139,6 +140,7 @@ function ShopListPage() {
       const res = await requestDeleteShop({ id: selectedShop.id });
       if (res.code === 'MSG_SUCCESS') {
         setSelectedShop(null);
+        router.push('/admin/shopAdmin');
       } else {
         NotificationManager.error({
           title: t('error'),
@@ -264,7 +266,7 @@ function ShopListPage() {
                         {/* <MenuItem
                           className={classes.dropdownItem}
                           onClick={() => {
-                            Router.push({
+                            router.push({
                               pathname: '/admin/shop/addshop',
                               query: item,
                             });
@@ -274,8 +276,8 @@ function ShopListPage() {
                         <MenuItem
                           className={classes.dropdownItem}
                           onClick={() => {
-                            Router.push({
-                              pathname: '/admin/shop/addshop',
+                            router.push({
+                              pathname: '/admin/shopAdmin/addshop',
                               query: item,
                             });
                           }}>
@@ -453,7 +455,7 @@ function ShopListPage() {
               position: isMobile ? 'static' : 'absolute',
               right: '0',
             }}>
-            <Link href={'/admin/shop/addshop'}>
+            <Link href={'/admin/shopAdmin/addshop'}>
               <Button id="update-label" color="green">
                 CREATE NEW SHOP
               </Button>

@@ -153,7 +153,7 @@ function AddShop() {
             status,
           });
           if (res && res.code === 'MSG_SUCCESS') {
-            router.push('/admin/shop');
+            router.push('/admin/shopAdmin');
           } else {
             NotificationManager.error({
               title: t('error'),
@@ -175,7 +175,7 @@ function AddShop() {
           });
           dispatch(setShowLoader(false));
           if (res && res.code === 'MSG_SUCCESS') {
-            router.push('/admin/shop');
+            router.push('/admin/shopAdmin');
           } else {
             NotificationManager.error({
               title: t('error'),

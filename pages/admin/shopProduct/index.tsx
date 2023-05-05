@@ -136,7 +136,7 @@ const ShopUserProduct = () => {
     })();
   }, [doSearch, filterDate, doFilter, currentPage]);
 
-  const handleDeleteShop = React.useCallback(async () => {
+  const handleDeleteProduct = React.useCallback(async () => {
     try {
       //       dispatch(setShowLoader(true));
       //       const res = await requestDeleteShop({ id: selectedShop.id });
@@ -277,10 +277,10 @@ const ShopUserProduct = () => {
                         <MenuItem
                           className={classes.dropdownItem}
                           onClick={() => {
-                            Router.push({
-                              pathname: '/admin/shop/addshop',
-                              query: item,
-                            });
+                            // Router.push({
+                            //   pathname: '/admin/shop/addshop',
+                            //   query: item,
+                            // });
                           }}>
                           {t('edit')}
                         </MenuItem>
@@ -478,7 +478,7 @@ const ShopUserProduct = () => {
             className={tableClasses.tableResponsive}
             style={{ marginTop: '0', flexDirection: 'row-reverse', display: 'flex' }}>
             <div className={classes.buttonContainer}>
-              <Button color="primary" onClick={handleDeleteShop}>
+              <Button color="primary" onClick={handleDeleteProduct}>
                 {t('submit')}
               </Button>
             </div>

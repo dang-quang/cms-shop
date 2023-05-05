@@ -34,7 +34,7 @@ const dashboardRoutes = [
         permission: 'shop_qr',
       },
       {
-        path: '/shopAmin',
+        path: '/shopAdmin',
         name: 'shopManagement',
         layout: '/admin',
         parent: 'operation',

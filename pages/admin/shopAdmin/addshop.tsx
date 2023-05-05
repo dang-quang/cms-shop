@@ -123,19 +123,22 @@ function AddShop() {
   );
 
   const handleSubmitShop = React.useCallback(
-    async ({
-      id,
-      shopName,
-      shopCode,
-      address,
-      phone,
-      ownerShop,
-      avatar,
-      shopType,
-      description,
-      status,
-      email,
-    }: FormValue) => {
+    async (
+      {
+        id,
+        shopName,
+        shopCode,
+        address,
+        phone,
+        ownerShop,
+        avatar,
+        shopType,
+        description,
+        status,
+        email,
+      }: FormValue,
+      { setFieldError }
+    ) => {
       try {
         dispatch(setShowLoader(true));
         if (shop) {
@@ -154,6 +157,8 @@ function AddShop() {
           });
           if (res && res.code === 'MSG_SUCCESS') {
             router.push('/admin/shopAdmin');
+          } else if (res && res.code === 'ERR_CODE_SHOP') {
+            setFieldError('shopCode', `${res.message}`);
           } else {
             NotificationManager.error({
               title: t('error'),
@@ -176,6 +181,8 @@ function AddShop() {
           dispatch(setShowLoader(false));
           if (res && res.code === 'MSG_SUCCESS') {
             router.push('/admin/shopAdmin');
+          } else if (res && res.code === 'ERR_CODE_SHOP') {
+            setFieldError('shopCode', `${res.message}`);
           } else {
             NotificationManager.error({
               title: t('error'),
@@ -209,7 +216,7 @@ function AddShop() {
   return (
     <Formik
       validateOnChange={false}
-      validationSchema={addUpdateShopValidationSchema}
+      //validationSchema={addUpdateShopValidationSchema}
       enableReinitialize={true}
       initialValues={shop ? shop : initialValues}
       onSubmit={handleSubmitShop}>

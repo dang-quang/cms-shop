@@ -81,6 +81,9 @@
   "description": "Description",
   "sideBar": {
     "shop": "Shop",
+    "shopAdmin": "Shop Admin",
+    "shopUser": "Shop User",
+    "shopProduct": "Shop Product",
     "qrManagement": "QR Management",
     "shopManagement": "Shop Management",
     "product": "Product",
@@ -271,5 +274,16 @@
     "pass": "Password",
     "loginError": "Please enter Username and Password!",
     "incorrect": "Username or Password is incorrect!"
+  },
+  "shopUser": {
+    "product": "Product",
+    "create_product": "Create Product",
+    "product_id": "Product Id",
+    "name": "Name",
+    "industry": "Industry",
+    "trademark": "Trademark",
+    "origin": "Origin",
+    "status": "Status",
+    "publish_time": "Publish time"
   }
 }

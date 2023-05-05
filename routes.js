@@ -20,7 +20,7 @@ const dashboardRoutes = [
   // },
   {
     path: '/#',
-    name: 'shop',
+    name: 'shopAdmin',
     icon: 'store_icon',
     layout: '/admin',
     parent: 'operation',
@@ -34,8 +34,25 @@ const dashboardRoutes = [
         permission: 'shop_qr',
       },
       {
-        path: '/shop',
+        path: '/shopAmin',
         name: 'shopManagement',
+        layout: '/admin',
+        parent: 'operation',
+        permission: 'shop_shop',
+      },
+    ],
+  },
+  {
+    path: '/#',
+    name: 'shopUser',
+    icon: 'store_icon',
+    layout: '/admin',
+    parent: 'operation',
+    permission: 'stocks',
+    subMenu: [
+      {
+        path: '/shopProduct',
+        name: 'product',
         layout: '/admin',
         parent: 'operation',
         permission: 'shop_shop',

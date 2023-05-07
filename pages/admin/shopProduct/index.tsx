@@ -44,17 +44,18 @@ import { setShowLoader } from 'redux/actions/app';
 import { NotificationContainer } from 'react-light-notifications';
 import { primaryColor } from 'assets/jss/natcash';
 import { useTranslation } from 'react-i18next';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { data_product } from './data';
 import { IProduct } from './types';
 import DeleteIcon from '@mui/icons-materia';
 
 const ShopUserProduct = () => {
+  const formatDate = 'YYYY-MM-DD';
   const useShopStyles = makeStyles(shopStyle);
   const shopClasses = useShopStyles();
   const dispatch = useDispatch();
   const useStyles = makeStyles(styles);
-  const { t } = useTranslation(['common', 'shop_user']);
+  const { t } = useTranslation();
   const useAdminStyles = makeStyles(adminStyles);
   const useTableStyles = makeStyles(tableStyles);
   const adminClasses = useAdminStyles();
@@ -62,7 +63,7 @@ const ShopUserProduct = () => {
   const tableClasses = useTableStyles();
   const useDashStyles = makeStyles(dashStyles);
   const dashClasses = useDashStyles();
-  const formatDate = 'YYYY-MM-DD';
+  const router = useRouter();
 
   const FROM_DATE = moment().subtract(30, 'days').format(formatDate);
   const TO_DATE = moment().format(formatDate);
@@ -83,14 +84,14 @@ const ShopUserProduct = () => {
   const [selectedShop, setSelectedShop] = React.useState(null);
 
   const TABLE_HEAD = [
-    t('product_id'),
-    t('name'),
-    t('industry'),
-    t('trademark'),
-    t('origin'),
-    t('status'),
-    t('publish_time'),
-    t('action'),
+    t('shopUser.product_id'),
+    t('shopUser.name'),
+    t('shopUser.industry'),
+    t('shopUser.trademark'),
+    t('shopUser.origin'),
+    t('shopUser.status'),
+    t('shopUser.publish_time'),
+    t('shopUser.action'),
   ];
 
   React.useEffect(() => {
@@ -277,10 +278,9 @@ const ShopUserProduct = () => {
                         <MenuItem
                           className={classes.dropdownItem}
                           onClick={() => {
-                            // Router.push({
-                            //   pathname: '/admin/shop/addshop',
-                            //   query: item,
-                            // });
+                            router.push({
+                              pathname: '/admin/shopProduct/updateProduct',
+                            });
                           }}>
                           {t('edit')}
                         </MenuItem>
@@ -308,7 +308,7 @@ const ShopUserProduct = () => {
     <Card>
       <NotificationContainer />
       <CardHeader color="primary">
-        <h4 className={classes.cardTitleWhite}>{t('product')}</h4>
+        <h4 className={classes.cardTitleWhite}>{t('shopUser.product')}</h4>
       </CardHeader>
       <CardBody className={classes.cardBody}>
         <div className={dashClasses.filterSelections + ' ' + classes.flex_center_between}>
@@ -456,9 +456,9 @@ const ShopUserProduct = () => {
               position: isMobile ? 'static' : 'absolute',
               right: '0',
             }}>
-            <Link href={'/admin/shop/addshop'}>
+            <Link href={'/admin/shopProduct/createProduct'}>
               <Button id="update-label" color="green">
-                {t('create_product')}
+                {t('shopUser.create_product')}
               </Button>
             </Link>
           </FormControl>

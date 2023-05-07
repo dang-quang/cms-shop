@@ -79,6 +79,10 @@
   "filter": "Filter",
   "netError": "Network Error",
   "description": "Description",
+  "industry": "Industry",
+  "unit": "Unit",
+  "origin": "Origin",
+  "brand": "Brand",
   "sideBar": {
     "shop": "Shop",
     "shopAdmin": "Shop Admin",
@@ -279,11 +283,23 @@
     "product": "Product",
     "create_product": "Create Product",
     "product_id": "Product Id",
-    "name": "Name",
+    "name": "Name Product",
     "industry": "Industry",
-    "trademark": "Trademark",
-    "origin": "Origin",
+    "trademark": "Brand Product",
+    "origin": "Product Origin",
     "status": "Status",
-    "publish_time": "Publish time"
+    "publish_time": "Publish time",
+    "findBy": "Find",
+    "active": "Active",
+    "in_active": "In Active",
+    "action": "Action",
+    "product_code": "Product Code",
+    "unit": "Product Unit",
+    "price": "Product Price",
+    "create_new_product": "Create new product",
+    "update_product": "Update product",
+    "information": "Information",
+    "add_product_images": "Add product images",
+    "product_code_generate": "Product code generate"
   }
 }

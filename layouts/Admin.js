@@ -1,29 +1,29 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/router";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/router';
+import { useSelector, useDispatch } from 'react-redux';
 // creates a beautiful scrollbar
-import PerfectScrollbar from "perfect-scrollbar";
-import "perfect-scrollbar/css/perfect-scrollbar.css";
+import PerfectScrollbar from 'perfect-scrollbar';
+import 'perfect-scrollbar/css/perfect-scrollbar.css';
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from '@material-ui/core/styles';
 // core components
-import Navbar from "components/Navbars/Navbar.js";
-import Footer from "components/Footer/Footer.js";
-import Sidebar from "components/Sidebar/Sidebar.js";
-import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
+import Navbar from 'components/Navbars/Navbar.js';
+import Footer from 'components/Footer/Footer.js';
+import Sidebar from 'components/Sidebar/Sidebar.js';
+import FixedPlugin from 'components/FixedPlugin/FixedPlugin.js';
 
-import routes from "routes.js";
+import routes from 'routes.js';
 
-import styles from "assets/jss/natcash/layouts/adminStyle.js";
+import styles from 'assets/jss/natcash/layouts/adminStyle.js';
 
-import bgImage from "assets/img/sidebar-2.jpg";
-import logoWide from "assets/img/logo-wide-white.png";
-import Icon from "@material-ui/core/Icon";
-import { drawerWidth, transition, container } from "assets/jss/natcash.js";
-import { SHOW_SIDEBAR } from "../redux/actions/app";
-import PageLoader from "components/PageLoader/PageLoader.js";
-import {loadTranslations} from "ni18n";
-import {ni18nConfig} from "../ni18n.config";
+import bgImage from 'assets/img/sidebar-2.jpg';
+import logoWide from 'assets/img/logo-wide-white.png';
+import Icon from '@material-ui/core/Icon';
+import { drawerWidth, transition, container } from 'assets/jss/natcash.js';
+import { SHOW_SIDEBAR } from '../redux/actions/app';
+import PageLoader from 'components/PageLoader/PageLoader.js';
+import { loadTranslations } from 'ni18n';
+import { ni18nConfig } from '../ni18n.config';
 
 let ps;
 
@@ -38,8 +38,8 @@ export default function Admin({ children, ...rest }) {
   // states and functions
   const dispatch = useDispatch();
   const [image, setImage] = React.useState(bgImage);
-  const [color, setColor] = React.useState("white");
-  const [fixedClasses, setFixedClasses] = React.useState("dropdown");
+  const [color, setColor] = React.useState('white');
+  const [fixedClasses, setFixedClasses] = React.useState('dropdown');
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const showSidebar = useSelector((state) => state.app.showSidebar);
   const showLoader = useSelector((state) => state.app.showLoader);
@@ -50,17 +50,17 @@ export default function Admin({ children, ...rest }) {
     setColor(color);
   };
   const handleFixedClick = () => {
-    if (fixedClasses === "dropdown") {
-      setFixedClasses("dropdown show");
+    if (fixedClasses === 'dropdown') {
+      setFixedClasses('dropdown show');
     } else {
-      setFixedClasses("dropdown");
+      setFixedClasses('dropdown');
     }
   };
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
   const getRoute = () => {
-    return router.pathname !== "/admin/maps";
+    return router.pathname !== '/admin/maps';
   };
   const resizeFunction = () => {
     if (window.innerWidth >= 960) {
@@ -69,20 +69,20 @@ export default function Admin({ children, ...rest }) {
   };
   // initialize and destroy the PerfectScrollbar plugin
   React.useEffect(() => {
-    if (navigator.platform.indexOf("Win") > -1) {
+    if (navigator.platform.indexOf('Win') > -1) {
       ps = new PerfectScrollbar(mainPanel.current, {
         suppressScrollX: true,
         suppressScrollY: false,
       });
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     }
-    window.addEventListener("resize", resizeFunction);
+    window.addEventListener('resize', resizeFunction);
     // Specify how to clean up after this effect:
     return function cleanup() {
-      if (navigator.platform.indexOf("Win") > -1) {
+      if (navigator.platform.indexOf('Win') > -1) {
         ps.destroy();
       }
-      window.removeEventListener("resize", resizeFunction);
+      window.removeEventListener('resize', resizeFunction);
     };
   }, [mainPanel]);
 
@@ -107,8 +107,7 @@ export default function Admin({ children, ...rest }) {
       <div
         className={classes.mainPanel}
         ref={mainPanel}
-        style={{ width: `${showSidebar ? "" : "100%"}` }}
-      >
+        style={{ width: `${showSidebar ? '' : '100%'}` }}>
         <Navbar
           routes={routes}
           handleDrawerToggle={handleDrawerToggle}
@@ -142,13 +141,10 @@ export default function Admin({ children, ...rest }) {
   );
 }
 
-
 export const getStaticProps = async (props) => {
   return {
     props: {
-      ...(await loadTranslations(ni18nConfig, props.locale, [
-        'translation',
-      ])),
+      ...(await loadTranslations(ni18nConfig, props.locale, ['translation'])),
     },
-  }
-}
+  };
+};

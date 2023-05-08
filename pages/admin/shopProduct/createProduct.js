@@ -47,22 +47,22 @@ const brands = [
   },
 ];
 
-interface FormValue {
-  id?: string;
-  name: string;
-  code: string;
-  price: string;
-  industry: string;
-  origin: string;
-  unit: string;
-  trademark?: string;
-  status: number;
-  code_generate: number;
-  images: string[];
-  video: string;
-}
+// interface FormValue {
+//   id?: string;
+//   name: string;
+//   code: string;
+//   price: string;
+//   industry: string;
+//   origin: string;
+//   unit: string;
+//   trademark?: string;
+//   status: number;
+//   code_generate: number;
+//   images: string[];
+//   video: string;
+// }
 
-const initialValues: FormValue = {
+const initialValues = {
   id: '',
   name: '',
   code: '',
@@ -82,21 +82,18 @@ function CreateProduct() {
   const { t } = useTranslation();
   const { height } = useWindowDimensions();
 
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const inputRef1 = React.useRef<HTMLInputElement>(null);
+  const inputRef = React.useRef(null);
+  const inputRef1 = React.useRef(null);
 
   const router = useRouter();
 
   const shop = !isEmpty(router.query) ? router.query : undefined;
 
-  const [selectedIndex, setSelectedIndex] = React.useState<number>(0);
-  const [selectedImages, setSelectedImages] = React.useState<string[]>([]);
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [selectedImages, setSelectedImages] = React.useState([]);
 
   const handleRemoveImage = React.useCallback(
-    (
-      photo: string,
-      setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void
-    ) => {
+    (photo, setFieldValue) => {
       const currentIndex = selectedImages.indexOf(photo);
       const newListImages = [...selectedImages];
       newListImages.splice(currentIndex, 1);
@@ -106,33 +103,27 @@ function CreateProduct() {
     [selectedImages]
   );
 
-  const handleImageChange = React.useCallback(
-    (
-      e: React.ChangeEvent<HTMLInputElement>,
-      setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void
-    ) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const arr = reader.result.split(',');
-          setFieldValue('avatar', arr[1]);
-        };
-        reader.readAsDataURL(file);
-      }
-      if (e.target.files) {
-        const filesArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
-        setSelectedImages(filesArray);
-        Array.from(e.target.files).map(
-          (file) => URL.revokeObjectURL(file) // avoid memory leak
-        );
-      }
-    },
-    []
-  );
+  const handleImageChange = React.useCallback((e, setFieldValue) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const arr = reader.result.split(',');
+        setFieldValue('avatar', arr[1]);
+      };
+      reader.readAsDataURL(file);
+    }
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
+      setSelectedImages(filesArray);
+      Array.from(e.target.files).map(
+        (file) => URL.revokeObjectURL(file) // avoid memory leak
+      );
+    }
+  }, []);
 
   const handleSubmitShop = React.useCallback(
-    async ({}: FormValue, { setFieldError }) => {
+    async ({}, { setFieldError }) => {
       try {
         dispatch(setShowLoader(true));
       } finally {
@@ -531,10 +522,7 @@ function CreateProduct() {
                     </SimpleGrid>
                   </Box>
                 ) : (
-                  <ConfirmProductTable
-                    columnsData={columnsDataCheck}
-                    tableData={data as unknown as TableData[]}
-                  />
+                  <ConfirmProductTable columnsData={columnsDataCheck} tableData={data} />
                 )}
               </Box>
               <CardFooter style={{ display: 'flex', with: '100%', justifyContent: 'center' }}>

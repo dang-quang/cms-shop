@@ -48,6 +48,7 @@ import Router, { useRouter } from 'next/router';
 import { data_product } from './data';
 import { IProduct } from './types';
 import DeleteIcon from '@mui/icons-materia';
+import { useMobile } from 'hooks';
 
 const ShopUserProduct = () => {
   const formatDate = 'YYYY-MM-DD';
@@ -78,7 +79,7 @@ const ShopUserProduct = () => {
   const [totalPage, setTotalPage] = React.useState(1);
   const [totalRecords, setTotalRecords] = React.useState(0);
   const [search, setSearch] = React.useState('');
-  const [isMobile, setIsMobile] = React.useState(false);
+  const { isMobile } = useMobile();
   const [checked, setChecked] = React.useState([]);
   const [shops, setShops] = React.useState([]);
   const [selectedShop, setSelectedShop] = React.useState(null);
@@ -93,16 +94,6 @@ const ShopUserProduct = () => {
     t('shopUser.publish_time'),
     t('shopUser.action'),
   ];
-
-  React.useEffect(() => {
-    window.addEventListener(
-      'resize',
-      () => {
-        setIsMobile(window.innerWidth < 1570);
-      },
-      false
-    );
-  }, []);
 
   React.useEffect(() => {
     (async () => {
@@ -179,7 +170,7 @@ const ShopUserProduct = () => {
     setSearch(event.target.value);
     setCurrentPage(1);
   };
-  const renderShop = (item: IProduct, index: number) => {
+  const renderShop = (item, index) => {
     const { id, name, industry, trademark, origin, status, create_at } = item;
 
     return (

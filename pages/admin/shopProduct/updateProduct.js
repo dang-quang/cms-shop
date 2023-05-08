@@ -36,22 +36,22 @@ const brands = [
   },
 ];
 
-interface FormValue {
-  id?: string;
-  name: string;
-  code: string;
-  price: string;
-  industry: string;
-  origin: string;
-  unit: string;
-  trademark?: string;
-  status: number;
-  code_generate: number;
-  images: string[];
-  video: string;
-}
+// interface FormValue {
+//   id?: string;
+//   name: string;
+//   code: string;
+//   price: string;
+//   industry: string;
+//   origin: string;
+//   unit: string;
+//   trademark?: string;
+//   status: number;
+//   code_generate: number;
+//   images: string[];
+//   video: string;
+// }
 
-const initialValues: FormValue = {
+const initialValues = {
   id: '',
   name: '',
   code: '',
@@ -71,19 +71,16 @@ function UpdateProduct() {
   const { t } = useTranslation();
   const { height } = useWindowDimensions();
 
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const inputRef = React.useRef(null);
 
   const router = useRouter();
 
   const shop = !isEmpty(router.query) ? router.query : undefined;
 
-  const [selectedImages, setSelectedImages] = React.useState<string[]>([]);
+  const [selectedImages, setSelectedImages] = React.useState([]);
 
   const handleRemoveImage = React.useCallback(
-    (
-      photo: string,
-      setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void
-    ) => {
+    (photo, setFieldValue) => {
       const currentIndex = selectedImages.indexOf(photo);
       const newListImages = [...selectedImages];
       newListImages.splice(currentIndex, 1);
@@ -93,33 +90,27 @@ function UpdateProduct() {
     [selectedImages]
   );
 
-  const handleImageChange = React.useCallback(
-    (
-      e: React.ChangeEvent<HTMLInputElement>,
-      setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void
-    ) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const arr = reader.result.split(',');
-          setFieldValue('avatar', arr[1]);
-        };
-        reader.readAsDataURL(file);
-      }
-      if (e.target.files) {
-        const filesArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
-        setSelectedImages(filesArray);
-        Array.from(e.target.files).map(
-          (file) => URL.revokeObjectURL(file) // avoid memory leak
-        );
-      }
-    },
-    []
-  );
+  const handleImageChange = React.useCallback((e, setFieldValue) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const arr = reader.result.split(',');
+        setFieldValue('avatar', arr[1]);
+      };
+      reader.readAsDataURL(file);
+    }
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files).map((file) => URL.createObjectURL(file));
+      setSelectedImages(filesArray);
+      Array.from(e.target.files).map(
+        (file) => URL.revokeObjectURL(file) // avoid memory leak
+      );
+    }
+  }, []);
 
   const handleSubmitShop = React.useCallback(
-    async ({}: FormValue, { setFieldError }) => {
+    async ({}, { setFieldError }) => {
       try {
         dispatch(setShowLoader(true));
       } finally {

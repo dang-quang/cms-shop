@@ -25,7 +25,7 @@ import {
 import { TableProps } from '../types';
 import { useTranslation } from 'react-i18next';
 
-const ConfirmProductTable = (props: TableProps) => {
+const ConfirmProductTable = (props) => {
   const { columnsData, tableData } = props;
 
   const { t } = useTranslation();
@@ -59,34 +59,32 @@ const ConfirmProductTable = (props: TableProps) => {
       overflowX={{ sm: 'scroll', lg: 'hidden' }}>
       <Table {...getTableProps()} variant="simple" color="gray.500">
         <Thead>
-          {headerGroups.map((headerGroup, index: number) => (
+          {headerGroups.map((headerGroup, index) => (
             <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
-              {headerGroup.headers.map(
-                (column: ColumnInstance & UseTableColumnProps<{}>, index: number) => (
-                  <Th
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                    pe="10px"
-                    key={index}
-                    borderColor="gray.1600"
-                    pl="32px"
-                    pr="20px">
-                    <Flex align="center" fontSize={{ sm: '10px', lg: '12px' }} color="text-gray-6">
-                      <Text textStyle="h3-t" textTransform="capitalize" color="primary.200">
-                        {column.render('Header')}
-                      </Text>
-                    </Flex>
-                  </Th>
-                )
-              )}
+              {headerGroup.headers.map((column, index) => (
+                <Th
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  pe="10px"
+                  key={index}
+                  borderColor="gray.1600"
+                  pl="32px"
+                  pr="20px">
+                  <Flex align="center" fontSize={{ sm: '10px', lg: '12px' }} color="text-gray-6">
+                    <Text textStyle="h3-t" textTransform="capitalize" color="primary.200">
+                      {column.render('Header')}
+                    </Text>
+                  </Flex>
+                </Th>
+              ))}
             </Tr>
           ))}
         </Thead>
         <Tbody {...getTableBodyProps()} gap="20px">
-          {page.map((row: Row, index: number) => {
+          {page.map((row, index) => {
             prepareRow(row);
             return (
               <Tr {...row.getRowProps()} key={index} h="20px">
-                {row.cells.map((cell, index: number) => {
+                {row.cells.map((cell, index) => {
                   let data;
                   if (cell.column.Header === t('name')) {
                     data = (

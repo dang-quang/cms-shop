@@ -1,6 +1,4 @@
-import { IProduct } from './types';
-
-export const data_product: IProduct[] = [
+export const data_product = [
   {
     id: '1',
     name: 'Sữa Meiji số 0/9 - 800g',

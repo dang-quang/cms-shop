@@ -34,7 +34,6 @@ import styles from './styles';
 import { Box, Flex, SimpleGrid, Stack, Text } from '@chakra-ui/react';
 import SelectProduct from './components/SelectProduct';
 import ConfirmProductTable from './components/ConfirmProductTable';
-import { TableData } from './types';
 
 const brands = [
   {

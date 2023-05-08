@@ -12,23 +12,10 @@ import {
   Box,
   Image,
 } from '@chakra-ui/react';
-import {
-  ColumnInstance,
-  Row,
-  useGlobalFilter,
-  usePagination,
-  useSortBy,
-  useTable,
-  UseTableColumnProps,
-} from 'react-table';
-
-import { TableProps } from '../types';
-import { useTranslation } from 'react-i18next';
+import { useGlobalFilter, usePagination, useSortBy, useTable } from 'react-table';
 
 const ConfirmProductTable = (props) => {
   const { columnsData, tableData } = props;
-
-  const { t } = useTranslation();
 
   const columns = React.useMemo(() => columnsData, [columnsData]);
   const data = React.useMemo(() => tableData, [tableData]);

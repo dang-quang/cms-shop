@@ -1,83 +1,74 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import moment from "moment";
-import Collapse from "@material-ui/core/Collapse";
-import Link from "next/link";
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import moment from 'moment';
+import Collapse from '@material-ui/core/Collapse';
+import Link from 'next/link';
 // @material-ui/core components
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import {
-  primaryColor,
-  whiteColor,
-  blackColor,
-  hexToRgb,
-} from "assets/jss/natcash.js";
-import { formatCurrency, formatNumber } from "../../../utilities/utils";
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { primaryColor, whiteColor, blackColor, hexToRgb } from 'assets/jss/natcash.js';
+import { formatCurrency, formatNumber } from '../../../utilities/utils';
 // layout for this page
-import Admin from "layouts/Admin.js";
+import Admin from 'layouts/Admin.js';
 // core components
-import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardBody from "components/Card/CardBody.js";
-import CardFooter from "components/Card/CardFooter.js";
-import Button from "components/CustomButtons/Button.js";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import Search from "@material-ui/icons/Search";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import InputLabel from "@material-ui/core/InputLabel";
-import TextField from "@material-ui/core/TextField";
-import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
-import { withStyles } from "@material-ui/core/styles";
-import MenuItem from "@material-ui/core/MenuItem";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import Switch from "@material-ui/core/Switch";
+import Card from 'components/Card/Card.js';
+import CardHeader from 'components/Card/CardHeader.js';
+import CardBody from 'components/Card/CardBody.js';
+import CardFooter from 'components/Card/CardFooter.js';
+import Button from 'components/CustomButtons/Button.js';
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import Search from '@material-ui/icons/Search';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import TextField from '@material-ui/core/TextField';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import MenuItem from '@material-ui/core/MenuItem';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import Switch from '@material-ui/core/Switch';
 
-import PropTypes from "prop-types";
-import SwipeableViews from "react-swipeable-views";
+import PropTypes from 'prop-types';
+import SwipeableViews from 'react-swipeable-views';
 
-import WithAuthentication from "components/WithAuthentication/WithAuthentication";
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-import adminStyles from "assets/jss/natcash/components/headerLinksStyle.js";
-import tableStyles from "assets/jss/natcash/components/tableStyle.js";
-import taskStyles from "assets/jss/natcash/components/tasksStyle.js";
-import { Icon } from "@material-ui/core";
-import dashStyles from "assets/jss/natcash/views/dashboardStyle.js";
-import Modal from "@material-ui/core/Modal";
-import Fade from "@material-ui/core/Fade";
-import Backdrop from "@material-ui/core/Backdrop";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import vi from "date-fns/locale/vi";
-import Poppers from "@material-ui/core/Popper";
-import MenuList from "@material-ui/core/MenuList";
-import Grow from "@material-ui/core/Grow";
-import Paper from "@material-ui/core/Paper";
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import classNames from "classnames";
-import CardInfo from "components/CardInfo/CardInfo.js";
-import useWindowSize from "components/Hooks/useWindowSize.js";
-import { CheckBoxOutlined, LocalShippingOutlined } from "@material-ui/icons";
+import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
+import GridContainer from 'components/Grid/GridContainer.js';
+import GridItem from 'components/Grid/GridItem.js';
+import adminStyles from 'assets/jss/natcash/components/headerLinksStyle.js';
+import tableStyles from 'assets/jss/natcash/components/tableStyle.js';
+import taskStyles from 'assets/jss/natcash/components/tasksStyle.js';
+import { Icon } from '@material-ui/core';
+import dashStyles from 'assets/jss/natcash/views/dashboardStyle.js';
+import Modal from '@material-ui/core/Modal';
+import Fade from '@material-ui/core/Fade';
+import Backdrop from '@material-ui/core/Backdrop';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import vi from 'date-fns/locale/vi';
+import Poppers from '@material-ui/core/Popper';
+import MenuList from '@material-ui/core/MenuList';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import classNames from 'classnames';
+import CardInfo from 'components/CardInfo/CardInfo.js';
+import useWindowSize from 'components/Hooks/useWindowSize.js';
+import { CheckBoxOutlined, LocalShippingOutlined } from '@material-ui/icons';
 
-import defaultImage from "assets/img/customer-ava.png";
+import defaultImage from 'assets/img/customer-ava.png';
 // connect api
-import { getRateScreen, getCommentList, replyComment } from "../../../utilities/ApiManage";
-import { setShowLoader } from "../../../redux/actions/app";
+import { getRateScreen, getCommentList, replyComment } from '../../../utilities/ApiManage';
+import { setShowLoader } from '../../../redux/actions/app';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
-import { NotificationContainer, NotificationManager} from "react-light-notifications";
+import { NotificationContainer, NotificationManager } from 'react-light-notifications';
 
-import styles from "assets/jss/natcash/views/menu/shopReviewStyle.js";
+import styles from 'assets/jss/natcash/views/menu/shopReviewStyle.js';
 
 function ShopReviewPage() {
   const dispatch = useDispatch();
@@ -96,14 +87,14 @@ function ShopReviewPage() {
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
   const [showFilter, setShowFilter] = useState(false);
-  const [replyDetail, setReplyDetail] = useState("");
-  const [shopRating, setShopRating] = useState("");
+  const [replyDetail, setReplyDetail] = useState('');
+  const [shopRating, setShopRating] = useState('');
   const [activeItem, setActiveItem] = useState(1);
-  const [autoReply, setAutoReply] = useState("");
+  const [autoReply, setAutoReply] = useState('');
   const [listProduct, setListProduct] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState("");
-  const [selectedShop, setSelectedShop] = useState("");
-  const [replyAll, setReplyAll] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState('');
+  const [selectedShop, setSelectedShop] = useState('');
+  const [replyAll, setReplyAll] = useState('');
   const [noReply, setNoReply] = useState(0);
   const [isMore, setIsMore] = useState(false);
   const [nextCursor, setNextCursor] = useState(0);
@@ -124,65 +115,51 @@ function ShopReviewPage() {
     rating5: true,
   });
   const [modalItem, setModalItem] = useState({
-    id: "",
-    customerName: "",
-    customerAvatar: "",
-    productName: "",
+    id: '',
+    customerName: '',
+    customerAvatar: '',
+    productName: '',
     ratings: 0,
-    comment: "",
-    commentTime: "",
-    reply: "",
-    replyTime: "",
+    comment: '',
+    commentTime: '',
+    reply: '',
+    replyTime: '',
     isReply: false,
   });
 
   const TABLE_HEAD = [
     {
-      id: "en",
-      value: [
-        "Customer",
-        "Product's name",
-        "Customer ratings",
-        "Reply comment",
-        "Action",
-      ],
+      id: 'en',
+      value: ['Customer', "Product's name", 'Customer ratings', 'Reply comment', 'Action'],
     },
     {
-      id: "vi",
-      value: [
-        "Người mua",
-        "Tên sản phẩm",
-        "Khách hàng đánh giá",
-        "Trả lời đánh giá",
-        "Thao tác",
-      ],
+      id: 'vi',
+      value: ['Người mua', 'Tên sản phẩm', 'Khách hàng đánh giá', 'Trả lời đánh giá', 'Thao tác'],
     },
   ];
-  const [data, setData] = useState([])
+  const [data, setData] = useState([]);
   const [replyData, setReplyData] = useState([
     {
-      shopCode: "STT",
+      shopCode: 'STT',
       rating: [
         {
           id: 1,
           active: true,
           value: [
-            "Shoptretho cảm ơn quý khách đã tin tưởng ủng hộ sản phẩm ạ!",
-            "Shop xin chân thành cảm ơn bạn đã tin tưởng và ủng hộ Shop, Shop rất vui khi sản phẩm nhận được sự hài lòng từ bạn. Shop hi vọng được phục vụ bạn trong những đơn hàng tiếp theo.",
+            'Shoptretho cảm ơn quý khách đã tin tưởng ủng hộ sản phẩm ạ!',
+            'Shop xin chân thành cảm ơn bạn đã tin tưởng và ủng hộ Shop, Shop rất vui khi sản phẩm nhận được sự hài lòng từ bạn. Shop hi vọng được phục vụ bạn trong những đơn hàng tiếp theo.',
           ],
         },
         {
           id: 2,
           active: false,
-          value: [
-            "Shoptretho cảm ơn quý khách đã tin tưởng ủng hộ sản phẩm ạ!",
-          ],
+          value: ['Shoptretho cảm ơn quý khách đã tin tưởng ủng hộ sản phẩm ạ!'],
         },
         {
           id: 3,
           active: true,
           value: [
-            "Shop xin chân thành cảm ơn bạn đã tin tưởng và ủng hộ Shop, Shop rất vui khi sản phẩm nhận được sự hài lòng từ bạn. Shop hi vọng được phục vụ bạn trong những đơn hàng tiếp theo.",
+            'Shop xin chân thành cảm ơn bạn đã tin tưởng và ủng hộ Shop, Shop rất vui khi sản phẩm nhận được sự hài lòng từ bạn. Shop hi vọng được phục vụ bạn trong những đơn hàng tiếp theo.',
           ],
         },
         {
@@ -198,28 +175,26 @@ function ShopReviewPage() {
       ],
     },
     {
-      shopCode: "KNIC",
+      shopCode: 'KNIC',
       rating: [
         {
           id: 1,
           active: true,
           value: [
-            "Shoptretho cảm ơn quý khách đã tin tưởng ủng hộ sản phẩm ạ!",
-            "Shop xin chân thành cảm ơn bạn đã tin tưởng và ủng hộ Shop, Shop rất vui khi sản phẩm nhận được sự hài lòng từ bạn. Shop hi vọng được phục vụ bạn trong những đơn hàng tiếp theo.",
+            'Shoptretho cảm ơn quý khách đã tin tưởng ủng hộ sản phẩm ạ!',
+            'Shop xin chân thành cảm ơn bạn đã tin tưởng và ủng hộ Shop, Shop rất vui khi sản phẩm nhận được sự hài lòng từ bạn. Shop hi vọng được phục vụ bạn trong những đơn hàng tiếp theo.',
           ],
         },
         {
           id: 2,
           active: false,
-          value: [
-            "Shoptretho cảm ơn quý khách đã tin tưởng ủng hộ sản phẩm ạ!",
-          ],
+          value: ['Shoptretho cảm ơn quý khách đã tin tưởng ủng hộ sản phẩm ạ!'],
         },
         {
           id: 3,
           active: true,
           value: [
-            "Shop xin chân thành cảm ơn bạn đã tin tưởng và ủng hộ Shop, Shop rất vui khi sản phẩm nhận được sự hài lòng từ bạn. Shop hi vọng được phục vụ bạn trong những đơn hàng tiếp theo.",
+            'Shop xin chân thành cảm ơn bạn đã tin tưởng và ủng hộ Shop, Shop rất vui khi sản phẩm nhận được sự hài lòng từ bạn. Shop hi vọng được phục vụ bạn trong những đơn hàng tiếp theo.',
           ],
         },
         {
@@ -240,125 +215,120 @@ function ShopReviewPage() {
 
   const options = [
     {
-      id: "en",
-      title: "options",
-      value: ["Decentralization", "Edit", "Delete"],
+      id: 'en',
+      title: 'options',
+      value: ['Decentralization', 'Edit', 'Delete'],
     },
-    { id: "vi", title: "tùy chọn", value: ["Phân quyền", "Sửa", "Xóa"] },
+    { id: 'vi', title: 'tùy chọn', value: ['Phân quyền', 'Sửa', 'Xóa'] },
   ];
   const Filter = [
     {
-      id: "en",
+      id: 'en',
       value: {
-        title: "Change shopId",
-        value: ["Stock", "Created date", "Stock level", "Channel SKU mapping"],
-        button: ["Reset", "Confirm"],
+        title: 'Change shopId',
+        value: ['Stock', 'Created date', 'Stock level', 'Channel SKU mapping'],
+        button: ['Reset', 'Confirm'],
       },
     },
     {
-      id: "vi",
+      id: 'vi',
       value: {
-        title: "Đổi mã gian hàng",
-        value: [
-          "Tồn kho",
-          "Ngày tạo",
-          "Tồn kho",
-          "Trạng thái liên kết sản phẩm đăng bán",
-        ],
-        button: ["Đặt lại", "Xác nhận"],
+        title: 'Đổi mã gian hàng',
+        value: ['Tồn kho', 'Ngày tạo', 'Tồn kho', 'Trạng thái liên kết sản phẩm đăng bán'],
+        button: ['Đặt lại', 'Xác nhận'],
       },
     },
   ];
   const FORM = [
     {
-      id: "en",
+      id: 'en',
       value: {
-        title: ["Item Infomation", "Additional Information", "Images"],
+        title: ['Item Infomation', 'Additional Information', 'Images'],
         value: [
-          "Select Shop",
-          "Filter",
-          "Time",
-          "Rating",
-          "Select product",
-          "Shop reply",
-          "Enter the comment to send",
+          'Select Shop',
+          'Filter',
+          'Time',
+          'Rating',
+          'Select product',
+          'Shop reply',
+          'Enter the comment to send',
         ],
-        button: ["Reply comment", "Reply"],
+        button: ['Reply comment', 'Reply'],
       },
     },
     {
-      id: "vi",
+      id: 'vi',
       value: {
-        title: ["Thông tin cơ bản", "Thông tin thêm", "Hình ảnh"],
+        title: ['Thông tin cơ bản', 'Thông tin thêm', 'Hình ảnh'],
         value: [
-          "Chọn Shop",
-          "Lọc",
-          "Thời gian",
-          "Đánh giá",
-          "Chọn sản phẩm",
-          "Shop trả lời",
-          "Nhập bình luận cần gửi",
+          'Chọn Shop',
+          'Lọc',
+          'Thời gian',
+          'Đánh giá',
+          'Chọn sản phẩm',
+          'Shop trả lời',
+          'Nhập bình luận cần gửi',
         ],
-        button: ["Trả lời đánh giá", "Trả lời"],
+        button: ['Trả lời đánh giá', 'Trả lời'],
       },
     },
   ];
   const TABLE_SEARCH_HEAD = [
     {
-      id: "en",
-      value: ["Product information", "Stock", "Price", "Action"],
+      id: 'en',
+      value: ['Product information', 'Stock', 'Price', 'Action'],
     },
     {
-      id: "vi",
-      value: ["Thông tin sản phẩm", "Tồn kho", "Giá bán", "Thao tác"],
+      id: 'vi',
+      value: ['Thông tin sản phẩm', 'Tồn kho', 'Giá bán', 'Thao tác'],
     },
   ];
   const language = useSelector((state) => state.app.language);
   const [text, setText] = useState({
-    id: "en",
-    title: "Shop Review",
+    id: 'en',
+    title: 'Shop Review',
     tableHead: TABLE_HEAD[0].value,
     optionsTitle: options[0].title,
     options: options[0].value,
     fillter: Filter[0].value,
     form: FORM[0].value,
     tableSearchHead: TABLE_SEARCH_HEAD[0].value,
-    tab: ["Respond to multiple ratings"],
-    cusQuantity: ["Send to", "Customer"],
-    txtReply: "Reply Comment",
-    txtSuccess: "Success",
-    txtFail: "Fail"
+    tab: ['Respond to multiple ratings'],
+    cusQuantity: ['Send to', 'Customer'],
+    txtReply: 'Reply Comment',
+    txtSuccess: 'Success',
+    txtFail: 'Fail',
   });
   const listText = [
     {
-      id: "en",
-      title: "Shop Review",
+      id: 'en',
+      title: 'Shop Review',
       tableHead: TABLE_HEAD[0].value,
       optionsTitle: options[0].title,
       options: options[0].value,
       fillter: Filter[0].value,
       form: FORM[0].value,
       tableSearchHead: TABLE_SEARCH_HEAD[0].value,
-      tab: ["Respond to multiple ratings"],
-      cusQuantity: ["Send to", "Customer"],
-      txtReply: "Reply Comment",
-      txtSuccess: "Success",
-      txtFail: "Fail"
+      tab: ['Respond to multiple ratings'],
+      cusQuantity: ['Send to', 'Customer'],
+      txtReply: 'Reply Comment',
+      txtSuccess: 'Success',
+      txtFail: 'Fail',
     },
     {
-      id: "vi",
-      title: "Đánh giá cửa hàng",
+      id: 'vi',
+      title: 'Đánh giá cửa hàng',
       tableHead: TABLE_HEAD[1].value,
       optionsTitle: options[1].title,
       options: options[1].value,
       fillter: Filter[1].value,
       form: FORM[1].value,
       tableSearchHead: TABLE_SEARCH_HEAD[1].value,
-      tab: ["Phản hồi nhiều đánh giá"],
-      cusQuantity: ["Gửi tới", "Khách hàng"],
-      txtReply: "Phản hồi đánh giá",
-      txtSuccess: "Thành công",
-      txtFail: "Thất bại"
+      tab: ['Phản hồi nhiều đánh giá'],
+      cusQuantity: ['Gửi tới', 'Khách hàng'],
+      txtReply: 'Phản hồi đánh giá',
+      txtSuccess: 'Thành công',
+      txtFail: 'Thất bại',
     },
   ];
 
@@ -372,7 +342,7 @@ function ShopReviewPage() {
   }, [language]);
   useEffect(() => {
     window.addEventListener(
-      "resize",
+      'resize',
       () => {
         setIsMobile(window.innerWidth < 1200);
       },
@@ -383,68 +353,68 @@ function ShopReviewPage() {
   const [shopList, setShopList] = useState([]);
 
   useEffect(async () => {
-    dispatch(setShowLoader(true))
+    dispatch(setShowLoader(true));
     var res = await getRateScreen();
-    if(res.code == 200){
+    if (res.code == 200) {
       setShopList(res.data.list_shop);
-      setData(res.data.list_comment)
+      setData(res.data.list_comment);
       // setShopRating(res.data.list_shop[0].code);
-      setListProduct(res.data.list_product)
-      setNoReply(res.data.no_reply)
-      setSelectedShop(res.data.list_shop[0].shopId)
-      setIsMore(res.data.data_page.more)
-      setNextCursor(res.data.data_page.next_cursor)
+      setListProduct(res.data.list_product);
+      setNoReply(res.data.no_reply);
+      setSelectedShop(res.data.list_shop[0].shopId);
+      setIsMore(res.data.data_page.more);
+      setNextCursor(res.data.data_page.next_cursor);
     }
-    dispatch(setShowLoader(false))
+    dispatch(setShowLoader(false));
   }, []);
 
   useEffect(async () => {
-    if(selectedShop){
-      dispatch(setShowLoader(true))
-      getData()
+    if (selectedShop) {
+      dispatch(setShowLoader(true));
+      getData();
     }
   }, [selectedShop, selectedProduct]);
 
-  const getData = async() => {
+  const getData = async () => {
     var params = {
-      shop_id: selectedShop
-    }
-    if(selectedProduct){
-      params.item_id = selectedProduct.item_id
+      shop_id: selectedShop,
+    };
+    if (selectedProduct) {
+      params.item_id = selectedProduct.item_id;
     }
     var res = await getCommentList(params);
-    if(res.code == 200){
-      setData(res.data.list_comment)
-      setNoReply(res.data.no_reply)
-      setListProduct(res.data.list_product)
-      setIsMore(res.data.data_page.more)
-      setNextCursor(res.data.data_page.next_cursor)
+    if (res.code == 200) {
+      setData(res.data.list_comment);
+      setNoReply(res.data.no_reply);
+      setListProduct(res.data.list_product);
+      setIsMore(res.data.data_page.more);
+      setNextCursor(res.data.data_page.next_cursor);
     }
-    dispatch(setShowLoader(false))
-  }
-  
-  const handleScroll = async(e) => {
+    dispatch(setShowLoader(false));
+  };
+
+  const handleScroll = async (e) => {
     const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
     if (bottom && isMore) {
-        dispatch(setShowLoader(true))
-        var params = {
-          shop_id: selectedShop,
-          cursor: nextCursor
-        }
-        if(selectedProduct){
-          params.item_id = selectedProduct.item_id
-        }
-        var res = await getCommentList(params);
-        if(res.code == 200){
-          setData([...data, ...res.data.list_comment])
-          setNoReply(noReply + res.data.no_reply)
-          setListProduct(res.data.list_product)
-          setIsMore(res.data.data_page.more)
-          setNextCursor(res.data.data_page.next_cursor)
-        }
-        dispatch(setShowLoader(false))
+      dispatch(setShowLoader(true));
+      var params = {
+        shop_id: selectedShop,
+        cursor: nextCursor,
+      };
+      if (selectedProduct) {
+        params.item_id = selectedProduct.item_id;
+      }
+      var res = await getCommentList(params);
+      if (res.code == 200) {
+        setData([...data, ...res.data.list_comment]);
+        setNoReply(noReply + res.data.no_reply);
+        setListProduct(res.data.list_product);
+        setIsMore(res.data.data_page.more);
+        setNextCursor(res.data.data_page.next_cursor);
+      }
+      dispatch(setShowLoader(false));
     }
-  }
+  };
 
   // useEffect(() => {
   //   for (let i = 0; i < replyData.length; i++) {
@@ -463,13 +433,8 @@ function ShopReviewPage() {
         hidden={value !== index}
         id={`full-width-tabpanel-${index}`}
         aria-labelledby={`full-width-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box p={3}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
+        {...other}>
+        {value === index && <Typography>{children}</Typography>}
       </div>
     );
   }
@@ -483,7 +448,7 @@ function ShopReviewPage() {
   function a11yProps(index) {
     return {
       id: `full-width-tab-${index}`,
-      "aria-controls": `full-width-tabpanel-${index}`,
+      'aria-controls': `full-width-tabpanel-${index}`,
     };
   }
 
@@ -491,33 +456,32 @@ function ShopReviewPage() {
     setValue(newValue);
   };
 
-  const handleReplyCmt = async() => {
-    dispatch(setShowLoader(true))
-    var listId = []
+  const handleReplyCmt = async () => {
+    dispatch(setShowLoader(true));
+    var listId = [];
     data.forEach((cmt) => {
-      if(!cmt.comment_reply){
-        listId.push(cmt.comment_id)
+      if (!cmt.comment_reply) {
+        listId.push(cmt.comment_id);
       }
-    })
+    });
     var params = {
       shop_id: selectedShop,
       list_comment_id: listId,
-      comment: replyAll
-    }
-    const res = await replyComment(params)
-    if(res.code == 200) {
+      comment: replyAll,
+    };
+    const res = await replyComment(params);
+    if (res.code == 200) {
       NotificationManager.success({
         title: text.txtReply,
-        message: text.txtSuccess
+        message: text.txtSuccess,
       });
-      getData()
-    }
-    else{
+      getData();
+    } else {
       NotificationManager.error({
         title: text.txtReply,
-        message: text.txtFail
+        message: text.txtFail,
       });
-      dispatch(setShowLoader(false))
+      dispatch(setShowLoader(false));
     }
   };
 
@@ -527,7 +491,7 @@ function ShopReviewPage() {
 
   const handleChangeShop = (prop) => (event) => {
     setSelectedShop(event.target.value);
- };
+  };
 
   const handleChangeReplyDetail = (event) => {
     setReplyDetail(event.target.value);
@@ -535,42 +499,42 @@ function ShopReviewPage() {
 
   const AntTabs = withStyles({
     root: {
-      borderBottom: "1px solid #e8e8e8",
+      borderBottom: '1px solid #e8e8e8',
     },
     indicator: {
-      backgroundColor: "#1890ff",
+      backgroundColor: '#1890ff',
     },
   })(Tabs);
 
   const AntTab = withStyles((theme) => ({
     root: {
-      textTransform: "none",
+      textTransform: 'none',
       fontSize: 16,
       minWidth: 72,
       fontWeight: theme.typography.fontWeightRegular,
       marginRight: theme.spacing(4),
       fontFamily: [
-        "-apple-system",
-        "BlinkMacSystemFont",
+        '-apple-system',
+        'BlinkMacSystemFont',
         '"Segoe UI"',
-        "Roboto",
+        'Roboto',
         '"Helvetica Neue"',
-        "Arial",
-        "sans-serif",
+        'Arial',
+        'sans-serif',
         '"Apple Color Emoji"',
         '"Segoe UI Emoji"',
         '"Segoe UI Symbol"',
-      ].join(","),
-      "&:hover": {
-        color: "#40a9ff",
+      ].join(','),
+      '&:hover': {
+        color: '#40a9ff',
         opacity: 1,
       },
-      "&$selected": {
-        color: "#1890ff",
+      '&$selected': {
+        color: '#1890ff',
         fontWeight: theme.typography.fontWeightMedium,
       },
-      "&:focus": {
-        color: "#40a9ff",
+      '&:focus': {
+        color: '#40a9ff',
       },
     },
     selected: {},
@@ -578,43 +542,41 @@ function ShopReviewPage() {
 
   const handelOpenModal = (item) => {
     setShowFilter(true);
-    setReplyDetail("");
+    setReplyDetail('');
     setModalItem(item);
   };
   const handleReplyCTM = async () => {
     setShowFilter(false);
-    dispatch(setShowLoader(true))
+    dispatch(setShowLoader(true));
     var params = {
       shop_id: selectedShop,
       comment_id: modalItem.comment_id,
-      comment: replyDetail
-    }
-    const res = await replyComment(params)
-    if(res.code == 200) {
+      comment: replyDetail,
+    };
+    const res = await replyComment(params);
+    if (res.code == 200) {
       NotificationManager.success({
         title: text.txtReply,
-        message: text.txtSuccess
+        message: text.txtSuccess,
       });
-      let cloneData = [...data]
-      for(var i=0;i<data.length;i++){
-        if(data[i].comment_id == modalItem.comment_id)
-        {
-          cloneData[i]["comment_reply"] = {
-            hidden: "false",
-            reply: replyDetail
+      let cloneData = [...data];
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].comment_id == modalItem.comment_id) {
+          cloneData[i]['comment_reply'] = {
+            hidden: 'false',
+            reply: replyDetail,
           };
         }
       }
-      setData(cloneData)
-      setNoReply(noReply - 1)
-    }
-    else{
+      setData(cloneData);
+      setNoReply(noReply - 1);
+    } else {
       NotificationManager.error({
         title: text.txtReply,
-        message: text.txtFail
+        message: text.txtFail,
       });
     }
-    dispatch(setShowLoader(false))
+    dispatch(setShowLoader(false));
   };
 
   const handleChangeSwitch = (event) => {
@@ -629,12 +591,10 @@ function ShopReviewPage() {
       <div className={classes.proContainer}>
         <img
           className={classes.proImg}
-          src={
-            item?.customer_avatar ? item.customer_avatar : defaultImage
-          }
+          src={item?.customer_avatar ? item.customer_avatar : defaultImage}
         />
         <div className={classes.proInfoContainer}>
-          <p className={tableClasses.tableCell + " " + classes.txtProductName2}>
+          <p className={tableClasses.tableCell + ' ' + classes.txtProductName2}>
             {item?.buyer_username}
           </p>
         </div>
@@ -649,33 +609,19 @@ function ShopReviewPage() {
           {item.rating_star == 1 && (
             <>
               <Icon className={classes.icon}>star</Icon>
-              <Icon className={classes.icon + " " + classes.starIcon}>
-                star
-              </Icon>
-              <Icon className={classes.icon + " " + classes.starIcon}>
-                star
-              </Icon>
-              <Icon className={classes.icon + " " + classes.starIcon}>
-                star
-              </Icon>
-              <Icon className={classes.icon + " " + classes.starIcon}>
-                star
-              </Icon>
+              <Icon className={classes.icon + ' ' + classes.starIcon}>star</Icon>
+              <Icon className={classes.icon + ' ' + classes.starIcon}>star</Icon>
+              <Icon className={classes.icon + ' ' + classes.starIcon}>star</Icon>
+              <Icon className={classes.icon + ' ' + classes.starIcon}>star</Icon>
             </>
           )}
           {item.rating_star == 2 && (
             <>
               <Icon className={classes.icon}>star</Icon>
               <Icon className={classes.icon}>star</Icon>
-              <Icon className={classes.icon + " " + classes.starIcon}>
-                star
-              </Icon>
-              <Icon className={classes.icon + " " + classes.starIcon}>
-                star
-              </Icon>
-              <Icon className={classes.icon + " " + classes.starIcon}>
-                star
-              </Icon>
+              <Icon className={classes.icon + ' ' + classes.starIcon}>star</Icon>
+              <Icon className={classes.icon + ' ' + classes.starIcon}>star</Icon>
+              <Icon className={classes.icon + ' ' + classes.starIcon}>star</Icon>
             </>
           )}
           {item.rating_star == 3 && (
@@ -683,12 +629,8 @@ function ShopReviewPage() {
               <Icon className={classes.icon}>star</Icon>
               <Icon className={classes.icon}>star</Icon>
               <Icon className={classes.icon}>star</Icon>
-              <Icon className={classes.icon + " " + classes.starIcon}>
-                star
-              </Icon>
-              <Icon className={classes.icon + " " + classes.starIcon}>
-                star
-              </Icon>
+              <Icon className={classes.icon + ' ' + classes.starIcon}>star</Icon>
+              <Icon className={classes.icon + ' ' + classes.starIcon}>star</Icon>
             </>
           )}
           {item.rating_star == 4 && (
@@ -697,9 +639,7 @@ function ShopReviewPage() {
               <Icon className={classes.icon}>star</Icon>
               <Icon className={classes.icon}>star</Icon>
               <Icon className={classes.icon}>star</Icon>
-              <Icon className={classes.icon + " " + classes.starIcon}>
-                star
-              </Icon>
+              <Icon className={classes.icon + ' ' + classes.starIcon}>star</Icon>
             </>
           )}
           {item.rating_star == 5 && (
@@ -713,9 +653,7 @@ function ShopReviewPage() {
           )}
         </div>
         <div className={classes.proInfoContainer}>
-          <p className={tableClasses.tableCell + " " + classes.txtProductName2}>
-            {item?.comment}
-          </p>
+          <p className={tableClasses.tableCell + ' ' + classes.txtProductName2}>{item?.comment}</p>
         </div>
       </div>
     );
@@ -726,25 +664,18 @@ function ShopReviewPage() {
       <React.Fragment>
         {!item?.types && (
           <TableRow key={index} className={tableClasses.tableBodyRow}>
-            <TableCell className={tableClasses.tableCell} key={"productInfo"}>
+            <TableCell className={tableClasses.tableCell} key={'productInfo'}>
               {customerInfo(item)}
             </TableCell>
-            <TableCell className={tableClasses.tableCell}>
-              {item.item_name}
-            </TableCell>
-            <TableCell className={tableClasses.tableCell}>
-              {customerRatings(item)}
-            </TableCell>
-            <TableCell className={tableClasses.tableCell}>
-              {item?.comment_reply?.reply}
-            </TableCell>
+            <TableCell className={tableClasses.tableCell}>{item.item_name}</TableCell>
+            <TableCell className={tableClasses.tableCell}>{customerRatings(item)}</TableCell>
+            <TableCell className={tableClasses.tableCell}>{item?.comment_reply?.reply}</TableCell>
             <TableCell className={tableClasses.tableCell}>
               <Button
                 className={classes.btnRep}
                 onClick={() => handelOpenModal(item)}
                 color="primary"
-                disabled={item.comment_reply ? true : false}
-              >
+                disabled={item.comment_reply ? true : false}>
                 {text.form.button[1]}
               </Button>
             </TableCell>
@@ -767,55 +698,31 @@ function ShopReviewPage() {
           BackdropComponent={Backdrop}
           BackdropProps={{
             timeout: 500,
-          }}
-        >
+          }}>
           <Fade in={showFilter}>
             <Card className={classes.modalContainer}>
               <CardHeader color="primary">
                 <h4 className={classes.cardTitleWhite}>Trả lời đánh giá</h4>
               </CardHeader>
               <CardBody>
-                <div
-                  className={classes.filterEleContent}
-                  style={{ paddingBottom: "20px" }}
-                >
+                <div className={classes.filterEleContent} style={{ paddingBottom: '20px' }}>
                   <div className={classes.proContainer}>
                     <img
                       className={classes.proImg}
-                      src={
-                        modalItem.customer_avatar?
-                          modalItem.customer_avatar
-                          : defaultImage
-                      }
+                      src={modalItem.customer_avatar ? modalItem.customer_avatar : defaultImage}
                     />
                     <div className={classes.proInfoContainer}>
-                      <p
-                        className={
-                          tableClasses.tableCell + " " + classes.txtProductName2
-                        }
-                      >
+                      <p className={tableClasses.tableCell + ' ' + classes.txtProductName2}>
                         {modalItem.buyer_username}
                       </p>
-                      <p
-                        className={
-                          tableClasses.tableCell + " " + classes.txtProductName2
-                        }
-                      >
-                        {moment.unix(modalItem.create_time).format("DD/MM/YYYY HH:mm")}
+                      <p className={tableClasses.tableCell + ' ' + classes.txtProductName2}>
+                        {moment.unix(modalItem.create_time).format('DD/MM/YYYY HH:mm')}
                       </p>
                     </div>
                   </div>
                 </div>
-                <div
-                  className={
-                    classes.proContainer + " " + classes.marginBottom_10
-                  }
-                >
-                  <p
-                    className={
-                      tableClasses.tableCell + " " + classes.txtProductName2
-                    }
-                  >
+                <div className={classes.proContainer + ' ' + classes.marginBottom_10}>
+                  <p className={tableClasses.tableCell + ' ' + classes.txtProductName2}>
                     {modalItem.comment}
                   </p>
                 </div>
@@ -841,8 +748,7 @@ function ShopReviewPage() {
                     onClick={() => {
                       handleReplyCTM();
                     }}
-                    disabled={replyDetail.length > 0 ? false : true}
-                  >
+                    disabled={replyDetail.length > 0 ? false : true}>
                     {text.fillter.button[1]}
                   </Button>
                 </div>
@@ -863,20 +769,15 @@ function ShopReviewPage() {
       <CardBody className={classes.cardBody}>
         <div>
           <div className={classes.demo1}>
-            <AntTabs
-              value={value}
-              onChange={handleChange}
-              aria-label="ant example"
-            >
+            <AntTabs value={value} onChange={handleChange} aria-label="ant example">
               <AntTab label={text.tab[0]} {...a11yProps(0)} />
               {/* <AntTab label="Thiết lập tự động phản hồi" {...a11yProps(1)} /> */}
             </AntTabs>
           </div>
           <SwipeableViews
-            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+            axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
             index={value}
-            onChangeIndex={handleChangeIndex}
-          >
+            onChangeIndex={handleChangeIndex}>
             {/* <TabPanel
               value={value}
               index={0}
@@ -888,30 +789,21 @@ function ShopReviewPage() {
                 <GridItem xs={12} sm={12} md={3}>
                   <div className={classes.girdLeft}>
                     <p className={classes.noteTxt}>
-                      {text.cusQuantity[0]}: <span>{noReply}</span>{" "}
-                      {text.cusQuantity[1]}
+                      {text.cusQuantity[0]}: <span>{noReply}</span> {text.cusQuantity[1]}
                     </p>
                     <FormControl
                       variant="outlined"
-                      className={
-                        classes.formControl + " " + classes.marginBottom_10
-                      }
-                      size="small"
-                    >
-                      <InputLabel id="select-outlined-label-1">
-                        {text.form.value[0]}
-                      </InputLabel>
+                      className={classes.formControl + ' ' + classes.marginBottom_10}
+                      size="small">
+                      <InputLabel id="select-outlined-label-1">{text.form.value[0]}</InputLabel>
                       <Select
                         labelId="select-outlined-label-1"
                         id="select-outlined"
                         value={selectedShop}
                         onChange={handleChangeShop()}
-                        label={text.form.value[0]}
-                      >
+                        label={text.form.value[0]}>
                         {shopList.map((item, index) => {
-                          return (
-                            <MenuItem value={item.shopId}>{item.name}</MenuItem>
-                          );
+                          return <MenuItem value={item.shopId}>{item.name}</MenuItem>;
                         })}
                       </Select>
                     </FormControl>
@@ -992,19 +884,18 @@ function ShopReviewPage() {
                     </FormControl> */}
                     <FormControl
                       variant="outlined"
-                      className={
-                        classes.formControl + " " + classes.marginBottom_10
-                      }
-                      size="small"
-                    >
+                      className={classes.formControl + ' ' + classes.marginBottom_10}
+                      size="small">
                       <Autocomplete
-                          size="small"
-                          value={selectedProduct}
-                          onChange={(event, newValue) => setSelectedProduct(newValue)}
-                          options={listProduct}
-                          getOptionLabel={(option) => option.item_name}
-                          renderInput={(params) => <TextField {...params} label={text.form.value[4]} variant="outlined" />}
-                        />
+                        size="small"
+                        value={selectedProduct}
+                        onChange={(event, newValue) => setSelectedProduct(newValue)}
+                        options={listProduct}
+                        getOptionLabel={(option) => option.item_name}
+                        renderInput={(params) => (
+                          <TextField {...params} label={text.form.value[4]} variant="outlined" />
+                        )}
+                      />
                     </FormControl>
                     {/* <FormControl
                       variant="outlined"
@@ -1051,8 +942,7 @@ function ShopReviewPage() {
                       className={classes.btnFullSize}
                       onClick={() => handleReplyCmt()}
                       color="primary"
-                      disabled={noReply == 0 ? true : false}
-                    >
+                      disabled={noReply == 0 ? true : false}>
                       {text.form.button[0]}
                     </Button>
                   </div>
@@ -1060,28 +950,22 @@ function ShopReviewPage() {
                 <GridItem xs={12} sm={12} md={9}>
                   <div
                     className={tableClasses.tableResponsive}
-                    style={{ marginTop: "0", height: "750px"}}
-                    onScroll={(e) => handleScroll(e)}
-                  >
+                    style={{ marginTop: '0', height: '750px' }}
+                    onScroll={(e) => handleScroll(e)}>
                     <Table className={tableClasses.table}>
                       {data !== undefined ? (
-                        <TableHead
-                          className={tableClasses["primary" + "TableHeader"]}
-                        >
+                        <TableHead className={tableClasses['primary' + 'TableHeader']}>
                           <TableRow className={tableClasses.tableHeadRow}>
                             {text.tableHead.map((prop, key) => {
                               return (
                                 <TableCell
                                   className={
-                                    tableClasses.tableCell +
-                                    " " +
-                                    tableClasses.tableHeadCell
+                                    tableClasses.tableCell + ' ' + tableClasses.tableHeadCell
                                   }
                                   key={key}
                                   style={{
-                                    textAlign: `${key == 2 ? "center" : null}`,
-                                  }}
-                                >
+                                    textAlign: `${key == 2 ? 'center' : null}`,
+                                  }}>
                                   {prop}
                                 </TableCell>
                               );

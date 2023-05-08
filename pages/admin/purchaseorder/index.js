@@ -4,8 +4,6 @@ import moment from 'moment';
 import Link from 'next/link';
 import { NotificationContainer, NotificationManager } from 'react-light-notifications';
 import 'react-light-notifications/lib/main.css';
-// @material-ui/core components
-import {} from '@material-ui/core/styles';
 import {
   primaryColor,
   whiteColor,
@@ -43,7 +41,6 @@ import {
   makeStyles,
   withStyles,
   useTheme,
-  Box,
   Typography,
   Grow,
   Paper,

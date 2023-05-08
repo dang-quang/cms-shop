@@ -14,6 +14,11 @@ import {
   FormGroup,
   FormControlLabel,
   FormControl,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
@@ -29,11 +34,11 @@ import { useRouter } from 'next/router';
 import { Close } from '@material-ui/icons';
 import { setShowLoader } from 'redux/actions/app';
 import { BASE_API_URL } from 'utilities/const';
-import { IShop, IUser } from 'constants/types';
 import styles from 'assets/jss/natcash/views/shoplist/addShopStyle.js';
 import { Box, Flex, SimpleGrid, Stack, Text } from '@chakra-ui/react';
 import SelectProduct from './components/SelectProduct';
-import ConfirmProductTable from './components/ConfirmProductTable';
+import tableStyles from 'assets/jss/natcash/components/tableStyle.js';
+import { Pagination } from '@material-ui/lab';
 
 const brands = [
   {
@@ -78,6 +83,8 @@ function CreateProduct() {
   const dispatch = useDispatch();
   const useStyles = makeStyles(styles);
   const classes = useStyles();
+  const useTableStyles = makeStyles(tableStyles);
+  const tableClasses = useTableStyles();
   const { t } = useTranslation();
   const { height } = useWindowDimensions();
 
@@ -208,31 +215,13 @@ function CreateProduct() {
           }
         });
 
-        const columnsDataCheck = [
-          {
-            Header: t('name'),
-            accessor: 'product',
-          },
-          {
-            Header: t('industry'),
-            accessor: 'industry',
-          },
-          {
-            Header: t('unit'),
-            accessor: 'unit',
-          },
-          {
-            Header: t('price'),
-            accessor: 'price',
-          },
-          {
-            Header: t('origin'),
-            accessor: 'origin',
-          },
-          {
-            Header: t('brand'),
-            accessor: 'trademark',
-          },
+        const TABLE_HEAD = [
+          t('product'),
+          t('industry'),
+          t('unit'),
+          t('price'),
+          t('origin'),
+          t('brand'),
         ];
 
         // const data = [
@@ -267,6 +256,54 @@ function CreateProduct() {
             },
           },
         ];
+
+        const renderItem = (item, index) => {
+          const { product, industry, unit, price, origin, trademark } = item;
+
+          return (
+            <TableRow
+              key={index}
+              className={tableClasses.tableBodyRow}
+              style={{ backgroundColor: '#fff' }}>
+              <TableCell className={tableClasses.tableCell} key="name">
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <img style={{ width: 85, height: 62, marginRight: 12 }} src={product.image} />
+                  <div>
+                    <p>{product.name}</p>
+                    <p style={{ marginTop: 6, color: '#BABABA' }}>{product.code}</p>
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell className={tableClasses.tableCell} key="industry">
+                <div className={classes.proInfoContainer}>
+                  <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{industry}</p>
+                </div>
+              </TableCell>
+              <TableCell className={tableClasses.tableCell} key="unit">
+                <div className={classes.proInfoContainer}>
+                  <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{unit}</p>
+                </div>
+              </TableCell>
+              <TableCell className={tableClasses.tableCell} key="price">
+                <div className={classes.proInfoContainer}>
+                  <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{price}</p>
+                </div>
+              </TableCell>
+              <TableCell className={tableClasses.tableCell} key="origin">
+                <div className={classes.proInfoContainer}>
+                  <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{origin}</p>
+                </div>
+              </TableCell>
+              <TableCell className={tableClasses.tableCell} key="trademark">
+                <div className={classes.proInfoContainer}>
+                  <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>
+                    {trademark.name}
+                  </p>
+                </div>
+              </TableCell>
+            </TableRow>
+          );
+        };
 
         return (
           <Form style={{ height: height - 150 + 'px', overflowY: 'auto' }}>
@@ -523,7 +560,39 @@ function CreateProduct() {
                     </SimpleGrid>
                   </Box>
                 ) : (
-                  <ConfirmProductTable columnsData={columnsDataCheck} tableData={data} />
+                  <CardFooter>
+                    <div
+                      className={tableClasses.tableResponsive}
+                      style={{ marginTop: '0', marginLeft: '20px' }}>
+                      <Table className={tableClasses.table}>
+                        {data && data.length > 0 && (
+                          <TableHead className={tableClasses['primary' + 'TableHeader']}>
+                            <TableRow className={tableClasses.tableHeadRow}>
+                              {TABLE_HEAD.map((prop, key) => {
+                                return (
+                                  <TableCell
+                                    className={
+                                      tableClasses.tableCell + ' ' + tableClasses.tableHeadCell
+                                    }
+                                    style={{ textAlign: 'left' }}
+                                    key={key}>
+                                    {prop}
+                                  </TableCell>
+                                );
+                              })}
+                            </TableRow>
+                          </TableHead>
+                        )}
+                        <TableBody>
+                          {data &&
+                            data.length > 0 &&
+                            data.map((item, index) => {
+                              return renderItem(item, index);
+                            })}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </CardFooter>
                 )}
               </Box>
               <CardFooter style={{ display: 'flex', with: '100%', justifyContent: 'center' }}>

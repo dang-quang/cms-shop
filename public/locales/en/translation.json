@@ -83,6 +83,7 @@
   "unit": "Unit",
   "origin": "Origin",
   "brand": "Brand",
+  "product": "Product",
   "sideBar": {
     "shop": "Shop",
     "shopAdmin": "Shop Admin",

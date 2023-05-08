@@ -1,93 +1,60 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import Router from "next/router";
-import { setShowLoader } from "../../../redux/actions/app";
-import moment from "moment";
-import Link from "next/link";
-import {
-  NotificationContainer,
-  NotificationManager,
-} from "react-light-notifications";
-import "react-light-notifications/lib/main.css";
-// @material-ui/core components
-import {} from "@material-ui/core/styles";
-import {
-  primaryColor,
-  whiteColor,
-  blackColor,
-  hexToRgb,
-  successColor,
-  infoColor,
-  orangeColor,
-  grayColor,
-} from "assets/jss/natcash.js";
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import Router from 'next/router';
+import moment from 'moment';
+import Link from 'next/link';
+import { NotificationContainer, NotificationManager } from 'react-light-notifications';
+import 'react-light-notifications/lib/main.css';
+import { infoColor, grayColor } from 'assets/jss/natcash.js';
 // layout for this page
-import Admin from "layouts/Admin.js";
+import Admin from 'layouts/Admin.js';
 // core components
-import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardBody from "components/Card/CardBody.js";
-import GridItem from "components/Grid/GridItem.js";
-import CardFooter from "components/Card/CardFooter.js";
-import Button from "components/CustomButtons/Button.js";
+import Card from 'components/Card/Card.js';
+import CardHeader from 'components/Card/CardHeader.js';
+import CardBody from 'components/Card/CardBody.js';
+import GridItem from 'components/Grid/GridItem.js';
+import CardFooter from 'components/Card/CardFooter.js';
+import Button from 'components/CustomButtons/Button.js';
 import {
-  Modal,
-  Tab,
   Table,
   TableHead,
   TableBody,
   TableRow,
   TableCell,
-  Tabs,
-  Tooltip,
   MenuItem,
   FormControl,
   InputLabel,
   Select,
   makeStyles,
-  withStyles,
-  useTheme,
-  Box,
-  Typography,
-  Grow,
-  Paper,
-  ClickAwayListener,
-  MenuList,
   Checkbox,
   OutlinedInput,
   InputAdornment,
-} from "@material-ui/core";
+} from '@material-ui/core';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import Pagination from '@material-ui/lab/Pagination';
+import Check from '@material-ui/icons/Check';
+import DateFnsUtils from '@date-io/date-fns';
+import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
+import GridContainer from 'components/Grid/GridContainer.js';
+import TextField from '@material-ui/core/TextField';
+import adminStyles from 'assets/jss/natcash/components/headerLinksStyle.js';
+import tableStyles from 'assets/jss/natcash/components/tableStyle.js';
+import taskStyles from 'assets/jss/natcash/components/tasksStyle.js';
+import shopStyle from 'assets/jss/natcash/views/shoplist/shoplistStyle.js';
+import { Icon } from '@material-ui/core';
+import dashStyles from 'assets/jss/natcash/views/dashboardStyle.js';
+import useWindowSize from 'components/Hooks/useWindowSize.js';
+import ModalCustom from 'components/ModalCustom/ModalCustom.js';
 import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import Pagination from "@material-ui/lab/Pagination";
-import Check from "@material-ui/icons/Check";
-import DateFnsUtils from "@date-io/date-fns";
-import Poppers from "@material-ui/core/Popper";
-import SwipeableViews from "react-swipeable-views";
-import WithAuthentication from "components/WithAuthentication/WithAuthentication";
-import GridContainer from "components/Grid/GridContainer.js";
-import TextField from "@material-ui/core/TextField";
-import adminStyles from "assets/jss/natcash/components/headerLinksStyle.js";
-import tableStyles from "assets/jss/natcash/components/tableStyle.js";
-import taskStyles from "assets/jss/natcash/components/tasksStyle.js";
-import shopStyle from "assets/jss/natcash/views/shoplist/shoplistStyle.js";
-import { Icon } from "@material-ui/core";
-import dashStyles from "assets/jss/natcash/views/dashboardStyle.js";
-import vi from "date-fns/locale/vi";
-import classNames from "classnames";
-import useWindowSize from "components/Hooks/useWindowSize.js";
-import CartTotalInfo from "components/CartTotalInfo/CartTotalInfo.js";
-import PropTypes from "prop-types";
-import CustomInput from "components/CustomInput/CustomInput.js";
-import Search from "@material-ui/icons/Search";
-import ModalCustom from "components/ModalCustom/ModalCustom.js";
-import { getAllSupplier, getAllStock, getInventoryItemList, createNewPurchaseOrder } from "../../../utilities/ApiManage";
-import { formatCurrency, formatNumber } from "../../../utilities/utils";
+  getAllSupplier,
+  getAllStock,
+  getInventoryItemList,
+  createNewPurchaseOrder,
+} from 'utilities/ApiManage';
+import { formatCurrency } from 'utilities/utils';
 
-import { useRouter } from "next/router";
-import styles from "assets/jss/natcash/views/purchaseorder/addPurchaseOrderStyle.js";
+import styles from 'assets/jss/natcash/views/purchaseorder/addPurchaseOrderStyle.js';
+import { setShowLoader } from 'redux/actions/app';
 
 function AddPurchaseOrderPage() {
   const dispatch = useDispatch();
@@ -107,10 +74,10 @@ function AddPurchaseOrderPage() {
   const language = useSelector((state) => state.app.language);
   // Modal select product
   const [isShowModal, setIsShowModal] = useState(false);
-  const [filterValue, setFilterValue] = useState("");
+  const [filterValue, setFilterValue] = useState('');
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [checked, setChecked] = useState([]);
-  const [doFilter, setDoFilter] = useState(false)
+  const [doFilter, setDoFilter] = useState(false);
   //Phân trang
   const [totalPage, setTotalPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -119,219 +86,215 @@ function AddPurchaseOrderPage() {
   //
   const [currentStep, setCurrentStep] = useState(1);
   const [supplierInfo, setSupplierInfo] = useState({
-    name: "",
-    address: "",
-    contact_person: "",
-    email: "",
-    phone: "",
+    name: '',
+    address: '',
+    contact_person: '',
+    email: '',
+    phone: '',
   });
   const [stockInfo, setStockInfo] = useState({
-    name: "",
-    address: "",
-    contact_person: "",
-    email: "",
-    phone: "",
+    name: '',
+    address: '',
+    contact_person: '',
+    email: '',
+    phone: '',
   });
   const [values, setValues] = React.useState({
-    supplier_id: "",
-    po_type: "",
-    reference_id: "",
+    supplier_id: '',
+    po_type: '',
+    reference_id: '',
     order_date: moment().format(),
     create_date: moment().format(),
     delivery_date: moment().format(),
-    currency: "",
-    payment_methods: "",
-    stock_id: "",
+    currency: '',
+    payment_methods: '',
+    stock_id: '',
     list_products: [],
-    notes: "",
+    notes: '',
     total_amount_of_goods: 0,
     discount: 0,
     other_fee: 0,
     total_amount_excluding_tax: 0,
     tax: 0,
     total_amount_including_tax: 0,
-    status: "draft",
+    status: 'draft',
   });
 
   const CARD = [
     {
-      id: "en",
+      id: 'en',
       title: [
-        "Create purchase order",
-        "Supplier",
-        "General information",
-        "Import Stock",
-        "List product",
-        "Notes and purchase order fees",
+        'Create purchase order',
+        'Supplier',
+        'General information',
+        'Import Stock',
+        'List product',
+        'Notes and purchase order fees',
       ],
       subTitle: [
-        "No supplier yet? Choose create new now",
-        "No stock yet? Choose create new now",
-        "selected products",
+        'No supplier yet? Choose create new now',
+        'No stock yet? Choose create new now',
+        'selected products',
       ],
     },
     {
-      id: "vi",
+      id: 'vi',
       title: [
-        "Tạo phiếu nhập hàng",
-        "Nhà cung cấp",
-        "Thông tin chung",
-        "Chuyển đến kho",
-        "Danh sách sản phẩm",
-        "Ghi chú và phí đặt hàng",
+        'Tạo phiếu nhập hàng',
+        'Nhà cung cấp',
+        'Thông tin chung',
+        'Chuyển đến kho',
+        'Danh sách sản phẩm',
+        'Ghi chú và phí đặt hàng',
       ],
       subTitle: [
-        "Chưa có nhà cung cấp? Chọn tạo mới ngay",
-        "Chưa có kho hàng? Chọn tạo mới ngay",
-        "sản phẩm đã chọn",
+        'Chưa có nhà cung cấp? Chọn tạo mới ngay',
+        'Chưa có kho hàng? Chọn tạo mới ngay',
+        'sản phẩm đã chọn',
       ],
     },
   ];
 
   const STEP = [
     {
-      id: "en",
-      value: [
-        "General information",
-        "Select product",
-        "Preview and create new",
-      ],
+      id: 'en',
+      value: ['General information', 'Select product', 'Preview and create new'],
     },
     {
-      id: "vi",
-      value: ["Thông tin chung", "Chọn sản phẩm", "Xem trước và tạo mới"],
+      id: 'vi',
+      value: ['Thông tin chung', 'Chọn sản phẩm', 'Xem trước và tạo mới'],
     },
   ];
 
   const ACTIONS = [
     {
-      id: "en",
+      id: 'en',
       button: [
-        "Create New Supplier",
-        "Create New Stock",
-        "Reset",
-        "Save Draft",
-        "Continue",
-        "Create new",
-        "Select product",
-        "Check price"
+        'Create New Supplier',
+        'Create New Stock',
+        'Reset',
+        'Save Draft',
+        'Continue',
+        'Create new',
+        'Select product',
+        'Check price',
       ],
       select: [
-        "Supplier *",
-        "Address",
-        "Contact person",
-        "Email",
-        "Contact phone",
-        "PO type *",
-        "Reference ID",
-        "Order date *",
-        "Delivery date (desired) *",
-        "Currency *",
-        "Payment methods",
-        "Stock *",
-        "Notes",
-        "Total amount of goods (VND)",
-        "Discount (VND)",
-        "Other fee (VND)",
-        "Total amount (excluding tax) (VND)",
-        "Tax (%)",
-        "Total amount (including tax) (VND)",
+        'Supplier *',
+        'Address',
+        'Contact person',
+        'Email',
+        'Contact phone',
+        'PO type *',
+        'Reference ID',
+        'Order date *',
+        'Delivery date (desired) *',
+        'Currency *',
+        'Payment methods',
+        'Stock *',
+        'Notes',
+        'Total amount of goods (VND)',
+        'Discount (VND)',
+        'Other fee (VND)',
+        'Total amount (excluding tax) (VND)',
+        'Tax (%)',
+        'Total amount (including tax) (VND)',
       ],
     },
     {
-      id: "vi",
+      id: 'vi',
       button: [
-        "Tạo nhà cung cấp mới",
-        "Tạo kho hàng mới",
-        "Đặt lại",
-        "Lưu nháp",
-        "Tiếp tục",
-        "Tạo mới",
-        "Chọn sản phẩm",
-        "Kiểm tra giá"
+        'Tạo nhà cung cấp mới',
+        'Tạo kho hàng mới',
+        'Đặt lại',
+        'Lưu nháp',
+        'Tiếp tục',
+        'Tạo mới',
+        'Chọn sản phẩm',
+        'Kiểm tra giá',
       ],
       select: [
-        "Nhà cung cấp *",
-        "Địa chỉ",
-        "Người liên hệ",
-        "Email",
-        "Điện thoại liên hệ",
-        "Loại PO *",
-        "Mã tham chiếu",
-        "Ngày đặt hàng *",
-        "Ngày giao hàng (mong muốn) *",
-        "Loại tiền *",
-        "Phương thức thanh toán",
-        "Kho nhập *",
-        "Ghi chú",
-        "Tổng tiền hàng (đ)",
-        "Giảm giá (đ)",
-        "Phí khác (đ)",
-        "Tổng tiền (chưa thuế) (đ)",
-        "Thuế (%)",
-        "Tổng tiền (bao gồm thuế) (đ)",
+        'Nhà cung cấp *',
+        'Địa chỉ',
+        'Người liên hệ',
+        'Email',
+        'Điện thoại liên hệ',
+        'Loại PO *',
+        'Mã tham chiếu',
+        'Ngày đặt hàng *',
+        'Ngày giao hàng (mong muốn) *',
+        'Loại tiền *',
+        'Phương thức thanh toán',
+        'Kho nhập *',
+        'Ghi chú',
+        'Tổng tiền hàng (đ)',
+        'Giảm giá (đ)',
+        'Phí khác (đ)',
+        'Tổng tiền (chưa thuế) (đ)',
+        'Thuế (%)',
+        'Tổng tiền (bao gồm thuế) (đ)',
       ],
     },
   ];
 
   const POPUP = [
     {
-      id: "en",
-      title: "Add products",
-      button: ["Search", "Reset", "Confirm"],
-      select: ["By amount", "By percent"],
+      id: 'en',
+      title: 'Add products',
+      button: ['Search', 'Reset', 'Confirm'],
+      select: ['By amount', 'By percent'],
     },
     {
-      id: "vi",
-      title: "Thêm sản phẩm",
-      button: ["Tìm", "Nhập lại", "Xác nhận"],
-      select: ["Theo số tiền", "Theo phần trăm"],
+      id: 'vi',
+      title: 'Thêm sản phẩm',
+      button: ['Tìm', 'Nhập lại', 'Xác nhận'],
+      select: ['Theo số tiền', 'Theo phần trăm'],
     },
   ];
 
   const TABLE_HEAD_MODAL = [
     {
-      id: "en",
-      value: ["Product", "Quantity", "Unit", "Price"],
+      id: 'en',
+      value: ['Product', 'Quantity', 'Unit', 'Price'],
     },
     {
-      id: "vi",
-      value: ["Sản phẩm", "Số lượng", "ĐVT", "Đơn giá"],
+      id: 'vi',
+      value: ['Sản phẩm', 'Số lượng', 'ĐVT', 'Đơn giá'],
     },
   ];
 
   const TABLE_HEAD = [
     {
-      id: "en",
+      id: 'en',
       value: [
-        "Product",
-        "Quantity",
-        "Unit",
-        "Price",
-        "Qty | Inventory unit",
-        "Import unit price",
-        "Total money",
-        "Action",
+        'Product',
+        'Quantity',
+        'Unit',
+        'Price',
+        'Qty | Inventory unit',
+        'Import unit price',
+        'Total money',
+        'Action',
       ],
     },
     {
-      id: "vi",
+      id: 'vi',
       value: [
-        "Sản phẩm",
-        "Số lượng",
-        "ĐVT",
-        "Đơn giá",
-        "SL | ĐTV nhập kho",
-        "Đơn giá nhập kho",
-        "Thành tiền",
-        "Thao tác",
+        'Sản phẩm',
+        'Số lượng',
+        'ĐVT',
+        'Đơn giá',
+        'SL | ĐTV nhập kho',
+        'Đơn giá nhập kho',
+        'Thành tiền',
+        'Thao tác',
       ],
     },
   ];
 
   const listText = [
     {
-      id: "en",
+      id: 'en',
       card: CARD[0],
       step: STEP[0].value,
       actions: ACTIONS[0],
@@ -340,12 +303,12 @@ function AddPurchaseOrderPage() {
       popup_select: POPUP[0].select,
       tableHead_modal: TABLE_HEAD_MODAL[0].value,
       tableHead: TABLE_HEAD[0].value,
-      placeholder: "Enter here",
-      createDate: "Create date",
-      errLog: "You need to enter required data",
+      placeholder: 'Enter here',
+      createDate: 'Create date',
+      errLog: 'You need to enter required data',
     },
     {
-      id: "vi",
+      id: 'vi',
       card: CARD[1],
       step: STEP[1].value,
       actions: ACTIONS[1],
@@ -354,9 +317,9 @@ function AddPurchaseOrderPage() {
       popup_select: POPUP[1].select,
       tableHead_modal: TABLE_HEAD_MODAL[1].value,
       tableHead: TABLE_HEAD[1].value,
-      placeholder: "Nhập vào",
-      createDate: "Ngày tạo",
-      errLog: "Bạn cần nhập đủ dữ liệu bắt buộc",
+      placeholder: 'Nhập vào',
+      createDate: 'Ngày tạo',
+      errLog: 'Bạn cần nhập đủ dữ liệu bắt buộc',
     },
   ];
 
@@ -388,7 +351,7 @@ function AddPurchaseOrderPage() {
     dispatch(setShowLoader(false));
   }, []);
 
-  useEffect( async () => {
+  useEffect(async () => {
     let params = {};
     params.current_page = currentPage;
     if (filterValue) {
@@ -406,20 +369,20 @@ function AddPurchaseOrderPage() {
         product.item_name = item.item_name;
         product.item_sku = item.item_sku;
         product.quantity = 1;
-        product.unit = "piece";
+        product.unit = 'piece';
         product.price = 0;
         product.import_qty = 1;
-        product.import_unit = "Cái";
+        product.import_unit = 'Cái';
         product.price_importQty = 0;
         product.total_amount = 0;
         products.push(product);
       });
-      setData({ ...data, ["products"]: products });
+      setData({ ...data, ['products']: products });
       setCurrentPage(res.data.data_page.current_page);
       setTotalPage(res.data.data_page.total_page);
     }
     dispatch(setShowLoader(false));
-  }, [currentPage, doFilter])
+  }, [currentPage, doFilter]);
 
   const handleSelectPage = (event, value) => {
     setCurrentPage(value);
@@ -429,26 +392,26 @@ function AddPurchaseOrderPage() {
   const [data, setData] = useState({
     po_type: [
       {
-        name: "Outright",
-        value: "outright",
+        name: 'Outright',
+        value: 'outright',
       },
       {
-        name: "Consignment",
-        value: "consignment",
+        name: 'Consignment',
+        value: 'consignment',
       },
       {
-        name: "Hybrid Retail",
-        value: "hybrid_retail",
+        name: 'Hybrid Retail',
+        value: 'hybrid_retail',
       },
     ],
     currency: [
       {
-        name: "VND",
-        value: "vnd",
+        name: 'VND',
+        value: 'vnd',
       },
       {
-        name: "$",
-        value: "dollar",
+        name: '$',
+        value: 'dollar',
       },
     ],
     products: [],
@@ -462,15 +425,15 @@ function AddPurchaseOrderPage() {
         { title: text.actions.select[6], value: values.reference_id },
         {
           title: text.createDate,
-          value: moment(values.create_date).format("DD-MM-yyyy hh:mm"),
+          value: moment(values.create_date).format('DD-MM-yyyy hh:mm'),
         },
         {
           title: text.actions.select[7],
-          value: moment(values.order_date).format("DD-MM-yyyy hh:mm"),
+          value: moment(values.order_date).format('DD-MM-yyyy hh:mm'),
         },
         {
           title: text.actions.select[8],
-          value: moment(values.delivery_date).format("DD-MM-yyyy hh:mm"),
+          value: moment(values.delivery_date).format('DD-MM-yyyy hh:mm'),
         },
         { title: text.actions.select[9], value: values.currency },
         { title: text.actions.select[10], value: values.payment_methods },
@@ -497,17 +460,17 @@ function AddPurchaseOrderPage() {
       ],
     },
   ];
-  
+
   //change value input form
   const handleChangeValue = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
-    if (prop == "supplier_id") {
+    if (prop == 'supplier_id') {
       suppliers.map((item, index) => {
         if (item._id == event.target.value) {
           setSupplierInfo(item);
         }
       });
-    } else if (prop == "stock_id") {
+    } else if (prop == 'stock_id') {
       stocks.map((item, index) => {
         if (item._id == event.target.value) {
           setStockInfo(item);
@@ -518,7 +481,7 @@ function AddPurchaseOrderPage() {
 
   //change value filter form
   const handleChangeFilter = (event) => {
-    setFilterValue(event.target.value)
+    setFilterValue(event.target.value);
   };
 
   const handleChangeDateValue = (prop) => (date) => {
@@ -527,21 +490,21 @@ function AddPurchaseOrderPage() {
 
   const handelReset = () => {
     let resetData = {
-      name: "",
-      address: "",
-      contact_person: "",
-      email: "",
-      phone: "",
+      name: '',
+      address: '',
+      contact_person: '',
+      email: '',
+      phone: '',
     };
     setValues({
-      supplier_id: "",
-      po_type: "",
-      reference_id: "",
+      supplier_id: '',
+      po_type: '',
+      reference_id: '',
       order_date: moment().format(),
       delivery_date: moment().format(),
-      currency: "",
-      payment_methods: "",
-      stock_id: "",
+      currency: '',
+      payment_methods: '',
+      stock_id: '',
     });
     setSupplierInfo(resetData);
     setStockInfo(resetData);
@@ -552,25 +515,25 @@ function AddPurchaseOrderPage() {
       setIsCheckAll(false);
     } else {
       setIsCheckAll(true);
-      let selectedProduct = data.products
-      const newChecked = [...checked]
+      let selectedProduct = data.products;
+      const newChecked = [...checked];
       selectedProduct.map((item) => {
         const currentIndex = checked.indexOf(item);
         if (currentIndex === -1) {
           newChecked.push(item);
         }
-      })
+      });
       setChecked(newChecked);
     }
   };
 
   const handleToggle = (item) => {
-    let selectId = []
+    let selectId = [];
     checked.map((cItem) => {
-      selectId.push(cItem.item_id)
-    })
-    setSelectedId(selectId)
-    const sIndex = selectedId.indexOf(item.item_id)
+      selectId.push(cItem.item_id);
+    });
+    setSelectedId(selectId);
+    const sIndex = selectedId.indexOf(item.item_id);
     const currentIndex = checked.indexOf(item);
     const newChecked = [...checked];
     if (currentIndex === -1 && sIndex === -1) {
@@ -585,52 +548,51 @@ function AddPurchaseOrderPage() {
     const currentIndex = values.list_products.indexOf(item);
     const newChecked = [...values.list_products];
     newChecked.splice(currentIndex, 1);
-    setValues({...values, ["list_products"]: newChecked});
-    setChecked(newChecked)
-  }
+    setValues({ ...values, ['list_products']: newChecked });
+    setChecked(newChecked);
+  };
 
   const handelChangeProductValue = (item, props) => (event) => {
-    let data = {...values}
+    let data = { ...values };
     let index = data.list_products.indexOf(item);
     let cloneData = [...data.list_products];
     let cloneItem = { ...cloneData[index] };
     cloneItem[props] = event.target.value;
-    if (props === "quantity") {
-      cloneItem["import_qty"] = event.target.value;
-    } else if (props === "unit"){
-      cloneItem["import_unit"] = event.target.value;
-    } else if (props === "price"){
-      cloneItem["price_importQty"] = event.target.value;
+    if (props === 'quantity') {
+      cloneItem['import_qty'] = event.target.value;
+    } else if (props === 'unit') {
+      cloneItem['import_unit'] = event.target.value;
+    } else if (props === 'price') {
+      cloneItem['price_importQty'] = event.target.value;
     }
-    cloneItem["total_amount"] = parseInt(cloneItem["import_qty"]) * parseInt(cloneItem["price_importQty"]);
+    cloneItem['total_amount'] =
+      parseInt(cloneItem['import_qty']) * parseInt(cloneItem['price_importQty']);
     cloneData[index] = cloneItem;
-    data.list_products = cloneData
-    setValues({...data});
-    setChecked(cloneData)
+    data.list_products = cloneData;
+    setValues({ ...data });
+    setChecked(cloneData);
   };
-  const [isCheckPrice, setIsCheckPrice] = useState(false)
+  const [isCheckPrice, setIsCheckPrice] = useState(false);
   useEffect(() => {
-    handleCheckPrice()
-  }, [isCheckPrice])
+    handleCheckPrice();
+  }, [isCheckPrice]);
 
   const handleCheckPrice = async () => {
-    let cloneData = {...values};
-    let price = 0
+    let cloneData = { ...values };
+    let price = 0;
     cloneData.list_products.map((item) => {
-      price += item.total_amount
-    })
-    cloneData.total_amount_of_goods = price
+      price += item.total_amount;
+    });
+    cloneData.total_amount_of_goods = price;
     cloneData.total_amount_excluding_tax =
       parseInt(cloneData.total_amount_of_goods) -
       parseInt(cloneData.discount) +
       parseInt(cloneData.other_fee);
     cloneData.total_amount_including_tax =
       parseInt(cloneData.total_amount_excluding_tax) -
-      (parseInt(cloneData.total_amount_excluding_tax) *
-        parseInt(cloneData.tax)) /
-        100;
+      (parseInt(cloneData.total_amount_excluding_tax) * parseInt(cloneData.tax)) / 100;
     setValues(cloneData);
-  }
+  };
 
   const handelValidate = () => {
     if (currentStep === 1) {
@@ -643,7 +605,7 @@ function AddPurchaseOrderPage() {
         !values.stock_id
       ) {
         NotificationManager.error({
-          title: "Error",
+          title: 'Error',
           message: text.errLog,
         });
       } else {
@@ -652,7 +614,7 @@ function AddPurchaseOrderPage() {
     } else if (currentStep === 2) {
       if (values.list_products.length < 1) {
         NotificationManager.error({
-          title: "Error",
+          title: 'Error',
           message: text.errLog,
         });
       } else {
@@ -662,20 +624,20 @@ function AddPurchaseOrderPage() {
   };
 
   const handleSubmit = async (type) => {
-    if (type === "finished") {
-      let obj = values
-      obj.status = type
+    if (type === 'finished') {
+      let obj = values;
+      obj.status = type;
       setValues(obj);
     }
     dispatch(setShowLoader(true));
     let res = await createNewPurchaseOrder(values);
     dispatch(setShowLoader(false));
     if (res.code === 200) {
-      Router.push("/admin/purchaseorder");
+      Router.push('/admin/purchaseorder');
     } else {
       NotificationManager.error({
-        title: "Error",
-        message: res.message ? res.message.text : "Error",
+        title: 'Error',
+        message: res.message ? res.message.text : 'Error',
       });
     }
   };
@@ -684,10 +646,7 @@ function AddPurchaseOrderPage() {
   const stepContainer = () => {
     return (
       <CardHeader color="primary" className={classes.stepContainer}>
-        <div
-          className={classes.flex_center}
-          style={{ justifyContent: "space-between" }}
-        >
+        <div className={classes.flex_center} style={{ justifyContent: 'space-between' }}>
           <h4 className={classes.cardTitleWhite} style={{ fontSize: 18 }}>
             {text.card.title[0]}
           </h4>
@@ -695,21 +654,15 @@ function AddPurchaseOrderPage() {
             <p
               className={
                 currentStep >= 1
-                  ? classes.activeStep +
-                    " " +
-                    classes.step +
-                    " " +
-                    classes.flex_center
-                  : classes.step + " " + classes.flex_center
-              }
-            >
+                  ? classes.activeStep + ' ' + classes.step + ' ' + classes.flex_center
+                  : classes.step + ' ' + classes.flex_center
+              }>
               <span
                 className={
                   currentStep >= 1
-                    ? classes.stepNumber + " " + classes.activeStepNumber
+                    ? classes.stepNumber + ' ' + classes.activeStepNumber
                     : classes.stepNumber
-                }
-              >
+                }>
                 1
               </span>
               {text.step[0]}
@@ -717,21 +670,15 @@ function AddPurchaseOrderPage() {
             <p
               className={
                 currentStep >= 2
-                  ? classes.activeStep +
-                    " " +
-                    classes.step +
-                    " " +
-                    classes.flex_center
-                  : classes.step + " " + classes.flex_center
-              }
-            >
+                  ? classes.activeStep + ' ' + classes.step + ' ' + classes.flex_center
+                  : classes.step + ' ' + classes.flex_center
+              }>
               <span
                 className={
                   currentStep >= 2
-                    ? classes.stepNumber + " " + classes.activeStepNumber
+                    ? classes.stepNumber + ' ' + classes.activeStepNumber
                     : classes.stepNumber
-                }
-              >
+                }>
                 2
               </span>
               {text.step[1]}
@@ -739,21 +686,15 @@ function AddPurchaseOrderPage() {
             <p
               className={
                 currentStep == 3
-                  ? classes.activeStep +
-                    " " +
-                    classes.step +
-                    " " +
-                    classes.flex_center
-                  : classes.step + " " + classes.flex_center
-              }
-            >
+                  ? classes.activeStep + ' ' + classes.step + ' ' + classes.flex_center
+                  : classes.step + ' ' + classes.flex_center
+              }>
               <span
                 className={
                   currentStep == 3
-                    ? classes.stepNumber + " " + classes.activeStepNumber
+                    ? classes.stepNumber + ' ' + classes.activeStepNumber
                     : classes.stepNumber
-                }
-              >
+                }>
                 3
               </span>
               {text.step[2]}
@@ -773,7 +714,7 @@ function AddPurchaseOrderPage() {
             <p className={classes.cardCategoryWhite}>{text.card.subTitle[0]}</p>
           </div>
           <Button color="primary">
-            <Link href={"/admin/supplier/addsupplier?from=addpurchaseorder"}>
+            <Link href={'/admin/supplier/addsupplier?from=addpurchaseorder'}>
               <span>{text.actions.button[0]}</span>
             </Link>
           </Button>
@@ -786,16 +727,14 @@ function AddPurchaseOrderPage() {
                 variant="outlined"
                 size="small"
                 fullWidth
-                className={classes.custom_field}
-              >
+                className={classes.custom_field}>
                 <InputLabel id="demo-simple-select-outlined-label">
                   {text.actions.select[0]}
                 </InputLabel>
                 <Select
                   value={values.supplier_id}
-                  onChange={handleChangeValue("supplier_id")}
-                  label={text.actions.select[0]}
-                >
+                  onChange={handleChangeValue('supplier_id')}
+                  label={text.actions.select[0]}>
                   {suppliers.map((item, index) => {
                     return (
                       <MenuItem value={item._id} key={index}>
@@ -901,16 +840,14 @@ function AddPurchaseOrderPage() {
                 variant="outlined"
                 size="small"
                 fullWidth
-                className={classes.custom_field}
-              >
+                className={classes.custom_field}>
                 <InputLabel id="demo-simple-select-outlined-label">
                   {text.actions.select[5]}
                 </InputLabel>
                 <Select
                   value={values.po_type}
-                  onChange={handleChangeValue("po_type")}
-                  label={text.actions.select[5]}
-                >
+                  onChange={handleChangeValue('po_type')}
+                  label={text.actions.select[5]}>
                   {data.po_type.map((item, index) => {
                     return (
                       <MenuItem value={item.value} key={index}>
@@ -932,7 +869,7 @@ function AddPurchaseOrderPage() {
                 fullWidth
                 inputProps={{
                   value: values.reference_id,
-                  onChange: handleChangeValue("reference_id"),
+                  onChange: handleChangeValue('reference_id'),
                 }}
                 autoComplete="off"
                 className={classes.custom_field}
@@ -951,9 +888,9 @@ function AddPurchaseOrderPage() {
                   id="date-picker-inline"
                   label={text.actions.select[7]}
                   value={values.order_date}
-                  onChange={handleChangeDateValue("order_date")}
+                  onChange={handleChangeDateValue('order_date')}
                   KeyboardButtonProps={{
-                    "aria-label": "change date",
+                    'aria-label': 'change date',
                   }}
                   fullWidth
                   className={classes.custom_field}
@@ -970,9 +907,9 @@ function AddPurchaseOrderPage() {
                   id="date-picker-inline"
                   label={text.actions.select[8]}
                   value={values.delivery_date}
-                  onChange={handleChangeDateValue("delivery_date")}
+                  onChange={handleChangeDateValue('delivery_date')}
                   KeyboardButtonProps={{
-                    "aria-label": "change date",
+                    'aria-label': 'change date',
                   }}
                   fullWidth
                   className={classes.custom_field}
@@ -984,16 +921,14 @@ function AddPurchaseOrderPage() {
                 variant="outlined"
                 size="small"
                 fullWidth
-                className={classes.custom_field}
-              >
+                className={classes.custom_field}>
                 <InputLabel id="demo-simple-select-outlined-label">
                   {text.actions.select[9]}
                 </InputLabel>
                 <Select
                   value={values.currency}
-                  onChange={handleChangeValue("currency")}
-                  label={text.actions.select[9]}
-                >
+                  onChange={handleChangeValue('currency')}
+                  label={text.actions.select[9]}>
                   {data.currency.map((item, index) => {
                     return (
                       <MenuItem value={item.value} key={index}>
@@ -1017,7 +952,7 @@ function AddPurchaseOrderPage() {
                 fullWidth
                 inputProps={{
                   value: values.payment_methods,
-                  onChange: handleChangeValue("payment_methods"),
+                  onChange: handleChangeValue('payment_methods'),
                 }}
                 autoComplete="off"
                 className={classes.custom_field}
@@ -1038,7 +973,7 @@ function AddPurchaseOrderPage() {
             <p className={classes.cardCategoryWhite}>{text.card.subTitle[1]}</p>
           </div>
           <Button color="primary">
-            <Link href={"/admin/stock/addstock?from=addpurchaseorder"}>
+            <Link href={'/admin/stock/addstock?from=addpurchaseorder'}>
               <span>{text.actions.button[1]}</span>
             </Link>
           </Button>
@@ -1051,16 +986,14 @@ function AddPurchaseOrderPage() {
                 variant="outlined"
                 size="small"
                 fullWidth
-                className={classes.custom_field}
-              >
+                className={classes.custom_field}>
                 <InputLabel id="demo-simple-select-outlined-label">
                   {text.actions.select[11]}
                 </InputLabel>
                 <Select
                   value={values.stock_id}
-                  onChange={handleChangeValue("stock_id")}
-                  label={text.actions.select[11]}
-                >
+                  onChange={handleChangeValue('stock_id')}
+                  label={text.actions.select[11]}>
                   {stocks.map((item, index) => {
                     return (
                       <MenuItem value={item._id} key={index}>
@@ -1154,10 +1087,7 @@ function AddPurchaseOrderPage() {
 
   const tableModal = (item, index) => {
     return (
-      <TableRow
-        key={index}
-        className={tableClasses.tableBodyRow}
-      >
+      <TableRow key={index} className={tableClasses.tableBodyRow}>
         <TableCell className={tableClasses.tableCell}>
           <Checkbox
             tabIndex={-1}
@@ -1170,24 +1100,16 @@ function AddPurchaseOrderPage() {
             }}
           />
         </TableCell>
-        <TableCell
-          className={tableClasses.tableCell + " " + tableClasses.cellWidth_400}
-        >
+        <TableCell className={tableClasses.tableCell + ' ' + tableClasses.cellWidth_400}>
           <div className={classes.cellInfo}>
             <img src={item.image} className={classes.tableImage} />
             <div className={classes.infoTextContainer}>
-              <p className={classes.text + " " + classes.infoTextPrimary}>
-                {item.item_name}
-              </p>
-              <p className={classes.text + " " + classes.infoTextSecondary}>
-                {item.item_sku}
-              </p>
+              <p className={classes.text + ' ' + classes.infoTextPrimary}>{item.item_name}</p>
+              <p className={classes.text + ' ' + classes.infoTextSecondary}>{item.item_sku}</p>
             </div>
           </div>
         </TableCell>
-        <TableCell className={tableClasses.tableCell}>
-          {item.quantity}
-        </TableCell>
+        <TableCell className={tableClasses.tableCell}>{item.quantity}</TableCell>
         <TableCell className={tableClasses.tableCell}>{item.unit}</TableCell>
         <TableCell className={tableClasses.tableCell}>{item.price}</TableCell>
       </TableRow>
@@ -1199,17 +1121,16 @@ function AddPurchaseOrderPage() {
       <ModalCustom
         width={1000}
         title={text.popup_title}
-        subTitle={""}
+        subTitle={''}
         // isShow={true}
         isShow={isShowModal}
-        handleClose={() => setIsShowModal(false)}
-      >
+        handleClose={() => setIsShowModal(false)}>
         <div className={classes.flex_center}>
           <FormControl variant="outlined" size="small" style={{ flex: 1 }}>
             <TextField
               //   error={validateItemName ? false : true}
               id="input1"
-              label={""}
+              label={''}
               variant="outlined"
               size="small"
               fullWidth
@@ -1222,26 +1143,23 @@ function AddPurchaseOrderPage() {
               style={{ flex: 1 }}
             />
           </FormControl>
-          <div style={{ marginLeft: "10px" }}>
-            <Button color="primary" onClick={() => setDoFilter(!doFilter)}>{text.popup_button[0]}</Button>
+          <div style={{ marginLeft: '10px' }}>
+            <Button color="primary" onClick={() => setDoFilter(!doFilter)}>
+              {text.popup_button[0]}
+            </Button>
           </div>
         </div>
-        <div
-          className={classes.tableResponsive}
-          style={{ marginTop: "0" }}
-        >
+        <div className={classes.tableResponsive} style={{ marginTop: '0' }}>
           <Table className={tableClasses.table}>
             {data.products !== undefined ? (
-              <TableHead className={tableClasses["primary" + "TableHeader"]}>
+              <TableHead className={tableClasses['primary' + 'TableHeader']}>
                 <TableRow className={tableClasses.tableHeadRow}>
                   <TableCell className={tableClasses.tableCell}>
                     <Checkbox
                       checked={isCheckAll}
                       tabIndex={-1}
                       onClick={() => handleCheckAll()}
-                      checkedIcon={
-                        <Check className={taskClasses.checkedIcon} />
-                      }
+                      checkedIcon={<Check className={taskClasses.checkedIcon} />}
                       icon={<Check className={taskClasses.uncheckedIcon} />}
                       classes={{
                         checked: taskClasses.checked,
@@ -1252,13 +1170,8 @@ function AddPurchaseOrderPage() {
                   {text.tableHead_modal.map((prop, key) => {
                     return (
                       <TableCell
-                        className={
-                          tableClasses.tableCell +
-                          " " +
-                          tableClasses.tableHeadCell
-                        }
-                        key={key}
-                      >
+                        className={tableClasses.tableCell + ' ' + tableClasses.tableHeadCell}
+                        key={key}>
                         {prop}
                       </TableCell>
                     );
@@ -1273,22 +1186,17 @@ function AddPurchaseOrderPage() {
             </TableBody>
           </Table>
         </div>
-        <div className={[classes.flex_center_between, classes.paginationContainer].join(" ")}>
-          <Pagination
-              count={totalPage}
-              page={currentPage}
-              onChange={handleSelectPage}
-            />
-            <Button
-              color="primary"
-              onClick={() => {
-                setValues({ ...values, ["list_products"]: checked }),
+        <div className={[classes.flex_center_between, classes.paginationContainer].join(' ')}>
+          <Pagination count={totalPage} page={currentPage} onChange={handleSelectPage} />
+          <Button
+            color="primary"
+            onClick={() => {
+              setValues({ ...values, ['list_products']: checked }),
                 setIsShowModal(false),
-                setIsCheckAll(false)
-              }}
-            >
-              {text.popup_button[2]}
-            </Button>
+                setIsCheckAll(false);
+            }}>
+            {text.popup_button[2]}
+          </Button>
         </div>
       </ModalCustom>
     );
@@ -1297,26 +1205,18 @@ function AddPurchaseOrderPage() {
   const TableData = () => {
     return (
       <div className={tableClasses.tableResponsive}>
-        <Table className={tableClasses.table + " " + tableClasses.tableCustom}>
+        <Table className={tableClasses.table + ' ' + tableClasses.tableCustom}>
           {values.list_products !== undefined ? (
             <TableHead
               className={
-                tableClasses["primary" + "TableHeader"] +
-                " " +
-                tableClasses.tableHeadCustom
-              }
-            >
+                tableClasses['primary' + 'TableHeader'] + ' ' + tableClasses.tableHeadCustom
+              }>
               <TableRow className={tableClasses.tableHeadRow}>
                 {text.tableHead.map((prop, key) => {
                   return (
                     <TableCell
-                      className={
-                        tableClasses.tableCell +
-                        " " +
-                        tableClasses.tableHeadCell
-                      }
-                      key={key}
-                    >
+                      className={tableClasses.tableCell + ' ' + tableClasses.tableHeadCell}
+                      key={key}>
                       {prop}
                     </TableCell>
                   );
@@ -1341,12 +1241,8 @@ function AddPurchaseOrderPage() {
           <div className={classes.cellInfo}>
             <img src={item.image} className={classes.tableImage} />
             <div className={classes.infoTextContainer}>
-              <p className={classes.text + " " + classes.infoTextPrimary}>
-                {item.item_name}
-              </p>
-              <p className={classes.text + " " + classes.infoTextSecondary}>
-                {item.item_sku}
-              </p>
+              <p className={classes.text + ' ' + classes.infoTextPrimary}>{item.item_name}</p>
+              <p className={classes.text + ' ' + classes.infoTextSecondary}>{item.item_sku}</p>
             </div>
           </div>
         </TableCell>
@@ -1354,13 +1250,13 @@ function AddPurchaseOrderPage() {
           <TextField
             //   error={validateItemName ? false : true}
             id="input1"
-            label={""}
+            label={''}
             variant="outlined"
             size="small"
             fullWidth
             inputProps={{
               value: item.quantity,
-              onChange: handelChangeProductValue(item, "quantity"),
+              onChange: handelChangeProductValue(item, 'quantity'),
             }}
             type="number"
             placeholder={text.placeholder}
@@ -1374,9 +1270,8 @@ function AddPurchaseOrderPage() {
               labelId="select-outlined-label-1"
               id="select-outlined"
               value={item.unit}
-              onChange={handelChangeProductValue(item, "unit")}
-              disabled={currentStep == 3 ? true : false}
-            >
+              onChange={handelChangeProductValue(item, 'unit')}
+              disabled={currentStep == 3 ? true : false}>
               <MenuItem value={item.unit}>{item.unit}</MenuItem>
             </Select>
           </FormControl>
@@ -1386,7 +1281,7 @@ function AddPurchaseOrderPage() {
             <OutlinedInput
               id="outlined-adornment-amount-5"
               value={item.price}
-              onChange={handelChangeProductValue(item, "price")}
+              onChange={handelChangeProductValue(item, 'price')}
               endAdornment={<InputAdornment position="end">₫</InputAdornment>}
               type="number"
               autoComplete="off"
@@ -1395,17 +1290,17 @@ function AddPurchaseOrderPage() {
           </FormControl>
         </TableCell>
         <TableCell className={tableClasses.tableCell}>
-          <p className={classes.text + " " + classes.infoTextPrimary}>
-            {item.import_qty + " | " + item.import_unit}
+          <p className={classes.text + ' ' + classes.infoTextPrimary}>
+            {item.import_qty + ' | ' + item.import_unit}
           </p>
         </TableCell>
         <TableCell className={tableClasses.tableCell}>
-          <p className={classes.text + " " + classes.infoTextPrimary}>
+          <p className={classes.text + ' ' + classes.infoTextPrimary}>
             {formatCurrency(item.price_importQty)}
           </p>
         </TableCell>
         <TableCell className={tableClasses.tableCell}>
-          <p className={classes.text + " " + classes.infoTextPrimary}>
+          <p className={classes.text + ' ' + classes.infoTextPrimary}>
             {formatCurrency(item.total_amount)}
           </p>
         </TableCell>
@@ -1414,8 +1309,7 @@ function AddPurchaseOrderPage() {
             color="white"
             size="sm"
             onClick={() => deleteSelectedProduct(item)}
-            disabled={currentStep == 3 ? true : false}
-          >
+            disabled={currentStep == 3 ? true : false}>
             <Icon className={classes.btnFilter} style={{ margin: 0 }}>
               delete
             </Icon>
@@ -1432,14 +1326,13 @@ function AddPurchaseOrderPage() {
           <div className={classes.flex_column}>
             <h4 className={classes.cardTitleWhite}>{text.card.title[4]}</h4>
             <p className={classes.cardCategoryWhite}>
-              {values.list_products?.length + " " + text.card.subTitle[2]}
+              {values.list_products?.length + ' ' + text.card.subTitle[2]}
             </p>
           </div>
           <Button
             color="primary"
             onClick={() => setIsShowModal(true)}
-            disabled={currentStep == 3 ? true : false}
-          >
+            disabled={currentStep == 3 ? true : false}>
             {text.actions.button[6]}
           </Button>
         </CardHeader>
@@ -1467,7 +1360,7 @@ function AddPurchaseOrderPage() {
                 fullWidth
                 inputProps={{
                   value: values.notes,
-                  onChange: handleChangeValue("notes"),
+                  onChange: handleChangeValue('notes'),
                 }}
                 multiline
                 rows={10}
@@ -1486,7 +1379,7 @@ function AddPurchaseOrderPage() {
                 fullWidth
                 inputProps={{
                   value: values.total_amount_of_goods,
-                  onChange: handleChangeValue("total_amount_of_goods"),
+                  onChange: handleChangeValue('total_amount_of_goods'),
                 }}
                 autoComplete="off"
                 type="number"
@@ -1502,7 +1395,7 @@ function AddPurchaseOrderPage() {
                 fullWidth
                 inputProps={{
                   value: values.discount,
-                  onChange: handleChangeValue("discount"),
+                  onChange: handleChangeValue('discount'),
                 }}
                 autoComplete="off"
                 type="number"
@@ -1518,7 +1411,7 @@ function AddPurchaseOrderPage() {
                 fullWidth
                 inputProps={{
                   value: values.other_fee,
-                  onChange: handleChangeValue("other_fee"),
+                  onChange: handleChangeValue('other_fee'),
                 }}
                 autoComplete="off"
                 type="number"
@@ -1534,7 +1427,7 @@ function AddPurchaseOrderPage() {
                 fullWidth
                 inputProps={{
                   value: values.total_amount_excluding_tax,
-                  onChange: handleChangeValue("total_amount_excluding_tax"),
+                  onChange: handleChangeValue('total_amount_excluding_tax'),
                 }}
                 autoComplete="off"
                 type="number"
@@ -1550,7 +1443,7 @@ function AddPurchaseOrderPage() {
                 fullWidth
                 inputProps={{
                   value: values.tax,
-                  onChange: handleChangeValue("tax"),
+                  onChange: handleChangeValue('tax'),
                 }}
                 autoComplete="off"
                 type="number"
@@ -1587,43 +1480,26 @@ function AddPurchaseOrderPage() {
           return (
             <GridItem sm={4} xs={4} md={4} key={index}>
               <Card style={{ minHeight: 390 }}>
-                <CardHeader
-                  color="primary"
-                  className={classes.flex_center_between}
-                >
+                <CardHeader color="primary" className={classes.flex_center_between}>
                   <h4 className={classes.cardTitleWhite}>{item.title}</h4>
                 </CardHeader>
                 <CardBody className={classes.cardBody}>
                   {item.data.map((props, stt) => {
                     return (
                       <div
-                        className={
-                          classes.flex_center_between +
-                          " " +
-                          classes.previewField
-                        }
+                        className={classes.flex_center_between + ' ' + classes.previewField}
                         style={{
                           borderBottom:
-                            stt + 1 != item.data.length
-                              ? "1px solid " + grayColor[0]
-                              : null,
+                            stt + 1 != item.data.length ? '1px solid ' + grayColor[0] : null,
                         }}
-                        key={stt}
-                      >
-                        <p
-                          className={
-                            classes.text + " " + classes.infoTextSecondary
-                          }
-                        >
+                        key={stt}>
+                        <p className={classes.text + ' ' + classes.infoTextSecondary}>
                           {props.title}
                         </p>
                         <p
-                          className={
-                            classes.text + " " + classes.infoTextPrimary
-                          }
-                          style={{ color: infoColor[0], fontSize: 16 }}
-                        >
-                          {props.value ? props.value : "---"}
+                          className={classes.text + ' ' + classes.infoTextPrimary}
+                          style={{ color: infoColor[0], fontSize: 16 }}>
+                          {props.value ? props.value : '---'}
                         </p>
                       </div>
                     );
@@ -1663,29 +1539,22 @@ function AddPurchaseOrderPage() {
       )}
       <div className={classes.flex_end}>
         {currentStep == 1 && (
-          <Button onClick={() => handelReset()}>
-            {text.actions.button[2]}
-          </Button>
+          <Button onClick={() => handelReset()}>{text.actions.button[2]}</Button>
         )}
-        <Button onClick={() => handleSubmit("draft")}>
-          {text.actions.button[3]}
-        </Button>
+        <Button onClick={() => handleSubmit('draft')}>{text.actions.button[3]}</Button>
         {currentStep == 2 && (
-          <Button onClick={() => setIsCheckPrice(!isCheckPrice)}>
-            {text.actions.button[7]}
-          </Button>
+          <Button onClick={() => setIsCheckPrice(!isCheckPrice)}>{text.actions.button[7]}</Button>
         )}
         {currentStep < 3 ? (
           <Button
             color="primary"
             onClick={() => {
               handelValidate(), setIsCheckPrice(!isCheckPrice);
-            }}
-          >
+            }}>
             {text.actions.button[4]}
           </Button>
         ) : (
-          <Button color="primary" onClick={() => handleSubmit("finished")}>
+          <Button color="primary" onClick={() => handleSubmit('finished')}>
             {text.actions.button[5]}
           </Button>
         )}

@@ -13,8 +13,10 @@ import {
   Image,
 } from '@chakra-ui/react';
 import { useGlobalFilter, usePagination, useSortBy, useTable } from 'react-table';
+import { useTranslation } from 'react-i18next';
 
 const ConfirmProductTable = (props) => {
+  const { t } = useTranslation();
   const { columnsData, tableData } = props;
 
   const columns = React.useMemo(() => columnsData, [columnsData]);
@@ -34,7 +36,6 @@ const ConfirmProductTable = (props) => {
     tableInstance;
   initialState.pageSize = 11;
 
-  const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100');
   return (
     <Box
       flexDirection="column"
@@ -51,13 +52,7 @@ const ConfirmProductTable = (props) => {
             headerGroups.map((headerGroup, index) => (
               <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
                 {headerGroup.headers.map((column, index) => (
-                  <Th
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                    pe="10px"
-                    key={index}
-                    borderColor="gray.1600"
-                    pl="32px"
-                    pr="20px">
+                  <Th pe="10px" key={index} borderColor="gray.1600" pl="32px" pr="20px">
                     <Flex align="center" fontSize={{ sm: '10px', lg: '12px' }} color="text-gray-6">
                       <Text textStyle="h3-t" textTransform="capitalize" color="primary.200">
                         {column.render('Header')}

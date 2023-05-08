@@ -125,6 +125,7 @@ function CreateProduct() {
     async ({}, { setFieldError }) => {
       try {
         dispatch(setShowLoader(true));
+        router.push('/admin/shopProduct');
       } finally {
         dispatch(setShowLoader(false));
       }
@@ -294,7 +295,7 @@ function CreateProduct() {
                     gap={{ base: '2', md: '6', xl: '100px' }}>
                     {['Thông tin chung', 'Thêm ảnh sản phẩm', 'Xác nhận'].map((item, index) => {
                       return (
-                        <Flex alignItems="center">
+                        <Flex alignItems="center" key={index}>
                           <Flex
                             mr="4"
                             w={{ base: '6', md: '41px' }}
@@ -493,6 +494,7 @@ function CreateProduct() {
                         .map((item, index) => {
                           return (
                             <SelectProduct
+                              key={index}
                               ref={inputRef}
                               title={`Image ${index + 1}`}
                               //@ts-ignore

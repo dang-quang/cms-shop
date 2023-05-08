@@ -57,6 +57,13 @@ const dashboardRoutes = [
         parent: 'operation',
         permission: 'shop_shop',
       },
+      {
+        path: '/orderManagement',
+        name: 'orderManagement',
+        layout: '/admin',
+        parent: 'operation',
+        permission: 'shop_order_management',
+      },
     ],
   },
   {

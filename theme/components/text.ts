@@ -53,7 +53,7 @@ export const textStyles = {
     h6: {
       fontSize: '24px',
       lineHeight: '28px',
-      fontWeight: '500',
+      fontWeight: '300',
     },
     // 'h6-sb': {
     //   fontSize: '24px',
@@ -65,11 +65,11 @@ export const textStyles = {
     //   lineHeight: '100%',
     //   fontWeight: 'bold',
     // },
-    // h7: {
-    //   fontSize: '30px',
-    //   lineHeight: '32px',
-    //   fontWeight: 'bold',
-    // },
+    h7: {
+      fontSize: '36px',
+      lineHeight: '100%',
+      fontWeight: '300',
+    },
     // h8: {
     //   fontSize: '38px',
     //   lineHeight: '46px',

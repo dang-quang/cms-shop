@@ -103,7 +103,8 @@
     "operationReport": "Operation Report",
     "uiManagement": "UI Management",
     "game": "Game",
-    "reportGame": "Game Report"
+    "reportGame": "Game Report",
+    "orderManagement": "Order Management"
   },
   "qrManagement": {
     "notActive": "Not Active",

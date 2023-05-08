@@ -22,11 +22,15 @@ export const inputStyles = {
             _placeholder: { color: 'secondaryGray.600' },
           },
         }),
-        search: () => ({
+        search: (props: StyleFunctionProps) => ({
           field: {
-            border: 'none',
-            py: '11px',
-            borderRadius: 'inherit',
+            bg: mode('transparent', 'navy.800')(props),
+            border: '1px solid',
+            color: mode('text-basic', 'white')(props),
+            borderColor: 'gray.1300',
+            borderRadius: '0px',
+            fontSize: '14px',
+            p: '20px',
             _placeholder: { color: 'secondaryGray.600' },
           },
         }),

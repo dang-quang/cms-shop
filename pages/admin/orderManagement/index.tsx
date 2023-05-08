@@ -5,10 +5,10 @@ import Link from 'next/link';
 // @material-ui/core components
 import { makeStyles } from '@material-ui/core/styles';
 // layout for this page
-import Admin from 'layouts/Admin.js';
+import Admin from 'layouts/Admin';
 // core components
 import { Icon } from '@material-ui/core';
-import Card from 'components/Card/Card.js';
+import Card from 'components/Card/Card';
 import CardHeader from 'components/Card/CardHeader.js';
 import CardBody from 'components/Card/CardBody.js';
 import CardFooter from 'components/Card/CardFooter.js';
@@ -39,14 +39,18 @@ import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import classNames from 'classnames';
-import { requestsGetShopList, requestDeleteShop } from 'utilities/ApiManage';
 import Pagination from '@material-ui/lab/Pagination';
 import { setShowLoader } from 'redux/actions/app';
-import { NotificationContainer, NotificationManager } from 'react-light-notifications';
+import { NotificationContainer } from 'react-light-notifications';
 import { primaryColor } from 'assets/jss/natcash';
 import { useTranslation } from 'react-i18next';
-import Router, { useRouter } from 'next/router';
-function ShopListPage() {
+import { useRouter } from 'next/router';
+import { data_product } from './data';
+import { useMobile } from 'hooks';
+import { Input } from '@chakra-ui/react';
+
+const OrderManagement = () => {
+  const formatDate = 'YYYY-MM-DD';
   const useShopStyles = makeStyles(shopStyle);
   const shopClasses = useShopStyles();
   const dispatch = useDispatch();
@@ -59,7 +63,6 @@ function ShopListPage() {
   const tableClasses = useTableStyles();
   const useDashStyles = makeStyles(dashStyles);
   const dashClasses = useDashStyles();
-  const formatDate = 'YYYY-MM-DD';
   const router = useRouter();
 
   const FROM_DATE = moment().subtract(30, 'days').format(formatDate);
@@ -75,78 +78,97 @@ function ShopListPage() {
   const [totalPage, setTotalPage] = React.useState(1);
   const [totalRecords, setTotalRecords] = React.useState(0);
   const [search, setSearch] = React.useState('');
-  const [isMobile, setIsMobile] = React.useState(false);
+  const { isMobile } = useMobile();
   const [checked, setChecked] = React.useState([]);
   const [shops, setShops] = React.useState([]);
   const [selectedShop, setSelectedShop] = React.useState(null);
 
   const TABLE_HEAD = [
     //t('qrManagement.stt'),
-    'Shop code',
-    'Shop name',
-    'Address',
-    'Phone',
+    'Number Order',
     'Status',
-    'Type',
+    'User Name',
+    'Address',
+    'Total',
+    'Create At',
     t('action'),
   ];
 
-  React.useEffect(() => {
-    window.addEventListener(
-      'resize',
-      () => {
-        setIsMobile(window.innerWidth < 1570);
-      },
-      false
-    );
-  }, []);
+  const data = [
+    {
+      id: 0,
+      number_order: 299045978638333,
+      status: 'Đã nhận',
+      name_user: 'Nguyễn Văn A',
+      address: 'Hồ Chí Minh',
+      total: 123000,
+      create_at: '2022-08-12',
+    },
+    {
+      id: 1,
+      number_order: 299045978638333,
+      status: 'Đã hủy',
+      name_user: 'Nguyễn Thị C',
+      address: 'Hà Nội',
+      total: 123000,
+      create_at: '2022-08-12',
+    },
+    {
+      id: 2,
+      number_order: 299045978638333,
+      status: 'Thành công',
+      name_user: 'Giang dinh li',
+      address: 'Hồ Chí Minh',
+      total: 123000,
+      create_at: '2022-08-12',
+    },
+  ];
 
   React.useEffect(() => {
     (async () => {
-      dispatch(setShowLoader(true));
-      let from;
-      let to;
-      let key;
-      if (search) {
-        key = search;
-      }
-      if (doFilter) {
-        from = moment(filterDate.fromDate).format(formatDate);
-        to = moment(filterDate.toDate).format(formatDate);
-      }
-      const res = await requestsGetShopList({
-        keyWord: key,
-        fromDate: from,
-        toDate: to,
-        page: currentPage,
-      });
-      if (res.code === 'MSG_SUCCESS' && res.result && res.result.results) {
-        setShops(res.result.results === null ? [] : res.result.results);
-        setTotalPage(res?.result.totalPages);
-        setTotalRecords(res.result.totalRecords);
-      } else {
-        NotificationManager.error({
-          title: t('error'),
-          message: `No search data exists`,
-        });
-      }
-      dispatch(setShowLoader(false));
+      //       dispatch(setShowLoader(true));
+      //       let from;
+      //       let to;
+      //       let key;
+      //       if (search) {
+      //         key = search;
+      //       }
+      //       if (doFilter) {
+      //         from = moment(filterDate.fromDate).format(formatDate);
+      //         to = moment(filterDate.toDate).format(formatDate);
+      //       }
+      //       const res = await requestsGetShopList({
+      //         keyWord: key,
+      //         fromDate: from,
+      //         toDate: to,
+      //         page: currentPage,
+      //       });
+      //       if (res.code === 'MSG_SUCCESS' && res.result && res.result.results) {
+      //         setShops(res.result.results === null ? [] : res.result.results);
+      //         setTotalPage(res?.result.totalPages);
+      //         setTotalRecords(res.result.totalRecords);
+      //       } else {
+      //         NotificationManager.error({
+      //           title: t('error'),
+      //           message: `No search data exists`,
+      //         });
+      //       }
+      //       dispatch(setShowLoader(false));
     })();
   }, [doSearch, filterDate, doFilter, currentPage]);
 
-  const handleDeleteShop = React.useCallback(async () => {
+  const handleDeleteProduct = React.useCallback(async () => {
     try {
-      dispatch(setShowLoader(true));
-      const res = await requestDeleteShop({ id: selectedShop.id });
-      if (res.code === 'MSG_SUCCESS') {
-        setSelectedShop(null);
-        router.push('/admin/shopAdmin');
-      } else {
-        NotificationManager.error({
-          title: t('error'),
-          message: res.message ? res.message.text : 'Error',
-        });
-      }
+      //       dispatch(setShowLoader(true));
+      //       const res = await requestDeleteShop({ id: selectedShop.id });
+      //       if (res.code === 'MSG_SUCCESS') {
+      //         setSelectedShop(null);
+      //       } else {
+      //         NotificationManager.error({
+      //           title: t('error'),
+      //           message: res.message ? res.message.text : 'Error',
+      //         });
+      //       }
     } finally {
       setIsShowModal(false);
       dispatch(setShowLoader(false));
@@ -177,8 +199,8 @@ function ShopListPage() {
     setSearch(event.target.value);
     setCurrentPage(1);
   };
-  const renderShop = (item, index) => {
-    const { address, phone, shopCode, shopName, shopType, status } = item;
+  const renderShop = (item: any, index: number) => {
+    const { number_order, status, name_user, address, total, create_at } = item;
 
     return (
       <TableRow
@@ -187,41 +209,39 @@ function ShopListPage() {
         style={{
           backgroundColor: checked.indexOf(item) !== -1 ? '#fff6f0' : '#fff',
         }}>
-        {/* <TableCell className={tableClasses.tableCell} key={'shopInfo3'}>
+        {/* <TableCell className={tableClasses.tableCell} key="id">
           <div className={classes.proInfoContainer}>
-            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{index}</p>
+            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{id}</p>
           </div>
         </TableCell> */}
-        <TableCell className={tableClasses.tableCell} key={'shopCode'}>
+        <TableCell className={tableClasses.tableCell} key="order_number">
           <div className={classes.proInfoContainer}>
-            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{shopCode}</p>
+            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{number_order}</p>
           </div>
         </TableCell>
-        <TableCell className={tableClasses.tableCell} key={'shopName'}>
+        <TableCell className={tableClasses.tableCell} key="industry">
           <div className={classes.proInfoContainer}>
-            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{shopName}</p>
+            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{status}</p>
           </div>
         </TableCell>
-        <TableCell className={tableClasses.tableCell} key={'address'}>
+        <TableCell className={tableClasses.tableCell} key="trademark">
+          <div className={classes.proInfoContainer}>
+            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{name_user}</p>
+          </div>
+        </TableCell>
+        <TableCell className={tableClasses.tableCell} key="origin">
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{address}</p>
           </div>
         </TableCell>
-        <TableCell className={tableClasses.tableCell} key={'phone'}>
+        <TableCell className={tableClasses.tableCell} key="status">
           <div className={classes.proInfoContainer}>
-            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{phone}</p>
+            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{total}</p>
           </div>
         </TableCell>
-        <TableCell className={tableClasses.tableCell} key={'status'}>
+        <TableCell className={tableClasses.tableCell} key="create_at">
           <div className={classes.proInfoContainer}>
-            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>
-              {status === 1 ? t('qrManagement.active') : t('qrManagement.notActive')}
-            </p>
-          </div>
-        </TableCell>
-        <TableCell className={tableClasses.tableCell} key={'shopType'}>
-          <div className={classes.proInfoContainer}>
-            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{shopType}</p>
+            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{create_at}</p>
           </div>
         </TableCell>
         <TableCell className={tableClasses.tableCell}>
@@ -263,25 +283,12 @@ function ShopListPage() {
                   <Paper>
                     <ClickAwayListener onClickAway={() => handleAction(item)}>
                       <MenuList role="menu">
-                        {/* <MenuItem
-                          className={classes.dropdownItem}
-                          onClick={() => {
-                            router.push({
-                              pathname: '/admin/shop/addshop',
-                              query: item,
-                            });
-                          }}>
-                          {t('detail')}
-                        </MenuItem> */}
                         <MenuItem
                           className={classes.dropdownItem}
                           onClick={() => {
-                            router.push({
-                              pathname: '/admin/shopAdmin/addshop',
-                              query: item,
-                            });
+                            router.push({ pathname: '/admin/orderManagement/orderInformation' });
                           }}>
-                          {t('edit')}
+                          {t('detail')}
                         </MenuItem>
                         <MenuItem
                           className={classes.dropdownItem}
@@ -307,21 +314,20 @@ function ShopListPage() {
     <Card>
       <NotificationContainer />
       <CardHeader color="primary">
-        <h4 className={classes.cardTitleWhite}>{t('sideBar.shopManagement')}</h4>
+        <h4 className={classes.cardTitleWhite}>{t('sideBar.orderManagement')}</h4>
       </CardHeader>
       <CardBody className={classes.cardBody}>
         <div className={dashClasses.filterSelections + ' ' + classes.flex_center_between}>
           <div>
             <FormControl className={dashClasses.formControl}>
               <div style={{ marginRight: '15px' }}>
-                <CustomInput
-                  formControlProps={{
-                    className: adminClasses.margin + ' ' + classes.searchContainer,
-                  }}
-                  inputProps={{
-                    placeholder: t('findBy'),
-                    onChange: handleInputSearch,
-                  }}
+                <Input
+                  value={search}
+                  variant="search"
+                  onChange={handleInputSearch}
+                  placeholder={t('findBy')}
+                  width="190px"
+                  mr="6"
                 />
                 <Button
                   color="white"
@@ -448,19 +454,6 @@ function ShopListPage() {
               </Poppers>
             </FormControl>
           </div>
-          <FormControl
-            className={dashClasses.formControl}
-            style={{
-              marginRight: '25px',
-              position: isMobile ? 'static' : 'absolute',
-              right: '0',
-            }}>
-            <Link href={'/admin/shopAdmin/addshop'}>
-              <Button id="update-label" color="green">
-                CREATE NEW SHOP
-              </Button>
-            </Link>
-          </FormControl>
         </div>
         <ModalCustom
           width={600}
@@ -477,7 +470,7 @@ function ShopListPage() {
             className={tableClasses.tableResponsive}
             style={{ marginTop: '0', flexDirection: 'row-reverse', display: 'flex' }}>
             <div className={classes.buttonContainer}>
-              <Button color="primary" onClick={handleDeleteShop}>
+              <Button color="primary" onClick={handleDeleteProduct}>
                 {t('submit')}
               </Button>
             </div>
@@ -494,7 +487,7 @@ function ShopListPage() {
           className={tableClasses.tableResponsive}
           style={{ marginTop: '0', marginLeft: '20px' }}>
           <Table className={tableClasses.table}>
-            {shops && shops.length > 0 && (
+            {data_product && data_product.length > 0 && (
               <TableHead className={tableClasses['primary' + 'TableHeader']}>
                 <TableRow className={tableClasses.tableHeadRow}>
                   {TABLE_HEAD.map((prop, key) => {
@@ -511,9 +504,9 @@ function ShopListPage() {
               </TableHead>
             )}
             <TableBody>
-              {shops &&
-                shops.length > 0 &&
-                shops.map((item, index) => {
+              {data_product &&
+                data_product.length > 0 &&
+                data_product.map((item, index) => {
                   return renderShop(item, index);
                 })}
             </TableBody>
@@ -525,8 +518,8 @@ function ShopListPage() {
       </CardFooter>
     </Card>
   );
-}
+};
 
-ShopListPage.layout = Admin;
+OrderManagement.layout = Admin;
 
-export default WithAuthentication(ShopListPage);
+export default WithAuthentication(OrderManagement);

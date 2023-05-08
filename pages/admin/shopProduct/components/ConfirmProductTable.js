@@ -46,7 +46,8 @@ const ConfirmProductTable = (props) => {
       overflowX={{ sm: 'scroll', lg: 'hidden' }}>
       <Table {...getTableProps()} variant="simple" color="gray.500">
         <Thead>
-          {headerGroups.length > 0 &&
+          {headerGroups &&
+            headerGroups.length > 0 &&
             headerGroups.map((headerGroup, index) => (
               <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
                 {headerGroup.headers.map((column, index) => (
@@ -68,7 +69,8 @@ const ConfirmProductTable = (props) => {
             ))}
         </Thead>
         <Tbody {...getTableBodyProps()} gap="20px">
-          {page.length > 0 &&
+          {page &&
+            page.length > 0 &&
             page.map((row, index) => {
               prepareRow(row);
               return (

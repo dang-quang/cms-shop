@@ -30,7 +30,7 @@ import { Close } from '@material-ui/icons';
 import { setShowLoader } from 'redux/actions/app';
 import { BASE_API_URL } from 'utilities/const';
 import { IShop, IUser } from 'constants/types';
-import styles from './styles';
+import styles from 'assets/jss/natcash/views/shoplist/addShopStyle.js';
 import { Box, Flex, SimpleGrid, Stack, Text } from '@chakra-ui/react';
 import SelectProduct from './components/SelectProduct';
 import ConfirmProductTable from './components/ConfirmProductTable';

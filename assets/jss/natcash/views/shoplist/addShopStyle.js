@@ -146,6 +146,9 @@ const addVoucherStyle = {
     top: 0,
     bottom: 0,
   },
+  buttonCancel: {
+    marginRight: 24,
+  },
 };
 
 export default addVoucherStyle;

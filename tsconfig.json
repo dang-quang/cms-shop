@@ -21,7 +21,8 @@
     "strictNullChecks": false,
     "downlevelIteration": true,
     "baseUrl": ".",
-    "incremental": true
+    "incremental": true,
+    "tsBuildInfoFile": ".next/static/build-info.json"
   },
   "exclude": ["node_modules"],
   "include": ["next-env.d.ts", "pages/**/*", "src/**/*"]

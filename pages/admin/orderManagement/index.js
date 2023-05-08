@@ -199,7 +199,7 @@ const OrderManagement = () => {
     setSearch(event.target.value);
     setCurrentPage(1);
   };
-  const renderShop = (item: any, index: number) => {
+  const renderShop = (item, index) => {
     const { number_order, status, name_user, address, total, create_at } = item;
 
     return (

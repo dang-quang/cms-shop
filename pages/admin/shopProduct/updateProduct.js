@@ -21,7 +21,7 @@ import _, { isEmpty } from 'lodash';
 import { useRouter } from 'next/router';
 import { setShowLoader } from 'redux/actions/app';
 import { BASE_API_URL } from 'utilities/const';
-import styles from './styles';
+import styles from 'assets/jss/natcash/views/shoplist/addShopStyle.js';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { Close } from '@material-ui/icons';
 

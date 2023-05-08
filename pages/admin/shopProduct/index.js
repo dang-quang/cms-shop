@@ -44,10 +44,38 @@ import { setShowLoader } from 'redux/actions/app';
 import { NotificationContainer } from 'react-light-notifications';
 import { primaryColor } from 'assets/jss/natcash';
 import { useTranslation } from 'react-i18next';
-import Router, { useRouter } from 'next/router';
-import { data_product } from './data';
-import { IProduct } from './types';
+import { useRouter } from 'next/router';
 import { useMobile } from 'hooks';
+
+const data_product = [
+  {
+    id: '1',
+    name: 'Sữa Meiji số 0/9 - 800g',
+    industry: 'Thực Phẩm chức năng',
+    trademark: 'Fami',
+    origin: 'Việt Nam',
+    status: 1,
+    create_at: '2022-08-12',
+  },
+  {
+    id: '2',
+    name: 'Sữa Meiji số 0/9 - 800g',
+    industry: 'Thực Phẩm chức năng',
+    trademark: 'Vinamilk',
+    origin: 'Mỹ',
+    status: 1,
+    create_at: '2022-08-12',
+  },
+  {
+    id: '3',
+    name: 'Sữa Meiji số 0/9 - 800g',
+    industry: 'Thực Phẩm chức năng',
+    trademark: 'Fami',
+    origin: 'Nhật bản',
+    status: 1,
+    create_at: '2022-08-12',
+  },
+];
 
 const ShopUserProduct = () => {
   const formatDate = 'YYYY-MM-DD';

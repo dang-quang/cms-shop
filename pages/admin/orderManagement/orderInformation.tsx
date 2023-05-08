@@ -5,6 +5,7 @@ import CardHeader from 'components/Card/CardHeader.js';
 import CardBody from 'components/Card/CardBody.js';
 import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
 
+//@ts-ignore
 import { NotificationContainer } from 'react-light-notifications';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';

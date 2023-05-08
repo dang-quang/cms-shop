@@ -47,7 +47,6 @@ import { useTranslation } from 'react-i18next';
 import Router, { useRouter } from 'next/router';
 import { data_product } from './data';
 import { IProduct } from './types';
-import DeleteIcon from '@mui/icons-materia';
 import { useMobile } from 'hooks';
 
 const ShopUserProduct = () => {

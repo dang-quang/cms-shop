@@ -338,8 +338,8 @@ const ShopUserProduct = () => {
                     className: adminClasses.margin + ' ' + classes.searchContainer,
                   }}
                   inputProps={{
-                    placeholder: t('findBy'),
                     onChange: handleInputSearch,
+                    placeholder: t('findBy'),
                   }}
                 />
                 <Button

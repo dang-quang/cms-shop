@@ -48,6 +48,7 @@ import Poppers from '@material-ui/core/Popper';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { setShowLoader } from '../../../redux/actions/app';
 import { Pagination } from '@material-ui/lab';
+import { Input } from '@chakra-ui/react';
 
 function GameReport() {
   const dispatch = useDispatch();
@@ -214,14 +215,12 @@ function GameReport() {
               }}>
               <FormControl className={dashClasses.formControl}>
                 <div style={{ marginRight: '15px' }}>
-                  <CustomInput
-                    formControlProps={{
-                      className: adminClasses.margin + ' ' + classes.searchContainer,
-                    }}
-                    inputProps={{
-                      placeholder: t('findBy'),
-                      onChange: handleInputSearch,
-                    }}
+                  <Input
+                    variant="search"
+                    placeholder={t('findBy')}
+                    onChange={handleInputSearch}
+                    maxW="180px"
+                    mr="6"
                   />
                   <Button
                     color="white"

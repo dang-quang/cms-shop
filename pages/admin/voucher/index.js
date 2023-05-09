@@ -60,6 +60,7 @@ import imgPercent from 'assets/img/percent.png';
 import { useTranslation } from 'react-i18next';
 import CustomInput from '../../../components/CustomInput/CustomInput';
 import Search from '@material-ui/icons/Search';
+import { Input } from '@chakra-ui/react';
 
 function VoucherPage() {
   const router = useRouter();
@@ -169,14 +170,12 @@ function VoucherPage() {
       <div className={classes.shopFilterContainer}>
         <FormControl className={dashClasses.formControl}>
           <div style={{ marginRight: '15px' }}>
-            <CustomInput
-              formControlProps={{
-                className: adminClasses.margin + ' ' + classes.searchContainer,
-              }}
-              inputProps={{
-                placeholder: t('findBy'),
-                onChange: handleInputSearch,
-              }}
+            <Input
+              variant="search"
+              placeholder={t('findBy')}
+              onChange={handleInputSearch}
+              maxW="180px"
+              mr="6"
             />
             <Button
               color="white"

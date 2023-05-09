@@ -46,6 +46,7 @@ import { NotificationContainer, NotificationManager } from 'react-light-notifica
 import { primaryColor } from 'assets/jss/natcash';
 import { useTranslation } from 'react-i18next';
 import Router, { useRouter } from 'next/router';
+import { Input } from '@chakra-ui/react';
 function ShopListPage() {
   const useShopStyles = makeStyles(shopStyle);
   const shopClasses = useShopStyles();
@@ -314,14 +315,12 @@ function ShopListPage() {
           <div>
             <FormControl className={dashClasses.formControl}>
               <div style={{ marginRight: '15px' }}>
-                <CustomInput
-                  formControlProps={{
-                    className: adminClasses.margin + ' ' + classes.searchContainer,
-                  }}
-                  inputProps={{
-                    placeholder: t('findBy'),
-                    onChange: handleInputSearch,
-                  }}
+                <Input
+                  variant="search"
+                  placeholder={t('findBy')}
+                  onChange={handleInputSearch}
+                  maxW="180px"
+                  mr="6"
                 />
                 <Button
                   color="white"

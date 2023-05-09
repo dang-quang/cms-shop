@@ -46,6 +46,7 @@ import { primaryColor } from 'assets/jss/natcash';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
 import { useMobile } from 'hooks';
+import { Input } from '@chakra-ui/react';
 
 const data_product = [
   {
@@ -333,14 +334,12 @@ const ShopUserProduct = () => {
           <div>
             <FormControl className={dashClasses.formControl}>
               <div style={{ marginRight: '15px' }}>
-                <CustomInput
-                  formControlProps={{
-                    className: adminClasses.margin + ' ' + classes.searchContainer,
-                  }}
-                  inputProps={{
-                    onChange: handleInputSearch,
-                    placeholder: t('findBy'),
-                  }}
+                <Input
+                  variant="search"
+                  placeholder={t('findBy')}
+                  onChange={handleInputSearch}
+                  maxW="180px"
+                  mr="6"
                 />
                 <Button
                   color="white"

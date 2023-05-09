@@ -59,6 +59,7 @@ import AddGame from './addGame';
 import { formatNumber } from '../../../utilities/utils';
 import imgGift from 'assets/img/gift.png';
 import { BASE_API_URL } from 'utilities/const.js';
+import { Input } from '@chakra-ui/react';
 
 function Game() {
   const useShopStyles = makeStyles(shopStyle);
@@ -393,14 +394,12 @@ function Game() {
           }}>
           <FormControl className={dashClasses.formControl}>
             <div style={{ marginRight: '15px' }}>
-              <CustomInput
-                formControlProps={{
-                  className: adminClasses.margin + ' ' + classes.searchContainer,
-                }}
-                inputProps={{
-                  placeholder: t('findBy'),
-                  onChange: handleInputSearch,
-                }}
+              <Input
+                variant="search"
+                placeholder={t('findBy')}
+                onChange={handleInputSearch}
+                maxW="180px"
+                mr="6"
               />
               <Button
                 color="white"

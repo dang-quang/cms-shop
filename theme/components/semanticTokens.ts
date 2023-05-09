@@ -11,7 +11,7 @@ export const semanticTokens = {
         _dark: 'grey.100',
       },
       'text-body': {
-        default: 'gray.800',
+        default: 'gray.100',
         _dark: 'gray.50',
       },
       'text-note': {

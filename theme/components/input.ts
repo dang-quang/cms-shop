@@ -10,6 +10,23 @@ export const inputStyles = {
       },
 
       variants: {
+        login: (props: StyleFunctionProps) => ({
+          field: {
+            bg: mode('transparent', 'navy.800')(props),
+            borderBottomWidth: '2px',
+            color: mode('secondaryGray.900', 'white')(props),
+            focusBorderColor: 'red',
+            borderColor: 'gray.200',
+            borderRadius: '0px',
+            fontSize: '14px',
+            py: '5',
+            px: '0',
+            _placeholder: { color: 'secondaryGray.600' },
+            _focus: {
+              borderColor: 'primary.100',
+            },
+          },
+        }),
         outline: (props: StyleFunctionProps) => ({
           field: {
             bg: mode('transparent', 'navy.800')(props),

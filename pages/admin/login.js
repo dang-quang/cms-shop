@@ -102,7 +102,7 @@ function login(props) {
             <GridItem xs={12} sm={12} md={12}>
               <Input
                 id="username"
-                variant="outline"
+                variant="login"
                 placeholder={t('login.userName')}
                 value={username}
                 onChange={onChangeUsername}
@@ -110,7 +110,7 @@ function login(props) {
               <Input
                 mt="6"
                 id="password"
-                variant="outline"
+                variant="login"
                 type="password"
                 placeholder={t('login.pass')}
                 value={password}

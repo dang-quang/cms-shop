@@ -10,15 +10,10 @@ export const textStyles = {
       lineHeight: '16px',
       fontWeight: '300',
     },
-    // 'h2-b': {
-    //   fontSize: '12px',
-    //   lineHeight: '16px',
-    //   fontWeight: 'bold',
-    // },
-    'h3-t': {
-      fontSize: '14px',
-      lineHeight: '24px',
-      fontWeight: '300',
+    'h2-b': {
+      fontSize: '12px',
+      lineHeight: '16px',
+      fontWeight: 'bold',
     },
     h3: {
       fontSize: '14px',
@@ -30,11 +25,11 @@ export const textStyles = {
     //   lineHeight: '24px',
     //   fontWeight: '500',
     // },
-    // 'h3-b': {
-    //   fontSize: '14px',
-    //   lineHeight: '18px',
-    //   fontWeight: 'bold',
-    // },
+    'h3-b': {
+      fontSize: '14px',
+      lineHeight: '18px',
+      fontWeight: 'bold',
+    },
     // 'h4-m': {
     //   fontSize: '16px',
     //   lineHeight: '100%',
@@ -46,14 +41,19 @@ export const textStyles = {
       fontWeight: '300',
     },
     h5: {
-      fontSize: '20px',
-      lineHeight: '100%',
-      fontWeight: 'bold',
+      fontSize: '18px',
+      lineHeight: '21px',
+      fontWeight: '400',
+    },
+    'h6-t': {
+      fontSize: '24px',
+      lineHeight: '28px',
+      fontWeight: '300',
     },
     h6: {
       fontSize: '24px',
       lineHeight: '28px',
-      fontWeight: '300',
+      fontWeight: '400',
     },
     // 'h6-sb': {
     //   fontSize: '24px',
@@ -110,11 +110,16 @@ export const textStyles = {
     //   lineHeight: '100%',
     //   fontWeight: 'bold',
     // },
-    // body: {
-    //   fontSize: '14px',
-    //   lineHeight: '24px',
-    //   fontWeight: '500',
-    // },
+    'body-b': {
+      fontSize: '15px',
+      lineHeight: '18px',
+      fontWeight: 'bold',
+    },
+    body: {
+      fontSize: '15px',
+      lineHeight: '18px',
+      fontWeight: '400',
+    },
     // 'lg-body': {
     //   fontSize: { base: '14px', lg: '16px' },
     //   lineHeight: '100%',
@@ -132,10 +137,11 @@ export const textStyles = {
     //   fontSize: '16px',
     //   lineHeight: '24px',
     // },
-    // 'c-sm': {
-    //   fontSize: '14px',
-    //   lineHeight: '22px',
-    // },
+    'c-sm': {
+      fontSize: '14px',
+      lineHeight: '22px',
+      fontWeight: '300',
+    },
     // 'c-xs': {
     //   fontSize: '12px',
     //   lineHeight: '16px',

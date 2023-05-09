@@ -1,0 +1,22 @@
+{
+  "reactNativeComponent": {
+    "prefix": "comp",
+    "body": [
+      "import React from 'react';",
+      "import { Flex, Text } from '@chakra-ui/react';",
+      "",
+      "interface ${1:ComponentName}Props {}",
+      "",
+      "const ${1:ComponentName}: React.FC<${1:ComponentName}Props> = ({}) => {",
+      "  return (",
+      "    <Flex>",
+      "      <Text>${1:ComponentName}</Text>",
+      "    </Flex>",
+      "  );",
+      "};",
+      "",
+      "export default ${1:ComponentName};"
+    ],
+    "description": "Component"
+  }
+}

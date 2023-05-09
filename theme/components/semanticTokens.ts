@@ -3,7 +3,7 @@ export const semanticTokens = {
     colors: {
       error: 'red.500',
       'text-basic': {
-        default: 'black',
+        default: 'gray.1800',
         _dark: 'white',
       },
       'text-title': {
@@ -87,7 +87,7 @@ export const semanticTokens = {
         _dark: 'gray.700',
       },
       'bg-border-1': {
-        default: 'secondaryGray.100',
+        default: 'gray.1700',
         _dark: 'secondaryGray.100',
       },
       'bg-border-2': {

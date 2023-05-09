@@ -183,7 +183,7 @@ function UpdateProduct() {
                 transform="auto"
                 borderRadius="2px"
                 translateY="-50%">
-                <Text textStyle="h3-t" color="text-white" mr="4">
+                <Text textStyle="c-sm" color="text-white" mr="4">
                   {t('shopUser.update_product')}
                 </Text>
               </Flex>

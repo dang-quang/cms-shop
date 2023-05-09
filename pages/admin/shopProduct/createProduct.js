@@ -318,7 +318,7 @@ function CreateProduct() {
                 transform="auto"
                 borderRadius="2px"
                 translateY="-50%">
-                <Text textStyle="h3-t" color="text-white" mr="4">
+                <Text textStyle="c-sm" color="text-white" mr="4">
                   {t('shopUser.create_new_product')}
                 </Text>
                 <Flex
@@ -519,7 +519,7 @@ function CreateProduct() {
                   </GridContainer>
                 ) : selectedIndex === 1 ? (
                   <Box>
-                    <Text textStyle="h3-t" color="text-basic">
+                    <Text textStyle="c-sm" color="text-basic">
                       Product Images
                     </Text>
                     <SimpleGrid
@@ -545,7 +545,7 @@ function CreateProduct() {
                           );
                         })}
                     </SimpleGrid>
-                    <Text mt="8" textStyle="h3-t" color="text-basic">
+                    <Text mt="8" textStyle="c-sm" color="text-basic">
                       Video Product
                     </Text>
                     <SimpleGrid

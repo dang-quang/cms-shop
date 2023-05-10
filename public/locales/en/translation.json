@@ -97,6 +97,8 @@
   "save": "Save",
   "products": "Products",
   "number_order": "Order {{number}}",
+  "general_information": "General Information",
+  "add_image_product": "Add Image Product",
   "sideBar": {
     "shop": "Shop",
     "shopAdmin": "Shop Admin",
@@ -118,7 +120,8 @@
     "uiManagement": "UI Management",
     "game": "Game",
     "reportGame": "Game Report",
-    "orderManagement": "Order Management"
+    "order_management": "Order Management",
+    "interface_management": "Interface Management"
   },
   "qrManagement": {
     "notActive": "Not Active",

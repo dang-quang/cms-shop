@@ -13,14 +13,14 @@ import FormHeader from 'components/Form/FormHeader.js';
 import FormBody from 'components/Form/FormBody.js';
 import backgroundImage from 'assets/img/login-background-min.png';
 import { NotificationContainer, NotificationManager } from 'react-light-notifications';
-import { userLogin } from '../../redux/actions/user';
 import PageLoader from 'components/PageLoader/PageLoader.js';
-import { initData } from '../../utilities/ApiManage';
-import { encryptSha256, encryptString } from '../../utilities/utils';
-import { buildKey } from '../../utilities/const';
 import { useTranslation } from 'react-i18next';
-import { setShowLoader } from '../../redux/actions/app';
 import { Input } from '@chakra-ui/react';
+import { setShowLoader } from 'redux/actions/app';
+import { buildKey } from 'utilities/const';
+import { encryptSha256, encryptString } from 'utilities/utils';
+import { initData } from 'utilities/ApiManage';
+import { userLogin } from 'redux/actions/user';
 
 function login(props) {
   const useStyles = makeStyles(styles);

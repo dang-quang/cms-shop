@@ -298,7 +298,7 @@ const ShopUserProduct = () => {
                           className={classes.dropdownItem}
                           onClick={() => {
                             router.push({
-                              pathname: '/admin/shopProduct/updateProduct',
+                              pathname: '/shop/product/update',
                             });
                           }}>
                           {t('edit')}
@@ -473,7 +473,7 @@ const ShopUserProduct = () => {
               position: isMobile ? 'static' : 'absolute',
               right: '0',
             }}>
-            <Link href={'/admin/shopProduct/createProduct'}>
+            <Link href={'/shop/product/create'}>
               <Button id="update-label" color="green">
                 {t('shopUser.create_product')}
               </Button>

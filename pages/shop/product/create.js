@@ -132,7 +132,7 @@ function CreateProduct() {
     async ({}, { setFieldError }) => {
       try {
         dispatch(setShowLoader(true));
-        router.push('/admin/shopProduct');
+        router.push('/shop/product');
       } finally {
         dispatch(setShowLoader(false));
       }
@@ -330,31 +330,33 @@ function CreateProduct() {
                   <Stack
                     flexDirection={{ base: 'column', md: 'row' }}
                     gap={{ base: '2', md: '6', xl: '100px' }}>
-                    {['Thông tin chung', 'Thêm ảnh sản phẩm', 'Xác nhận'].map((item, index) => {
-                      return (
-                        <Flex alignItems="center" key={index}>
-                          <Flex
-                            mr="4"
-                            w={{ base: '6', md: '41px' }}
-                            h={{ base: '6', md: '41px' }}
-                            borderRadius="full"
-                            bg={index < selectedIndex ? 'white' : 'primary.100'}
-                            justifyContent="center"
-                            alignItems="center"
-                            borderWidth={{ base: '2px', md: '4px' }}
-                            borderColor={index < selectedIndex ? 'white' : 'gray.1300'}>
-                            <Text
-                              textStyle={{ base: 'h4', md: 'h6' }}
-                              color={index < selectedIndex ? '#FF9A32' : 'gray.1300'}>
-                              {index + 1}
+                    {[t('general_information'), t('add_image_product'), t('confirm')].map(
+                      (item, index) => {
+                        return (
+                          <Flex alignItems="center" key={index}>
+                            <Flex
+                              mr="4"
+                              w={{ base: '6', md: '41px' }}
+                              h={{ base: '6', md: '41px' }}
+                              borderRadius="full"
+                              bg={index < selectedIndex ? 'white' : 'primary.100'}
+                              justifyContent="center"
+                              alignItems="center"
+                              borderWidth={{ base: '2px', md: '4px' }}
+                              borderColor={index < selectedIndex ? 'white' : 'gray.1300'}>
+                              <Text
+                                textStyle={{ base: 'h4', md: 'h6' }}
+                                color={index < selectedIndex ? '#FF9A32' : 'gray.1300'}>
+                                {index + 1}
+                              </Text>
+                            </Flex>
+                            <Text textStyle={{ base: 'h2', md: 'h3' }} color="text-white">
+                              {item}
                             </Text>
                           </Flex>
-                          <Text textStyle={{ base: 'h2', md: 'h3' }} color="text-white">
-                            {item}
-                          </Text>
-                        </Flex>
-                      );
-                    })}
+                        );
+                      }
+                    )}
                   </Stack>
                 </Flex>
               </Flex>

@@ -1,23 +1,4 @@
 const dashboardRoutes = [
-  // {
-  //   path: "/#",
-  //   name: "Business",
-  //   namevi: "Kinh doanh",
-  //   icon: "shopping_cart",
-  //   layout: "/admin",
-  //   parent: "operation",
-  //   permission: "business",
-  //   subMenu: [
-  //     {
-  //       path: "/order",
-  //       name: "Order",
-  //       namevi: "Đơn hàng",
-  //       layout: "/admin",
-  //       parent: "operation",
-  //       permission: "business_order",
-  //     }
-  //   ],
-  // },
   {
     path: '/#',
     name: 'shopAdmin',
@@ -102,23 +83,30 @@ const dashboardRoutes = [
     path: '/#',
     name: 'shopUser',
     icon: 'store_icon',
-    layout: '/admin',
+    layout: '/shop',
     parent: 'operation',
     permission: 'stocks',
     subMenu: [
       {
-        path: '/shopProduct',
+        path: '/product',
         name: 'product',
-        layout: '/admin',
+        layout: '/shop',
         parent: 'operation',
         permission: 'shop_shop',
       },
       {
-        path: '/orderManagement',
-        name: 'orderManagement',
-        layout: '/admin',
+        path: '/order-management',
+        name: 'order_management',
+        layout: '/shop',
         parent: 'operation',
         permission: 'shop_order_management',
+      },
+      {
+        path: '/interface-management',
+        name: 'interface_management',
+        layout: '/shop',
+        parent: 'operation',
+        permission: 'shop_interface_management',
       },
     ],
   },

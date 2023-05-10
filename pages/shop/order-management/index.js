@@ -305,7 +305,7 @@ const OrderManagement = () => {
                         <MenuItem
                           className={classes.dropdownItem}
                           onClick={() => {
-                            router.push({ pathname: '/admin/orderManagement/orderInformation' });
+                            router.push({ pathname: '/shop/order-management/order-information' });
                           }}>
                           {t('detail')}
                         </MenuItem>
@@ -335,7 +335,7 @@ const OrderManagement = () => {
       <Flex alignItems="center">
         <Icon as={IconOrder} w="34px" h="40px" color="text-basic" />
         <Text ml="5" textStyle="h7" color="text-basic">
-          {t('sideBar.orderManagement')}
+          {t('sideBar.order_management')}
         </Text>
       </Flex>
       <SimpleGrid

@@ -2,18 +2,18 @@ import React from 'react';
 import { Box, Image, Text } from '@chakra-ui/react';
 import numeral from 'numeral';
 
-export interface IFeatureProduct {
-  id?: string;
-  name: string;
-  amount: number;
-  image: string;
-}
+// export interface IFeatureProduct {
+//   id?: string;
+//   name: string;
+//   amount: number;
+//   image: string;
+// }
 
-interface FeatureProductItemProps {
-  item: IFeatureProduct;
-}
+// interface FeatureProductItemProps {
+//   item: IFeatureProduct;
+// }
 
-const FeatureProductItem: React.FC<FeatureProductItemProps> = ({ item }) => {
+const FeatureProductItem = ({ item }) => {
   const { image, name, amount } = item;
 
   return (

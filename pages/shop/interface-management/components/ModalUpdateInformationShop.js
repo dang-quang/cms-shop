@@ -15,26 +15,26 @@ import { useDispatch } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
 import { useTranslation } from 'react-i18next';
 
-interface ModalUpdateInformationShopProps {
-  shop: IShop;
-  onClose?(): void;
-}
+// interface ModalUpdateInformationShopProps {
+//   shop: IShop;
+//   onClose?(): void;
+// }
 
-export interface IShop {
-  avatar: string;
-  banner: string;
-  address: string;
-  description: string;
-}
+// export interface IShop {
+//   avatar: string;
+//   banner: string;
+//   address: string;
+//   description: string;
+// }
 
-const initialValues: IShop = {
-  avatar: '',
-  banner: '',
-  address: '',
-  description: '',
-};
+// const initialValues: IShop = {
+//   avatar: '',
+//   banner: '',
+//   address: '',
+//   description: '',
+// };
 
-const ModalUpdateInformationShop: React.FC<ModalUpdateInformationShopProps> = ({ onClose }) => {
+const ModalUpdateInformationShop = ({ onClose }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 

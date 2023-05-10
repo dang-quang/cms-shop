@@ -11,11 +11,11 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-interface ModalUpdateFeaturedProductProps {
-  onClose?(): void;
-}
+// interface ModalUpdateFeaturedProductProps {
+//   onClose?(): void;
+// }
 
-const ModalUpdateFeaturedProduct: React.FC<ModalUpdateFeaturedProductProps> = ({ onClose }) => {
+const ModalUpdateFeaturedProduct = ({ onClose }) => {
   return (
     <>
       <ModalOverlay />

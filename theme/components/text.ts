@@ -110,6 +110,16 @@ export const textStyles = {
     //   lineHeight: '100%',
     //   fontWeight: 'bold',
     // },
+    'h5-h6': {
+      fontSize: { base: '18px', lg: '24px' },
+      lineHeight: '100%',
+      fontWeight: '400',
+    },
+    'h6-t-h7': {
+      fontSize: { base: '24px', lg: '36px' },
+      lineHeight: '100%',
+      fontWeight: '300',
+    },
     'body-b': {
       fontSize: '15px',
       lineHeight: '18px',
@@ -133,10 +143,11 @@ export const textStyles = {
     //   fontSize: { base: '16px', lg: '20px' },
     //   lineHeight: '100%',
     // },
-    // 'c-md': {
-    //   fontSize: '16px',
-    //   lineHeight: '24px',
-    // },
+    'c-md': {
+      fontSize: '16px',
+      lineHeight: '20px',
+      fontWeight: '300',
+    },
     'c-sm': {
       fontSize: '14px',
       lineHeight: '22px',
@@ -146,14 +157,21 @@ export const textStyles = {
     //   fontSize: '12px',
     //   lineHeight: '16px',
     // },
-    // 'b-lg': {
-    //   fontSize: '20px',
-    //   lineHeight: '24px',
-    // },
-    // 'b-md': {
-    //   fontSize: '16px',
-    //   lineHeight: '20px',
-    // },
+    'b-xl': {
+      fontSize: '26px',
+      lineHeight: '30px',
+      fontWeight: '400',
+    },
+    'b-lg': {
+      fontSize: '20px',
+      lineHeight: '24px',
+      fontWeight: '400',
+    },
+    'b-md': {
+      fontSize: '16px',
+      lineHeight: '20px',
+      fontWeight: '400',
+    },
     // 'b-sm': {
     //   fontSize: '14px',
     //   lineHeight: '16px',

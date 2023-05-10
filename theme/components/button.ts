@@ -18,7 +18,7 @@ export const buttonStyles = {
         outline: () => ({
           borderRadius: '16px',
         }),
-        basic: (props: StyleFunctionProps) => ({
+        primary: (props: StyleFunctionProps) => ({
           bg: mode('primary.100', 'primary.100')(props),
           color: 'white',
           _focus: {

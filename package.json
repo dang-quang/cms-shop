@@ -93,6 +93,7 @@
   "devDependencies": {
     "@types/classnames": "^2.3.1",
     "@types/node": "^16.4.7",
+    "@types/numeral": "^2.0.2",
     "@types/react": "^18.2.0",
     "@types/react-table": "^7.7.14"
   },

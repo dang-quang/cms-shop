@@ -334,7 +334,7 @@ const OrderManagement = () => {
       <NotificationContainer />
       <Flex alignItems="center">
         <Icon as={IconOrder} w="34px" h="40px" color="text-basic" />
-        <Text ml="5" textStyle="h7" color="text-basic">
+        <Text ml="5" textStyle="h6-t-h7" color="text-basic">
           {t('sideBar.order_management')}
         </Text>
       </Flex>

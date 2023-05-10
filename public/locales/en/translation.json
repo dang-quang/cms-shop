@@ -53,6 +53,7 @@
   "errorPercentMax": "Percentage must be less than or equal to 100",
   "errorLevelExists": "Level already exists. Please choose a different level.",
   "errorShopNameRequire": "Shop name is required",
+  "errorShopBannerRequire": "Shop banner is required",
   "errorShopCodeRequire": "Shop code is required",
   "errorAddressRequire": "Address is required",
   "errorPhoneRequire": "Phone number is required",
@@ -99,6 +100,9 @@
   "number_order": "Order {{number}}",
   "general_information": "General Information",
   "add_image_product": "Add Image Product",
+  "shop_information": "Shop Information",
+  "featured_products": "Featured products",
+  "update": "Update",
   "sideBar": {
     "shop": "Shop",
     "shopAdmin": "Shop Admin",

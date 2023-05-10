@@ -104,11 +104,11 @@ const OrderInformation = () => {
       <NotificationContainer />
       <Flex alignItems="center">
         <Icon as={IconOrder} w="34px" h="40px" color="text-basic" />
-        <Text ml="5" textStyle="h7" color="text-basic">
+        <Text ml="5" textStyle="h6-t-h7" color="text-basic">
           {t('order_information')}
         </Text>
       </Flex>
-      <Text mt="8" textStyle="h6" color="text-basic">
+      <Text mt="8" textStyle="h5-h6" color="text-basic">
         {t('number_order', { number: '#210720D0KFC7B0' })}
       </Text>
       <SimpleGrid mt="6" columns={{ base: 1, lg: 2 }} gap={{ base: '4', lg: '6' }}>

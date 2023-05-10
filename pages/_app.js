@@ -14,7 +14,7 @@ import 'react-light-notifications/lib/main.css';
 import 'assets/css/loader.css';
 import { appWithI18Next, useSyncLanguage } from 'ni18n';
 import { ni18nConfig } from 'ni18n.config';
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, StylesProvider, useStyles } from '@chakra-ui/react';
 import theme from 'theme/theme';
 
 Router.events.on('routeChangeStart', (url) => {
@@ -51,25 +51,28 @@ const MyApp = ({ Component, pageProps }) => {
   const locale = typeof window !== 'undefined' && window.localStorage.getItem('MY_LANGUAGE');
 
   useSyncLanguage(locale);
+
   return (
-    <ChakraProvider theme={theme}>
-      <Provider store={store}>
-        <ConnectedRouter>
-          <React.Fragment>
-            <Head>
-              <meta
-                name="viewport"
-                content="width=device-width, initial-scale=1, shrink-to-fit=no"
-              />
-              <title>natcash Platform</title>
-            </Head>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </React.Fragment>
-        </ConnectedRouter>
-      </Provider>
-    </ChakraProvider>
+    <StylesProvider>
+      <ChakraProvider theme={theme}>
+        <Provider store={store}>
+          <ConnectedRouter>
+            <React.Fragment>
+              <Head>
+                <meta
+                  name="viewport"
+                  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+                />
+                <title>natcash Platform</title>
+              </Head>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </React.Fragment>
+          </ConnectedRouter>
+        </Provider>
+      </ChakraProvider>
+    </StylesProvider>
   );
 };
 

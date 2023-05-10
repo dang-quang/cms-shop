@@ -13,12 +13,14 @@ import numeral from 'numeral';
 //   item: IFeatureProduct;
 // }
 
+const imageDemo = 'https://imgtr.ee/images/2023/05/10/l0smR.png';
+
 const FeatureProductItem = ({ item }) => {
   const { image, name, amount } = item;
 
   return (
     <Box>
-      {image && <Image src={image} objectFit="cover" alt="image_shop" />}
+      {!!image && <Image src={image || imageDemo} objectFit="cover" alt="image_shop" />}
       <Text mt="2" textAlign="center" color="text-basic">
         {name}
       </Text>

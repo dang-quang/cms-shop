@@ -18,7 +18,7 @@ const FeatureProductItem = ({ item }) => {
 
   return (
     <Box>
-      <Image src={image} objectFit="cover" alt="image_shop" />
+      {image && <Image src={image} objectFit="cover" alt="image_shop" />}
       <Text mt="2" textAlign="center" color="text-basic">
         {name}
       </Text>

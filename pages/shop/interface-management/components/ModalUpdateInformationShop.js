@@ -27,12 +27,12 @@ import { useTranslation } from 'react-i18next';
 //   description: string;
 // }
 
-// const initialValues: IShop = {
-//   avatar: '',
-//   banner: '',
-//   address: '',
-//   description: '',
-// };
+const initialValues = {
+  avatar: '',
+  banner: '',
+  address: '',
+  description: '',
+};
 
 const ModalUpdateInformationShop = ({ onClose }) => {
   const dispatch = useDispatch();

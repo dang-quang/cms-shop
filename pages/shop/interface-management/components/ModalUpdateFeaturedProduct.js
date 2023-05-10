@@ -17,7 +17,7 @@ import {
 
 const ModalUpdateFeaturedProduct = ({ onClose }) => {
   return (
-    <>
+    <Box>
       <ModalOverlay />
       <ModalContent>
         <ModalBody>
@@ -30,7 +30,7 @@ const ModalUpdateFeaturedProduct = ({ onClose }) => {
           <Button variant="ghost">Secondary Action</Button>
         </ModalFooter>
       </ModalContent>
-    </>
+    </Box>
   );
 };
 

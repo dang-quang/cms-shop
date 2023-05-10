@@ -38,7 +38,7 @@ const ModalUpdateInformationShop: React.FC<ModalUpdateInformationShopProps> = ({
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  const handleSubmitShop = React.useCallback(async ({}, { setFieldError }) => {
+  const handleSubmitShop = React.useCallback(async ({}) => {
     try {
       dispatch(setShowLoader(true));
     } finally {

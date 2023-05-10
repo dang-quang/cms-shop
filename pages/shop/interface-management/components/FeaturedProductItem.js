@@ -16,11 +16,11 @@ import numeral from 'numeral';
 const imageDemo = 'https://imgtr.ee/images/2023/05/10/l0smR.png';
 
 const FeatureProductItem = ({ item }) => {
-  const { image, name, amount } = item;
+  const { name, amount } = item;
 
   return (
     <Box>
-      {!!image && <Image src={image || imageDemo} objectFit="cover" alt="image_shop" />}
+      <Image src={imageDemo} objectFit="cover" alt="image_shop" />
       <Text mt="2" textAlign="center" color="text-basic">
         {name}
       </Text>

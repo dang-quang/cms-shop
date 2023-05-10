@@ -13,19 +13,12 @@ import {
   Flex,
   Icon,
   Image,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalOverlay,
   SimpleGrid,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
 import { IconShop } from 'components/Icons/Icons';
 import FeatureProductItem from './components/FeaturedProductItem';
-import ModalUpdateInformationShop from './components/ModalUpdateInformationShop';
 
 const image = 'https://imgtr.ee/images/2023/05/10/l0smR.png';
 

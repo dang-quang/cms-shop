@@ -136,7 +136,7 @@ const InterfaceManagement = () => {
             {data &&
               data.length > 0 &&
               data.map((item, index) => {
-                return <FeatureProductItem item={item} key={index} />;
+                return <FeatureProductItem {...item} key={index} />;
               })}
           </SimpleGrid>
         </Flex>

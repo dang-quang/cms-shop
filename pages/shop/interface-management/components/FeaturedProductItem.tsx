@@ -2,20 +2,14 @@ import React from 'react';
 import { Box, Image, Text } from '@chakra-ui/react';
 import numeral from 'numeral';
 
-// export interface IFeatureProduct {
-//   id?: string;
-//   name: string;
-//   amount: number;
-//   image: string;
-// }
+export interface FeatureProductItemProps {
+  id?: string;
+  name: string;
+  amount: number;
+  image: string;
+}
 
-// interface FeatureProductItemProps {
-//   item: IFeatureProduct;
-// }
-
-//const imageDemo = 'https://imgtr.ee/images/2023/05/10/l0smR.png';
-
-const FeatureProductItem = ({ image, name, amount }) => {
+const FeatureProductItem: React.FC<FeatureProductItemProps> = ({ image, name, amount }) => {
   return (
     <Box>
       <Image src={image} objectFit="cover" alt="image_shop" />

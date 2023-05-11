@@ -13,12 +13,15 @@ import {
   Flex,
   Icon,
   Image,
+  Modal,
   SimpleGrid,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
 import { IconShop } from 'components/Icons/Icons';
 import FeatureProductItem from './components/FeaturedProductItem';
+import ModalUpdateInformationShop from './components/ModalUpdateInformationShop';
+import ModalUpdateFeaturedProduct from './components/ModalUpdateFeaturedProduct';
 
 const image = 'https://imgtr.ee/images/2023/05/10/l0smR.png';
 
@@ -148,6 +151,12 @@ const InterfaceManagement = () => {
           <Button variant="primary" children={t('update')} minW="112px" onClick={onOpenProduct} />
         </Flex>
       </Flex>
+      <Modal isOpen={isOpenShop} onClose={onCloseShop} size="5xl">
+        <ModalUpdateInformationShop onClose={onCloseShop} />
+      </Modal>
+      <Modal isOpen={isOpenProduct} onClose={onCloseProduct} size="5xl">
+        <ModalUpdateFeaturedProduct onClose={onCloseProduct} />
+      </Modal>
     </Box>
   );
 };

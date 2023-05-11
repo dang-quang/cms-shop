@@ -1,0 +1,38 @@
+import React from 'react';
+import {
+  Box,
+  Button,
+  Flex,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+} from '@chakra-ui/react';
+
+// interface ModalUpdateFeaturedProductProps {
+//   onClose?(): void;
+// }
+
+const ModalUpdateFeaturedProduct = ({ onClose }) => {
+  return (
+    <Box>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalBody>
+          <Text>Modal Content</Text>
+        </ModalBody>
+        <ModalFooter>
+          <Button colorScheme="blue" mr={3} onClick={onClose}>
+            Close
+          </Button>
+          <Button variant="ghost">Secondary Action</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Box>
+  );
+};
+
+export default ModalUpdateFeaturedProduct;

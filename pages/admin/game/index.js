@@ -89,7 +89,7 @@ function Game() {
     t('qrManagement.stt'),
     t('game.image'),
     t('name'),
-    // t('game.prize'),
+    'percent',
     t('quantity'),
     // t('amount'),
     `Levels`,
@@ -284,6 +284,11 @@ function Game() {
         <TableCell className={tableClasses.tableCell} key={'name'}>
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{item?.name}</p>
+          </div>
+        </TableCell>
+        <TableCell className={tableClasses.tableCell} key={'percent'}>
+          <div className={classes.proInfoContainer}>
+            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{item?.percent}</p>
           </div>
         </TableCell>
         {/* <TableCell className={tableClasses.tableCell} key={'prize'}>

@@ -106,11 +106,11 @@ const ModalUpdateInformationShop = ({ isOpen, onClose }) => {
                     transform="auto"
                     borderRadius="2px">
                     <Text textStyle="b-sm" color="text-white" mr="4">
-                      Cập nhật thông tin của Shop
+                      {t('shop_information_update')}
                     </Text>
                   </Flex>
                   <Text textStyle="b-sm" color="text-basic" mt="4" mb="4">
-                    Thông tin cơ bản
+                    {t('basic_information')}
                   </Text>
                   <Flex flexDirection={{ base: 'column', md: 'row' }} px={{ base: '0', md: '4' }}>
                     <VStack flex="7.5" spacing={{ base: '6', lg: '10' }} alignItems="unset">
@@ -119,7 +119,7 @@ const ModalUpdateInformationShop = ({ isOpen, onClose }) => {
                         position="relative"
                         onClick={() => inputRefAvatar.current.click()}>
                         <Text textStyle="b-md" color="text-body" mb="4">
-                          Avatar Shop
+                          {t('avatar_shop')}
                         </Text>
                         <Box cursor="pointer" zIndex={1}>
                           <TextField
@@ -146,7 +146,7 @@ const ModalUpdateInformationShop = ({ isOpen, onClose }) => {
                         position="relative"
                         onClick={() => inputRefBanner.current.click()}>
                         <Text textStyle="b-md" color="text-body" mb="4">
-                          Banner Shop
+                          {t('banner_shop')}
                         </Text>
                         <Box cursor="pointer" zIndex={1}>
                           <TextField
@@ -218,7 +218,7 @@ const ModalUpdateInformationShop = ({ isOpen, onClose }) => {
                           )}
                         </Box>
                         <Text textAlign="center" mt="4">
-                          Avatar
+                          {t('avatar')}
                         </Text>
                       </Box>
                       <Box
@@ -256,7 +256,7 @@ const ModalUpdateInformationShop = ({ isOpen, onClose }) => {
                           )}
                         </Box>
                         <Text textAlign="center" mt="4">
-                          Banner
+                          {t('banner')}
                         </Text>
                       </Box>
                     </Flex>
@@ -278,10 +278,10 @@ const ModalUpdateInformationShop = ({ isOpen, onClose }) => {
                 </ModalBody>
                 <ModalFooter justifyContent="center">
                   <Button variant="control" mr={3} onClick={onClose} minW="135px" marginRight={12}>
-                    Close
+                    {t('close')}
                   </Button>
                   <Button variant="primary" minW="135px" onClick={() => handleSubmit()}>
-                    Xác nhận
+                    {t('confirm')}
                   </Button>
                 </ModalFooter>
               </ModalContent>

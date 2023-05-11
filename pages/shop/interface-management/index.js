@@ -13,7 +13,6 @@ import {
   Flex,
   Icon,
   Image,
-  Modal,
   SimpleGrid,
   Text,
   useDisclosure,
@@ -21,6 +20,7 @@ import {
 import { IconShop } from 'components/Icons/Icons';
 import FeatureProductItem from './components/FeaturedProductItem';
 import ModalUpdateInformationShop from './components/ModalUpdateInformationShop';
+import ModalUpdateFeaturedProduct from './components/ModalUpdateFeaturedProduct';
 
 const image = 'https://imgtr.ee/images/2023/05/10/l0smR.png';
 
@@ -151,6 +151,7 @@ const InterfaceManagement = () => {
         </Flex>
       </Flex>
       <ModalUpdateInformationShop isOpen={isOpenShop} onClose={onCloseShop} />
+      <ModalUpdateFeaturedProduct isOpen={isOpenProduct} onClose={onCloseProduct} />
     </Box>
   );
 };

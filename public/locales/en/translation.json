@@ -135,7 +135,8 @@
     "game": "Game",
     "reportGame": "Game Report",
     "order_management": "Order Management",
-    "interface_management": "Interface Management"
+    "interface_management": "Interface Management",
+    "voucher_coupon": "Voucher Coupon"
   },
   "qrManagement": {
     "notActive": "Not Active",

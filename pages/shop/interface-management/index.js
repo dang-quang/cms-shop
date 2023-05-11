@@ -151,12 +151,13 @@ const InterfaceManagement = () => {
           <Button variant="primary" children={t('update')} minW="112px" onClick={onOpenProduct} />
         </Flex>
       </Flex>
-      <Modal isOpen={isOpenShop} onClose={onCloseShop} size="5xl">
+      <ModalUpdateInformationShop isOpen={isOpenShop} onClose={onCloseShop} />
+      {/* <Modal isOpen={isOpenShop} onClose={onCloseShop} size="5xl">
         <ModalUpdateInformationShop onClose={onCloseShop} />
-      </Modal>
-      <Modal isOpen={isOpenProduct} onClose={onCloseProduct} size="5xl">
+      </Modal> */}
+      {/* <Modal isOpen={isOpenProduct} onClose={onCloseProduct} size="5xl">
         <ModalUpdateFeaturedProduct onClose={onCloseProduct} />
-      </Modal>
+      </Modal> */}
     </Box>
   );
 };

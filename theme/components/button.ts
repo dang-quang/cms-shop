@@ -31,6 +31,19 @@ export const buttonStyles = {
             bg: mode('primary.200', 'primary.200')(props),
           },
         }),
+        control: (props: StyleFunctionProps) => ({
+          bg: mode('gray.1700', 'gray.1700')(props),
+          color: 'white',
+          _focus: {
+            bg: mode('gray.1600', 'gray.1600')(props),
+          },
+          _active: {
+            bg: mode('gray.1600', 'gray.1600')(props),
+          },
+          _hover: {
+            bg: mode('gray.1600', 'gray.1600')(props),
+          },
+        }),
         success: (props: StyleFunctionProps) => ({
           bg: mode('green.100', 'green.100')(props),
           color: 'white',

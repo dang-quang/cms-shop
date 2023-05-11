@@ -1,10 +1,8 @@
 import React from 'react';
 import {
+  Box,
   Button,
   Flex,
-  Input,
-  InputGroup,
-  InputLeftAddon,
   ModalBody,
   ModalContent,
   ModalFooter,
@@ -18,7 +16,6 @@ import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
 import { useTranslation } from 'react-i18next';
-import { Box, TextField } from '@material-ui/core';
 
 // interface ModalUpdateInformationShopProps {
 //   shop: IShop;
@@ -126,13 +123,13 @@ const ModalUpdateInformationShop = ({ onClose }) => {
                     <Text textStyle="b-md" color="text-body" mb="4">
                       Avatar Shop
                     </Text>
-                    <TextField
+                    {/* <TextField
                       id="outlined-shop-code"
                       variant="outlined"
                       value="Choose file"
                       disabled
                       fullWidth
-                    />
+                    /> */}
                     <input
                       ref={refInput}
                       accept="image/*"
@@ -147,13 +144,13 @@ const ModalUpdateInformationShop = ({ onClose }) => {
                     <Text textStyle="b-md" color="text-body" mb="4">
                       Banner Shop
                     </Text>
-                    <TextField
+                    {/* <TextField
                       id="outlined-shop-code"
                       variant="outlined"
                       value="Choose file"
                       disabled
                       fullWidth
-                    />
+                    /> */}
                     <input
                       ref={refInput}
                       accept="image/*"

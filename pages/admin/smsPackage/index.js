@@ -277,18 +277,10 @@ function SMSPackage() {
                   <Paper>
                     <ClickAwayListener onClickAway={() => handleAction(item)}>
                       <MenuList role="menu">
-                        <MenuItem
-                          className={classes.dropdownItem}
-                          onClick={() => {
-                            Router.push('/admin/category/addCategory');
-                          }}>
+                        <MenuItem className={classes.dropdownItem} onClick={() => {}}>
                           {t('detail')}
                         </MenuItem>
-                        <MenuItem
-                          className={classes.dropdownItem}
-                          onClick={() => {
-                            Router.push('/admin/category/addCategory');
-                          }}>
+                        <MenuItem className={classes.dropdownItem} onClick={() => {}}>
                           {t('edit')}
                         </MenuItem>
                         <MenuItem
@@ -456,11 +448,14 @@ function SMSPackage() {
               position: isMobile ? 'static' : 'absolute',
               right: '0',
             }}>
-            <Link href={'/admin/category/addCategory'}>
+            {/* <Link href={'/admin/category/addCategory'}>
               <Button id="update-label" color="green">
                 {t('category.createCategory')}
               </Button>
-            </Link>
+            </Link> */}
+            <Button id="update-label" color="green">
+              {t('category.createCategory')}
+            </Button>
           </FormControl>
         </div>
         <ModalCustom

@@ -267,11 +267,9 @@ function ProductOtherInformation() {
           position: isMobile ? 'static' : 'absolute',
           right: '0',
         }}>
-        {/*<Link href={"/admin/category/addCategory"} onPress={() => setIsShowEdit(true)}>*/}
         <Button id="update-label" color="green">
           {t('addNew')}
         </Button>
-        {/*</Link>*/}
       </FormControl>
     );
   };

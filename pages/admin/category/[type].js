@@ -53,7 +53,8 @@ function AddProductCategory({ onUpdated }) {
   const { t } = useTranslation();
 
   const router = useRouter();
-  const category = !_.isEmpty(router.query) ? router.query : undefined;
+  const category =
+    !_.isEmpty(router.query) && router.query.type === 'update' ? router.query : undefined;
 
   const [selectedImages, setSelectedImages] = React.useState([]);
   const [parentCategories, setParentCategories] = React.useState([]);

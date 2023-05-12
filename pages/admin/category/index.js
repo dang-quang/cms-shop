@@ -48,7 +48,8 @@ import { useDispatch } from 'react-redux';
 import { setShowLoader } from '../../../redux/actions/app';
 import { BASE_API_URL } from '../../../utilities/const';
 import imgGift from 'assets/img/gift.png';
-import { Input } from '@chakra-ui/react';
+import { Input, Text } from '@chakra-ui/react';
+import { useMobile } from 'hooks';
 
 function ProductCategory() {
   const dispatch = useDispatch();
@@ -74,7 +75,7 @@ function ProductCategory() {
   const [totalPage, setTotalPage] = useState(1);
   const [totalRecords, setTotalRecords] = React.useState(0);
   const [search, setSearch] = React.useState('');
-  const [isMobile, setIsMobile] = useState(false);
+  const { isMobile } = useMobile();
   const [showDate, setShowDate] = React.useState(false);
   const [filterDate, setFilterDate] = React.useState({ fromDate: FROM_DATE, toDate: TO_DATE });
   const [selectedCategory, setSelectedCategory] = React.useState(null);
@@ -94,62 +95,68 @@ function ProductCategory() {
     t('action'),
   ];
 
-  useEffect(() => {
-    window.addEventListener(
-      'resize',
-      () => {
-        setIsMobile(window.innerWidth < 1570);
-      },
-      false
-    );
+  React.useEffect(() => {
+    (async () => {
+      try {
+        dispatch(setShowLoader(true));
+        const res = await requestsGetCategoryList({ page: 1 });
+        if (res.code === 'MSG_SUCCESS' && res.result && res.result.results) {
+          setCategories(res.result.results === null ? [] : res.result.results);
+          setTotalPage(res?.result.totalPages);
+          setTotalRecords(res.result.totalRecords);
+        } else {
+          NotificationManager.error({
+            title: t('error'),
+            message: `No data exists`,
+          });
+        }
+      } finally {
+        dispatch(setShowLoader(false));
+      }
+    })();
   }, []);
-
-  // React.useEffect(() => {
-  //   (async () => {
-  //     dispatch(setShowLoader(true));
-  //     const res = await requestsGetCategoryList({ page: 1 });
-
-  //     dispatch(setShowLoader(false));
-  //     if (res && res.code === 'MSG_SUCCESS') {
-  //       setCategories(res?.result.results === null ? [] : res?.result.results);
-  //       setTotalPage(res.result.totalPages);
-  //       setTotalRecords(res.result.totalRecords);
-  //     }
-  //   })();
-  // }, []);
 
   React.useEffect(() => {
     (async () => {
-      dispatch(setShowLoader(true));
-      let from;
-      let to;
-      let key;
-      if (search) {
-        key = search;
+      try {
+        let from;
+        let to;
+        let key;
+        if (doSearch || doFilter) {
+          dispatch(setShowLoader(true));
+          if (doSearch) {
+            key = search;
+          }
+
+          if (doFilter) {
+            from = moment(filterDate.fromDate).format(formatDate);
+            to = moment(filterDate.toDate).format(formatDate);
+          }
+
+          const res = await requestsGetCategoryList({
+            keyWord: key,
+            fromDate: from,
+            toDate: to,
+            page: currentPage,
+          });
+
+          if (res.code === 'MSG_SUCCESS' && res.result && res.result.results) {
+            setCategories(res.result.results === null ? [] : res.result.results);
+            setTotalPage(res?.result.totalPages);
+            setTotalRecords(res.result.totalRecords);
+          } else {
+            setCategories([]);
+            setTotalPage(1);
+            setTotalRecords(0);
+          }
+        }
+      } finally {
+        dispatch(setShowLoader(false));
+        setDoSearch(false);
+        setDoFilter(false);
       }
-      if (doFilter) {
-        from = moment(filterDate.fromDate).format(formatDate);
-        to = moment(filterDate.toDate).format(formatDate);
-      }
-      const res = await requestsGetCategoryList({
-        keyWord: key,
-        fromDate: from,
-        toDate: to,
-        page: currentPage,
-      });
-      if (res.code === 'MSG_SUCCESS' && res.result && res.result.results) {
-        setCategories(res.result.results === null ? [] : res.result.results);
-        setTotalPage(res?.result.totalPages);
-        setTotalRecords(res.result.totalRecords);
-      } else {
-        NotificationManager.error({
-          title: t('error'),
-          message: `No search data exists`,
-        });
-      }
-      dispatch(setShowLoader(false));
     })();
-  }, [doSearch, filterDate, doFilter, currentPage]);
+  }, [doSearch, filterDate, doFilter, currentPage, search]);
 
   const resetFilterDate = React.useCallback(() => {
     setFilterDate({ fromDate: FROM_DATE, toDate: TO_DATE });
@@ -178,19 +185,24 @@ function ProductCategory() {
   };
 
   const handleDeleteCategory = React.useCallback(async () => {
-    dispatch(setShowLoader(true));
-
-    const res = await requestDeleteCategory(selectedCategory.id);
-    if (res.code === 'MSG_SUCCESS') {
-      setSelectedCategory(null);
-      Router.push('/admin/category');
-    } else {
-      NotificationManager.error({
-        title: t('error'),
-        message: res.message ? res.message.text : 'Error',
-      });
+    try {
+      setIsShowModal(false);
+      dispatch(setShowLoader(true));
+      const res = await requestDeleteCategory(selectedCategory.id);
+      if (res.code === 'MSG_SUCCESS') {
+        setSelectedCategory(null);
+        Router.push('/admin/category');
+      } else {
+        NotificationManager.error({
+          title: t('error'),
+          message: res.message ? res.message.text : 'Error',
+        });
+      }
+    } catch (error) {
+      console.log('delete category error');
+    } finally {
+      dispatch(setShowLoader(false));
     }
-    dispatch(setShowLoader(false));
   }, [selectedCategory]);
 
   const renderCategory = (item, index) => {
@@ -288,18 +300,11 @@ function ProductCategory() {
                   <Paper>
                     <ClickAwayListener onClickAway={() => handleAction(item)}>
                       <MenuList role="menu">
-                        {/* <MenuItem
-                          className={classes.dropdownItem}
-                          onClick={() => {
-                            Router.push('/admin/category/addCategory');
-                          }}>
-                          {t('detail')}
-                        </MenuItem> */}
                         <MenuItem
                           className={classes.dropdownItem}
                           onClick={() => {
                             Router.push({
-                              pathname: '/admin/category/addCategory',
+                              pathname: '/admin/category/update',
                               query: item,
                             });
                           }}>
@@ -329,7 +334,9 @@ function ProductCategory() {
     <Card>
       <NotificationContainer />
       <CardHeader color="primary">
-        <h4 className={classes.cardTitleWhite}>{t('sideBar.category')}</h4>
+        <Text textStyle="h5" color="text-white">
+          {t('sideBar.category')}
+        </Text>
       </CardHeader>
       <CardBody className={classes.cardBody}>
         <div className={dashClasses.filterSelections + ' ' + classes.flex_center_between}>
@@ -407,6 +414,7 @@ function ProductCategory() {
                                     margin="normal"
                                     id="date-picker-inline"
                                     label={t('from')}
+                                    maxDate={moment(filterDate.toDate).toDate()}
                                     value={filterDate.fromDate}
                                     onChange={(value) =>
                                       setFilterDate({ ...filterDate, fromDate: value })
@@ -423,6 +431,8 @@ function ProductCategory() {
                                     margin="normal"
                                     id="date-picker-inline"
                                     label={t('to')}
+                                    minDate={moment(filterDate.fromDate).toDate()}
+                                    maxDate={moment().toDate()}
                                     value={filterDate.toDate}
                                     onChange={(value) =>
                                       setFilterDate({ ...filterDate, toDate: value })
@@ -475,7 +485,7 @@ function ProductCategory() {
               position: isMobile ? 'static' : 'absolute',
               right: '0',
             }}>
-            <Link href={'/admin/category/addCategory'}>
+            <Link href={'/admin/category/add'}>
               <Button id="update-label" color="green">
                 {t('category.createCategory')}
               </Button>

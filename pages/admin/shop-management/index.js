@@ -438,6 +438,7 @@ function ShopListPage() {
                                     id="date-picker-inline"
                                     label={t('to')}
                                     minDate={moment(filterDate.fromDate).toDate()}
+                                    maxDate={moment().toDate()}
                                     value={filterDate.toDate}
                                     onChange={(value) =>
                                       setFilterDate({ ...filterDate, toDate: value })

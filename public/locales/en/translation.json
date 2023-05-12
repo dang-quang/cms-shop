@@ -113,9 +113,11 @@
   "select_featured_products": "Select Featured Products",
   "add": "Add",
   "list_price": "List price",
+  "serial_number": "S. No.",
   "sideBar": {
     "shop": "Shop",
     "shopAdmin": "Shop Admin",
+    "shop_management": "Shop Management",
     "shopUser": "Shop User",
     "shopProduct": "Shop Product",
     "qrManagement": "QR Management",
@@ -133,7 +135,7 @@
     "operationReport": "Operation Report",
     "uiManagement": "UI Management",
     "game": "Game",
-    "reportGame": "Game Report",
+    "report_game": "Game Report",
     "order_management": "Order Management",
     "interface_management": "Interface Management",
     "voucher_coupon": "Voucher Coupon"

@@ -46,7 +46,7 @@ import { NotificationContainer, NotificationManager } from 'react-light-notifica
 import { primaryColor } from 'assets/jss/natcash';
 import { useTranslation } from 'react-i18next';
 import Router, { useRouter } from 'next/router';
-import { Input } from '@chakra-ui/react';
+import { Flex, Input, Text } from '@chakra-ui/react';
 function ShopListPage() {
   const useShopStyles = makeStyles(shopStyle);
   const shopClasses = useShopStyles();
@@ -82,7 +82,7 @@ function ShopListPage() {
   const [selectedShop, setSelectedShop] = React.useState(null);
 
   const TABLE_HEAD = [
-    //t('qrManagement.stt'),
+    t('serial_number'),
     'Shop code',
     'Shop name',
     'Address',
@@ -104,36 +104,66 @@ function ShopListPage() {
 
   React.useEffect(() => {
     (async () => {
-      dispatch(setShowLoader(true));
-      let from;
-      let to;
-      let key;
-      if (search) {
-        key = search;
+      try {
+        dispatch(setShowLoader(true));
+        const res = await requestsGetShopList({ page: 1 });
+        if (res.code === 'MSG_SUCCESS' && res.result && res.result.results) {
+          setShops(res.result.results === null ? [] : res.result.results);
+          setTotalPage(res?.result.totalPages);
+          setTotalRecords(res.result.totalRecords);
+        } else {
+          NotificationManager.error({
+            title: t('error'),
+            message: `No data exists`,
+          });
+        }
+      } finally {
+        dispatch(setShowLoader(false));
       }
-      if (doFilter) {
-        from = moment(filterDate.fromDate).format(formatDate);
-        to = moment(filterDate.toDate).format(formatDate);
-      }
-      const res = await requestsGetShopList({
-        keyWord: key,
-        fromDate: from,
-        toDate: to,
-        page: currentPage,
-      });
-      if (res.code === 'MSG_SUCCESS' && res.result && res.result.results) {
-        setShops(res.result.results === null ? [] : res.result.results);
-        setTotalPage(res?.result.totalPages);
-        setTotalRecords(res.result.totalRecords);
-      } else {
-        NotificationManager.error({
-          title: t('error'),
-          message: `No search data exists`,
-        });
-      }
-      dispatch(setShowLoader(false));
     })();
-  }, [doSearch, filterDate, doFilter, currentPage]);
+  }, []);
+
+  React.useEffect(() => {
+    (async () => {
+      try {
+        let from;
+        let to;
+        let key;
+        if (doSearch || doFilter) {
+          dispatch(setShowLoader(true));
+          if (doSearch) {
+            key = search;
+          }
+
+          if (doFilter) {
+            from = moment(filterDate.fromDate).format(formatDate);
+            to = moment(filterDate.toDate).format(formatDate);
+          }
+
+          const res = await requestsGetShopList({
+            keyWord: key,
+            fromDate: from,
+            toDate: to,
+            page: currentPage,
+          });
+
+          if (res.code === 'MSG_SUCCESS' && res.result && res.result.results) {
+            setShops(res.result.results === null ? [] : res.result.results);
+            setTotalPage(res?.result.totalPages);
+            setTotalRecords(res.result.totalRecords);
+          } else {
+            setShops([]);
+            setTotalPage(1);
+            setTotalRecords(0);
+          }
+        }
+      } finally {
+        dispatch(setShowLoader(false));
+        setDoSearch(false);
+        setDoFilter(false);
+      }
+    })();
+  }, [doSearch, filterDate, doFilter, currentPage, search]);
 
   const handleDeleteShop = React.useCallback(async () => {
     try {
@@ -141,7 +171,7 @@ function ShopListPage() {
       const res = await requestDeleteShop({ id: selectedShop.id });
       if (res.code === 'MSG_SUCCESS') {
         setSelectedShop(null);
-        router.push('/admin/shopAdmin');
+        router.push('/admin/shop-management');
       } else {
         NotificationManager.error({
           title: t('error'),
@@ -188,25 +218,25 @@ function ShopListPage() {
         style={{
           backgroundColor: checked.indexOf(item) !== -1 ? '#fff6f0' : '#fff',
         }}>
-        {/* <TableCell className={tableClasses.tableCell} key={'shopInfo3'}>
+        <TableCell className={tableClasses.tableCell} key="serial_number">
           <div className={classes.proInfoContainer}>
-            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{index}</p>
+            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{index + 1}</p>
           </div>
-        </TableCell> */}
+        </TableCell>
         <TableCell className={tableClasses.tableCell} key={'shopCode'}>
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{shopCode}</p>
           </div>
         </TableCell>
-        <TableCell className={tableClasses.tableCell} key={'shopName'}>
-          <div className={classes.proInfoContainer}>
-            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{shopName}</p>
-          </div>
+        <TableCell className={tableClasses.tableCell} key={'shopName'} style={{ width: '20%' }}>
+          <Text textStyle="c-md" color="text-basic" noOfLines={1}>
+            {shopName}
+          </Text>
         </TableCell>
-        <TableCell className={tableClasses.tableCell} key={'address'}>
-          <div className={classes.proInfoContainer}>
-            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{address}</p>
-          </div>
+        <TableCell className={tableClasses.tableCell} key={'address'} style={{ width: '20%' }}>
+          <Text textStyle="c-md" color="text-basic" noOfLines={1}>
+            {address}
+          </Text>
         </TableCell>
         <TableCell className={tableClasses.tableCell} key={'phone'}>
           <div className={classes.proInfoContainer}>
@@ -278,7 +308,7 @@ function ShopListPage() {
                           className={classes.dropdownItem}
                           onClick={() => {
                             router.push({
-                              pathname: '/admin/shopAdmin/addshop',
+                              pathname: '/admin/shop-management/shop',
                               query: item,
                             });
                           }}>
@@ -308,7 +338,9 @@ function ShopListPage() {
     <Card>
       <NotificationContainer />
       <CardHeader color="primary">
-        <h4 className={classes.cardTitleWhite}>{t('sideBar.shopManagement')}</h4>
+        <Text textStyle="h5" color="text-white">
+          {t('sideBar.shopManagement')}
+        </Text>
       </CardHeader>
       <CardBody className={classes.cardBody}>
         <div className={dashClasses.filterSelections + ' ' + classes.flex_center_between}>
@@ -327,7 +359,9 @@ function ShopListPage() {
                   aria-label="edit"
                   justIcon
                   round
-                  onClick={() => setDoSearch(!doSearch)}>
+                  onClick={() => {
+                    setDoSearch(!doSearch);
+                  }}>
                   <Search />
                 </Button>
               </div>
@@ -386,6 +420,7 @@ function ShopListPage() {
                                     margin="normal"
                                     id="date-picker-inline"
                                     label={t('from')}
+                                    maxDate={moment(filterDate.toDate).toDate()}
                                     value={filterDate.fromDate}
                                     onChange={(value) =>
                                       setFilterDate({ ...filterDate, fromDate: value })
@@ -402,6 +437,7 @@ function ShopListPage() {
                                     margin="normal"
                                     id="date-picker-inline"
                                     label={t('to')}
+                                    minDate={moment(filterDate.fromDate).toDate()}
                                     value={filterDate.toDate}
                                     onChange={(value) =>
                                       setFilterDate({ ...filterDate, toDate: value })
@@ -454,7 +490,7 @@ function ShopListPage() {
               position: isMobile ? 'static' : 'absolute',
               right: '0',
             }}>
-            <Link href={'/admin/shopAdmin/addshop'}>
+            <Link href={'/admin/shop-management/shop'}>
               <Button id="update-label" color="green">
                 CREATE NEW SHOP
               </Button>

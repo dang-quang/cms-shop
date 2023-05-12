@@ -28,6 +28,7 @@ import { Close } from '@material-ui/icons';
 import { setShowLoader } from 'redux/actions/app';
 import { BASE_API_URL } from 'utilities/const';
 import { IShop, IUser } from 'constants/types';
+import { Text } from '@chakra-ui/react';
 
 const initialValues = {
   id: '',
@@ -40,6 +41,7 @@ const initialValues = {
   description: '',
   status: 1,
   email: '',
+  ownerShop: undefined,
 };
 function AddShop() {
   const dispatch = useDispatch();
@@ -134,7 +136,7 @@ function AddShop() {
             status,
           });
           if (res && res.code === 'MSG_SUCCESS') {
-            router.push('/admin/shopAdmin');
+            router.push('/admin/shop-management');
           } else if (res && res.code === 'ERR_CODE_SHOP') {
             setFieldError('shopCode', `${res.message}`);
           } else {
@@ -158,7 +160,7 @@ function AddShop() {
           });
           dispatch(setShowLoader(false));
           if (res && res.code === 'MSG_SUCCESS') {
-            router.push('/admin/shopAdmin');
+            router.push('/admin/shop-management');
           } else if (res && res.code === 'ERR_CODE_SHOP') {
             setFieldError('shopCode', `${res.message}`);
           } else {
@@ -185,7 +187,7 @@ function AddShop() {
     address: yup.string().required(t('errorAddressRequire')),
     shopCode: yup.string().required(t('errorShopCodeRequire')),
     shopType: yup.string().required(t('errorShopTypeRequire')),
-    //ownerShop: yup.object().required(t('errorOwnerShopRequire')),
+    ownerShop: yup.object().required(t('errorOwnerShopRequire')),
     email: yup.string().required(t('errorEmailRequire')).email(t('errorInvalidEmail')),
     //description: yup.string().required('errorDescriptionRequire'),
     //avatar: yup.string().required(t('errorImageRequire')),
@@ -237,9 +239,9 @@ function AddShop() {
           <Form style={{ height: height - 150 + 'px', overflowY: 'auto' }}>
             <Card>
               <CardHeader color="primary">
-                <h4 className={classes.cardTitleWhite}>
+                <Text textStyle="h5" color="text-white">
                   {shop ? t('addShop.edit_shop') : t('addShop.create_new_shop')}
-                </h4>
+                </Text>
               </CardHeader>
               <CardBody className={classes.cardBody} style={{ paddingBottom: 20 }}>
                 <GridContainer>

@@ -15,8 +15,8 @@ const dashboardRoutes = [
       //   permission: 'shop_admin_qr',
       // },
       {
-        path: '/shopAdmin',
-        name: 'shopManagement',
+        path: '/shop-management',
+        name: 'shop_management',
         layout: '/admin',
         parent: 'operation',
         permission: 'shop_admin_shop',
@@ -85,8 +85,8 @@ const dashboardRoutes = [
         permission: 'admin_game',
       },
       {
-        path: '/reportGame',
-        name: 'reportGame',
+        path: '/report-game',
+        name: 'report_game',
         layout: '/admin',
         parent: 'operation',
         permission: 'admin_game_report',

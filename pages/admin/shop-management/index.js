@@ -47,6 +47,7 @@ import { primaryColor } from 'assets/jss/natcash';
 import { useTranslation } from 'react-i18next';
 import Router, { useRouter } from 'next/router';
 import { Flex, Input, Text } from '@chakra-ui/react';
+import { useMobile } from 'hooks';
 function ShopListPage() {
   const useShopStyles = makeStyles(shopStyle);
   const shopClasses = useShopStyles();
@@ -76,7 +77,7 @@ function ShopListPage() {
   const [totalPage, setTotalPage] = React.useState(1);
   const [totalRecords, setTotalRecords] = React.useState(0);
   const [search, setSearch] = React.useState('');
-  const [isMobile, setIsMobile] = React.useState(false);
+  const { isMobile } = useMobile();
   const [checked, setChecked] = React.useState([]);
   const [shops, setShops] = React.useState([]);
   const [selectedShop, setSelectedShop] = React.useState(null);
@@ -91,16 +92,6 @@ function ShopListPage() {
     'Type',
     t('action'),
   ];
-
-  React.useEffect(() => {
-    window.addEventListener(
-      'resize',
-      () => {
-        setIsMobile(window.innerWidth < 1570);
-      },
-      false
-    );
-  }, []);
 
   React.useEffect(() => {
     (async () => {
@@ -308,7 +299,7 @@ function ShopListPage() {
                           className={classes.dropdownItem}
                           onClick={() => {
                             router.push({
-                              pathname: '/admin/shop-management/shop',
+                              pathname: '/admin/shop-management/update',
                               query: item,
                             });
                           }}>
@@ -491,7 +482,7 @@ function ShopListPage() {
               position: isMobile ? 'static' : 'absolute',
               right: '0',
             }}>
-            <Link href={'/admin/shop-management/shop'}>
+            <Link href={'/admin/shop-management/add'}>
               <Button id="update-label" color="green">
                 CREATE NEW SHOP
               </Button>

@@ -8,7 +8,6 @@ import Card from 'components/Card/Card.js';
 import CardHeader from 'components/Card/CardHeader.js';
 import CardBody from 'components/Card/CardBody.js';
 import CardFooter from 'components/Card/CardFooter.js';
-import Button from 'components/CustomButtons/Button.js';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, TextField, Switch, FormGroup, FormControlLabel } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -21,14 +20,13 @@ import styles from 'assets/jss/natcash/views/shoplist/addShopStyle.js';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { useWindowDimensions } from 'hooks';
-import { isEmpty } from 'lodash';
 import { requestGetOwnerShop, requestsCreateEditShop } from 'utilities/ApiManage';
 import { useRouter } from 'next/router';
 import { Close } from '@material-ui/icons';
 import { setShowLoader } from 'redux/actions/app';
 import { BASE_API_URL } from 'utilities/const';
-import { IShop, IUser } from 'constants/types';
-import { Text } from '@chakra-ui/react';
+import { Button, Flex, Text } from '@chakra-ui/react';
+import _ from 'lodash';
 
 const initialValues = {
   id: '',
@@ -53,7 +51,8 @@ function AddShop() {
   const refInput = React.useRef(null);
   const router = useRouter();
 
-  const shop = !isEmpty(router.query) ? router.query : undefined;
+  const shop =
+    !_.isEmpty(router.query) && router.query.mode === 'update' ? router.query : undefined;
 
   const [selectedImages, setSelectedImages] = React.useState([]);
   const [users, setUsers] = React.useState([]);
@@ -387,8 +386,7 @@ function AddShop() {
                       <TextField
                         id="outlined-shop-code"
                         variant="outlined"
-                        value="Choose file"
-                        disabled
+                        label={t('upload_image_of_shop')}
                         fullWidth
                       />
                       <input
@@ -417,10 +415,15 @@ function AddShop() {
                   </GridItem>
                 </GridContainer>
               </CardBody>
-              <CardFooter style={{ display: 'flex', with: '100%', justifyContent: 'center' }}>
-                <Button color="primary" onClick={() => handleSubmit()}>
-                  {t('confirm')}
-                </Button>
+              <CardFooter>
+                <Flex flex="1" display="flex" justifyContent="flex-end">
+                  <Button variant="control" onClick={() => router.back()} mr="6">
+                    {t('cancel')}
+                  </Button>
+                  <Button variant="primary" onClick={() => handleSubmit()}>
+                    {t('confirm')}
+                  </Button>
+                </Flex>
               </CardFooter>
             </Card>
           </Form>

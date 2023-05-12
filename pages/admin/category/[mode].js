@@ -1,19 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import Router, { useRouter } from 'next/router';
-import { setShowLoader } from '../../../redux/actions/app';
+import React from 'react';
+import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
-import moment from 'moment';
 import { NotificationContainer, NotificationManager } from 'react-light-notifications';
 import 'react-light-notifications/lib/main.css';
-// @material-ui/core components
-// layout for this page
 import Admin from 'layouts/Admin.js';
-// core components
 import Card from 'components/Card/Card.js';
 import CardHeader from 'components/Card/CardHeader.js';
 import CardBody from 'components/Card/CardBody.js';
 import CardFooter from 'components/Card/CardFooter.js';
-import Button from 'components/CustomButtons/Button.js';
 import {
   FormControl,
   FormControlLabel,
@@ -37,6 +31,8 @@ import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { Close, PhotoCamera } from '@material-ui/icons';
 import { BASE_API_URL } from 'utilities/const';
+import { setShowLoader } from 'redux/actions/app';
+import { Button, Text } from '@chakra-ui/react';
 
 const initialValues = {
   id: '',
@@ -54,7 +50,7 @@ function AddProductCategory({ onUpdated }) {
 
   const router = useRouter();
   const category =
-    !_.isEmpty(router.query) && router.query.type === 'update' ? router.query : undefined;
+    !_.isEmpty(router.query) && router.query.mode === 'update' ? router.query : undefined;
 
   const [selectedImages, setSelectedImages] = React.useState([]);
   const [parentCategories, setParentCategories] = React.useState([]);
@@ -131,7 +127,7 @@ function AddProductCategory({ onUpdated }) {
             image,
           });
           if (res.code === 'MSG_SUCCESS') {
-            Router.push('/admin/category');
+            router.push('/admin/category');
             onUpdated();
           } else {
             NotificationManager.error({
@@ -150,7 +146,7 @@ function AddProductCategory({ onUpdated }) {
           });
           dispatch(setShowLoader(false));
           if (res.code === 'MSG_SUCCESS') {
-            Router.push('/admin/category');
+            router.push('/admin/category');
           } else {
             NotificationManager.error({
               title: t('error'),
@@ -222,9 +218,9 @@ function AddProductCategory({ onUpdated }) {
           <Form>
             <Card>
               <CardHeader color="primary">
-                <h4 className={classes.cardTitleWhite}>
+                <Text textStyle="h5" color="text-white">
                   {category ? 'Edit Category' : t('category.createCategory')}
-                </h4>
+                </Text>
               </CardHeader>
               <CardBody className={classes.cardBody}>
                 <FormGroupCustom title={t('basicInformation')}>
@@ -374,10 +370,10 @@ function AddProductCategory({ onUpdated }) {
                 <NotificationContainer />
               </CardBody>
               <CardFooter className={classes.flex_end}>
-                <Button color="gray" onClick={() => Router.back()}>
+                <Button variant="control" onClick={() => router.back()} mr="6">
                   {t('cancel')}
                 </Button>
-                <Button color="primary" onClick={() => handleSubmit()}>
+                <Button variant="primary" onClick={() => handleSubmit()}>
                   {t('confirm')}
                 </Button>
               </CardFooter>

@@ -111,9 +111,11 @@
   "banner": "Banner",
   "close": "Close",
   "select_featured_products": "Select Featured Products",
+  "upload_image_of_shop": "Upload image of shop",
   "add": "Add",
   "list_price": "List price",
   "serial_number": "S. No.",
+  "place_holder_search_shop": "Enter shop code, shop name, phone number",
   "sideBar": {
     "shop": "Shop",
     "shopAdmin": "Shop Admin",

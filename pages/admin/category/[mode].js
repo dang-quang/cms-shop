@@ -114,7 +114,7 @@ function AddProductCategory({ onUpdated }) {
   };
 
   const handleSubmitCategory = React.useCallback(
-    async ({ id, name, code, parentId, promotion, image }) => {
+    async ({ id, name, code, parentId, promotion, image }, { setFieldError }) => {
       try {
         dispatch(setShowLoader(true));
         if (category) {
@@ -129,6 +129,8 @@ function AddProductCategory({ onUpdated }) {
           if (res.code === 'MSG_SUCCESS') {
             router.push('/admin/category');
             onUpdated();
+          } else if (res && res.code === 'ERR_CODE_CATEGORY') {
+            setFieldError('code', `${res.message}`);
           } else {
             NotificationManager.error({
               title: t('error'),
@@ -144,9 +146,10 @@ function AddProductCategory({ onUpdated }) {
             promotion: promotion === 'true' ? 1 : 0,
             image,
           });
-          dispatch(setShowLoader(false));
           if (res.code === 'MSG_SUCCESS') {
             router.push('/admin/category');
+          } else if (res && res.code === 'ERR_CODE_CATEGORY') {
+            setFieldError('code', `${res.message}`);
           } else {
             NotificationManager.error({
               title: t('error'),
@@ -247,7 +250,7 @@ function AddProductCategory({ onUpdated }) {
                   <FormCellCustom
                     error={!!errors.code}
                     label={t('category.categoryCode')}
-                    helperText={errors.code ? errors.code : t('category.categoryCodeDes')}>
+                    helperText={!!errors.code ? errors.code : t('category.categoryCodeDes')}>
                     <div className={classes.formCell}>
                       <TextField
                         label={''}

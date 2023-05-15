@@ -48,7 +48,7 @@ import { useDispatch } from 'react-redux';
 import { setShowLoader } from '../../../redux/actions/app';
 import { BASE_API_URL } from '../../../utilities/const';
 import imgGift from 'assets/img/gift.png';
-import { Input, Text } from '@chakra-ui/react';
+import { Box, Flex, Input, SimpleGrid, Text } from '@chakra-ui/react';
 import { useMobile } from 'hooks';
 
 function ProductCategory() {
@@ -148,6 +148,10 @@ function ProductCategory() {
             setCategories([]);
             setTotalPage(1);
             setTotalRecords(0);
+            NotificationManager.error({
+              title: t('no_results_found'),
+              message: t('no_results_found_for_your_search'),
+            });
           }
         }
       } finally {
@@ -339,28 +343,33 @@ function ProductCategory() {
         </Text>
       </CardHeader>
       <CardBody className={classes.cardBody}>
-        <div className={dashClasses.filterSelections + ' ' + classes.flex_center_between}>
-          <div>
-            <FormControl className={dashClasses.formControl}>
-              <div style={{ marginRight: '15px' }}>
-                <Input
-                  variant="search"
-                  placeholder={t('findBy')}
-                  onChange={handleInputSearch}
-                  maxW="180px"
-                  mr="6"
-                />
-                <Button
-                  color="white"
-                  aria-label="edit"
-                  justIcon
-                  round
-                  onClick={() => setDoSearch(!doSearch)}>
-                  <Search />
-                </Button>
-              </div>
-            </FormControl>
-            <FormControl className={dashClasses.formControl} style={{ marginRight: '25px' }}>
+        <Flex
+          flexDirection={{ base: 'column', md: 'row' }}
+          alignItems={{ base: 'unset', md: 'center' }}
+          justifyContent={{ base: 'flex-start', md: 'space-between' }}>
+          <Flex
+            flexDirection={{ base: 'column', sm: 'row' }}
+            alignItems={{ base: 'unset', sm: 'center' }}
+            flex="1">
+            <Flex mx={{ base: 'unset', sm: '2' }} flex="1" alignItems="center" maxW="400px">
+              <Input
+                variant="search"
+                placeholder="Enter category code, name"
+                onChange={handleInputSearch}
+                mr="2"
+              />
+              <Button
+                color="white"
+                aria-label="edit"
+                justIcon
+                round
+                onClick={() => {
+                  setDoSearch(!doSearch);
+                }}>
+                <Search />
+              </Button>
+            </Flex>
+            <Box>
               <Button
                 color="white"
                 id={'filter-date-label'}
@@ -368,9 +377,9 @@ function ProductCategory() {
                 aria-haspopup="true"
                 className={classes.filteTritle}
                 onClick={() => setShowDate(true)}>
-                {moment(filterDate.fromDate).format('DD/MM/yyyy') +
+                {moment(filterDate.fromDate).format(formatDate) +
                   ' - ' +
-                  moment(filterDate.toDate).format('DD/MM/yyyy')}
+                  moment(filterDate.toDate).format(formatDate)}
               </Button>
               <Poppers
                 open={Boolean(showDate)}
@@ -393,70 +402,56 @@ function ProductCategory() {
                     }}>
                     <Paper>
                       <ClickAwayListener onClickAway={() => setShowDate(false)}>
-                        <div style={{ width: isMobile ? '190px' : '460px' }}>
+                        <Box>
                           <div style={{ padding: '7px 15px', borderRadius: '4px' }}>
-                            <p
-                              style={{
-                                margin: 0,
-                                fontSize: '17px',
-                                fontWeight: '400',
-                                color: primaryColor[0],
-                              }}>
+                            <Text textStyle="h5" color="primary.100">
                               {t('chooseDate')}
-                            </p>
-                            <div style={{ marginTop: '10px' }}>
-                              <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
-                                <GridContainer>
-                                  <KeyboardDatePicker
-                                    disableToolbar
-                                    variant="inline"
-                                    format="dd/MM/yyyy"
-                                    margin="normal"
-                                    id="date-picker-inline"
-                                    label={t('from')}
-                                    maxDate={moment(filterDate.toDate).toDate()}
-                                    value={filterDate.fromDate}
-                                    onChange={(value) =>
-                                      setFilterDate({ ...filterDate, fromDate: value })
-                                    }
-                                    KeyboardButtonProps={{
-                                      'aria-label': 'change date',
-                                    }}
-                                    style={{ margin: '0 40px', width: '150px' }}
-                                  />
-                                  <KeyboardDatePicker
-                                    disableToolbar
-                                    variant="inline"
-                                    format="dd/MM/yyyy"
-                                    margin="normal"
-                                    id="date-picker-inline"
-                                    label={t('to')}
-                                    minDate={moment(filterDate.fromDate).toDate()}
-                                    maxDate={moment().toDate()}
-                                    value={filterDate.toDate}
-                                    onChange={(value) =>
-                                      setFilterDate({ ...filterDate, toDate: value })
-                                    }
-                                    KeyboardButtonProps={{
-                                      'aria-label': 'change date',
-                                    }}
-                                    style={{ margin: '0 40px', width: '150px' }}
-                                  />
-                                </GridContainer>
-                              </MuiPickersUtilsProvider>
-                            </div>
-                            <div
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                marginTop: '15px',
-                                justifyContent: 'flex-end',
-                              }}>
+                            </Text>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+                              <SimpleGrid
+                                gap={{ base: 'unset', md: '6' }}
+                                columns={{ base: 1, md: 2 }}>
+                                <KeyboardDatePicker
+                                  disableToolbar
+                                  variant="inline"
+                                  format="dd/MM/yyyy"
+                                  margin="normal"
+                                  id="date-picker-inline"
+                                  label={t('from')}
+                                  maxDate={moment(filterDate.toDate).toDate()}
+                                  value={filterDate.fromDate}
+                                  onChange={(value) =>
+                                    setFilterDate({ ...filterDate, fromDate: value })
+                                  }
+                                  KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                  }}
+                                />
+                                <KeyboardDatePicker
+                                  disableToolbar
+                                  variant="inline"
+                                  format="dd/MM/yyyy"
+                                  margin="normal"
+                                  id="date-picker-inline"
+                                  label={t('to')}
+                                  minDate={moment(filterDate.fromDate).toDate()}
+                                  maxDate={moment().toDate()}
+                                  value={filterDate.toDate}
+                                  onChange={(value) =>
+                                    setFilterDate({ ...filterDate, toDate: value })
+                                  }
+                                  KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                  }}
+                                />
+                              </SimpleGrid>
+                            </MuiPickersUtilsProvider>
+                            <Flex alignItems="center" mt="4" justifyContent="flex-end">
                               <Button
                                 color="white"
                                 size="sm"
                                 style={{ marginRight: '10px' }}
-                                onClick={resetFilterDate}>
+                                onClick={() => resetFilterDate()}>
                                 {t('reset')}
                               </Button>
                               <Button
@@ -468,30 +463,22 @@ function ProductCategory() {
                                 }}>
                                 {t('apply')}
                               </Button>
-                            </div>
+                            </Flex>
                           </div>
-                        </div>
+                        </Box>
                       </ClickAwayListener>
                     </Paper>
                   </Grow>
                 )}
               </Poppers>
-            </FormControl>
-          </div>
-          <FormControl
-            className={dashClasses.formControl}
-            style={{
-              marginRight: '25px',
-              position: isMobile ? 'static' : 'absolute',
-              right: '0',
-            }}>
-            <Link href={'/admin/category/add'}>
-              <Button id="update-label" color="green">
-                {t('category.createCategory')}
-              </Button>
-            </Link>
-          </FormControl>
-        </div>
+            </Box>
+          </Flex>
+          <Link href={'/admin/category/add'}>
+            <Button id="update-label" color="green">
+              CREATE CATEGORY
+            </Button>
+          </Link>
+        </Flex>
         <ModalCustom
           width={600}
           title={t('confirmation')}

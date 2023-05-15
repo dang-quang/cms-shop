@@ -146,6 +146,10 @@ function ShopListPage() {
             setShops([]);
             setTotalPage(1);
             setTotalRecords(0);
+            NotificationManager.error({
+              title: t('no_results_found'),
+              message: t('no_results_found_for_your_search'),
+            });
           }
         }
       } finally {

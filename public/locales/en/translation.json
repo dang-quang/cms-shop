@@ -116,6 +116,8 @@
   "list_price": "List price",
   "serial_number": "S. No.",
   "place_holder_search_shop": "Enter shop code, shop name, phone number",
+  "no_results_found": "No Results Found",
+  "no_results_found_for_your_search": "No results found for your search.",
   "sideBar": {
     "shop": "Shop",
     "shopAdmin": "Shop Admin",

@@ -303,8 +303,8 @@ function AddShop() {
                       </GridItem>
                       <GridItem className={classes.viewItem} xs={12} sm={6} md={6}>
                         <TextField
-                          id="outlined-typeStore"
-                          label={t('addShop.typeStore')}
+                          id="outlined-type-shop"
+                          label={t('addShop.typeShop')}
                           variant="outlined"
                           style={{ width: '100%', marginBottom: 20 }}
                           value={values.shopType}

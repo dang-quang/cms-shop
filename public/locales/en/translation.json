@@ -158,7 +158,7 @@
   },
   "addShop": {
     "shopName": "Store Name",
-    "referenceStoreCode": "Reference store code",
+    "referenceShopCode": "Reference shop code",
     "phoneNumber": "Phone Number",
     "contact": "Contact",
     "address": "Address",

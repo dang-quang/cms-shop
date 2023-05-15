@@ -184,7 +184,10 @@ function AddShop() {
       .required(t('errorPhoneRequire'))
       .matches(/^[0-9-+s()]*$/, t('errorInvalidPhone')),
     address: yup.string().required(t('errorAddressRequire')),
-    shopCode: yup.string().required(t('errorShopCodeRequire')),
+    shopCode: yup
+      .string()
+      .matches(/^[A-Z0-9]{1,5}$/, t('category.categoryCodeDes'))
+      .required(t('errorCodeRequire')),
     shopType: yup.string().required(t('errorShopTypeRequire')),
     ownerShop: yup.object().required(t('errorOwnerShopRequire')),
     email: yup.string().required(t('errorEmailRequire')).email(t('errorInvalidEmail')),
@@ -374,12 +377,14 @@ function AddShop() {
                   <GridItem className={classes.viewItem} xs={12} sm={12} md={4}>
                     <TextField
                       id="outlined-shop-code"
-                      label={t('addShop.referenceStoreCode')}
+                      label={t('addShop.referenceShopCode')}
                       variant="outlined"
                       value={values.shopCode}
                       onChange={handleChange('shopCode')}
                       error={!!errors.shopCode}
-                      helperText={errors.shopCode}
+                      helperText={
+                        !!errors.shopCode ? errors.shopCode : t('category.categoryCodeDes')
+                      }
                       style={{ width: '100%', marginBottom: 20 }}
                     />
                     <div className={classes.imageView} onClick={() => refInput.current.click()}>

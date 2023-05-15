@@ -8,20 +8,8 @@ import Card from 'components/Card/Card.js';
 import CardHeader from 'components/Card/CardHeader.js';
 import CardBody from 'components/Card/CardBody.js';
 import CardFooter from 'components/Card/CardFooter.js';
-import {
-  FormControl,
-  FormControlLabel,
-  IconButton,
-  InputAdornment,
-  makeStyles,
-  Radio,
-  RadioGroup,
-  TextField,
-  withStyles,
-} from '@material-ui/core';
+import { FormControlLabel, FormGroup, makeStyles, Switch, TextField } from '@material-ui/core';
 import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
-import FormGroupCustom from 'components/FormCustom/FormGroupCustom.js';
-import FormCellCustom from 'components/FormCustom/FormCellCustom.js';
 import styles from 'assets/jss/natcash/views/category/addCategoryStyle';
 import { useTranslation } from 'react-i18next';
 import { Autocomplete } from '@material-ui/lab';
@@ -29,41 +17,34 @@ import _ from 'lodash';
 import { requestCreateEditCategory, requestsGetParentCategory } from 'utilities/ApiManage';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
-import { Close, PhotoCamera } from '@material-ui/icons';
+import { Close } from '@material-ui/icons';
 import { BASE_API_URL } from 'utilities/const';
 import { setShowLoader } from 'redux/actions/app';
-import { Button, Text } from '@chakra-ui/react';
+import { AspectRatio, Box, Button, Center, Flex, Text } from '@chakra-ui/react';
+import GridContainer from 'components/Grid/GridContainer';
+import GridItem from 'components/Grid/GridItem';
 
 const initialValues = {
   id: '',
   name: '',
   code: '',
   image: '',
-  promotion: '',
+  promotion: 0,
 };
 
 function AddProductCategory({ onUpdated }) {
+  const router = useRouter();
   const dispatch = useDispatch();
   const useStyles = makeStyles(styles);
   const classes = useStyles();
   const { t } = useTranslation();
+  const refInput = React.useRef(null);
 
-  const router = useRouter();
   const category =
     !_.isEmpty(router.query) && router.query.mode === 'update' ? router.query : undefined;
 
   const [selectedImages, setSelectedImages] = React.useState([]);
   const [parentCategories, setParentCategories] = React.useState([]);
-
-  const CustomRadio = withStyles({
-    root: {
-      color: 'gray',
-      '&$checked': {
-        color: '#f96606',
-      },
-    },
-    checked: {},
-  })((props) => <Radio color="default" {...props} />);
 
   React.useEffect(() => {
     (async () => {
@@ -123,7 +104,7 @@ function AddProductCategory({ onUpdated }) {
             name,
             code: code,
             parentId: parentId && parentId.id,
-            promotion: promotion === 'true' ? 1 : 0,
+            promotion,
             image,
           });
           if (res.code === 'MSG_SUCCESS') {
@@ -143,7 +124,7 @@ function AddProductCategory({ onUpdated }) {
             name: name,
             code: code,
             parentId: parentId && parentId.id,
-            promotion: promotion === 'true' ? 1 : 0,
+            promotion,
             image,
           });
           if (res.code === 'MSG_SUCCESS') {
@@ -183,12 +164,6 @@ function AddProductCategory({ onUpdated }) {
       onSubmit={handleSubmitCategory}>
       {({ handleChange, handleSubmit, setFieldValue, values, errors }) => {
         React.useEffect(() => {
-          if (category && category.promotion === '1') {
-            setFieldValue('promotion', 'true');
-          } else {
-            setFieldValue('promotion', 'false');
-          }
-
           if (category && category.image) {
             const str = BASE_API_URL + '/assets/' + category.image;
 
@@ -215,6 +190,10 @@ function AddProductCategory({ onUpdated }) {
               name: category.parentName,
             });
           }
+
+          if (category && category.promotion) {
+            setFieldValue('promotion', parseInt(category.promotion));
+          }
         }, [category]);
 
         return (
@@ -226,150 +205,136 @@ function AddProductCategory({ onUpdated }) {
                 </Text>
               </CardHeader>
               <CardBody className={classes.cardBody}>
-                <FormGroupCustom title={t('basicInformation')}>
-                  <FormCellCustom
-                    error={!!errors.name}
-                    label={t('sideBar.category')}
-                    helperText={errors.name ? errors.name : t('category.categoryName')}>
-                    <div className={classes.formCell}>
+                <GridContainer>
+                  <GridItem className={classes.viewItem} xs={12} sm={12} md={8}>
+                    <Box mb="5">
                       <TextField
-                        label={''}
-                        variant="outlined"
-                        size="small"
-                        fullWidth
-                        inputProps={{
-                          value: values.name,
-                          onChange: handleChange('name'),
-                        }}
-                        placeholder={t('enterHere')}
-                        autoComplete="off"
+                        label={t('name')}
                         error={!!errors.name}
-                      />
-                    </div>
-                  </FormCellCustom>
-                  <FormCellCustom
-                    error={!!errors.code}
-                    label={t('category.categoryCode')}
-                    helperText={!!errors.code ? errors.code : t('category.categoryCodeDes')}>
-                    <div className={classes.formCell}>
-                      <TextField
-                        label={''}
+                        id="shopName"
                         variant="outlined"
-                        size="small"
                         fullWidth
-                        inputProps={{
-                          value: values.code,
-                          onChange: handleChange('code'),
-                        }}
-                        error={!!errors.code}
-                        placeholder={t('enterHere')}
+                        value={values.name}
+                        onChange={handleChange('name')}
                         autoComplete="off"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <span className={classes.infoText}>DM</span>
-                            </InputAdornment>
-                          ),
-                        }}
+                        helperText={errors.name}
                       />
-                    </div>
-                  </FormCellCustom>
-                  <FormCellCustom
-                    label={t('category.parentCategoryCode')}
-                    helperText={t('category.parentCategoryCodeDes')}>
-                    <div className={classes.formCell}>
-                      <Autocomplete
-                        limitTags={2}
-                        size="small"
-                        value={values.parentId}
-                        options={parentCategories || [{ name: '', id: '' }]}
-                        getOptionLabel={(option) => option.name}
-                        onChange={(event, newValue) => setFieldValue('parentId', newValue)}
-                        renderOption={(option) => (
-                          <React.Fragment>
-                            <div style={{ alignItems: 'center' }}>
-                              <p style={{ fontSize: '15px', margin: 0 }}>{option.name}</p>
-                            </div>
-                          </React.Fragment>
-                        )}
-                        style={{ margin: '10px 0px' }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant="outlined"
-                            label={t('category.parentCategoryCode')}
-                            placeholder={t('notSet')}
-                          />
-                        )}
+                    </Box>
+                    <Autocomplete
+                      id="parentId"
+                      autoComplete
+                      options={parentCategories || []}
+                      includeInputInList
+                      value={values.parentId}
+                      onChange={(e, value) => setFieldValue('parentId', value)}
+                      getOptionLabel={(option) => option.name}
+                      renderOption={(option) => (
+                        <React.Fragment>
+                          <div style={{ alignItems: 'center' }}>
+                            <p style={{ fontSize: '15px', margin: 0 }}>{option.name}</p>
+                          </div>
+                        </React.Fragment>
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          id="outlined-parentId"
+                          label={t('category.parentCategoryCode')}
+                          helperText={t('category.parentCategoryCodeDes')}
+                          variant="outlined"
+                          style={{ width: '100%', marginBottom: 20 }}
+                        />
+                      )}
+                    />
+                    <Flex mb="5" justifyContent="flex-start">
+                      <FormGroup>
+                        <FormControlLabel
+                          label={t('category.applyPromotion')}
+                          control={
+                            <Switch
+                              checked={values.promotion === 1 ? true : false}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setFieldValue('promotion', 1);
+                                } else {
+                                  setFieldValue('promotion', 0);
+                                }
+                              }}
+                              name="promotion"
+                              color="primary"
+                            />
+                          }
+                        />
+                      </FormGroup>
+                    </Flex>
+                  </GridItem>
+                  <GridItem className={classes.viewItem} xs={12} sm={12} md={4}>
+                    <TextField
+                      id="outlined-code"
+                      label={t('category.categoryCode')}
+                      variant="outlined"
+                      value={values.code}
+                      onChange={handleChange('code')}
+                      error={!!errors.code}
+                      helperText={!!errors.code ? errors.code : t('category.categoryCodeDes')}
+                      style={{ width: '100%', marginBottom: 20 }}
+                    />
+                    <Box
+                      mb="5"
+                      zIndex={1}
+                      position="relative"
+                      onClick={() => refInput.current.click()}>
+                      <TextField
+                        id="outlined-shop-code"
+                        variant="outlined"
+                        label={t('upload_image_of_shop')}
+                        fullWidth
                       />
-                    </div>
-                  </FormCellCustom>
-                  <FormCellCustom
-                    error={!!errors.promotion}
-                    label={t('category.applyPromotion')}
-                    helperText={!!errors.promotion && errors.promotion}>
-                    <div className={classes.formCell}>
-                      <FormControl component="fieldset">
-                        <RadioGroup
-                          aria-label="promotion"
-                          name="promotion"
-                          value={values.promotion}
-                          onChange={handleChange('promotion')}
-                          className={classes.flex_center}>
-                          <FormControlLabel
-                            value="true"
-                            control={<CustomRadio />}
-                            label={t('yes')}
-                          />
-                          <FormControlLabel
-                            value="false"
-                            control={<CustomRadio />}
-                            label={t('no')}
-                          />
-                        </RadioGroup>
-                      </FormControl>
-                    </div>
-                  </FormCellCustom>
-                  <FormCellCustom label={t('image')} helperText={''}>
-                    <div className={classes.imageForm}>
-                      {selectedImages.length > 0 ? (
+                      <input
+                        ref={refInput}
+                        accept="image/*"
+                        id="icon-button-file"
+                        type="file"
+                        multiple
+                        style={{ display: 'none', cursor: 'pointer' }}
+                        onChange={(e) => handleImageChange(e, setFieldValue)}
+                      />
+                      <Box position="absolute" cursor="pointer" inset="0" />
+                    </Box>
+                    <Flex alignItems="flex-start">
+                      {selectedImages.length > 0 &&
                         selectedImages.map((photo, index) => {
                           return (
-                            <div key={index} className={classes.imgContainer}>
-                              <Close
-                                className={classes.btnClose}
-                                onClick={() => handleRemoveImage(photo, setFieldValue)}
-                              />
-                              <img src={photo} alt="" key={photo} className={classes.imageUpload} />
-                            </div>
+                            <Center
+                              alignSelf="flex-start"
+                              key={index}
+                              position="relative"
+                              mr="3"
+                              mb="3">
+                              <Box
+                                position="absolute"
+                                right="2px"
+                                top="2px"
+                                cursor="pointer"
+                                zIndex={99}
+                                color="black"
+                                _hover={{ color: 'gray.300' }}
+                                _focus={{ color: 'gray.300' }}>
+                                <Close onClick={() => handleRemoveImage(photo, setFieldValue)} />
+                              </Box>
+                              <AspectRatio ratio={1} boxSize="200px">
+                                <img
+                                  style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                                  src={photo}
+                                  key={photo}
+                                />
+                              </AspectRatio>
+                            </Center>
                           );
-                        })
-                      ) : (
-                        <>
-                          <input
-                            accept="image/*"
-                            id="icon-button-file"
-                            type="file"
-                            multiple
-                            style={{ display: 'none' }}
-                            onChange={(e) => handleImageChange(e, setFieldValue)}
-                          />
-                          <label
-                            htmlFor="icon-button-file"
-                            style={{ borderColor: !!errors.image && 'red' }}
-                            className={classes.imageUpload + ' ' + classes.imageBtn}>
-                            <IconButton
-                              color="primary"
-                              aria-label="upload picture"
-                              component="span">
-                              <PhotoCamera />
-                            </IconButton>
-                          </label>
-                        </>
-                      )}
-                    </div>
-                  </FormCellCustom>
-                </FormGroupCustom>
+                        })}
+                    </Flex>
+                  </GridItem>
+                </GridContainer>
                 <NotificationContainer />
               </CardBody>
               <CardFooter className={classes.flex_end}>

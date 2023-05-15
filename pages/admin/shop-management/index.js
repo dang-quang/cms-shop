@@ -285,16 +285,16 @@ function ShopListPage() {
                   <Paper>
                     <ClickAwayListener onClickAway={() => handleAction(item)}>
                       <MenuList role="menu">
-                        {/* <MenuItem
+                        <MenuItem
                           className={classes.dropdownItem}
                           onClick={() => {
                             router.push({
-                              pathname: '/admin/shop/addshop',
+                              pathname: '/admin/shop-management/details',
                               query: item,
                             });
                           }}>
                           {t('detail')}
-                        </MenuItem> */}
+                        </MenuItem>
                         <MenuItem
                           className={classes.dropdownItem}
                           onClick={() => {

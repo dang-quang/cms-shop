@@ -149,6 +149,12 @@ const addVoucherStyle = {
   buttonCancel: {
     marginRight: 24,
   },
+  inputRoot: {
+    '&$disabled': {
+      color: '#212121',
+    },
+  },
+  disabled: {},
 };
 
 export default addVoucherStyle;

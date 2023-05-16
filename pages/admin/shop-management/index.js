@@ -372,9 +372,9 @@ function ShopListPage() {
                 aria-haspopup="true"
                 className={classes.filteTritle}
                 onClick={() => setShowDate(true)}>
-                {moment(filterDate.fromDate).format(formatDate) +
+                {moment(filterDate.fromDate).format('DD/MM/YYYY') +
                   ' - ' +
-                  moment(filterDate.toDate).format(formatDate)}
+                  moment(filterDate.toDate).format('DD/MM/YYYY')}
               </Button>
               <Poppers
                 open={Boolean(showDate)}

@@ -159,7 +159,7 @@
     "emptyStatus": "Status is empty, please choose status"
   },
   "addShop": {
-    "shopName": "Store Name",
+    "shopName": "Shop Name",
     "referenceShopCode": "Reference shop code",
     "phoneNumber": "Phone Number",
     "contact": "Contact",

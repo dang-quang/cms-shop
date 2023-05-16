@@ -952,10 +952,6 @@ export function requestGetOwnerShop() {
   return postWithCheckingToken(`${BASE_API_URL}/user/list`, {}, {});
 }
 
-export function requestGetOwnerShop() {
-  return postWithCheckingToken(`${BASE_API_URL}/user/list`, {}, {});
-}
-
 export function requestGetListProductApprove() {
   console.log('get product approve list parma==>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/cms-admin/list-product-approve`, {}, {});

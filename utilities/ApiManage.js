@@ -913,22 +913,18 @@ export function getGameDetail(id) {
 }
 
 export function getGameChartReport(obj) {
-  console.log('game chart report parma ===>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/games/chart-report`, {}, obj);
 }
 
 export function getGameResultReward(obj) {
-  console.log('game result reward parma ===>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/games/result-reward`, {}, obj);
 }
 
 export function requestsGetCategoryList(obj) {
-  console.log('get category list parma==>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/cms-category/list`, {}, obj);
 }
 
 export function requestCreateEditCategory(obj) {
-  console.log('save category parma==>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/cms-category/save`, {}, obj);
 }
 
@@ -941,20 +937,31 @@ export function requestsGetParentCategory() {
 }
 
 export function requestsGetShopList(obj) {
-  console.log('get shop list parma==>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/cms-shop/list`, {}, obj);
 }
 
 export function requestsCreateEditShop(obj) {
-  console.log('save shop parma==>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/cms-shop/save`, {}, obj);
 }
 
 export function requestDeleteShop(obj) {
-  console.log('delete shop parma==>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/cms-shop/delete`, {}, obj);
 }
 
 export function requestGetOwnerShop() {
   return postWithCheckingToken(`${BASE_API_URL}/user/list`, {}, {});
+}
+
+export function requestGetOwnerShop() {
+  return postWithCheckingToken(`${BASE_API_URL}/user/list`, {}, {});
+}
+
+export function requestGetListProductApprove() {
+  console.log('get product approve list parma==>', obj);
+  return postWithCheckingToken(`${BASE_API_URL}/cms-admin/list-product-approve`, {}, {});
+}
+
+export function requestApproveProduct(obj) {
+  console.log('get approve product parma==>', obj);
+  return postWithCheckingToken(`${BASE_API_URL}/cms-admin/approve-product`, {}, obj);
 }

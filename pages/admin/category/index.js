@@ -166,7 +166,7 @@ function ProductCategory() {
     setFilterDate({ fromDate: FROM_DATE, toDate: TO_DATE });
     setShowDate(false);
     setDoFilter(false);
-  }, [filterDate]);
+  }, []);
 
   const handleSelectPage = React.useCallback((event, value) => {
     setCurrentPage(value);

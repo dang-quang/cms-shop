@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
-// @material-ui/core components
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { primaryColor } from 'assets/jss/natcash.js';
 import { formatCurrency, formatNumber } from '../../../utilities/utils';
 // layout for this page
 import Admin from 'layouts/Admin.js';
@@ -53,7 +51,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import { useTranslation } from 'react-i18next';
 import styles from 'assets/jss/natcash/views/productApproval/productApprovalStyle';
 import { NotificationContainer, NotificationManager } from 'react-light-notifications';
-import { Input } from '@chakra-ui/react';
+import { Box, Flex, Input, SimpleGrid, Text } from '@chakra-ui/react';
 
 const fakeData = [
   {
@@ -322,27 +320,27 @@ const fakeData = [
 ];
 
 function ProductApproval() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const useStyles = makeStyles(styles);
-  const useAdminStyles = makeStyles(adminStyles);
   const useTableStyles = makeStyles(tableStyles);
-  const adminClasses = useAdminStyles();
   const classes = useStyles();
   const tableClasses = useTableStyles();
   const useTaskStyles = makeStyles(taskStyles);
   const taskClasses = useTaskStyles();
-  const useDashStyles = makeStyles(dashStyles);
-  const dashClasses = useDashStyles();
-  const [showFilter2, setShowFilter2] = useState(false);
-  const [showUpdate, setShowUpdate] = useState(false);
-  const [doFilter, setDoFilter] = useState(0);
-  const [filterDate, setFilterDate] = useState(false);
-  const [value, setValue] = useState('');
+  const [doFilter, setDoFilter] = useState(false);
+  const [doSearch, setDoSearch] = useState(false);
+
+  const formatDate = 'YYYY-MM-DD';
+  const FROM_DATE = moment().subtract(30, 'days').format(formatDate);
+  const TO_DATE = moment().format(formatDate);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [doSearch, setDoSearch] = useState(false);
-  const [txtSearch, setTxtSearch] = useState('');
-  const { t } = useTranslation();
+  const [totalRecords, setTotalRecords] = React.useState(0);
+  const [search, setSearch] = React.useState('');
+  const [showDate, setShowDate] = React.useState(false);
+  const [filterDate, setFilterDate] = React.useState({ fromDate: FROM_DATE, toDate: TO_DATE });
 
   const TABLE_HEAD = [
     t('qrManagement.stt'),
@@ -356,77 +354,22 @@ function ProductApproval() {
   ];
 
   const [data, setData] = useState([]);
-  const [listRadio, setListRadio] = useState([
-    {
-      id: '1',
-      label: 'Tất cả sản phẩm',
-    },
-    {
-      id: '2',
-      label: 'Tất cả sản phẩm theo bộ lọc hiện tại',
-    },
-    {
-      id: '3',
-      label: 'Sản phẩm đang chọn',
-    },
-  ]);
 
   const [checked, setChecked] = useState([]);
   const [showProduct, setShowProduct] = useState([]);
   const [isCheckAll, setIsCheckAll] = useState(false);
-  const [fromDate, setFromDate] = useState(moment().subtract(30, 'days').format());
-  const [toDate, setToDate] = useState(moment().format());
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    window.addEventListener(
-      'resize',
-      () => {
-        setIsMobile(window.innerWidth < 1200);
-      },
-      false
-    );
-  }, []);
-
-  // useEffect(async () => {
-  //     dispatch(setShowLoader(true))
-  //     // const res = await getProductScreen()
-  //     // setData(res.data.item_list)
-  //     // setTotalPage(res.data.data_page.total_page)
-  //     dispatch(setShowLoader(false))
-  // }, []);
-  //
-  // useEffect(async () => {
-  //     dispatch(setShowLoader(true));
-  //     setChecked([]);
-  //     let params = {};
-  //     params.current_page = currentPage;
-  //     if (txtSearch) {
-  //         params.keyword = txtSearch;
-  //     }
-  //     if (doFilter) {
-  //         params.time_from = moment(fromDate).unix();
-  //         params.time_to = moment(toDate).unix();
-  //     }
-  //
-  //     // const res = await getProductList(params)
-  //     // setData(res.data.item_list)
-  //     // setTotalPage(res.data.data_page.total_page)
-  //     dispatch(setShowLoader(false))
-  // }, [doSearch, doFilter, currentPage]);
 
   const resetFilterDate = () => {
-    setFromDate(moment().subtract(30, 'days').format());
-    setToDate(moment().format());
-    setFilterDate(false);
-    setDoFilter(0);
+    setFilterDate({ fromDate: FROM_DATE, toDate: TO_DATE });
+    setShowDate(false);
+    setDoFilter(false);
   };
   const handleSelectPage = (event, value) => {
     setCurrentPage(value);
   };
 
   const handleInputSearch = (event) => {
-    setTxtSearch(event.target.value);
+    setSearch(event.target.value);
     setCurrentPage(1);
   };
   const handleCheckAll = () => {
@@ -449,40 +392,12 @@ function ProductApproval() {
     }
     setChecked(newChecked);
   };
-  const handleShowProduct = (item) => {
-    const currentIndex = showProduct.indexOf(item);
-    const newShowProduct = [...showProduct];
-    if (currentIndex === -1) {
-      newShowProduct.push(item);
-    } else {
-      newShowProduct.splice(currentIndex, 1);
-    }
-    setShowProduct(newShowProduct);
-  };
-
-  const CustomRadio = withStyles({
-    root: {
-      color: 'gray',
-      '&$checked': {
-        color: '#f96606',
-      },
-    },
-    checked: {},
-  })((props) => <Radio color="default" {...props} />);
-  const handleUpdate = () => {
-    setShowUpdate(false);
-  };
 
   const handleApprove = () => {
-    setShowUpdate(false);
     NotificationManager.success({
       title: 'Product Approval',
       message: 'Successful',
     });
-  };
-
-  const handleChange = (event) => {
-    setValue(event.target.value);
   };
 
   const productInfo = (item) => {
@@ -608,7 +523,7 @@ function ProductApproval() {
           item.model_data.model.map((subItem, subIdx) => {
             return (
               <TableRow
-                key={index}
+                key={subIdx}
                 className={tableClasses.tableBodyRow + ' ' + classes.tableTransition}
                 style={{
                   backgroundColor: checked.indexOf(item) !== -1 ? '#fff6f0' : '#fff',
@@ -648,56 +563,52 @@ function ProductApproval() {
         <h4 className={classes.cardTitleWhite}>{t('sideBar.productApproval')}</h4>
       </CardHeader>
       <CardBody className={classes.cardBody}>
-        <div>
-          <div
-            className={dashClasses.filterSelections}
-            style={{
-              marginLeft: '25px',
-              position: 'relative',
-              display: 'block',
-            }}>
-            <FormControl className={dashClasses.formControl}>
-              <div style={{ marginRight: '15px' }}>
-                <Input
-                  variant="search"
-                  placeholder={t('findBy')}
-                  onChange={handleInputSearch}
-                  maxW="180px"
-                  mr="6"
-                />
-                <Button
-                  color="white"
-                  aria-label="edit"
-                  justIcon
-                  round
-                  onClick={() => setDoSearch(!doSearch)}>
-                  <Search />
-                </Button>
-              </div>
-            </FormControl>
-            <FormControl>
+        <Flex
+          flexDirection={{ base: 'column', md: 'row' }}
+          alignItems={{ base: 'unset', md: 'center' }}
+          justifyContent={{ base: 'flex-start', md: 'space-between' }}>
+          <Flex
+            flexDirection={{ base: 'column', sm: 'row' }}
+            alignItems={{ base: 'unset', sm: 'center' }}
+            flex="1">
+            <Flex mx={{ base: 'unset', sm: '2' }} flex="1" alignItems="center" maxW="400px">
+              <Input
+                variant="search"
+                placeholder="Enter category code, name"
+                onChange={handleInputSearch}
+                mr="2"
+              />
               <Button
                 color="white"
-                id={'filter-date-label'}
-                aria-owns={filterDate ? 'filter-date' : null}
+                aria-label="edit"
+                justIcon
+                round
+                onClick={() => setDoSearch(!doSearch)}>
+                <Search />
+              </Button>
+            </Flex>
+            <Box>
+              <Button
+                color="white"
+                aria-owns={showDate ? 'filter-date' : null}
                 aria-haspopup="true"
                 className={classes.filteTritle}
-                onClick={() => setFilterDate(true)}>
-                {moment(fromDate).format('DD/MM/yyyy') +
+                onClick={() => setShowDate(true)}>
+                {moment(filterDate.fromDate).format('DD/MM/YYYY') +
                   ' - ' +
-                  moment(toDate).format('DD/MM/yyyy')}
+                  moment(filterDate.toDate).format('DD/MM/YYYY')}
               </Button>
               <Poppers
-                open={Boolean(filterDate)}
-                anchorEl={filterDate}
+                open={showDate}
+                anchorEl={showDate}
                 transition
                 disablePortal
                 className={
                   classNames({
-                    [classes.popperClose]: filterDate != true,
+                    [classes.popperClose]: showDate != true,
                   }) +
                   ' ' +
-                  classes.popperNav
+                  classes.datePopperNav
                 }>
                 {({ TransitionProps, placement }) => (
                   <Grow
@@ -707,59 +618,52 @@ function ProductApproval() {
                       transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
                     }}>
                     <Paper>
-                      <ClickAwayListener onClickAway={() => setFilterDate(false)}>
-                        <div style={{ width: isMobile ? '190px' : '460px' }}>
+                      <ClickAwayListener onClickAway={() => setShowDate(false)}>
+                        <Box>
                           <div style={{ padding: '7px 15px', borderRadius: '4px' }}>
-                            <p
-                              style={{
-                                margin: 0,
-                                fontSize: '17px',
-                                fontWeight: '400',
-                                color: primaryColor[0],
-                              }}>
+                            <Text textStyle="h5" color="primary.100">
                               {t('chooseDate')}
-                            </p>
-                            <div style={{ marginTop: '10px' }}>
-                              <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
-                                <GridContainer>
-                                  <KeyboardDatePicker
-                                    disableToolbar
-                                    variant="inline"
-                                    format="dd/MM/yyyy"
-                                    margin="normal"
-                                    id="date-picker-inline"
-                                    label={t('from')}
-                                    value={fromDate}
-                                    onChange={(value) => setFromDate(value)}
-                                    KeyboardButtonProps={{
-                                      'aria-label': 'change date',
-                                    }}
-                                    style={{ margin: '0 40px', width: '150px' }}
-                                  />
-                                  <KeyboardDatePicker
-                                    disableToolbar
-                                    variant="inline"
-                                    format="dd/MM/yyyy"
-                                    margin="normal"
-                                    id="date-picker-inline"
-                                    label={t('to')}
-                                    value={toDate}
-                                    onChange={(value) => setToDate(value)}
-                                    KeyboardButtonProps={{
-                                      'aria-label': 'change date',
-                                    }}
-                                    style={{ margin: '0 40px', width: '150px' }}
-                                  />
-                                </GridContainer>
-                              </MuiPickersUtilsProvider>
-                            </div>
-                            <div
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                marginTop: '15px',
-                                justifyContent: 'flex-end',
-                              }}>
+                            </Text>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+                              <SimpleGrid
+                                gap={{ base: 'unset', md: '6' }}
+                                columns={{ base: 1, md: 2 }}>
+                                <KeyboardDatePicker
+                                  disableToolbar
+                                  variant="inline"
+                                  format="dd/MM/yyyy"
+                                  margin="normal"
+                                  id="date-picker-inline"
+                                  label={t('from')}
+                                  maxDate={moment(filterDate.toDate).toDate()}
+                                  value={filterDate.fromDate}
+                                  onChange={(value) =>
+                                    setFilterDate({ ...filterDate, fromDate: value })
+                                  }
+                                  KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                  }}
+                                />
+                                <KeyboardDatePicker
+                                  disableToolbar
+                                  variant="inline"
+                                  format="dd/MM/yyyy"
+                                  margin="normal"
+                                  id="date-picker-inline"
+                                  label={t('to')}
+                                  minDate={moment(filterDate.fromDate).toDate()}
+                                  maxDate={moment().toDate()}
+                                  value={filterDate.toDate}
+                                  onChange={(value) =>
+                                    setFilterDate({ ...filterDate, toDate: value })
+                                  }
+                                  KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                  }}
+                                />
+                              </SimpleGrid>
+                            </MuiPickersUtilsProvider>
+                            <Flex alignItems="center" mt="4" justifyContent="flex-end">
                               <Button
                                 color="white"
                                 size="sm"
@@ -771,133 +675,27 @@ function ProductApproval() {
                                 color="primary"
                                 size="sm"
                                 onClick={() => {
-                                  setDoFilter(doFilter + 1);
-                                  setFilterDate(false);
+                                  setDoFilter(true);
+                                  setShowDate(false);
                                 }}>
                                 {t('apply')}
                               </Button>
-                            </div>
+                            </Flex>
                           </div>
-                        </div>
+                        </Box>
                       </ClickAwayListener>
                     </Paper>
                   </Grow>
                 )}
               </Poppers>
-            </FormControl>
-            <FormControl
-              className={dashClasses.formControl}
-              style={{
-                marginRight: '25px',
-                position: isMobile ? 'static' : 'absolute',
-                right: '0',
-              }}>
-              <Button id="update-label" color="primary" onClick={() => setShowUpdate(true)}>
-                {t('action')}
-                <Icon className={classes.btnFilter}>expand_more_outlined</Icon>
-              </Button>
-              <Poppers
-                open={Boolean(showUpdate)}
-                anchorEl={showUpdate}
-                transition
-                disablePortal
-                className={
-                  classNames({ [classes.popperClose]: !showUpdate }) + ' ' + classes.popperNav
-                }>
-                {({ TransitionProps, placement }) => (
-                  <Grow
-                    {...TransitionProps}
-                    id="notification-menu-list-grow"
-                    style={{
-                      transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
-                    }}>
-                    <Paper>
-                      <ClickAwayListener onClickAway={() => handleUpdate()}>
-                        <MenuList role="menu">
-                          <MenuItem
-                            className={classes.dropdownItem}
-                            onClick={() => handleApprove()}>
-                            {t('productApproval.approve')}
-                          </MenuItem>
-                          {/*<Link href="/admin/product/copyproduct">*/}
-                          {/*    <MenuItem*/}
-                          {/*        className={classes.dropdownItem}*/}
-                          {/*        onClick={() => handleUpdate()}*/}
-                          {/*    >*/}
-                          {/*        Sao chép sản phẩm trên kênh...*/}
-                          {/*    </MenuItem>*/}
-                          {/*</Link>*/}
-                          {/*                        <MenuItem*/}
-                          {/*                            className={classes.dropdownItem}*/}
-                          {/*                            onClick={() => handleUpdate()}*/}
-                          {/*                        >*/}
-                          {/*<span onClick={() => setShowFilter2(true)}>*/}
-                          {/*  Xuất danh sách sản phẩm*/}
-                          {/*</span>*/}
-                          {/*                        </MenuItem>*/}
-                        </MenuList>
-                      </ClickAwayListener>
-                    </Paper>
-                  </Grow>
-                )}
-              </Poppers>
-              <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                className={classes.modal}
-                open={showFilter2}
-                onClose={() => setShowFilter2(false)}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                  timeout: 500,
-                }}>
-                <Fade in={showFilter2}>
-                  <Card className={classes.modalContainer}>
-                    <CardHeader color="primary">
-                      <h4 className={classes.cardTitleWhite}>Xuất danh sách sản phẩm</h4>
-                    </CardHeader>
-                    <CardBody>
-                      <div class={classes.filterEleContent}>
-                        <FormControl component="fieldset">
-                          <RadioGroup
-                            aria-label="shop"
-                            name="shop1"
-                            value={value}
-                            onChange={handleChange}>
-                            {listRadio.map((item) => {
-                              return (
-                                <div className={classes.radioFormLabel}>
-                                  <FormControlLabel
-                                    value={item.id}
-                                    control={<CustomRadio />}
-                                    className={classes.radioFCL}
-                                    label={item.label}
-                                  />
-                                </div>
-                              );
-                            })}
-                          </RadioGroup>
-                        </FormControl>
-                      </div>
-                    </CardBody>
-                    <CardFooter>
-                      <div className={classes.filterFooter}>
-                        <Button
-                          color="primary"
-                          onClick={() => {
-                            setShowFilter2(false);
-                          }}>
-                          Tải File
-                        </Button>
-                      </div>
-                    </CardFooter>
-                  </Card>
-                </Fade>
-              </Modal>
-            </FormControl>
-          </div>
-        </div>
+            </Box>
+          </Flex>
+          {/* <Link href={'/admin/category/add'}>
+            <Button id="update-label" color="green">
+              CREATE CATEGORY
+            </Button>
+          </Link> */}
+        </Flex>
       </CardBody>
       <CardFooter>
         <div className={tableClasses.tableResponsive} style={{ marginTop: '0' }}>
@@ -939,15 +737,6 @@ function ProductApproval() {
           <div style={{ margin: '15px 0' }}>
             <Pagination count={totalPage} page={currentPage} onChange={handleSelectPage} />
           </div>
-          {/* <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={data.length}
-          rowsPerPage={2}
-          page={1}
-          // onPageChange={handleChangePage}
-          // onRowsPerPageChange={handleChangeRowsPerPage}
-        /> */}
         </div>
       </CardFooter>
       <NotificationContainer />

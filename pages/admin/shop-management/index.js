@@ -530,9 +530,18 @@ function ShopListPage() {
                 })}
             </TableBody>
           </Table>
-          <div style={{ margin: '15px 0' }}>
+          <Flex justifyContent="space-between" pt="6" pr="6" pb="6">
             <Pagination count={totalPage} page={currentPage} onChange={handleSelectPage} />
-          </div>
+            <Box>
+              <Text>
+                {t('results_page', {
+                  start: (currentPage - 1) * 50 + 1,
+                  end: (currentPage - 1) * 50 + shops.length,
+                  total: totalRecords,
+                })}
+              </Text>
+            </Box>
+          </Flex>
         </div>
       </CardFooter>
     </Card>

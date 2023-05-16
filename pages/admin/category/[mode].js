@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
-import { NotificationContainer, NotificationManager } from 'react-light-notifications';
+import { NotificationManager } from 'react-light-notifications';
 import 'react-light-notifications/lib/main.css';
 import Admin from 'layouts/Admin.js';
 import Card from 'components/Card/Card.js';
@@ -108,7 +108,15 @@ function AddProductCategory({ onUpdated }) {
             image,
           });
           if (res.code === 'MSG_SUCCESS') {
-            router.push('/admin/category');
+            NotificationManager.success({
+              title: t('success'),
+              message: t('category_update_success'),
+            });
+
+            setTimeout(() => {
+              router.push('/admin/category');
+            }, 1000);
+
             onUpdated();
           } else if (res && res.code === 'ERR_CODE_CATEGORY') {
             setFieldError('code', `${res.message}`);
@@ -128,7 +136,14 @@ function AddProductCategory({ onUpdated }) {
             image,
           });
           if (res.code === 'MSG_SUCCESS') {
-            router.push('/admin/category');
+            NotificationManager.success({
+              title: t('success'),
+              message: t('category_create_success'),
+            });
+
+            setTimeout(() => {
+              router.push('/admin/category');
+            }, 1000);
           } else if (res && res.code === 'ERR_CODE_CATEGORY') {
             setFieldError('code', `${res.message}`);
           } else {
@@ -335,7 +350,6 @@ function AddProductCategory({ onUpdated }) {
                     </Flex>
                   </GridItem>
                 </GridContainer>
-                <NotificationContainer />
               </CardBody>
               <CardFooter className={classes.flex_end}>
                 <Button variant="control" onClick={() => router.back()} mr="6">

@@ -84,12 +84,11 @@ function ProductCategory() {
   const [doSearch, setDoSearch] = useState(false);
 
   const TABLE_HEAD = [
-    t('qrManagement.stt'),
+    t('serial_number'),
     t('image'),
     t('category.code'),
     t('name'),
     t('category.parent'),
-    t('status'),
     t('category.applyPromotion'),
     t('qrManagement.publishTime'),
     t('action'),
@@ -218,7 +217,7 @@ function ProductCategory() {
       <TableRow key={index} className={tableClasses.tableBodyRow}>
         <TableCell className={tableClasses.tableCell} key={'id'}>
           <div className={classes.proInfoContainer}>
-            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{id}</p>
+            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>{index + 1}</p>
           </div>
         </TableCell>
         <TableCell className={tableClasses.tableCell} key={'image'}>
@@ -241,13 +240,6 @@ function ProductCategory() {
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>
               {parentId ? parentId : t('notSet')}
-            </p>
-          </div>
-        </TableCell>
-        <TableCell className={tableClasses.tableCell} key={'status'}>
-          <div className={classes.proInfoContainer}>
-            <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>
-              {status === 1 ? t('qrManagement.active') : t('qrManagement.notActive')}
             </p>
           </div>
         </TableCell>
@@ -533,9 +525,18 @@ function ProductCategory() {
               })}
             </TableBody>
           </Table>
-          <div style={{ margin: '15px 0' }}>
+          <Flex justifyContent="space-between" pt="6" pr="6" pb="6">
             <Pagination count={totalPage} page={currentPage} onChange={handleSelectPage} />
-          </div>
+            <Box>
+              <Text>
+                {t('results_page', {
+                  start: (currentPage - 1) * 50 + 1,
+                  end: (currentPage - 1) * 50 + categories.length,
+                  total: totalRecords,
+                })}
+              </Text>
+            </Box>
+          </Flex>
         </div>
       </CardFooter>
     </Card>

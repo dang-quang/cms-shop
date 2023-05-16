@@ -135,7 +135,13 @@ function AddShop() {
             status,
           });
           if (res && res.code === 'MSG_SUCCESS') {
-            router.push('/admin/shop-management');
+            NotificationManager.success({
+              title: t('success'),
+              message: t('shop_update_success'),
+            });
+            setTimeout(() => {
+              router.push('/admin/shop-management');
+            }, 1000);
           } else if (res && res.code === 'ERR_CODE_SHOP') {
             setFieldError('shopCode', `${res.message}`);
           } else {
@@ -159,7 +165,13 @@ function AddShop() {
           });
           dispatch(setShowLoader(false));
           if (res && res.code === 'MSG_SUCCESS') {
-            router.push('/admin/shop-management');
+            NotificationManager.success({
+              title: t('success'),
+              message: t('shop_create_success'),
+            });
+            setTimeout(() => {
+              router.push('/admin/shop-management');
+            }, 1000);
           } else if (res && res.code === 'ERR_CODE_SHOP') {
             setFieldError('shopCode', `${res.message}`);
           } else {

@@ -16,6 +16,7 @@ import { appWithI18Next, useSyncLanguage } from 'ni18n';
 import { ni18nConfig } from 'ni18n.config';
 import { ChakraProvider, StylesProvider, useStyles } from '@chakra-ui/react';
 import theme from 'theme/theme';
+import { NotificationContainer } from 'react-light-notifications';
 
 Router.events.on('routeChangeStart', (url) => {
   console.log(`Loading: ${url}`);
@@ -67,6 +68,7 @@ const MyApp = ({ Component, pageProps }) => {
               </Head>
               <Layout>
                 <Component {...pageProps} />
+                <NotificationContainer />
               </Layout>
             </React.Fragment>
           </ConnectedRouter>

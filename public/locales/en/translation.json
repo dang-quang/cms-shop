@@ -118,6 +118,11 @@
   "place_holder_search_shop": "Enter shop code, shop name, phone number",
   "no_results_found": "No Results Found",
   "no_results_found_for_your_search": "No results found for your search.",
+  "shop_create_success": "Shop created successful",
+  "shop_update_success": "Updated shop successful",
+  "category_create_success": "Category created successful",
+  "category_update_success": "Category updated successful",
+  "results_page": "Results: {{start}} - {{end}} of {{total}}",
   "sideBar": {
     "shop": "Shop",
     "shopAdmin": "Shop Admin",

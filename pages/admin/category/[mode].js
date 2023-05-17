@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
-import { NotificationManager } from 'react-light-notifications';
+import { NotificationManager, NotificationContainer } from 'react-light-notifications';
 import 'react-light-notifications/lib/main.css';
 import Admin from 'layouts/Admin.js';
 import Card from 'components/Card/Card.js';
@@ -213,6 +213,7 @@ function AddProductCategory({ onUpdated }) {
 
         return (
           <Form>
+            <NotificationContainer />
             <Card>
               <CardHeader color="primary">
                 <Text textStyle="h5" color="text-white">

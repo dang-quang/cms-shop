@@ -68,7 +68,6 @@ const MyApp = ({ Component, pageProps }) => {
               </Head>
               <Layout>
                 <Component {...pageProps} />
-                <NotificationContainer />
               </Layout>
             </React.Fragment>
           </ConnectedRouter>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 //@ts-ignore
-import { NotificationManager } from 'react-light-notifications';
+import { NotificationManager, NotificationContainer } from 'react-light-notifications';
 import 'react-light-notifications/lib/main.css';
 import Admin from 'layouts/Admin';
 import Card from 'components/Card/Card.js';
@@ -251,6 +251,7 @@ function AddShop() {
 
         return (
           <Form style={{ height: height - 150 + 'px', overflowY: 'auto' }}>
+            <NotificationContainer />
             <Card>
               <CardHeader color="primary">
                 <Text textStyle="h5" color="text-white">

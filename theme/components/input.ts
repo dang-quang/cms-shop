@@ -45,10 +45,16 @@ export const inputStyles = {
             border: '1px solid',
             color: mode('text-basic', 'white')(props),
             borderColor: 'gray.1300',
-            borderRadius: '0px',
+            borderRadius: '8px',
             fontSize: '14px',
             p: '20px',
-            _placeholder: { color: 'secondaryGray.600' },
+            _placeholder: { color: 'gray.1900' },
+            _focus: {
+              borderColor: 'primary.100',
+            },
+            _hover: {
+              borderColor: 'primary.100',
+            },
           },
         }),
       },
@@ -93,7 +99,8 @@ export const inputStyles = {
           field: {
             border: 'none',
             py: '11px',
-            borderRadius: 'inherit',
+            borderRadius: '8px',
+            bg: 'red',
             _placeholder: { color: 'secondaryGray.600' },
           },
         }),

@@ -30,15 +30,15 @@ export const textStyles = {
       lineHeight: '18px',
       fontWeight: 'bold',
     },
-    // 'h4-m': {
-    //   fontSize: '16px',
-    //   lineHeight: '100%',
-    //   fontWeight: '500',
-    // },
+    'h4-m': {
+      fontSize: '16px',
+      lineHeight: '100%',
+      fontWeight: '500',
+    },
     h4: {
       fontSize: '16px',
       lineHeight: '100%',
-      fontWeight: '300',
+      fontWeight: '400',
     },
     h5: {
       fontSize: '18px',

@@ -512,7 +512,7 @@ function ProductCategory() {
                         className={tableClasses.tableCell + ' ' + tableClasses.tableHeadCell}
                         style={{ textAlign: 'left' }}
                         key={key}>
-                        {prop}
+                        <Text textStyle="b-md">{prop}</Text>
                       </TableCell>
                     );
                   })}

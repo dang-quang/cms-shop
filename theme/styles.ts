@@ -12,6 +12,9 @@ export const globalStyles = {
       300: '#f96606',
       400: '#ffe2cf',
     },
+    secondary: {
+      100: '#00659F',
+    },
     warning: {
       100: '#ff9800',
       200: '#ffa726',
@@ -58,6 +61,7 @@ export const globalStyles = {
       1600: '#E0E0E0',
       1700: '#BABABA',
       1800: '#001737',
+      1900: '#A0AEC0',
     },
   },
   styles: {

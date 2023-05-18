@@ -3,7 +3,7 @@ export const buttonStyles = {
   components: {
     Button: {
       baseStyle: {
-        borderRadius: '2px',
+        borderRadius: '6px',
         boxShadow: '45px 76px 113px 7px rgba(112, 144, 176, 0.08)',
         transition: '.25s all ease',
         boxSizing: 'border-box',

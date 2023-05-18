@@ -14,6 +14,7 @@ export const globalStyles = {
     },
     secondary: {
       100: '#00659F',
+      200: '#00659F50',
     },
     warning: {
       100: '#ff9800',

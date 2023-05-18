@@ -952,12 +952,12 @@ export function requestGetOwnerShop() {
   return postWithCheckingToken(`${BASE_API_URL}/user/list`, {}, {});
 }
 
-export function requestGetListProductApprove() {
+export function requestGetListProductApprove(obj) {
   console.log('get product approve list parma==>', obj);
-  return postWithCheckingToken(`${BASE_API_URL}/cms-admin/list-product-approve`, {}, {});
+  return postWithCheckingToken(`${BASE_API_URL}/cms-admin/list-product-approve`, {}, obj);
 }
 
 export function requestApproveProduct(obj) {
-  console.log('get approve product parma==>', obj);
+  console.log('approve product parma==>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/cms-admin/approve-product`, {}, obj);
 }

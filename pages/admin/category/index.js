@@ -90,7 +90,7 @@ function ProductCategory() {
     t('name'),
     t('category.parent'),
     t('category.applyPromotion'),
-    t('qrManagement.publishTime'),
+    // t('qrManagement.publishTime'),
     t('action'),
   ];
 
@@ -250,13 +250,13 @@ function ProductCategory() {
             </p>
           </div>
         </TableCell>
-        <TableCell className={tableClasses.tableCell} key={'publishDate'}>
+        {/* <TableCell className={tableClasses.tableCell} key={'publishDate'}>
           <div className={classes.proInfoContainer}>
             <p className={tableClasses.tableCell + ' ' + classes.txtOrderInfo}>
               {moment(publishDate).format('DD/MM/YYYY')}
             </p>
           </div>
-        </TableCell>
+        </TableCell> */}
         <TableCell className={tableClasses.tableCell}>
           <div className={classes.text + ' ' + classes.infoTextStatus + ' ' + classes.flex_center}>
             <a
@@ -361,7 +361,7 @@ function ProductCategory() {
                 <Search />
               </Button>
             </Flex>
-            <Box>
+            {/* <Box>
               <Button
                 color="white"
                 id={'filter-date-label'}
@@ -463,7 +463,7 @@ function ProductCategory() {
                   </Grow>
                 )}
               </Poppers>
-            </Box>
+            </Box> */}
           </Flex>
           <Link href={'/admin/category/add'}>
             <Button id="update-label" color="green">

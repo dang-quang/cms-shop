@@ -91,7 +91,7 @@ export const semanticTokens = {
         _dark: 'secondaryGray.100',
       },
       'bg-border-2': {
-        default: 'gray.300',
+        default: 'gray.1300',
         _dark: 'secondaryGray.100',
       },
       'bg-border-4': {

@@ -123,6 +123,9 @@
   "category_create_success": "Category created successful",
   "category_update_success": "Category updated successful",
   "results_page": "Results: {{start}} - {{end}} of {{total}}",
+  "code_shop": "Code Shop",
+  "approve": "Approve",
+  "reject": "Reject",
   "sideBar": {
     "shop": "Shop",
     "shopAdmin": "Shop Admin",

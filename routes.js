@@ -35,13 +35,13 @@ const dashboardRoutes = [
       //   parent: 'operation',
       //   permission: 'shop_admin_other_information',
       // },
-      // {
-      //   path: '/productApproval',
-      //   name: 'productApproval',
-      //   layout: '/admin',
-      //   parent: 'operation',
-      //   permission: 'shop_admin_product_approval',
-      // },
+      {
+        path: '/product-approval',
+        name: 'productApproval',
+        layout: '/admin',
+        parent: 'operation',
+        permission: 'shop_admin_product_approval',
+      },
       // {
       //   path: '/broadcastMessages',
       //   name: 'broadcastMessages',

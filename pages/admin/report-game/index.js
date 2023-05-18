@@ -49,6 +49,7 @@ import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/picker
 import { setShowLoader } from '../../../redux/actions/app';
 import { Pagination } from '@material-ui/lab';
 import { Input } from '@chakra-ui/react';
+import dayjs from 'utilities/dayjs';
 
 function GameReport() {
   const dispatch = useDispatch();
@@ -113,60 +114,70 @@ function GameReport() {
 
   React.useEffect(() => {
     (async () => {
-      dispatch(setShowLoader(true));
-      const res = await getGameResultReward({
-        keyWord: '',
-        fromDate: FROM_DATE,
-        toDate: TO_DATE,
-        page: 1,
-      });
-
-      dispatch(setShowLoader(false));
-      if (res && res.code === 'MSG_SUCCESS') {
-        setGameRewards(
-          res?.data.results === null
-            ? []
-            : res?.data.results.sort((a, b) => b.playDate - a.playDate)
-        );
-        setTotalPage(res?.data.totalPages);
-        setPageSize(res?.data.pageSize);
-        setTotalRecords(res?.data.totalRecords);
+      try {
+        dispatch(setShowLoader(true));
+        const res = await getGameResultReward({ page: 1 });
+        if (res.code === 'MSG_SUCCESS' && res.data && res.data.results) {
+          setGameRewards(res.data.results === null ? [] : res.data.results);
+          setTotalPage(res.data.totalPages);
+          setTotalRecords(res.data.totalRecords);
+        } else {
+          NotificationManager.error({
+            title: t('error'),
+            message: `No data exists`,
+          });
+        }
+      } finally {
+        dispatch(setShowLoader(false));
       }
     })();
   }, []);
 
   React.useEffect(() => {
     (async () => {
-      dispatch(setShowLoader(true));
-      let from;
-      let to;
-      let key;
-      if (search) {
-        key = search;
+      try {
+        let from;
+        let to;
+        let key;
+        if (doSearch || doFilter) {
+          dispatch(setShowLoader(true));
+          if (doSearch) {
+            key = search;
+          }
+
+          if (doFilter) {
+            from = moment(filterDate.fromDate).format(formatDate);
+            to = moment(filterDate.toDate).format(formatDate);
+          }
+
+          const res = await getGameResultReward({
+            keyWord: key,
+            fromDate: from,
+            toDate: to,
+            page: currentPage,
+          });
+
+          if (res.code === 'MSG_SUCCESS' && res.data && res.data.results) {
+            setGameRewards(res.data.results === null ? [] : res.data.results);
+            setTotalPage(res?.data.totalPages);
+            setTotalRecords(res.data.totalRecords);
+          } else {
+            setGameRewards([]);
+            setTotalPage(1);
+            setTotalRecords(0);
+            NotificationManager.error({
+              title: t('no_results_found'),
+              message: t('no_results_found_for_your_search'),
+            });
+          }
+        }
+      } finally {
+        dispatch(setShowLoader(false));
+        setDoSearch(false);
+        setDoFilter(false);
       }
-      if (doFilter) {
-        from = moment(filterDate.fromDate).format(formatDate);
-        to = moment(filterDate.toDate).format(formatDate);
-      }
-      const res = await getGameResultReward({
-        keyWord: key,
-        fromDate: from,
-        toDate: to,
-        page: currentPage,
-      });
-      if (res.code === 'MSG_SUCCESS' && res?.data && res?.data.results) {
-        // setGameRewards(res.data.results === null ? [] : res.data.results.sort((a, b) => b.playDate - a.playDate));
-        setGameRewards(res.data.results === null ? [] : res.data.results);
-        setTotalPage(res?.data.totalPages);
-      } else {
-        NotificationManager.error({
-          title: t('error'),
-          message: `No search data exists`,
-        });
-      }
-      dispatch(setShowLoader(false));
     })();
-  }, [doSearch, filterDate, doFilter, currentPage]);
+  }, [doSearch, filterDate, doFilter, currentPage, search]);
 
   const handleSelectPage = (event, value) => {
     setCurrentPage(value);
@@ -190,7 +201,7 @@ function GameReport() {
             {name}
           </TableCell>
           <TableCell className={tableClasses.tableCell} key="playDate">
-            {moment(playDate).format('YYYY-MM-DD, HH:mm:ss')}
+            {dayjs(playDate).format('YYYY-MM-DD, HH:mm:ss')}
           </TableCell>
         </TableRow>
       </React.Fragment>

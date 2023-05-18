@@ -237,32 +237,36 @@ function ProductApproval() {
     });
   };
 
-  const handleReject = React.useCallback(() => {
+  const handleReject = React.useCallback(async () => {
     try {
       dispatch(setShowLoader(true));
-      const res = requestApproveProduct({ ids: ids, type: 'REJECT' });
-      if (res && res.data.code === 'MSG_SUCCESS') {
+      const res = await requestApproveProduct({ ids: ids, type: 'REJECT' });
+      if (res && res.code === 'MSG_SUCCESS') {
         NotificationManager.success({
           title: 'Successful',
           message: 'The products have been rejected successfully',
         });
-        router.push('/admin/product-approval');
+        setTimeout(() => {
+          router.push('/admin/product-approval');
+        }, 1000);
       }
     } finally {
       dispatch(setShowLoader(false));
     }
   }, [ids]);
 
-  const handleApprove = React.useCallback(() => {
+  const handleApprove = React.useCallback(async () => {
     try {
       dispatch(setShowLoader(true));
-      const res = requestApproveProduct({ ids: ids, type: 'APPROVE' });
-      if (res && res.data.code === 'MSG_SUCCESS') {
+      const res = await requestApproveProduct({ ids: ids, type: 'APPROVE' });
+      if (res && res.code === 'MSG_SUCCESS') {
         NotificationManager.success({
           title: 'Successful',
           message: 'The products have been approved successfully',
         });
-        router.push('/admin/product-approval');
+        setTimeout(() => {
+          router.push('/admin/product-approval');
+        }, 1000);
       }
     } finally {
       dispatch(setShowLoader(false));

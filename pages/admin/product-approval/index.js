@@ -41,6 +41,7 @@ import { setShowLoader } from 'redux/actions/app';
 import dayjs from 'dayjs';
 import router from 'next/router';
 import { RangeDatePickerItem } from 'components';
+import { BASE_API_URL } from 'utilities/const';
 
 function ProductApproval() {
   const { t } = useTranslation();
@@ -276,6 +277,16 @@ function ProductApproval() {
   const renderProduct = (item, index) => {
     const { categoryName, createAt, createBy, image, name, price, shopCode, productCode } = item;
 
+    let _image = '';
+
+    var firstChar = image.substring(0, 4);
+
+    if (firstChar === 'http' || firstChar === 'https') {
+      _image = image;
+    } else {
+      _image = BASE_API_URL + '/assets/' + image;
+    }
+
     return (
       <React.Fragment key={index}>
         <TableRow
@@ -307,7 +318,7 @@ function ProductApproval() {
           <TableCell className={tableClasses.tableCell} key={'productInfo'}>
             <Flex alignItems="center">
               <AspectRatio w="80px" ratio={1 / 1} shadow="sm" borderRadius="8px">
-                <Image src={image} w="100%" h="100%" objectFit="contain" />
+                <Image src={_image} w="100%" h="100%" objectFit="contain" />
               </AspectRatio>
               <Flex flexDirection="column" ml="3" flex="1">
                 <Text textStyle="h4" color="text-basic" noOfLines={2}>

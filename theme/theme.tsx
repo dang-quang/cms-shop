@@ -11,6 +11,7 @@ import { linkStyles } from './components/link';
 import { globalStyles } from './styles';
 import { textStyles } from './components/text';
 import { semanticTokens } from './components/semanticTokens';
+import { checkBoxStyles } from './components/checkBox';
 
 export default extendTheme(
   globalStyles,
@@ -24,7 +25,8 @@ export default extendTheme(
   switchStyles, // switch styles
   CardComponent, // card component,
   textStyles, // text styles
-  semanticTokens // app theme colors
+  semanticTokens, // app theme colors
+  checkBoxStyles // checkbox styles
 );
 
 export interface CustomCardProps extends HTMLChakraProps<'div'>, ThemingProps {}

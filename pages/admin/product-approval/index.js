@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import moment from 'moment';
 import { makeStyles } from '@material-ui/core/styles';
 import Admin from 'layouts/Admin.js';
 import Card from 'components/Card/Card.js';
@@ -12,8 +11,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import Checkbox from '@material-ui/core/Checkbox';
-import Check from '@material-ui/icons/Check';
 import Search from '@material-ui/icons/Search';
 import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
 import tableStyles from 'assets/jss/natcash/components/tableStyle.js';
@@ -27,6 +24,7 @@ import {
   Box,
   Button,
   Center,
+  Checkbox,
   Flex,
   HStack,
   Image,
@@ -59,7 +57,7 @@ function ProductApproval() {
     t('sideBar.category'),
     t('price'),
     t('code_shop'),
-    t('productApproval.createBy'),
+    t('created_by'),
     t('qrManagement.publishTime'),
   ];
 
@@ -84,7 +82,7 @@ function ProductApproval() {
     (async () => {
       try {
         dispatch(setShowLoader(true));
-        const res = await requestGetListProductApprove({ page: 1 });
+        const res = await requestGetListProductApprove({ page: currentPage });
         if (res.code === 'MSG_SUCCESS' && res.result && res.result.results) {
           let _initSelectedProducts = [];
           for (let i = 0; i < res?.result.totalPages; i++) {
@@ -105,7 +103,7 @@ function ProductApproval() {
         dispatch(setShowLoader(false));
       }
     })();
-  }, []);
+  }, [currentPage]);
 
   React.useEffect(() => {
     (async () => {
@@ -300,16 +298,9 @@ function ProductApproval() {
           }}>
           <TableCell className={tableClasses.tableCell}>
             <Checkbox
-              checked={selectedProducts[currentPage - 1].products.indexOf(item) !== -1}
+              isChecked={selectedProducts[currentPage - 1].products.indexOf(item) !== -1}
+              onChange={() => handleSelect(item)}
               tabIndex={-1}
-              disabled
-              onClick={() => handleSelect(item)}
-              checkedIcon={<Check className={taskClasses.checkedIcon} />}
-              icon={<Check className={taskClasses.uncheckedIcon} />}
-              classes={{
-                checked: taskClasses.checked,
-                root: taskClasses.root,
-              }}
             />
           </TableCell>
           <TableCell className={tableClasses.tableCell} key="serial_number">
@@ -436,25 +427,19 @@ function ProductApproval() {
                   <TableCell className={tableClasses.tableCell}>
                     {selectedProducts.length > 0 && (
                       <Checkbox
-                        checked={selectedProducts[currentPage - 1].isSelectAll}
+                        isChecked={selectedProducts[currentPage - 1].isSelectAll}
                         tabIndex={-1}
-                        onClick={() => handleCheckAll()}
-                        checkedIcon={<Check className={taskClasses.checkedIcon} />}
-                        icon={<Check className={taskClasses.uncheckedIcon} />}
-                        classes={{
-                          checked: taskClasses.checked,
-                          root: taskClasses.root,
-                        }}
+                        onChange={() => handleCheckAll()}
                       />
                     )}
                   </TableCell>
                   {TABLE_HEAD.map((prop, key) => {
                     return (
                       <TableCell
-                        style={{ width: key === 1 ? '40%' : null }}
+                        style={{ width: key === 1 ? '30%' : null }}
                         className={tableClasses.tableCell + ' ' + tableClasses.tableHeadCell}
                         key={key}>
-                        {prop}
+                        <Text textStyle="b-md">{prop}</Text>
                       </TableCell>
                     );
                   })}
@@ -462,14 +447,25 @@ function ProductApproval() {
               </TableHead>
             ) : null}
             <TableBody>
-              {products.map((item, index) => {
-                return renderProduct(item, index);
-              })}
+              {products &&
+                products.length > 0 &&
+                products.map((item, index) => {
+                  return renderProduct(item, index);
+                })}
             </TableBody>
           </Table>
-          <div style={{ margin: '15px 0' }}>
+          <Flex justifyContent="space-between" pt="6" pr="6" pb="6">
             <Pagination count={totalPage} page={currentPage} onChange={handleSelectPage} />
-          </div>
+            <Box>
+              <Text>
+                {t('results_page', {
+                  start: (currentPage - 1) * 50 + 1,
+                  end: (currentPage - 1) * 50 + products.length,
+                  total: totalRecords,
+                })}
+              </Text>
+            </Box>
+          </Flex>
         </div>
       </CardFooter>
       <NotificationContainer />

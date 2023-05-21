@@ -69,6 +69,7 @@ export default function Admin({ children, ...rest }) {
           let notificationDisplayed = false; // Flag variable to track notification display
 
           if (!notificationDisplayed) {
+            dispatch(setShowLoader(false));
             NotificationManager.success({
               title: 'Successful',
               message: 'The products have been approved successfully',
@@ -76,7 +77,7 @@ export default function Admin({ children, ...rest }) {
             notificationDisplayed = true; // Set flag to true after displaying the notification
           }
 
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          await new Promise((resolve) => setTimeout(resolve, 2000));
           router.push('/admin/product-approval');
         }
       }
@@ -105,7 +106,7 @@ export default function Admin({ children, ...rest }) {
             notificationDisplayed = true; // Set flag to true after displaying the notification
           }
 
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          await new Promise((resolve) => setTimeout(resolve, 2000));
           router.push('/admin/product-approval');
         }
       }

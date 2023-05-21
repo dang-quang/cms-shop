@@ -13,7 +13,8 @@
       "redux/*": ["redux/*"],
       "saga/*": ["saga/*"],
       "utilities/*": ["utilities/*"],
-      "variables/*": ["variables/*"]
+      "variables/*": ["variables/*"],
+      "constants/*": ["constants/*"]
     }
   }
 }

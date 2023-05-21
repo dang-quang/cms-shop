@@ -34,3 +34,9 @@ export interface IShop {
   shopType: string;
   status: number;
 }
+
+export enum EAppKey {
+  MSG_SUCCESS = 'MSG_SUCCESS',
+  APPROVE = 'APPROVE',
+  REJECT = 'REJECT',
+}

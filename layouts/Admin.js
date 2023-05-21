@@ -20,16 +20,25 @@ import bgImage from 'assets/img/sidebar-2.jpg';
 import logoWide from 'assets/img/logo-wide-white.png';
 import Icon from '@material-ui/core/Icon';
 import { drawerWidth, transition, container } from 'assets/jss/natcash.js';
-import { SHOW_SIDEBAR } from '../redux/actions/app';
 import PageLoader from 'components/PageLoader/PageLoader.js';
 import { loadTranslations } from 'ni18n';
 import { ni18nConfig } from '../ni18n.config';
+import { Box, Button, Flex, HStack } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
+import { approveProducts, rejectProduct } from 'redux/actions/product';
+import product from 'redux/reducers/product';
+import _ from 'lodash';
+import { EAppKey } from 'constants/types';
+import { requestApproveProduct } from 'utilities/ApiManage';
+import { setShowLoader, SHOW_SIDEBAR } from 'redux/actions/app';
+import { NotificationManager } from 'react-light-notifications';
 
 let ps;
 
 export default function Admin({ children, ...rest }) {
   // used for checking current route
   const router = useRouter();
+  const { t } = useTranslation();
   // styles
   const useStyles = makeStyles(styles);
   const classes = useStyles();
@@ -43,19 +52,68 @@ export default function Admin({ children, ...rest }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const showSidebar = useSelector((state) => state.app.showSidebar);
   const showLoader = useSelector((state) => state.app.showLoader);
-  const handleImageClick = (image) => {
-    setImage(image);
-  };
-  const handleColorClick = (color) => {
-    setColor(color);
-  };
-  const handleFixedClick = () => {
-    if (fixedClasses === 'dropdown') {
-      setFixedClasses('dropdown show');
-    } else {
-      setFixedClasses('dropdown');
+  const selectedProducts = useSelector((state) => state.product.selectedProducts);
+
+  const isShow = _.some(selectedProducts, (obj) => !_.isEmpty(obj.products));
+
+  const handleApprove = React.useCallback(async () => {
+    try {
+      const ids = _.flatMap(selectedProducts, 'products').map(({ id }) => id);
+
+      dispatch(setShowLoader(true));
+
+      if (ids.length) {
+        const res = await requestApproveProduct({ ids: ids, type: EAppKey.APPROVE });
+
+        if (res && res.code === EAppKey.MSG_SUCCESS) {
+          let notificationDisplayed = false; // Flag variable to track notification display
+
+          if (!notificationDisplayed) {
+            NotificationManager.success({
+              title: 'Successful',
+              message: 'The products have been approved successfully',
+            });
+            notificationDisplayed = true; // Set flag to true after displaying the notification
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          router.push('/admin/product-approval');
+        }
+      }
+    } finally {
+      dispatch(setShowLoader(false));
     }
-  };
+  }, [selectedProducts]);
+
+  const handleReject = React.useCallback(async () => {
+    try {
+      const ids = _.flatMap(selectedProducts, 'products').map(({ id }) => id);
+
+      dispatch(setShowLoader(true));
+
+      if (ids.length) {
+        const res = await requestApproveProduct({ ids: ids, type: EAppKey.REJECT });
+
+        if (res && res.code === EAppKey.MSG_SUCCESS) {
+          let notificationDisplayed = false; // Flag variable to track notification display
+
+          if (!notificationDisplayed) {
+            NotificationManager.success({
+              title: 'Successful',
+              message: 'The products have been rejected successfully',
+            });
+            notificationDisplayed = true; // Set flag to true after displaying the notification
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          router.push('/admin/product-approval');
+        }
+      }
+    } finally {
+      dispatch(setShowLoader(false));
+    }
+  }, [selectedProducts]);
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -137,6 +195,23 @@ export default function Admin({ children, ...rest }) {
         {/*  fixedClasses={fixedClasses}*/}
         {/*/>*/}
       </div>
+      {isShow && (
+        <Flex
+          bg="bg-1"
+          px="8"
+          py="6"
+          shadow="lg"
+          justifyContent="flex-end"
+          alignItems="center"
+          insetX="0"
+          bottom="0"
+          position="absolute">
+          <HStack gap="4">
+            <Button variant="control" minW="120px" children={t('reject')} onClick={handleApprove} />
+            <Button variant="primary" minW="120px" children={t('approve')} onClick={handleReject} />
+          </HStack>
+        </Flex>
+      )}
     </div>
   );
 }

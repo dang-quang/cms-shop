@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Admin from 'layouts/Admin.js';
 import Card from 'components/Card/Card.js';
@@ -19,20 +19,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import { useTranslation } from 'react-i18next';
 import styles from 'assets/jss/natcash/views/productApproval/productApprovalStyle';
 import { NotificationContainer, NotificationManager } from 'react-light-notifications';
-import {
-  AspectRatio,
-  Box,
-  Button,
-  Center,
-  Checkbox,
-  Flex,
-  HStack,
-  Image,
-  Input,
-  SimpleGrid,
-  Text,
-  useBoolean,
-} from '@chakra-ui/react';
+import { AspectRatio, Box, Center, Checkbox, Flex, Image, Input, Text } from '@chakra-ui/react';
 import { formatCurrency, formatNumber } from 'utilities/utils';
 import { requestApproveProduct, requestGetListProductApprove } from 'utilities/ApiManage';
 import { setShowLoader } from 'redux/actions/app';
@@ -40,6 +27,9 @@ import dayjs from 'dayjs';
 import router from 'next/router';
 import { RangeDatePickerItem } from 'components';
 import { BASE_API_URL } from 'utilities/const';
+import { setSelectedProducts } from 'redux/actions/product';
+import _ from 'lodash';
+import { EAppKey } from 'constants/types';
 
 function ProductApproval() {
   const { t } = useTranslation();
@@ -75,21 +65,19 @@ function ProductApproval() {
   const [doFilter, setDoFilter] = useState(false);
   const [doSearch, setDoSearch] = useState(false);
   const [products, setProducts] = React.useState([]);
-  const [selectedProducts, setSelectedProducts] = React.useState([]);
-  const [ids, setIds] = React.useState([]);
+  const selectedProducts = useSelector((state) => state.product.selectedProducts);
 
   React.useEffect(() => {
     (async () => {
       try {
         dispatch(setShowLoader(true));
-        const res = await requestGetListProductApprove({ page: currentPage });
-        if (res.code === 'MSG_SUCCESS' && res.result && res.result.results) {
+        const res = await requestGetListProductApprove({ page: 1 });
+        if (res.code === EAppKey.MSG_SUCCESS && res.result && res.result.results) {
           let _initSelectedProducts = [];
           for (let i = 0; i < res?.result.totalPages; i++) {
             _initSelectedProducts.push({ isSelectAll: false, products: [] });
           }
-
-          setSelectedProducts(_initSelectedProducts);
+          dispatch(setSelectedProducts(_initSelectedProducts));
           setProducts(res.result.results === null ? [] : res.result.results);
           setTotalPage(res?.result.totalPages);
           setTotalRecords(res.result.totalRecords);
@@ -103,7 +91,7 @@ function ProductApproval() {
         dispatch(setShowLoader(false));
       }
     })();
-  }, [currentPage]);
+  }, []);
 
   React.useEffect(() => {
     (async () => {
@@ -115,11 +103,12 @@ function ProductApproval() {
             page: currentPage,
           });
 
-          if (res.code === 'MSG_SUCCESS' && res.result && res.result.results) {
-            let _initSelectedProducts = [];
-            for (let i = 0; i < res?.result.totalPages; i++) {
-              _initSelectedProducts.push({ isSelectAll: false, products: [] });
-            }
+          if (res.code === EAppKey.MSG_SUCCESS && res.result && res.result.results) {
+            // let _initSelectedProducts = [];
+            // for (let i = 0; i < res?.result.totalPages; i++) {
+            //   _initSelectedProducts.push({ isSelectAll: false, products: [] });
+            // }
+            //dispatch(setSelectedProducts(_initSelectedProducts));
             setProducts(res.result.results === null ? [] : res.result.results);
             setTotalPage(res?.result.totalPages);
             setTotalRecords(res.result.totalRecords);
@@ -151,11 +140,12 @@ function ProductApproval() {
             page: currentPage,
           });
 
-          if (res.code === 'MSG_SUCCESS' && res.result && res.result.results) {
+          if (res.code === EAppKey.MSG_SUCCESS && res.result && res.result.results) {
             let _initSelectedProducts = [];
-            for (let i = 0; i < res?.result.totalPages; i++) {
-              _initSelectedProducts.push({ isSelectAll: false, products: [] });
-            }
+            // for (let i = 0; i < res?.result.totalPages; i++) {
+            //   _initSelectedProducts.push({ isSelectAll: false, products: [] });
+            // }
+            // dispatch(setSelectedProducts(_initSelectedProducts));
             setProducts(res.result.results === null ? [] : res.result.results);
             setTotalPage(res?.result.totalPages);
             setTotalRecords(res.result.totalRecords);
@@ -176,47 +166,33 @@ function ProductApproval() {
     })();
   }, [doFilter, currentPage, selectedDates]);
 
-  React.useEffect(() => {
-    const ids = selectedProducts.flatMap((item) => item.products.map((product) => product.id));
-    setIds(ids);
-  }, [selectedProducts]);
-
   const resetFilterDate = React.useCallback(() => {
     setSelectedDates([FROM_DATE, TO_DATE]);
     setShowDate(false);
     setDoFilter(false);
   }, []);
 
-  const handleSelectPage = (event, value) => {
-    setCurrentPage(value);
-  };
-
-  const handleInputSearch = (event) => {
-    setSearch(event.target.value);
-    setCurrentPage(0);
-  };
-
-  const handleCheckAll = React.useCallback(() => {
+  const handleCheckAll = React.useCallback(async () => {
     if (selectedProducts[currentPage - 1].isSelectAll) {
       const updatedSelectedProducts = [...selectedProducts];
       updatedSelectedProducts[currentPage - 1] = {
         products: [],
         isSelectAll: false,
       };
-      setSelectedProducts(updatedSelectedProducts);
+      dispatch(setSelectedProducts(updatedSelectedProducts));
     } else {
       const updatedSelectedProducts = [...selectedProducts];
       updatedSelectedProducts[currentPage - 1] = {
         products: products,
         isSelectAll: true,
       };
-      setSelectedProducts(updatedSelectedProducts);
+      dispatch(setSelectedProducts(updatedSelectedProducts));
     }
   }, [selectedProducts, currentPage, products]);
 
-  const handleSelect = (item) => {
-    setSelectedProducts((prevSelectedProducts) => {
-      const updatedSelectedProducts = [...prevSelectedProducts];
+  const handleSelect = React.useCallback(
+    async (item) => {
+      const updatedSelectedProducts = [...selectedProducts];
       const currentPageProducts = updatedSelectedProducts[currentPage - 1];
 
       const updatedProducts = currentPageProducts.products.filter(
@@ -224,138 +200,140 @@ function ProductApproval() {
       );
 
       if (updatedProducts.length === currentPageProducts.products.length) {
-        // Item doesn't exist, add it to the selected products
         currentPageProducts.products.push(item);
       } else {
-        // Item already exists, remove it from the selected products
         currentPageProducts.products = updatedProducts;
         currentPageProducts.isSelectAll = false;
       }
 
-      return updatedSelectedProducts;
-    });
-  };
+      dispatch(setSelectedProducts(updatedSelectedProducts));
+    },
+    [selectedProducts, currentPage]
+  );
 
-  const handleReject = React.useCallback(async () => {
-    try {
-      dispatch(setShowLoader(true));
-      const res = await requestApproveProduct({ ids: ids, type: 'REJECT' });
-      if (res && res.code === 'MSG_SUCCESS') {
-        NotificationManager.success({
-          title: 'Successful',
-          message: 'The products have been rejected successfully',
-        });
-        setTimeout(() => {
-          router.push('/admin/product-approval');
-        }, 1000);
+  const handleSelectTab = React.useCallback(
+    async (e, value) => {
+      setCurrentPage(value);
+      const res = await requestGetListProductApprove({ page: value });
+      if (res.code === EAppKey.MSG_SUCCESS && res.result && res.result.results) {
+        let _initSelectedProducts = [];
+        for (let i = 0; i < res?.result.totalPages; i++) {
+          _initSelectedProducts.push({ isSelectAll: false, products: [] });
+        }
+
+        if (selectedProducts) {
+          dispatch(setSelectedProducts(selectedProducts));
+        } else {
+          dispatch(setSelectedProducts(_initSelectedProducts));
+        }
+
+        setProducts(res.result.results === null ? [] : res.result.results);
+        setTotalPage(res?.result.totalPages);
+        setTotalRecords(res.result.totalRecords);
       }
-    } finally {
-      dispatch(setShowLoader(false));
-    }
-  }, [ids]);
+    },
+    [selectedProducts]
+  );
 
-  const handleApprove = React.useCallback(async () => {
-    try {
-      dispatch(setShowLoader(true));
-      const res = await requestApproveProduct({ ids: ids, type: 'APPROVE' });
-      if (res && res.code === 'MSG_SUCCESS') {
-        NotificationManager.success({
-          title: 'Successful',
-          message: 'The products have been approved successfully',
-        });
-        setTimeout(() => {
-          router.push('/admin/product-approval');
-        }, 1000);
+  const renderProduct = React.useCallback(
+    (item, index) => {
+      const { categoryName, createAt, createBy, image, name, price, shopCode, productCode } = item;
+
+      let _image = '';
+
+      var firstChar = image.substring(0, 4);
+
+      if (firstChar === 'http' || firstChar === 'https') {
+        _image = image;
+      } else {
+        _image = BASE_API_URL + '/assets/' + image;
       }
-    } finally {
-      dispatch(setShowLoader(false));
-    }
-  }, [ids]);
 
-  const renderProduct = (item, index) => {
-    const { categoryName, createAt, createBy, image, name, price, shopCode, productCode } = item;
+      const isItemChecked = (() => {
+        for (let i = 0; i < selectedProducts[currentPage - 1]?.products?.length; i++) {
+          if (selectedProducts[currentPage - 1]?.products[i].id === item.id) {
+            return true;
+          }
+        }
+        return false;
+      })();
 
-    let _image = '';
-
-    var firstChar = image.substring(0, 4);
-
-    if (firstChar === 'http' || firstChar === 'https') {
-      _image = image;
-    } else {
-      _image = BASE_API_URL + '/assets/' + image;
-    }
-
-    return (
-      <React.Fragment key={index}>
-        <TableRow
-          key={index}
-          onClick={() => handleSelect(item)}
-          className={tableClasses.tableBodyRow}
-          style={{
-            cursor: 'pointer',
-            backgroundColor:
-              selectedProducts[currentPage - 1].products.indexOf(item) !== -1 ? '#fff6f0' : '#fff',
-          }}>
-          <TableCell className={tableClasses.tableCell}>
-            <Checkbox
-              isChecked={selectedProducts[currentPage - 1].products.indexOf(item) !== -1}
-              onChange={() => handleSelect(item)}
-              tabIndex={-1}
-            />
-          </TableCell>
-          <TableCell className={tableClasses.tableCell} key="serial_number">
-            {index + 1}
-          </TableCell>
-          <TableCell className={tableClasses.tableCell} key={'productInfo'}>
-            <Flex alignItems="center">
-              <AspectRatio w="80px" ratio={1 / 1} shadow="sm" borderRadius="8px">
-                <Image src={_image} w="100%" h="100%" objectFit="contain" />
-              </AspectRatio>
-              <Flex flexDirection="column" ml="3" flex="1">
-                <Text textStyle="h4" color="text-basic" noOfLines={2}>
-                  {name}
-                </Text>
-                <Text mt="2" textStyle="c-sm" color="text-body" mr="1">
-                  {shopCode}
-                  <Text as="span" mx="3">
-                    -
+      return (
+        <React.Fragment key={index}>
+          <TableRow
+            key={index}
+            onClick={() => handleSelect(item)}
+            className={tableClasses.tableBodyRow}
+            style={{
+              cursor: 'pointer',
+              backgroundColor: isItemChecked ? '#fff6f0' : '#fff',
+              height: 100,
+            }}>
+            <TableCell key="check">
+              <Checkbox isChecked={isItemChecked} onChange={() => handleSelect(item)} />
+            </TableCell>
+            <TableCell className={tableClasses.tableCell} key="serial_number">
+              <Text textStyle="h4" color="text-basic">
+                {index + 1}
+              </Text>
+            </TableCell>
+            <TableCell className={tableClasses.tableCell} key={'productInfo'}>
+              <Flex alignItems="center">
+                <AspectRatio
+                  overflow="hidden"
+                  w="80px"
+                  ratio={1 / 1}
+                  shadow="sm"
+                  borderRadius="6px">
+                  <Image src={_image} w="100%" h="100%" objectFit="contain" />
+                </AspectRatio>
+                <Flex flexDirection="column" ml="3" flex="1">
+                  <Text textStyle="h4" color="text-basic" noOfLines={2}>
+                    {name}
                   </Text>
-                  <Text as="span" textStyle="c-sm" color="text-body">
-                    {productCode}
+                  <Text mt="2" textStyle="c-sm" color="text-body" mr="1">
+                    {shopCode}
+                    <Text as="span" mx="3">
+                      -
+                    </Text>
+                    <Text as="span" textStyle="c-sm" color="text-body">
+                      {productCode}
+                    </Text>
                   </Text>
-                </Text>
+                </Flex>
               </Flex>
-            </Flex>
-          </TableCell>
-          <TableCell className={tableClasses.tableCell} width="15%" key="categoryName">
-            <Text textStyle="h4" noOfLines={1}>
-              {categoryName}
-            </Text>
-          </TableCell>
-          <TableCell className={tableClasses.tableCell} key="price">
-            <Text textStyle="h3" color="text-basic">
-              {formatCurrency(price)}
-            </Text>
-          </TableCell>
-          <TableCell className={tableClasses.tableCell} key="shopCode">
-            <Text textStyle="h3" color="text-basic">
-              {shopCode}
-            </Text>
-          </TableCell>
-          <TableCell className={tableClasses.tableCell} key="createBy">
-            <Text textStyle="h3" color="text-basic">
-              {createBy}
-            </Text>
-          </TableCell>
-          <TableCell className={tableClasses.tableCell} key={'publish'}>
-            <Text textStyle="h3" color="text-basic">
-              {dayjs(createAt).format('DD/MM/YYYY')}
-            </Text>
-          </TableCell>
-        </TableRow>
-      </React.Fragment>
-    );
-  };
+            </TableCell>
+            <TableCell className={tableClasses.tableCell} key="categoryName">
+              <Text textStyle="h4" noOfLines={1}>
+                {categoryName}
+              </Text>
+            </TableCell>
+            <TableCell className={tableClasses.tableCell} key="price">
+              <Text textStyle="h3" color="text-basic">
+                {formatCurrency(price)}
+              </Text>
+            </TableCell>
+            <TableCell className={tableClasses.tableCell} key="shopCode">
+              <Text textStyle="h3" color="text-basic">
+                {shopCode}
+              </Text>
+            </TableCell>
+            <TableCell className={tableClasses.tableCell} key="createBy">
+              <Text textStyle="h3" color="text-basic">
+                {createBy}
+              </Text>
+            </TableCell>
+            <TableCell className={tableClasses.tableCell} key={'publish'}>
+              <Text textStyle="h3" color="text-basic">
+                {dayjs(createAt).format('DD/MM/YYYY')}
+              </Text>
+            </TableCell>
+          </TableRow>
+        </React.Fragment>
+      );
+    },
+    [selectedProducts, currentPage]
+  );
 
   return (
     <Card>
@@ -400,38 +378,21 @@ function ProductApproval() {
               /> */}
             </Flex>
           </Flex>
-          {ids.length > 0 && (
-            <HStack gap="4">
-              <Button
-                variant="control"
-                minW="120px"
-                children={t('reject')}
-                onClick={handleReject}
-              />
-              <Button
-                variant="primary"
-                minW="120px"
-                children={t('approve')}
-                onClick={handleApprove}
-              />
-            </HStack>
-          )}
         </Flex>
       </CardBody>
-      <CardFooter>
-        <div className={tableClasses.tableResponsive} style={{ marginTop: '0' }}>
-          <Table className={tableClasses.table}>
-            {products && products.length > 0 ? (
+      {products && products.length > 0 && (
+        <CardFooter>
+          <div className={tableClasses.tableResponsive} style={{ marginTop: '0' }}>
+            <Table className={tableClasses.table}>
               <TableHead className={tableClasses['primary' + 'TableHeader']}>
                 <TableRow className={tableClasses.tableHeadRow}>
-                  <TableCell className={tableClasses.tableCell}>
-                    {selectedProducts.length > 0 && (
-                      <Checkbox
-                        isChecked={selectedProducts[currentPage - 1].isSelectAll}
-                        tabIndex={-1}
-                        onChange={() => handleCheckAll()}
-                      />
-                    )}
+                  <TableCell className={tableClasses.tableCell + ' ' + tableClasses.tableHeadCell}>
+                    <Checkbox
+                      isChecked={selectedProducts[currentPage - 1].isSelectAll}
+                      tabIndex={-1}
+                      onChange={() => handleCheckAll()}
+                      ml="2"
+                    />
                   </TableCell>
                   {TABLE_HEAD.map((prop, key) => {
                     return (
@@ -445,29 +406,27 @@ function ProductApproval() {
                   })}
                 </TableRow>
               </TableHead>
-            ) : null}
-            <TableBody>
-              {products &&
-                products.length > 0 &&
-                products.map((item, index) => {
+              <TableBody>
+                {products.map((item, index) => {
                   return renderProduct(item, index);
                 })}
-            </TableBody>
-          </Table>
-          <Flex justifyContent="space-between" pt="6" pr="6" pb="6">
-            <Pagination count={totalPage} page={currentPage} onChange={handleSelectPage} />
-            <Box>
-              <Text>
-                {t('results_page', {
-                  start: (currentPage - 1) * 50 + 1,
-                  end: (currentPage - 1) * 50 + products.length,
-                  total: totalRecords,
-                })}
-              </Text>
-            </Box>
-          </Flex>
-        </div>
-      </CardFooter>
+              </TableBody>
+            </Table>
+            <Flex justifyContent="space-between" pt="6" pr="6" pb="6">
+              <Pagination count={totalPage} page={currentPage} onChange={handleSelectTab} />
+              <Box>
+                <Text>
+                  {t('results_page', {
+                    start: (currentPage - 1) * 50 + 1,
+                    end: (currentPage - 1) * 50 + products.length,
+                    total: totalRecords,
+                  })}
+                </Text>
+              </Box>
+            </Flex>
+          </div>
+        </CardFooter>
+      )}
       <NotificationContainer />
     </Card>
   );

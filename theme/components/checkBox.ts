@@ -6,8 +6,9 @@ export const checkBoxStyles = {
           color: 'white',
         },
         control: {
-          height: '32px',
-          border: '1px',
+          h: '32px',
+          w: '32px',
+          borderWidth: '1px',
           borderColor: 'primary.100',
           borderRadius: 'base',
           _disabled: {
@@ -16,12 +17,14 @@ export const checkBoxStyles = {
           },
           _checked: {
             bg: 'primary.100',
+            borderWidth: '1px',
             borderColor: 'primary.100',
             _hover: {
               bg: 'primary.100',
               borderColor: 'primary.100',
             },
           },
+          _focus: { shadow: 'none' },
         },
         label: {
           fontWeight: 'medium',

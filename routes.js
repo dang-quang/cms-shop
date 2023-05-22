@@ -63,13 +63,13 @@ const dashboardRoutes = [
       //   parent: 'operation',
       //   permission: 'marketing_advertisement',
       // },
-      // {
-      //   path: '/voucher',
-      //   name: 'voucher',
-      //   layout: '/admin',
-      //   parent: 'operation',
-      //   permission: 'marketing_voucher',
-      // },
+      {
+        path: '/voucher',
+        name: 'voucher',
+        layout: '/admin',
+        parent: 'operation',
+        permission: 'marketing_voucher',
+      },
       // {
       //   path: '/flashsale',
       //   name: 'flashSale',

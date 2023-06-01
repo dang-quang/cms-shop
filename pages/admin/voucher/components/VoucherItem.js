@@ -38,14 +38,18 @@ const VoucherItem = ({ item, index, onUpdate, onDelete }) => {
         </Flex>
       </Td>
       <Td isNumeric borderColor="gray.1300">
-        <Text textStyle="h3" color="text-basic">
-          {formatCurrency(item.discountValue ?? 0)}
-        </Text>
+        {item.discountValue && (
+          <Text textStyle="h3" color="text-basic">
+            {formatCurrency(item.discountValue ?? 0)}
+          </Text>
+        )}
       </Td>
       <Td isNumeric borderColor="gray.1300">
-        <Text textStyle="h3" color="text-basic">
-          {item.quantityVoucher}
-        </Text>
+        {item.quantityVoucher && (
+          <Text textStyle="h3" color="text-basic">
+            {item.quantityVoucher}
+          </Text>
+        )}
       </Td>
       <Td borderColor="gray.1300">
         <Center>

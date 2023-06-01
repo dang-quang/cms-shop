@@ -15,22 +15,28 @@ import {
   Text,
   Image,
   Center,
+  Td,
+  AspectRatio,
+  HStack,
 } from '@chakra-ui/react';
 import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
 
-import VoucherItem from './VoucherItem';
 import PaginationPanel from './PaginationPanel';
 import { requestDeleteVoucher, requestGetListVoucher } from 'utilities/ApiManage';
 import { useDispatch } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
-import { EAppKey } from 'constants/types';
+import { EAppKey, EVoucherStatus } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
-import { AiOutlineSearch } from 'react-icons/ai';
+import { AiFillEdit, AiOutlineSearch } from 'react-icons/ai';
 import { useRouter } from 'next/router';
 import { ModalConfirm } from 'components';
 import { isEmpty } from 'lodash';
 import Images from 'assets';
+import { FiTrash2 } from 'react-icons/fi';
+import { BASE_API_URL } from 'utilities/const';
+import { formatCurrency } from 'utilities/utils';
+import dayjs from 'dayjs';
 
 export const TableAll = () => {
   const router = useRouter();
@@ -207,6 +213,18 @@ export const TableAll = () => {
                   return;
                 }
 
+                let _image = '';
+
+                if (item && item.banner) {
+                  let firstChar = item.banner.substring(0, 4);
+
+                  if (firstChar === 'http' || firstChar === 'https') {
+                    _image = item.banner;
+                  } else {
+                    _image = BASE_API_URL + '/assets/' + item.banner;
+                  }
+                }
+
                 return (
                   // <VoucherItem
                   //   item={item}
@@ -226,7 +244,7 @@ export const TableAll = () => {
                   <Tr cursor="pointer">
                     <Td borderColor="gray.1300">
                       <Text textStyle="h3" color="text-basic">
-                        {index}
+                        {index + 1}
                       </Text>
                     </Td>
                     <Td borderColor="gray.1300">

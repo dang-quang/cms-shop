@@ -11,7 +11,7 @@ const VoucherItem = ({ item, index, onUpdate, onDelete }) => {
   let _image = '';
 
   if (item.banner) {
-    let firstChar = banner.substring(0, 4);
+    let firstChar = item.banner.substring(0, 4);
 
     if (firstChar === 'http' || firstChar === 'https') {
       _image = item.banner;

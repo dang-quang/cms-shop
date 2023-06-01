@@ -14,6 +14,7 @@ import {
   useBoolean,
   Text,
   FormControl,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +28,7 @@ import { EAppKey } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { useRouter } from 'next/router';
+import { ModalConfirm } from 'components';
 
 export const TableAll = () => {
   const router = useRouter();
@@ -41,6 +43,8 @@ export const TableAll = () => {
   const [totalRecords, setTotalRecords] = React.useState(0);
   const [search, setSearch] = React.useState('');
   const [doSearch, { on: onSearch, off: offSearch }] = useBoolean(false);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const headers = [
     t('serial_number'),
@@ -236,32 +240,13 @@ export const TableAll = () => {
           })}
         </Text>
       </Flex>
-      {/* <ModalCustom
-        width={600}
-        title={t('confirmation')}
-        subTitle={''}
-        isShow={isShowModal}
-        handleClose={offShowModal}>
-        <div className={classes.flex_center}>
-          <FormControl variant="outlined" size="small" style={{ flex: 1 }}>
-            <p style={{ flex: 1 }}>{t('deleteConfirm')}</p>
-          </FormControl>
-        </div>
-        <div
-          className={tableClasses.tableResponsive}
-          style={{ marginTop: '0', flexDirection: 'row-reverse', display: 'flex' }}>
-          <div className={classes.buttonContainer}>
-            <Button color="primary" onClick={handleDeleteVoucher}>
-              {t('submit')}
-            </Button>
-          </div>
-          <div className={classes.buttonContainer}>
-            <Button color="gray" onClick={offShowModal}>
-              {t('cancel')}
-            </Button>
-          </div>
-        </div>
-      </ModalCustom> */}
+      <ModalConfirm
+        isOpen={isOpen}
+        onClose={onClose}
+        title={t('deleteConfirm')}
+        buttonLeft={{ title: t('cancel'), onClick: onClose }}
+        buttonRight={{ title: t('confirm'), onClick: handleDeleteVoucher }}
+      />
     </Box>
   );
 };

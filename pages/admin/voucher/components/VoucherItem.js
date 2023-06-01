@@ -23,7 +23,7 @@ import { SlOptions } from 'react-icons/sl';
 
 const VoucherItem = ({ index, item }) => {
   const {
-    name,
+    name = '',
     discountValue,
     programStart,
     programEnd,
@@ -60,7 +60,7 @@ const VoucherItem = ({ index, item }) => {
             <Image w="100%" h="100%" objectFit="cover" src={_image} />
           </AspectRatio>
           <Text textStyle="h3-m" color="text-basic">
-            {name ? name : ''}
+            {name}
           </Text>
         </Flex>
       </Td>

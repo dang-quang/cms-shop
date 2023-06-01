@@ -63,38 +63,39 @@ const PaginationPanel: React.FC<PaginationPanelProps> = ({
                 jumpSize={11}
               />
             }>
-            {pages.map((page: number) => (
-              <PaginationPage
-                w="40px"
-                h="40px"
-                key={`pagination_page_${page}`}
-                page={page}
-                borderRadius="0px"
-                bg="transparent"
-                onClick={() => {}}
-                fontSize="md"
-                fontWeight="500"
-                color="text-basic"
-                borderBottomColor="transparent"
-                _focus={{
-                  borderBottom: '2px',
-                  borderBottomColor: 'primary.100',
-                  color: 'primary.100',
-                }}
-                _hover={{
-                  opacity: 1,
-                  color: 'white',
-                  bg: 'primary.100',
-                  borderBottomColor: 'primary.100',
-                }}
-                _current={{
-                  borderBottomWidth: '2px',
-                  fontSize: 'md',
-                  borderBottomColor: 'primary.100',
-                  bg: 'transparent',
-                }}
-              />
-            ))}
+            {pages &&
+              pages.map((page: number) => (
+                <PaginationPage
+                  w="40px"
+                  h="40px"
+                  key={`pagination_page_${page}`}
+                  page={page}
+                  borderRadius="0px"
+                  bg="transparent"
+                  onClick={() => {}}
+                  fontSize="md"
+                  fontWeight="500"
+                  color="text-basic"
+                  borderBottomColor="transparent"
+                  _focus={{
+                    borderBottom: '2px',
+                    borderBottomColor: 'primary.100',
+                    color: 'primary.100',
+                  }}
+                  _hover={{
+                    opacity: 1,
+                    color: 'white',
+                    bg: 'primary.100',
+                    borderBottomColor: 'primary.100',
+                  }}
+                  _current={{
+                    borderBottomWidth: '2px',
+                    fontSize: 'md',
+                    borderBottomColor: 'primary.100',
+                    bg: 'transparent',
+                  }}
+                />
+              ))}
           </PaginationPageGroup>
           <PaginationNext
             _hover={{

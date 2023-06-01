@@ -114,6 +114,12 @@ function AddVoucherPage() {
       try {
         dispatch(setShowLoader(true));
         if (voucher) {
+          let _banner = null;
+
+          if (banner) {
+            _banner = banner.replace(/^data:image\/(png|jpg);base64,/, '');
+          }
+
           const res = await requestCreateUpdateVoucher({
             id,
             name: name,
@@ -128,7 +134,7 @@ function AddVoucherPage() {
             discountLimit,
             typeDiscount,
             discountValue,
-            banner,
+            banner: _banner,
             description,
             typeLimit,
           });
@@ -161,7 +167,7 @@ function AddVoucherPage() {
             discountLimit,
             typeDiscount,
             discountValue,
-            banner,
+            banner: _banner,
             description,
             typeLimit,
           });

@@ -58,7 +58,7 @@ const VoucherItem = ({ index, item }) => {
         <Flex>
           <Image w="64px" h="64px" objectFit="cover" src={_image} mr="2" />
           <Text textStyle="h3-m" color="text-basic">
-            {name}
+            {name ?? ''}
           </Text>
         </Flex>
       </Td>

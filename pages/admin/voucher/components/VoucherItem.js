@@ -8,10 +8,6 @@ import { AiFillEdit } from 'react-icons/ai';
 import { FiTrash2 } from 'react-icons/fi';
 
 const VoucherItem = ({ item, index, onUpdate, onDelete }) => {
-  if (!item) {
-    return;
-  }
-
   let _image = '';
 
   if (item && item.banner) {
@@ -37,7 +33,7 @@ const VoucherItem = ({ item, index, onUpdate, onDelete }) => {
             <Image w="100%" h="100%" objectFit="cover" src={_image} />
           </AspectRatio>
           <Text textStyle="h3-m" color="text-basic">
-            {item.name}
+            {item ? item.name : ''}
           </Text>
         </Flex>
       </Td>

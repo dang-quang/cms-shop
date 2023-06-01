@@ -252,8 +252,14 @@ function AddVoucherPage() {
               ctx.drawImage(img, 0, 0);
               const dataURL = canvas.toDataURL('image/png');
 
-              setFieldValue('banner', dataURL.replace(/^data:image\/(png|jpg);base64,/, ''));
+              setFieldValue('banner', dataURL);
             };
+          }
+          if (voucher) {
+            setFieldValue('registerStart', dayjs(voucher.registerStart).format(formatDate));
+            setFieldValue('registerEnd', dayjs(voucher.registerEnd).format(formatDate));
+            setFieldValue('programStart', dayjs(voucher.programStart).format(formatDate));
+            setFieldValue('programEnd', dayjs(voucher.programEnd).format(formatDate));
           }
         }, [voucher]);
 

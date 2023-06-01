@@ -26,17 +26,15 @@ import { EAppKey } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
 import { AiOutlineSearch } from 'react-icons/ai';
 
-interface TableAllProps {}
-
-export const TableAll: React.FC<TableAllProps> = () => {
+export const TableAll = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const pageSize = 50;
 
-  const [vouchers, setVouchers] = React.useState<any[]>([]);
-  const [totalPage, setTotalPage] = React.useState<number>(1);
-  const [totalRecords, setTotalRecords] = React.useState<number>(0);
-  const [search, setSearch] = React.useState<string>('');
+  const [vouchers, setVouchers] = React.useState([]);
+  const [totalPage, setTotalPage] = React.useState(1);
+  const [totalRecords, setTotalRecords] = React.useState(0);
+  const [search, setSearch] = React.useState('');
   const [doSearch, { on: onSearch, off: offSearch }] = useBoolean(false);
 
   const headers = [

@@ -263,7 +263,7 @@ export const TableAll = () => {
                     <Td borderColor="gray.1300">
                       <Center>
                         <Text textStyle="h3" color="text-basic">
-                          {item && item.shopRegister}
+                          {item.shopRegister ?? 0}
                         </Text>
                       </Center>
                     </Td>

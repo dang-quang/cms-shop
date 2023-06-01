@@ -260,7 +260,13 @@ function AddVoucherPage() {
             setFieldValue('registerEnd', dayjs(voucher.registerEnd).format(formatDate));
             setFieldValue('programStart', dayjs(voucher.programStart).format(formatDate));
             setFieldValue('programEnd', dayjs(voucher.programEnd).format(formatDate));
+            if (voucher.maxShopRegister === 0) {
+              setFieldValue('typeShopLimit', EShopLimitType.NO_LIMIT);
+            } else {
+              setFieldValue('typeShopLimit', EShopLimitType.SHOP_LIMIT);
+            }
           }
+          setFieldValue('typeShopLimit', EShopLimitType.NO_LIMIT);
         }, [voucher]);
 
         const { onUploader: onUploaderBanner } = useDisplayImage((image) => {
@@ -407,8 +413,6 @@ function AddVoucherPage() {
                         <div className={classes.formCell}>
                           <FormControl component="fieldset">
                             <RadioGroup
-                              aria-label="shop"
-                              name="shop1"
                               value={values.typeShopLimit}
                               onChange={handleChange('typeShopLimit')}
                               className={classes.flex_center}>
@@ -431,7 +435,6 @@ function AddVoucherPage() {
                       {values.typeShopLimit === EShopLimitType.SHOP_LIMIT && (
                         <FormCellCustom flexStart>
                           <TextField
-                            id="max-shop-register"
                             label=""
                             variant="outlined"
                             size="small"

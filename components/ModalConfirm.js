@@ -11,21 +11,20 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-const ModalConfirm = ({ isOpen, title, onClose, buttonLeft, buttonRight }) => {
+const ModalConfirm = ({ isOpen, title, description, onClose, buttonLeft, buttonRight }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick size="sm">
+    <Modal isOpen={isOpen} onClose={onClose} isCentered closeOnOverlayClick size="lg">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>
-        <ModalCloseButton />
         <ModalBody>
-          <Text>{title}</Text>
+          <Text textAlign="center">{description}</Text>
         </ModalBody>
         <ModalFooter>
           <Button colorScheme="red" mr={3} onClick={buttonLeft.onClick}>
             {buttonLeft.title}
           </Button>
-          <Button colorScheme="green" onClick={buttonRight.onClick}>
+          <Button colorScheme="primary" onClick={buttonRight.onClick}>
             {buttonRight.title}
           </Button>
         </ModalFooter>

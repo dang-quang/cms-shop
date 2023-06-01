@@ -44,8 +44,6 @@ export const TableAll = () => {
   const [search, setSearch] = React.useState('');
   const [doSearch, { on: onSearch, off: offSearch }] = useBoolean(false);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
   const headers = [
     t('serial_number'),
     'Voucher Name',
@@ -241,10 +239,11 @@ export const TableAll = () => {
         </Text>
       </Flex>
       <ModalConfirm
-        isOpen={isOpen}
-        onClose={onClose}
-        title={t('deleteConfirm')}
-        buttonLeft={{ title: t('cancel'), onClick: onClose }}
+        isOpen={isShowModal}
+        onClose={onShowModal}
+        title="Confirm Deletion"
+        description={t('deleteConfirm')}
+        buttonLeft={{ title: t('cancel'), onClick: offShowModal }}
         buttonRight={{ title: t('confirm'), onClick: handleDeleteVoucher }}
       />
     </Box>

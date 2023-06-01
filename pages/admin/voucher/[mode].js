@@ -179,7 +179,6 @@ function AddVoucherPage() {
               message: res.message ? res.message.text : 'Error',
             });
           }
-          router.push('/admin/voucher');
         }
       } finally {
         dispatch(setShowLoader(false));

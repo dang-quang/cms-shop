@@ -43,7 +43,7 @@ const VoucherItem = ({ index, item, onUpdate, onDelete }) => {
           <AspectRatio w="180px" ratio={2 / 1} mr="2" borderRadius="8px" overflow="hidden">
             <Image w="100%" h="100%" objectFit="cover" src={_image} />
           </AspectRatio>
-          {name && (
+          {!!name && (
             <Text textStyle="h3-m" color="text-basic">
               {name}
             </Text>

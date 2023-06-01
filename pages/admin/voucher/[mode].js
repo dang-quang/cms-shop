@@ -256,6 +256,7 @@ function AddVoucherPage() {
             };
           }
           if (voucher) {
+            console.log('quang debug ===>', voucher.registerStart);
             setFieldValue('registerStart', dayjs(voucher.registerStart).format(formatDate));
             setFieldValue('registerEnd', dayjs(voucher.registerEnd).format(formatDate));
             setFieldValue('programStart', dayjs(voucher.programStart).format(formatDate));

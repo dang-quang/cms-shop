@@ -59,46 +59,50 @@ const VoucherItem = ({ item, index, onUpdate, onDelete }) => {
         </Center>
       </Td>
       <Td borderColor="gray.1300">
-        <Center flexDirection="column" alignItems="flex-start">
-          <Flex
-            py="1"
-            px="2"
-            bg={
-              item.status === EVoucherStatus.UPCOMING
-                ? 'red.700'
-                : item.status === EVoucherStatus.HAPPENING
-                ? 'green.200'
-                : 'gray.2000'
-            }
-            alignItems="center"
-            borderRadius="full">
-            <Text
-              textStyle="h2-m"
-              color={
+        {item && (
+          <Center flexDirection="column" alignItems="flex-start">
+            <Flex
+              py="1"
+              px="2"
+              bg={
                 item.status === EVoucherStatus.UPCOMING
-                  ? 'red.600'
+                  ? 'red.700'
                   : item.status === EVoucherStatus.HAPPENING
-                  ? 'green.100'
-                  : 'gray.100'
+                  ? 'green.200'
+                  : 'gray.2000'
               }
-              textTransform="capitalize">
-              {item.status === EVoucherStatus.UPCOMING
-                ? 'Upcoming'
-                : item.status === EVoucherStatus.HAPPENING
-                ? 'Happening'
-                : 'Finished'}
-            </Text>
-          </Flex>
-          <HStack mt="2">
-            <Text textStyle="h3" color="text-basic">
-              {dayjs(item.programStart).format('DD-MM-YYYY HH:MM')}
-            </Text>
-            <Text>-</Text>
-            <Text textStyle="h3" color="text-basic">
-              {dayjs(item.programEnd).format('DD-MM-YYYY HH:MM')}
-            </Text>
-          </HStack>
-        </Center>
+              alignItems="center"
+              borderRadius="full">
+              <Text
+                textStyle="h2-m"
+                color={
+                  item.status === EVoucherStatus.UPCOMING
+                    ? 'red.600'
+                    : item.status === EVoucherStatus.HAPPENING
+                    ? 'green.100'
+                    : 'gray.100'
+                }
+                textTransform="capitalize">
+                {item.status === EVoucherStatus.UPCOMING
+                  ? 'Upcoming'
+                  : item.status === EVoucherStatus.HAPPENING
+                  ? 'Happening'
+                  : 'Finished'}
+              </Text>
+            </Flex>
+            {item && item.programStart && item.programEnd && (
+              <HStack mt="2">
+                <Text textStyle="h3" color="text-basic">
+                  {dayjs(item.programStart).format('DD-MM-YYYY HH:MM')}
+                </Text>
+                <Text>-</Text>
+                <Text textStyle="h3" color="text-basic">
+                  {dayjs(item.programEnd).format('DD-MM-YYYY HH:MM')}
+                </Text>
+              </HStack>
+            )}
+          </Center>
+        )}
       </Td>
       <Td isNumeric borderColor="gray.1300">
         <Flex justifyContent="flex-end">

@@ -7,27 +7,16 @@ import { EVoucherStatus } from 'constants/types';
 import { AiFillEdit } from 'react-icons/ai';
 import { FiTrash2 } from 'react-icons/fi';
 
-const VoucherItem = ({ index, item, onUpdate, onDelete }) => {
-  const {
-    name,
-    discountValue,
-    programStart,
-    programEnd,
-    quantityVoucher,
-    banner,
-    status,
-    shopRegister,
-  } = item;
-
+const VoucherItem = ({ item, index, onUpdate, onDelete }) => {
   let _image = '';
 
-  if (banner) {
+  if (item.banner) {
     let firstChar = banner.substring(0, 4);
 
     if (firstChar === 'http' || firstChar === 'https') {
-      _image = banner;
+      _image = item.banner;
     } else {
-      _image = BASE_API_URL + '/assets/' + banner;
+      _image = BASE_API_URL + '/assets/' + item.banner;
     }
   }
 
@@ -50,18 +39,18 @@ const VoucherItem = ({ index, item, onUpdate, onDelete }) => {
       </Td>
       <Td isNumeric borderColor="gray.1300">
         <Text textStyle="h3" color="text-basic">
-          {formatCurrency(discountValue ?? 0)}
+          {formatCurrency(item.discountValue ?? 0)}
         </Text>
       </Td>
       <Td isNumeric borderColor="gray.1300">
         <Text textStyle="h3" color="text-basic">
-          {quantityVoucher}
+          {item.quantityVoucher}
         </Text>
       </Td>
       <Td borderColor="gray.1300">
         <Center>
           <Text textStyle="h3" color="text-basic">
-            {shopRegister}
+            {item.shopRegister}
           </Text>
         </Center>
       </Td>
@@ -71,9 +60,9 @@ const VoucherItem = ({ index, item, onUpdate, onDelete }) => {
             py="1"
             px="2"
             bg={
-              status === EVoucherStatus.UPCOMING
+              item.status === EVoucherStatus.UPCOMING
                 ? 'red.700'
-                : status === EVoucherStatus.HAPPENING
+                : item.status === EVoucherStatus.HAPPENING
                 ? 'green.200'
                 : 'gray.2000'
             }
@@ -82,27 +71,27 @@ const VoucherItem = ({ index, item, onUpdate, onDelete }) => {
             <Text
               textStyle="h2-m"
               color={
-                status === EVoucherStatus.UPCOMING
+                item.status === EVoucherStatus.UPCOMING
                   ? 'red.600'
-                  : status === EVoucherStatus.HAPPENING
+                  : item.status === EVoucherStatus.HAPPENING
                   ? 'green.100'
                   : 'gray.100'
               }
               textTransform="capitalize">
-              {status === EVoucherStatus.UPCOMING
+              {item.status === EVoucherStatus.UPCOMING
                 ? 'Upcoming'
-                : status === EVoucherStatus.HAPPENING
+                : item.status === EVoucherStatus.HAPPENING
                 ? 'Happening'
                 : 'Finished'}
             </Text>
           </Flex>
           <HStack mt="2">
             <Text textStyle="h3" color="text-basic">
-              {dayjs(programStart).format('DD-MM-YYYY HH:MM')}
+              {dayjs(item.programStart).format('DD-MM-YYYY HH:MM')}
             </Text>
             <Text>-</Text>
             <Text textStyle="h3" color="text-basic">
-              {dayjs(programEnd).format('DD-MM-YYYY HH:MM')}
+              {dayjs(item.programEnd).format('DD-MM-YYYY HH:MM')}
             </Text>
           </HStack>
         </Center>

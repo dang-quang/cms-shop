@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Box,
   Center,
   Flex,
   HStack,
@@ -20,12 +21,7 @@ import { formatCurrency } from 'utilities/utils';
 import { EVoucherStatus } from 'constants/types';
 import { SlOptions } from 'react-icons/sl';
 
-interface VoucherItemProps {
-  item: any;
-  index: number;
-}
-
-const VoucherItem: React.FC<VoucherItemProps> = ({ index, item }) => {
+const VoucherItem = ({ index, item }) => {
   const {
     name,
     discountValue,

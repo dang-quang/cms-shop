@@ -8,6 +8,10 @@ import { AiFillEdit } from 'react-icons/ai';
 import { FiTrash2 } from 'react-icons/fi';
 
 const VoucherItem = ({ item, index, onUpdate, onDelete }) => {
+  if (!item) {
+    return;
+  }
+
   let _image = '';
 
   if (item && item.banner) {
@@ -33,19 +37,19 @@ const VoucherItem = ({ item, index, onUpdate, onDelete }) => {
             <Image w="100%" h="100%" objectFit="cover" src={_image} />
           </AspectRatio>
           <Text textStyle="h3-m" color="text-basic">
-            abc
+            {item.name}
           </Text>
         </Flex>
       </Td>
       <Td isNumeric borderColor="gray.1300">
-        {item.discountValue && (
+        {item && item.discountValue && (
           <Text textStyle="h3" color="text-basic">
             {formatCurrency(item.discountValue ?? 0)}
           </Text>
         )}
       </Td>
       <Td isNumeric borderColor="gray.1300">
-        {item.quantityVoucher && (
+        {item && item.quantityVoucher && (
           <Text textStyle="h3" color="text-basic">
             {item.quantityVoucher}
           </Text>
@@ -54,7 +58,7 @@ const VoucherItem = ({ item, index, onUpdate, onDelete }) => {
       <Td borderColor="gray.1300">
         <Center>
           <Text textStyle="h3" color="text-basic">
-            {item.shopRegister}
+            {item && item.shopRegister}
           </Text>
         </Center>
       </Td>

@@ -13,6 +13,8 @@ import {
   InputRightElement,
   useBoolean,
   Text,
+  Image,
+  Center,
 } from '@chakra-ui/react';
 import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +29,8 @@ import { NotificationManager } from 'react-light-notifications';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { useRouter } from 'next/router';
 import { ModalConfirm } from 'components';
+import { isEmpty } from 'lodash';
+import Images from 'assets';
 
 export const TableAll = () => {
   const router = useRouter();
@@ -191,9 +195,14 @@ export const TableAll = () => {
               })}
             </Tr>
           </Thead>
-          <Tbody>
-            {!!vouchers &&
-              vouchers.map((item, index) => {
+          {!isEmpty(vouchers) ? (
+            <Box />
+          ) : (
+            // <Center minH="200px" alignSelf="center">
+            //   <Image w="80px" h="80px" src={Images.no_data} />
+            // </Center>
+            <Tbody>
+              {vouchers.map((item, index) => {
                 if (!item) {
                   return;
                 }
@@ -216,7 +225,8 @@ export const TableAll = () => {
                   />
                 );
               })}
-          </Tbody>
+            </Tbody>
+          )}
         </Table>
       </Box>
       <Flex justifyContent="space-between" alignItems="center">

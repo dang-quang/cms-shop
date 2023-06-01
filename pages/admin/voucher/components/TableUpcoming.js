@@ -165,7 +165,7 @@ export const TableUpcoming = () => {
         </InputRightElement>
       </InputGroup>
       <Box
-        bg="transparent"
+        bg="white"
         borderRadius="12px"
         overflow="auto"
         borderWidth="1px"

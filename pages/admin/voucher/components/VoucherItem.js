@@ -31,6 +31,12 @@ const VoucherItem = ({ index, item, onUpdate, onDelete }) => {
     }
   }
 
+  let _name = '';
+
+  if (item && name) {
+    _name = name;
+  }
+
   return (
     <Tr cursor="pointer">
       <Td borderColor="gray.1300">
@@ -43,11 +49,9 @@ const VoucherItem = ({ index, item, onUpdate, onDelete }) => {
           <AspectRatio w="180px" ratio={2 / 1} mr="2" borderRadius="8px" overflow="hidden">
             <Image w="100%" h="100%" objectFit="cover" src={_image} />
           </AspectRatio>
-          {!!name && (
-            <Text textStyle="h3-m" color="text-basic">
-              {name}
-            </Text>
-          )}
+          <Text textStyle="h3-m" color="text-basic">
+            {_name}
+          </Text>
         </Flex>
       </Td>
       <Td isNumeric borderColor="gray.1300">

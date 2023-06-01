@@ -971,3 +971,7 @@ export function requestCreateUpdateVoucher(obj) {
   console.log('create update voucher  parma==>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/voucher/save-program`, {}, obj);
 }
+
+export function requestDeleteVoucher(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/voucher/delete-program`, {}, obj);
+}

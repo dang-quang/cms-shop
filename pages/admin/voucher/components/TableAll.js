@@ -13,25 +13,30 @@ import {
   InputRightElement,
   useBoolean,
   Text,
+  FormControl,
 } from '@chakra-ui/react';
 import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
 
 import VoucherItem from './VoucherItem';
 import PaginationPanel from './PaginationPanel';
-import { requestGetListVoucher } from 'utilities/ApiManage';
+import { requestDeleteVoucher, requestGetListVoucher } from 'utilities/ApiManage';
 import { useDispatch } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
 import { EAppKey } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
 import { AiOutlineSearch } from 'react-icons/ai';
+import { useRouter } from 'next/router';
 
 export const TableAll = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const pageSize = 50;
 
   const [vouchers, setVouchers] = React.useState([]);
+  const [selectedVoucher, setSelectedVoucher] = React.useState(null);
+  const [isShowModal, { on: onShowModal, off: offShowModal }] = useBoolean(false);
   const [totalPage, setTotalPage] = React.useState(1);
   const [totalRecords, setTotalRecords] = React.useState(0);
   const [search, setSearch] = React.useState('');
@@ -118,6 +123,27 @@ export const TableAll = () => {
     })();
   }, [doSearch, currentPage, search]);
 
+  const handleDeleteVoucher = React.useCallback(async () => {
+    try {
+      offShowModal();
+      dispatch(setShowLoader(true));
+      const res = await requestDeleteVoucher(selectedVoucher.id);
+      if (res.code === 'MSG_SUCCESS') {
+        setSelectedVoucher(null);
+        router.push('/admin/voucher');
+      } else {
+        NotificationManager.error({
+          title: t('error'),
+          message: res.message ? res.message.text : 'Error',
+        });
+      }
+    } catch (error) {
+      console.log('delete voucher error');
+    } finally {
+      dispatch(setShowLoader(false));
+    }
+  }, [selectedVoucher]);
+
   return (
     <Box>
       <InputGroup maxW="420px" my="4">
@@ -140,7 +166,7 @@ export const TableAll = () => {
         </InputRightElement>
       </InputGroup>
       <Box
-        bg="transparent"
+        bg="white"
         borderRadius="12px"
         overflow="auto"
         borderWidth="1px"
@@ -168,7 +194,23 @@ export const TableAll = () => {
           <Tbody>
             {!!vouchers &&
               vouchers.map((item, index) => {
-                return <VoucherItem item={item} index={index + 1} key={index} />;
+                return (
+                  <VoucherItem
+                    item={item}
+                    index={index + 1}
+                    key={index}
+                    onUpdate={() => {
+                      router.push({
+                        pathname: '/admin/voucher/update',
+                        query: item,
+                      });
+                    }}
+                    onDelete={() => {
+                      setSelectedVoucher(item);
+                      onShowModal();
+                    }}
+                  />
+                );
               })}
           </Tbody>
         </Table>
@@ -194,6 +236,32 @@ export const TableAll = () => {
           })}
         </Text>
       </Flex>
+      {/* <ModalCustom
+        width={600}
+        title={t('confirmation')}
+        subTitle={''}
+        isShow={isShowModal}
+        handleClose={offShowModal}>
+        <div className={classes.flex_center}>
+          <FormControl variant="outlined" size="small" style={{ flex: 1 }}>
+            <p style={{ flex: 1 }}>{t('deleteConfirm')}</p>
+          </FormControl>
+        </div>
+        <div
+          className={tableClasses.tableResponsive}
+          style={{ marginTop: '0', flexDirection: 'row-reverse', display: 'flex' }}>
+          <div className={classes.buttonContainer}>
+            <Button color="primary" onClick={handleDeleteVoucher}>
+              {t('submit')}
+            </Button>
+          </div>
+          <div className={classes.buttonContainer}>
+            <Button color="gray" onClick={offShowModal}>
+              {t('cancel')}
+            </Button>
+          </div>
+        </div>
+      </ModalCustom> */}
     </Box>
   );
 };

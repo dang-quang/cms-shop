@@ -113,13 +113,12 @@ function AddVoucherPage() {
     ) => {
       try {
         dispatch(setShowLoader(true));
+        let _banner = null;
+
+        if (banner) {
+          _banner = banner.replace(/^data:image\/(png|jpg);base64,/, '');
+        }
         if (voucher) {
-          let _banner = null;
-
-          if (banner) {
-            _banner = banner.replace(/^data:image\/(png|jpg);base64,/, '');
-          }
-
           const res = await requestCreateUpdateVoucher({
             id,
             name: name,

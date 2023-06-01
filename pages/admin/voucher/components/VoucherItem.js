@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Box,
+  AspectRatio,
   Center,
   Flex,
   HStack,
@@ -56,9 +56,11 @@ const VoucherItem = ({ index, item }) => {
       </Td>
       <Td borderColor="gray.1300">
         <Flex>
-          <Image w="64px" h="64px" objectFit="cover" src={_image} mr="2" />
+          <AspectRatio w="180px" ratio={2 / 1} mr="2" borderRadius="8px" overflow="hidden">
+            <Image w="100%" h="100%" objectFit="cover" src={_image} />
+          </AspectRatio>
           <Text textStyle="h3-m" color="text-basic">
-            {name ?? ''}
+            {name ? name : ''}
           </Text>
         </Flex>
       </Td>

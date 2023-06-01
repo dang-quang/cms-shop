@@ -41,7 +41,7 @@ export const inputStyles = {
         }),
         search: (props: StyleFunctionProps) => ({
           field: {
-            bg: mode('transparent', 'navy.800')(props),
+            bg: mode('white', 'navy.800')(props),
             border: '1px solid',
             color: mode('text-basic', 'white')(props),
             borderColor: 'gray.1300',

@@ -195,7 +195,7 @@ export const TableAll = () => {
               })}
             </Tr>
           </Thead>
-          {!isEmpty(vouchers) ? (
+          {isEmpty(vouchers) ? (
             <Box />
           ) : (
             // <Center minH="200px" alignSelf="center">

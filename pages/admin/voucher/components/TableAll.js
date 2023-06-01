@@ -13,8 +13,6 @@ import {
   InputRightElement,
   useBoolean,
   Text,
-  FormControl,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
@@ -129,8 +127,8 @@ export const TableAll = () => {
     try {
       offShowModal();
       dispatch(setShowLoader(true));
-      const res = await requestDeleteVoucher(selectedVoucher.id);
-      if (res.code === 'MSG_SUCCESS') {
+      const res = await requestDeleteVoucher({ id: selectedVoucher.id });
+      if (res.code === EAppKey.MSG_SUCCESS) {
         setSelectedVoucher(null);
         router.push('/admin/voucher');
       } else {

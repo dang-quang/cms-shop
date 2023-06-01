@@ -19,12 +19,13 @@ import { useTranslation } from 'react-i18next';
 
 import VoucherItem from './VoucherItem';
 import PaginationPanel from './PaginationPanel';
-import { requestGetListVoucher } from 'utilities/ApiManage';
+import { requestDeleteVoucher, requestGetListVoucher } from 'utilities/ApiManage';
 import { useDispatch } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
 import { EAppKey, EVoucherStatus } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
 import { AiOutlineSearch } from 'react-icons/ai';
+import { ModalConfirm } from 'components';
 
 export const TableHappening = () => {
   const dispatch = useDispatch();
@@ -36,6 +37,8 @@ export const TableHappening = () => {
   const [totalRecords, setTotalRecords] = React.useState(0);
   const [search, setSearch] = React.useState('');
   const [doSearch, { on: onSearch, off: offSearch }] = useBoolean(false);
+  const [selectedVoucher, setSelectedVoucher] = React.useState(null);
+  const [isShowModal, { on: onShowModal, off: offShowModal }] = useBoolean(false);
 
   const headers = [
     t('serial_number'),
@@ -119,6 +122,27 @@ export const TableHappening = () => {
     })();
   }, [doSearch, currentPage, search]);
 
+  const handleDeleteVoucher = React.useCallback(async () => {
+    try {
+      offShowModal();
+      dispatch(setShowLoader(true));
+      const res = await requestDeleteVoucher({ id: selectedVoucher.id });
+      if (res.code === EAppKey.MSG_SUCCESS) {
+        setSelectedVoucher(null);
+        router.push('/admin/voucher');
+      } else {
+        NotificationManager.error({
+          title: t('error'),
+          message: res.message ? res.message.text : 'Error',
+        });
+      }
+    } catch (error) {
+      console.log('delete voucher error');
+    } finally {
+      dispatch(setShowLoader(false));
+    }
+  }, [selectedVoucher]);
+
   return (
     <Box>
       <InputGroup maxW="420px" my="4">
@@ -169,7 +193,23 @@ export const TableHappening = () => {
           <Tbody>
             {!!vouchers &&
               vouchers.map((item, index) => {
-                return <VoucherItem item={item} index={index + 1} key={index} />;
+                return (
+                  <VoucherItem
+                    item={item}
+                    index={index + 1}
+                    key={index}
+                    onUpdate={() => {
+                      router.push({
+                        pathname: '/admin/voucher/update',
+                        query: item,
+                      });
+                    }}
+                    onDelete={() => {
+                      setSelectedVoucher(item);
+                      onShowModal();
+                    }}
+                  />
+                );
               })}
           </Tbody>
         </Table>
@@ -195,6 +235,14 @@ export const TableHappening = () => {
           })}
         </Text>
       </Flex>
+      <ModalConfirm
+        isOpen={isShowModal}
+        onClose={onShowModal}
+        title="Confirm Deletion"
+        description={t('deleteConfirm')}
+        buttonLeft={{ title: t('cancel'), onClick: offShowModal }}
+        buttonRight={{ title: t('confirm'), onClick: handleDeleteVoucher }}
+      />
     </Box>
   );
 };

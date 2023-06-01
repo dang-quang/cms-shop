@@ -5,7 +5,6 @@ import {
   Thead,
   Tr,
   Th,
-  Tbody,
   Input,
   Icon,
   Flex,
@@ -226,21 +225,6 @@ export const TableAll = () => {
                 }
 
                 return (
-                  // <VoucherItem
-                  //   item={item}
-                  //   index={index + 1}
-                  //   key={index}
-                  //   onUpdate={() => {
-                  //     router.push({
-                  //       pathname: '/admin/voucher/update',
-                  //       query: item,
-                  //     });
-                  //   }}
-                  //   onDelete={() => {
-                  //     setSelectedVoucher(item);
-                  //     onShowModal();
-                  //   }}
-                  // />
                   <Tr cursor="pointer">
                     <Td borderColor="gray.1300">
                       <Text textStyle="h3" color="text-basic">

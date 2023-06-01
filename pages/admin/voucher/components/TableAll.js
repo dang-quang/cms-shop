@@ -201,7 +201,7 @@ export const TableAll = () => {
             // <Center minH="200px" alignSelf="center">
             //   <Image w="80px" h="80px" src={Images.no_data} />
             // </Center>
-            <Tbody>
+            <>
               {vouchers.map((item, index) => {
                 if (!item) {
                   return;
@@ -225,7 +225,7 @@ export const TableAll = () => {
                   />
                 );
               })}
-            </Tbody>
+            </>
           )}
         </Table>
       </Box>

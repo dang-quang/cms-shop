@@ -194,6 +194,10 @@ export const TableAll = () => {
           <Tbody>
             {!!vouchers &&
               vouchers.map((item, index) => {
+                if (!item) {
+                  return;
+                }
+
                 return (
                   <VoucherItem
                     item={item}

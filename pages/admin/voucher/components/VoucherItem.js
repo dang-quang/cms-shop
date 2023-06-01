@@ -10,7 +10,7 @@ import { FiTrash2 } from 'react-icons/fi';
 const VoucherItem = ({ item, index, onUpdate, onDelete }) => {
   let _image = '';
 
-  if (item.banner) {
+  if (item && item.banner) {
     let firstChar = item.banner.substring(0, 4);
 
     if (firstChar === 'http' || firstChar === 'https') {

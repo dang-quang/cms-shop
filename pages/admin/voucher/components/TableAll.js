@@ -208,21 +208,148 @@ export const TableAll = () => {
                 }
 
                 return (
-                  <VoucherItem
-                    item={item}
-                    index={index + 1}
-                    key={index}
-                    onUpdate={() => {
-                      router.push({
-                        pathname: '/admin/voucher/update',
-                        query: item,
-                      });
-                    }}
-                    onDelete={() => {
-                      setSelectedVoucher(item);
-                      onShowModal();
-                    }}
-                  />
+                  // <VoucherItem
+                  //   item={item}
+                  //   index={index + 1}
+                  //   key={index}
+                  //   onUpdate={() => {
+                  //     router.push({
+                  //       pathname: '/admin/voucher/update',
+                  //       query: item,
+                  //     });
+                  //   }}
+                  //   onDelete={() => {
+                  //     setSelectedVoucher(item);
+                  //     onShowModal();
+                  //   }}
+                  // />
+                  <Tr cursor="pointer">
+                    <Td borderColor="gray.1300">
+                      <Text textStyle="h3" color="text-basic">
+                        {index}
+                      </Text>
+                    </Td>
+                    <Td borderColor="gray.1300">
+                      <Flex>
+                        <AspectRatio
+                          w="180px"
+                          ratio={2 / 1}
+                          mr="2"
+                          borderRadius="8px"
+                          overflow="hidden">
+                          <Image w="100%" h="100%" objectFit="cover" src={_image} />
+                        </AspectRatio>
+                        <Text textStyle="h3-m" color="text-basic">
+                          {item ? item.name : ''}
+                        </Text>
+                      </Flex>
+                    </Td>
+                    <Td isNumeric borderColor="gray.1300">
+                      {item && item.discountValue && (
+                        <Text textStyle="h3" color="text-basic">
+                          {formatCurrency(item.discountValue ?? 0)}
+                        </Text>
+                      )}
+                    </Td>
+                    <Td isNumeric borderColor="gray.1300">
+                      {item && item.quantityVoucher && (
+                        <Text textStyle="h3" color="text-basic">
+                          {item.quantityVoucher}
+                        </Text>
+                      )}
+                    </Td>
+                    <Td borderColor="gray.1300">
+                      <Center>
+                        <Text textStyle="h3" color="text-basic">
+                          {item && item.shopRegister}
+                        </Text>
+                      </Center>
+                    </Td>
+                    <Td borderColor="gray.1300">
+                      {item && (
+                        <Center flexDirection="column" alignItems="flex-start">
+                          <Flex
+                            py="1"
+                            px="2"
+                            bg={
+                              item.status === EVoucherStatus.UPCOMING
+                                ? 'red.700'
+                                : item.status === EVoucherStatus.HAPPENING
+                                ? 'green.200'
+                                : 'gray.2000'
+                            }
+                            alignItems="center"
+                            borderRadius="full">
+                            <Text
+                              textStyle="h2-m"
+                              color={
+                                item.status === EVoucherStatus.UPCOMING
+                                  ? 'red.600'
+                                  : item.status === EVoucherStatus.HAPPENING
+                                  ? 'green.100'
+                                  : 'gray.100'
+                              }
+                              textTransform="capitalize">
+                              {item.status === EVoucherStatus.UPCOMING
+                                ? 'Upcoming'
+                                : item.status === EVoucherStatus.HAPPENING
+                                ? 'Happening'
+                                : 'Finished'}
+                            </Text>
+                          </Flex>
+                          {item && item.programStart && item.programEnd && (
+                            <HStack mt="2">
+                              <Text textStyle="h3" color="text-basic">
+                                {dayjs(item.programStart).format('DD-MM-YYYY HH:MM')}
+                              </Text>
+                              <Text>-</Text>
+                              <Text textStyle="h3" color="text-basic">
+                                {dayjs(item.programEnd).format('DD-MM-YYYY HH:MM')}
+                              </Text>
+                            </HStack>
+                          )}
+                        </Center>
+                      )}
+                    </Td>
+                    <Td isNumeric borderColor="gray.1300">
+                      <Flex justifyContent="flex-end">
+                        <HStack>
+                          <Center
+                            boxSize="40px"
+                            cursor="pointer"
+                            onClick={() => {
+                              router.push({
+                                pathname: '/admin/voucher/update',
+                                query: item,
+                              });
+                            }}>
+                            <Icon
+                              as={AiFillEdit}
+                              w="18px"
+                              h="18px"
+                              color="text-basic"
+                              cursor="pointer"
+                            />
+                          </Center>
+                          <Center
+                            boxSize="40px"
+                            cursor="pointer"
+                            onClick={() => {
+                              setSelectedVoucher(item);
+                              onShowModal();
+                            }}>
+                            <Icon
+                              as={FiTrash2}
+                              w="18px"
+                              h="18px"
+                              color="red.600"
+                              cursor="pointer"
+                            />
+                          </Center>
+                        </HStack>
+                      </Flex>
+                    </Td>
+                  </Tr>
                 );
               })}
             </>

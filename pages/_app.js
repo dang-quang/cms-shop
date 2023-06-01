@@ -17,6 +17,9 @@ import { ni18nConfig } from 'ni18n.config';
 import { ChakraProvider, StylesProvider, useStyles } from '@chakra-ui/react';
 import theme from 'theme/theme';
 import { NotificationContainer } from 'react-light-notifications';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import { vi } from 'date-fns/locale';
 
 Router.events.on('routeChangeStart', (url) => {
   console.log(`Loading: ${url}`);
@@ -67,7 +70,9 @@ const MyApp = ({ Component, pageProps }) => {
                 <title>natcash Platform</title>
               </Head>
               <Layout>
-                <Component {...pageProps} />
+                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+                  <Component {...pageProps} />
+                </MuiPickersUtilsProvider>
               </Layout>
             </React.Fragment>
           </ConnectedRouter>

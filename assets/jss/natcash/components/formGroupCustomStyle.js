@@ -7,23 +7,24 @@ import {
   infoColor,
   orangeColor,
   grayColor,
-} from "assets/jss/natcash.js";
+} from 'assets/jss/natcash.js';
 
 const formGroupCustomStyle = {
   titleFormGroup: {
-    fontSize: "20px",
+    fontSize: '20px',
     fontWeight: 400,
+    marginBottom: 8,
   },
   subTitleFormGroup: {
-    fontSize: "16px",
+    fontSize: '16px',
     fontWeight: 400,
     color: grayColor[0],
     margin: 0,
   },
   flex_end: {
-    display: "flex",
-    alignItems: "flex-end",
-    justifyContent: "space-between",
+    display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
   },
 };
 

@@ -961,3 +961,13 @@ export function requestApproveProduct(obj) {
   console.log('approve product parma==>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/cms-admin/approve-product`, {}, obj);
 }
+
+export function requestGetListVoucher(obj) {
+  console.log('get vouchers parma==>', obj);
+  return postWithCheckingToken(`${BASE_API_URL}/voucher/list-program`, {}, obj);
+}
+
+export function requestCreateUpdateVoucher(obj) {
+  console.log('create update voucher  parma==>', obj);
+  return postWithCheckingToken(`${BASE_API_URL}/voucher/save-program`, {}, obj);
+}

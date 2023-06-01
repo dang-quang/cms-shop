@@ -64,6 +64,7 @@
   "errorOwnerShopRequire": "Owner Shop is required",
   "errorEmailRequire": "Email is required",
   "errorInvalidEmail": "Invalid email format. Please try again.",
+  "error_field_empty": "This field cannot be empty",
   "amount": "Amount",
   "price": "Price",
   "happening": "Happening",

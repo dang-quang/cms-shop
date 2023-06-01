@@ -10,6 +10,11 @@ export const textStyles = {
       lineHeight: '16px',
       fontWeight: '300',
     },
+    'h2-m': {
+      fontSize: '12px',
+      lineHeight: '16px',
+      fontWeight: '500',
+    },
     'h2-b': {
       fontSize: '12px',
       lineHeight: '16px',
@@ -20,11 +25,11 @@ export const textStyles = {
       lineHeight: '24px',
       fontWeight: '400',
     },
-    // 'h3-m': {
-    //   fontSize: '14px',
-    //   lineHeight: '24px',
-    //   fontWeight: '500',
-    // },
+    'h3-m': {
+      fontSize: '14px',
+      lineHeight: '24px',
+      fontWeight: '500',
+    },
     'h3-b': {
       fontSize: '14px',
       lineHeight: '18px',

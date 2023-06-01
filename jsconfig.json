@@ -14,7 +14,8 @@
       "saga/*": ["saga/*"],
       "utilities/*": ["utilities/*"],
       "variables/*": ["variables/*"],
-      "constants/*": ["constants/*"]
+      "constants/*": ["constants/*"],
+      "store/*": ["store/*"]
     }
   }
 }

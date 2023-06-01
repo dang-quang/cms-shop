@@ -36,7 +36,32 @@ export interface IShop {
 }
 
 export enum EAppKey {
+  LOGIN_TOKEN = 'LOGIN_TOKEN',
+  ACCESS_TOKEN = 'ACCESS_TOKEN',
   MSG_SUCCESS = 'MSG_SUCCESS',
   APPROVE = 'APPROVE',
   REJECT = 'REJECT',
+  LANGUAGE = 'LANGUAGE',
+  CHANNEL = 'CHANNEL',
+}
+
+export enum EDiscountType {
+  PERCENT = 'PERCENT',
+  CASH = 'CASH',
+}
+
+export enum EShopLimitType {
+  SHOP_LIMIT = 'SHOP_LIMIT',
+  NO_LIMIT = 'NO_LIMIT',
+}
+
+export enum EDiscountLimitType {
+  AMOUNT = 'AMOUNT',
+  NO_LIMIT = 'NO_LIMIT',
+}
+
+export enum EVoucherStatus {
+  HAPPENING = 'HAPPENING',
+  UPCOMING = 'UPCOMING',
+  FINISHED = 'FINISHED',
 }

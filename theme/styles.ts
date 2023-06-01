@@ -5,12 +5,14 @@ export const globalStyles = {
       100: '#FDEFED',
       500: '#EE5D50',
       600: '#E31A1A',
+      700: '#E31A1A20',
     },
     primary: {
       100: '#f77927',
       200: '#e68f55',
       300: '#f96606',
       400: '#ffe2cf',
+      500: '#F28230',
     },
     secondary: {
       100: '#00659F',
@@ -39,6 +41,7 @@ export const globalStyles = {
     white: '#FFFFFF',
     green: {
       100: '#45b75e',
+      200: '#45b75e20',
     },
     yellowColor: {
       100: '#ffd000',
@@ -63,6 +66,7 @@ export const globalStyles = {
       1700: '#BABABA',
       1800: '#001737',
       1900: '#A0AEC0',
+      2000: '#99999920',
     },
   },
   styles: {

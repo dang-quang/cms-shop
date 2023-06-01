@@ -24,12 +24,12 @@ import styles from 'assets/jss/natcash/components/formCellCustomStyle.js';
 export default function FormCellCustom(props) {
   const useStyles = makeStyles(styles);
   const classes = useStyles();
-  const { children, gridLable, gridChildren, error, ...rest } = props;
+  const { children, gridLable, gridChildren, error, flexStart, mt, ...rest } = props;
   const language = useSelector((state) => state.app.language);
 
   return (
-    <div className={classes.formCellContainer}>
-      <GridContainer>
+    <div className={classes.formCellContainer} style={{ marginTop: mt }}>
+      <GridContainer style={{ alignItems: flexStart ? 'flex-start' : 'center' }}>
         <GridItem xs={gridLable || 3} sm={gridLable || 3} md={gridLable || 3}>
           <p className={classes.text + ' ' + classes.infoTextPrimary + ' ' + classes.labelCell}>
             {props.label}

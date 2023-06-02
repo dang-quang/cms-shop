@@ -31,12 +31,12 @@ import { EAppKey } from 'constants/types';
 import { requestApproveProduct } from 'utilities/ApiManage';
 import { setShowLoader, SHOW_SIDEBAR } from 'redux/actions/app';
 import { NotificationManager } from 'react-light-notifications';
-import { approveVouchers, rejectVouchers } from 'redux/actions/voucher';
+import { approveVouchers, rejectVouchers, setSelectedVouchers } from 'redux/actions/voucher';
+import { setSelectedProducts } from 'store/slices/productSlice';
 
 let ps;
 
 export default function Admin({ children, ...rest }) {
-  // used for checking current route
   const router = useRouter();
   const { t } = useTranslation();
   // styles
@@ -57,6 +57,21 @@ export default function Admin({ children, ...rest }) {
 
   const isProductApprove = _.some(selectedProducts, (obj) => !_.isEmpty(obj.products));
   const isVoucherApprove = _.some(selectedVouchers, (obj) => !_.isEmpty(obj.vouchers));
+
+  React.useEffect(() => {
+    const handleRouteChange = (url, { shallow }) => {
+      dispatch(setSelectedProducts([{ isSelectAll: false, products: [] }]));
+      dispatch(setSelectedVouchers([{ isSelectAll: false, vouchers: [] }]));
+    };
+
+    router.events.on('routeChangeStart', handleRouteChange);
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+    };
+  }, [router.events]);
+
+  // Rest of your compo
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);

@@ -18,14 +18,24 @@ import Pagination from '@material-ui/lab/Pagination';
 import { useTranslation } from 'react-i18next';
 import styles from 'assets/jss/natcash/views/productApproval/productApprovalStyle';
 import { NotificationContainer, NotificationManager } from 'react-light-notifications';
-import { AspectRatio, Box, Center, Checkbox, Flex, Image, Input, Text } from '@chakra-ui/react';
+import {
+  AspectRatio,
+  Box,
+  Center,
+  Checkbox,
+  Flex,
+  HStack,
+  Image,
+  Input,
+  Text,
+} from '@chakra-ui/react';
 import { formatCurrency } from 'utilities/utils';
 import { requestGetListVoucherApprove } from 'utilities/ApiManage';
 import { setShowLoader } from 'redux/actions/app';
 import dayjs from 'dayjs';
 import { BASE_API_URL } from 'utilities/const';
 import _ from 'lodash';
-import { EAppKey } from 'constants/types';
+import { EAppKey, EVoucherStatus } from 'constants/types';
 import { setSelectedVouchers } from 'redux/actions/voucher';
 
 function VoucherProgramApproval() {
@@ -38,12 +48,11 @@ function VoucherProgramApproval() {
 
   const TABLE_HEAD = [
     t('serial_number'),
-    t('name'),
-    t('sideBar.category'),
-    t('price'),
-    t('code_shop'),
-    t('created_by'),
-    t('qrManagement.publishTime'),
+    'Voucher Name',
+    'Shop Name',
+    'Discount Amount',
+    'Quantity',
+    'Voucher Status | Date Range',
   ];
 
   const formatDate = 'YYYY-MM-DD';
@@ -223,16 +232,25 @@ function VoucherProgramApproval() {
 
   const renderVoucher = React.useCallback(
     (item, index) => {
-      const { categoryName, createAt, createBy, image, name, price, shopCode, voucherCode } = item;
+      const {
+        banner,
+        programEnd,
+        programName,
+        programStart,
+        programStatus,
+        quantityVoucher,
+        registerPrice,
+        shopName,
+      } = item;
 
       let _image = '';
 
-      var firstChar = image.substring(0, 4);
+      let firstChar = banner.substring(0, 4);
 
       if (firstChar === 'http' || firstChar === 'https') {
-        _image = image;
+        _image = banner;
       } else {
-        _image = BASE_API_URL + '/assets/' + image;
+        _image = BASE_API_URL + '/assets/' + banner;
       }
 
       const isItemChecked = (() => {
@@ -264,55 +282,73 @@ function VoucherProgramApproval() {
               </Text>
             </TableCell>
             <TableCell className={tableClasses.tableCell} key="voucher-info">
-              <Flex alignItems="center">
-                <AspectRatio
-                  overflow="hidden"
-                  w="80px"
-                  ratio={1 / 1}
-                  shadow="sm"
-                  borderRadius="6px">
-                  <Image src={_image} w="100%" h="100%" objectFit="contain" />
+              <Flex>
+                <AspectRatio w="180px" ratio={2 / 1} mr="2" borderRadius="8px" overflow="hidden">
+                  <Image w="100%" h="100%" objectFit="cover" src={_image} />
                 </AspectRatio>
                 <Flex flexDirection="column" ml="3" flex="1">
                   <Text textStyle="h4" color="text-basic" noOfLines={2}>
-                    {name}
-                  </Text>
-                  <Text mt="2" textStyle="c-sm" color="text-body" mr="1">
-                    {shopCode}
-                    <Text as="span" mx="3">
-                      -
-                    </Text>
-                    <Text as="span" textStyle="c-sm" color="text-body">
-                      {voucherCode}
-                    </Text>
+                    {programName}
                   </Text>
                 </Flex>
               </Flex>
             </TableCell>
             <TableCell className={tableClasses.tableCell} key="categoryName">
               <Text textStyle="h4" noOfLines={1}>
-                {categoryName}
+                {shopName}
               </Text>
             </TableCell>
             <TableCell className={tableClasses.tableCell} key="price">
               <Text textStyle="h3" color="text-basic">
-                {formatCurrency(price)}
+                {formatCurrency(registerPrice)}
               </Text>
             </TableCell>
             <TableCell className={tableClasses.tableCell} key="shopCode">
               <Text textStyle="h3" color="text-basic">
-                {shopCode}
-              </Text>
-            </TableCell>
-            <TableCell className={tableClasses.tableCell} key="createBy">
-              <Text textStyle="h3" color="text-basic">
-                {createBy}
+                {quantityVoucher}
               </Text>
             </TableCell>
             <TableCell className={tableClasses.tableCell} key={'publish'}>
-              <Text textStyle="h3" color="text-basic">
-                {dayjs(createAt).format('DD/MM/YYYY')}
-              </Text>
+              <Center flexDirection="column" alignItems="flex-start">
+                {/* <Flex
+                  py="1"
+                  px="2"
+                  bg={
+                    programStatus === EVoucherStatus.UPCOMING
+                      ? 'red.700'
+                      : programStatus === EVoucherStatus.HAPPENING
+                      ? 'green.200'
+                      : 'gray.2000'
+                  }
+                  alignItems="center"
+                  borderRadius="full">
+                  <Text
+                    textStyle="h2-m"
+                    color={
+                      programStatus === EVoucherStatus.UPCOMING
+                        ? 'red.600'
+                        : programStatus === EVoucherStatus.HAPPENING
+                        ? 'green.100'
+                        : 'gray.100'
+                    }
+                    textTransform="capitalize">
+                    {programStatus === EVoucherStatus.UPCOMING
+                      ? 'Upcoming'
+                      : programStatus === EVoucherStatus.HAPPENING
+                      ? 'Happening'
+                      : 'Finished'}
+                  </Text>
+                </Flex> */}
+                <HStack mt="2">
+                  <Text textStyle="h3" color="text-basic">
+                    {dayjs(programStart).format('DD-MM-YYYY HH:MM')}
+                  </Text>
+                  <Text>-</Text>
+                  <Text textStyle="h3" color="text-basic">
+                    {dayjs(programEnd).format('DD-MM-YYYY HH:MM')}
+                  </Text>
+                </HStack>
+              </Center>
             </TableCell>
           </TableRow>
         </React.Fragment>

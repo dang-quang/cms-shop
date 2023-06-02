@@ -839,17 +839,6 @@ export function saveGames(code, name, type, startTime, endTime, description, ima
 }
 
 export function editGames(id, code, name, type, startTime, endTime, description, image, amount) {
-  console.log('editGames', {
-    id: id,
-    code: code,
-    name: name,
-    type: type,
-    startTime: startTime,
-    endTime: endTime,
-    description: description,
-    image: image,
-    amount: amount,
-  });
   return postWithCheckingToken(
     `${BASE_API_URL}/games/save`,
     {},
@@ -868,48 +857,23 @@ export function editGames(id, code, name, type, startTime, endTime, description,
 }
 
 export function savePrizes(obj) {
-  console.log('savePrizes parma==>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/prizes/save`, {}, obj);
 }
 
 export function deleteGames(id) {
-  return postWithCheckingToken(
-    `${BASE_API_URL}/games/delete`,
-    {},
-    {
-      id: id,
-    }
-  );
+  return postWithCheckingToken(`${BASE_API_URL}/games/delete`, {}, { id: id });
 }
 
 export function getPrizesList(id) {
-  return postWithCheckingToken(
-    `${BASE_API_URL}/games/list-prizes`,
-    {},
-    {
-      id: id,
-    }
-  );
+  return postWithCheckingToken(`${BASE_API_URL}/games/list-prizes`, {}, { id: id });
 }
 
 export function deletePrize(id) {
-  return postWithCheckingToken(
-    `${BASE_API_URL}/prizes/delete`,
-    {},
-    {
-      id: id,
-    }
-  );
+  return postWithCheckingToken(`${BASE_API_URL}/prizes/delete`, {}, { id: id });
 }
 
 export function getGameDetail(id) {
-  return postWithCheckingToken(
-    `${BASE_API_URL}/games/get`,
-    {},
-    {
-      id: id,
-    }
-  );
+  return postWithCheckingToken(`${BASE_API_URL}/games/get`, {}, { id: id });
 }
 
 export function getGameChartReport(obj) {
@@ -953,17 +917,14 @@ export function requestGetOwnerShop() {
 }
 
 export function requestGetListProductApprove(obj) {
-  console.log('get product approve list parma==>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/cms-admin/list-product-approve`, {}, obj);
 }
 
 export function requestApproveProduct(obj) {
-  console.log('approve product parma==>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/cms-admin/approve-product`, {}, obj);
 }
 
 export function requestGetListVoucher(obj) {
-  console.log('get vouchers parma==>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/voucher/list-program`, {}, obj);
 }
 
@@ -974,4 +935,13 @@ export function requestCreateUpdateVoucher(obj) {
 
 export function requestDeleteVoucher(obj) {
   return postWithCheckingToken(`${BASE_API_URL}/voucher/delete-program`, {}, obj);
+}
+
+export function requestGetListVoucherApprove(obj) {
+  console.log('get voucher approve list parma==>', obj);
+  return postWithCheckingToken(`${BASE_API_URL}/voucher/list-shop-approve`, {}, obj);
+}
+
+export function requestApproveVoucherShopRegisterProgram(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/voucher/approve-shop-register-program`, {}, obj);
 }

@@ -6,6 +6,7 @@ import { combineReducers } from 'redux';
 import appReducer from './reducers/app';
 import userReducer from './reducers/user';
 import productReducer from './reducers/product';
+import voucher from './reducers/voucher';
 import { routerReducer } from 'connected-next-router';
 
 export default combineReducers({
@@ -13,4 +14,5 @@ export default combineReducers({
   user: userReducer,
   product: productReducer,
   router: routerReducer,
+  voucher,
 });

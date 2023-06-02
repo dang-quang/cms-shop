@@ -70,6 +70,13 @@ const dashboardRoutes = [
         parent: 'operation',
         permission: 'marketing_voucher',
       },
+      {
+        path: '/program-voucher-approval',
+        name: 'voucherProgramApproval',
+        layout: '/admin',
+        parent: 'operation',
+        permission: 'admin_program_voucher_approval',
+      },
       // {
       //   path: '/flashsale',
       //   name: 'flashSale',

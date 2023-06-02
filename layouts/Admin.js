@@ -10,7 +10,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Navbar from 'components/Navbars/Navbar.js';
 import Footer from 'components/Footer/Footer.js';
 import Sidebar from 'components/Sidebar/Sidebar.js';
-import FixedPlugin from 'components/FixedPlugin/FixedPlugin.js';
 
 import routes from 'routes.js';
 
@@ -25,13 +24,14 @@ import { loadTranslations } from 'ni18n';
 import { ni18nConfig } from '../ni18n.config';
 import { Box, Button, Flex, HStack } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { approveProducts, rejectProduct } from 'redux/actions/product';
+import { approveProducts, rejectProducts } from 'redux/actions/product';
 import product from 'redux/reducers/product';
 import _ from 'lodash';
 import { EAppKey } from 'constants/types';
 import { requestApproveProduct } from 'utilities/ApiManage';
 import { setShowLoader, SHOW_SIDEBAR } from 'redux/actions/app';
 import { NotificationManager } from 'react-light-notifications';
+import { approveVouchers, rejectVouchers } from 'redux/actions/voucher';
 
 let ps;
 
@@ -53,67 +53,10 @@ export default function Admin({ children, ...rest }) {
   const showSidebar = useSelector((state) => state.app.showSidebar);
   const showLoader = useSelector((state) => state.app.showLoader);
   const selectedProducts = useSelector((state) => state.product.selectedProducts);
+  const selectedVouchers = useSelector((state) => state.voucher.selectedVouchers);
 
-  const isShow = _.some(selectedProducts, (obj) => !_.isEmpty(obj.products));
-
-  const handleApprove = React.useCallback(async () => {
-    try {
-      const ids = _.flatMap(selectedProducts, 'products').map(({ id }) => id);
-
-      dispatch(setShowLoader(true));
-
-      if (ids.length) {
-        const res = await requestApproveProduct({ ids: ids, type: EAppKey.APPROVE });
-
-        if (res && res.code === EAppKey.MSG_SUCCESS) {
-          let notificationDisplayed = false; // Flag variable to track notification display
-
-          if (!notificationDisplayed) {
-            dispatch(setShowLoader(false));
-            NotificationManager.success({
-              title: 'Successful',
-              message: 'The products have been approved successfully',
-            });
-            notificationDisplayed = true; // Set flag to true after displaying the notification
-          }
-
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-          router.push('/admin/product-approval');
-        }
-      }
-    } finally {
-      dispatch(setShowLoader(false));
-    }
-  }, [selectedProducts]);
-
-  const handleReject = React.useCallback(async () => {
-    try {
-      const ids = _.flatMap(selectedProducts, 'products').map(({ id }) => id);
-
-      dispatch(setShowLoader(true));
-
-      if (ids.length) {
-        const res = await requestApproveProduct({ ids: ids, type: EAppKey.REJECT });
-
-        if (res && res.code === EAppKey.MSG_SUCCESS) {
-          let notificationDisplayed = false; // Flag variable to track notification display
-
-          if (!notificationDisplayed) {
-            NotificationManager.success({
-              title: 'Successful',
-              message: 'The products have been rejected successfully',
-            });
-            notificationDisplayed = true; // Set flag to true after displaying the notification
-          }
-
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-          router.push('/admin/product-approval');
-        }
-      }
-    } finally {
-      dispatch(setShowLoader(false));
-    }
-  }, [selectedProducts]);
+  const isProductApprove = _.some(selectedProducts, (obj) => !_.isEmpty(obj.products));
+  const isVoucherApprove = _.some(selectedVouchers, (obj) => !_.isEmpty(obj.vouchers));
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -149,6 +92,25 @@ export default function Admin({ children, ...rest }) {
   const toggleSidebar = () => {
     dispatch({ type: SHOW_SIDEBAR, showSidebar: !showSidebar });
   };
+
+  const handleApprove = React.useCallback(() => {
+    if (isProductApprove) {
+      dispatch(approveProducts());
+    }
+    if (isVoucherApprove) {
+      dispatch(approveVouchers());
+    }
+  }, [isProductApprove, isVoucherApprove]);
+
+  const handleReject = React.useCallback(() => {
+    if (isProductApprove) {
+      dispatch(rejectProducts());
+    }
+    if (isVoucherApprove) {
+      dispatch(rejectVouchers());
+    }
+  }, [isProductApprove, isVoucherApprove]);
+
   return (
     <div className={classes.wrapper}>
       {showSidebar ? (
@@ -196,7 +158,7 @@ export default function Admin({ children, ...rest }) {
         {/*  fixedClasses={fixedClasses}*/}
         {/*/>*/}
       </div>
-      {isShow && (
+      {(isProductApprove || isVoucherApprove) && (
         <Flex
           bg="bg-1"
           px="8"
@@ -208,8 +170,13 @@ export default function Admin({ children, ...rest }) {
           bottom="0"
           position="absolute">
           <HStack gap="4">
-            <Button variant="control" minW="120px" children={t('reject')} onClick={handleApprove} />
-            <Button variant="primary" minW="120px" children={t('approve')} onClick={handleReject} />
+            <Button variant="control" minW="120px" children={t('reject')} onClick={handleReject} />
+            <Button
+              variant="primary"
+              minW="120px"
+              children={t('approve')}
+              onClick={handleApprove}
+            />
           </HStack>
         </Flex>
       )}

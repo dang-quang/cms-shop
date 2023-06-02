@@ -3,29 +3,30 @@ import _ from 'lodash';
 import Router from 'next/router';
 import { NotificationManager } from 'react-light-notifications';
 import { setShowLoader } from 'store/slices/appSlice';
-import { requestApproveProduct } from 'utilities/ApiManage';
+import { requestApproveVoucherShopRegisterProgram } from 'utilities/ApiManage';
 
-export const SELECTED_PRODUCTS = 'SELECTED_PRODUCTS';
-export const APPROVE_PRODUCT = 'APPROVE_PRODUCT';
-export const REJECT_PRODUCT = 'REJECT_PRODUCT';
+export const SELECTED_VOUCHERS = 'SELECTED_VOUCHERS';
 
-export function setSelectedProducts(selectedProducts) {
+export function setSelectedVouchers(selectedVouchers) {
   return {
-    type: SELECTED_PRODUCTS,
-    selectedProducts,
+    type: SELECTED_VOUCHERS,
+    selectedVouchers,
   };
 }
 
-export const approveProducts = () => {
+export const approveVouchers = () => {
   return async (dispatch, getState) => {
     try {
-      const { selectedProducts } = getState().product;
-      const ids = _.flatMap(selectedProducts, 'products').map(({ id }) => id);
+      const { selectedVouchers } = getState().voucher;
+      const ids = _.flatMap(selectedVouchers, 'vouchers').map(({ id }) => id);
 
       dispatch(setShowLoader(true));
 
       if (ids.length) {
-        const res = await requestApproveProduct({ ids: ids, type: EAppKey.APPROVE });
+        const res = await requestApproveVoucherShopRegisterProgram({
+          ids: ids,
+          type: EAppKey.APPROVE,
+        });
 
         if (res && res.code === EAppKey.MSG_SUCCESS) {
           let notificationDisplayed = false; // Flag variable to track notification display
@@ -34,33 +35,36 @@ export const approveProducts = () => {
             dispatch(setShowLoader(false));
             NotificationManager.success({
               title: 'Successful',
-              message: 'The products have been approved successfully',
+              message: 'The vouchers have been approved successfully',
             });
             notificationDisplayed = true; // Set flag to true after displaying the notification
           }
 
           await new Promise((resolve) => setTimeout(resolve, 2000));
-          Router.push('/admin/product-approval');
+          Router.push('/admin/voucher-program-approval');
         }
       }
     } catch (error) {
-      console.log('approve products error', error);
+      console.log('approve vouchers error', error);
     } finally {
       dispatch(setShowLoader(false));
     }
   };
 };
 
-export const rejectProducts = () => {
+export const rejectVouchers = () => {
   return async (dispatch, getState) => {
     try {
-      const { selectedProducts } = getState().product;
-      const ids = _.flatMap(selectedProducts, 'products').map(({ id }) => id);
+      const { selectedVouchers } = getState().voucher;
+      const ids = _.flatMap(selectedVouchers, 'vouchers').map(({ id }) => id);
 
       dispatch(setShowLoader(true));
 
       if (ids.length) {
-        const res = await requestApproveProduct({ ids: ids, type: EAppKey.REJECT });
+        const res = await requestApproveVoucherShopRegisterProgram({
+          ids: ids,
+          type: EAppKey.REJECT,
+        });
 
         if (res && res.code === EAppKey.MSG_SUCCESS) {
           let notificationDisplayed = false; // Flag variable to track notification display
@@ -68,13 +72,13 @@ export const rejectProducts = () => {
           if (!notificationDisplayed) {
             NotificationManager.success({
               title: 'Successful',
-              message: 'The products have been rejected successfully',
+              message: 'The vouchers have been rejected successfully',
             });
             notificationDisplayed = true; // Set flag to true after displaying the notification
           }
 
           await new Promise((resolve) => setTimeout(resolve, 2000));
-          Router.push('/admin/product-approval');
+          Router.push('/admin/voucher-program-approval');
         }
       }
     } finally {

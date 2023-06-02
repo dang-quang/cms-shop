@@ -225,7 +225,7 @@ export const TableUpcoming = () => {
                 }
 
                 return (
-                  <Tr cursor="pointer">
+                  <Tr cursor="pointer" key={index}>
                     <Td borderColor="gray.1300">
                       <Text textStyle="h3" color="text-basic">
                         {index + 1}

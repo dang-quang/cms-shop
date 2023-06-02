@@ -1,4 +1,4 @@
-import { SELECTED_PRODUCTS } from '../actions/product';
+export const SELECTED_PRODUCTS = 'SELECTED_PRODUCTS';
 
 export default function product(state = {}, action) {
   switch (action.type) {

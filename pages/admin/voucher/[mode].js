@@ -260,10 +260,16 @@ function AddVoucherPage() {
           }
 
           if (voucher) {
-            setFieldValue('registerStart', dayjs(voucher.registerStart).format(formatDate));
-            setFieldValue('registerEnd', dayjs(voucher.registerEnd).format(formatDate));
-            setFieldValue('programStart', dayjs(voucher.programStart).format(formatDate));
-            setFieldValue('programEnd', dayjs(voucher.programEnd).format(formatDate));
+            setFieldValue(
+              'registerStart',
+              dayjs(parseFloat(voucher.registerStart)).format(formatDate)
+            );
+            setFieldValue('registerEnd', dayjs(parseFloat(voucher.registerEnd)).format(formatDate));
+            setFieldValue(
+              'programStart',
+              dayjs(parseFloat(voucher.programStart)).format(formatDate)
+            );
+            setFieldValue('programEnd', dayjs(parseFloat(voucher.programEnd)).format(formatDate));
             if (voucher.maxShopRegister === 0) {
               setFieldValue('typeShopLimit', EShopLimitType.NO_LIMIT);
             } else {

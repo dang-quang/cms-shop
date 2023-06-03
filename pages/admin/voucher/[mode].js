@@ -232,11 +232,6 @@ function AddVoucherPage() {
     quantityVoucher: yup.string().required(t('error_field_empty')),
   });
 
-  console.log(
-    'quang debug 1231232 ====> registerStart',
-    dayjs(voucher.registerStart).format('DD-MM-YYYY HH:MM')
-  );
-
   return (
     <Formik
       validateOnChange={false}

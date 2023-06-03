@@ -6,17 +6,7 @@ import Card from 'components/Card/Card.js';
 import CardHeader from 'components/Card/CardHeader.js';
 import CardBody from 'components/Card/CardBody.js';
 import CardFooter from 'components/Card/CardFooter.js';
-import {
-  MenuItem,
-  FormControl,
-  Select,
-  makeStyles,
-  withStyles,
-  TextField,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
 import GridContainer from 'components/Grid/GridContainer.js';
 import GridItem from 'components/Grid/GridItem.js';
@@ -25,7 +15,29 @@ import FormCellCustom from 'components/FormCustom/FormCellCustom.js';
 import { useRouter } from 'next/router';
 import styles from 'assets/jss/natcash/views/voucher/addVoucherStyle.js';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Flex, Icon, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormHelperText,
+  Grid,
+  HStack,
+  Icon,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  Radio,
+  RadioGroup,
+  Select,
+  SimpleGrid,
+  Stack,
+  Text,
+  Textarea,
+} from '@chakra-ui/react';
 import { useDisplayImage } from 'hooks';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
@@ -38,6 +50,7 @@ import { requestCreateUpdateVoucher } from 'utilities/ApiManage';
 import { EDiscountType, EDiscountLimitType, EShopLimitType, EAppKey } from 'constants/types';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { IoIosCloudUpload } from 'react-icons/io';
+import { FormGroup } from 'components';
 
 const formatDate = 'YYYY-MM-DDTHH:mm';
 
@@ -77,16 +90,6 @@ function AddVoucherPage() {
 
   const voucher =
     !_.isEmpty(router.query) && router.query.mode === 'update' ? router.query : undefined;
-
-  const CustomRadio = withStyles({
-    root: {
-      color: 'gray',
-      '&$checked': {
-        color: '#f96606',
-      },
-    },
-    checked: {},
-  })((props) => <Radio color="default" {...props} />);
 
   const handleSubmitVoucher = React.useCallback(
     async (
@@ -205,7 +208,7 @@ function AddVoucherPage() {
       .date()
       .min(
         yup.ref('registerStart'),
-        'Please enter a start time that is later than the register start time.'
+        'The end time must be greater than the start time by at least 1 hour.'
       ),
     programStart: yup
       .date()
@@ -228,6 +231,11 @@ function AddVoucherPage() {
     minOrderPrice: yup.string().required(t('error_field_empty')),
     quantityVoucher: yup.string().required(t('error_field_empty')),
   });
+
+  console.log(
+    'quang debug 1231232 ====> registerStart',
+    dayjs(voucher.registerStart).format('DD-MM-YYYY HH:MM')
+  );
 
   return (
     <Formik
@@ -255,6 +263,7 @@ function AddVoucherPage() {
               setFieldValue('banner', dataURL);
             };
           }
+
           if (voucher) {
             setFieldValue('registerStart', dayjs(voucher.registerStart).format(formatDate));
             setFieldValue('registerEnd', dayjs(voucher.registerEnd).format(formatDate));
@@ -266,7 +275,6 @@ function AddVoucherPage() {
               setFieldValue('typeShopLimit', EShopLimitType.SHOP_LIMIT);
             }
           }
-          setFieldValue('typeShopLimit', EShopLimitType.NO_LIMIT);
         }, [voucher]);
 
         const { onUploader: onUploaderBanner } = useDisplayImage((image) => {
@@ -284,370 +292,310 @@ function AddVoucherPage() {
 
         return (
           <Form>
-            <Card>
-              <CardHeader color="primary">
-                <Text textStyle="h5" color="white">
-                  {voucher ? 'Update Voucher Program' : 'Create New Voucher Program'}
-                </Text>
-              </CardHeader>
-              <CardBody className={classes.cardBody}>
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={6}>
-                    <FormGroupCustom title="Information">
-                      <FormCellCustom label={t('voucher.promotionName')} flexStart>
-                        <TextField
-                          id="input1"
-                          label={''}
-                          variant="outlined"
-                          size="small"
-                          fullWidth
-                          inputProps={{
-                            value: values.name,
-                            onChange: handleChange('name'),
-                          }}
+            <Text textStyle="h6-sb" color="primary.100" mt="4">
+              {voucher ? 'Update Voucher Program' : 'Create New Voucher Program'}
+            </Text>
+            <Box
+              mt="4"
+              bg="bg-1"
+              shadow="md"
+              py={{ base: '6', xl: '8' }}
+              pl={{ base: '6', xl: '8' }}
+              pr={{ base: '10', xl: '100px' }}>
+              <Text textStyle="h5-sb" color="primary.100" mb="6">
+                Basic information
+              </Text>
+              <FormCellCustom label="Promotion name">
+                <FormControl isInvalid={!!errors.name}>
+                  <Input
+                    placeholder="Input"
+                    autoComplete="off"
+                    value={values.name}
+                    onChange={handleChange('name')}
+                  />
+                  <FormErrorMessage>{errors.name}</FormErrorMessage>
+                </FormControl>
+              </FormCellCustom>
+              <FormCellCustom label="Registration time">
+                <SimpleGrid columns={{ base: 1, xl: 2 }} gap="5" pr={{ base: 'unset', xl: '20%' }}>
+                  <FormControl isInvalid={!!errors.registerStart}>
+                    <Input
+                      type="datetime-local"
+                      placeholder="Select Date and Time"
+                      value={values.registerStart}
+                      onChange={handleChange('registerStart')}
+                      min={dayjs().format(formatDate)}
+                    />
+                    <FormErrorMessage>{errors.registerStart}</FormErrorMessage>
+                  </FormControl>
+                  <FormControl isInvalid={!!errors.registerEnd}>
+                    <Input
+                      type="datetime-local"
+                      placeholder="Select Date and Time"
+                      value={values.registerEnd}
+                      onChange={handleChange('registerEnd')}
+                      min={dayjs().format(formatDate)}
+                      max={dayjs().add(4, 'months').format(formatDate)}
+                    />
+                    <FormErrorMessage>{errors.registerEnd}</FormErrorMessage>
+                  </FormControl>
+                </SimpleGrid>
+              </FormCellCustom>
+              <FormCellCustom label="Program time">
+                <SimpleGrid columns={{ base: 1, xl: 2 }} gap="5" pr={{ base: 'unset', xl: '20%' }}>
+                  <FormControl isInvalid={!!errors.programStart}>
+                    <Input
+                      type="datetime-local"
+                      placeholder="Select Date and Time"
+                      value={values.programStart}
+                      onChange={handleChange('programStart')}
+                      min={dayjs().format(formatDate)}
+                    />
+                    <FormErrorMessage>{errors.programStart}</FormErrorMessage>
+                  </FormControl>
+                  <FormControl isInvalid={!!errors.programEnd}>
+                    <Input
+                      type="datetime-local"
+                      placeholder="Select Date and Time"
+                      value={values.programEnd}
+                      onChange={handleChange('programEnd')}
+                      min={dayjs().format(formatDate)}
+                      max={dayjs().add(4, 'months').format(formatDate)}
+                    />
+                    <FormErrorMessage>{errors.programEnd}</FormErrorMessage>
+                  </FormControl>
+                </SimpleGrid>
+              </FormCellCustom>
+              <FormCellCustom label="Registration price">
+                <FormControl isInvalid={!!errors.registerPrice}>
+                  <InputGroup>
+                    <Input
+                      placeholder="Input"
+                      autoComplete="off"
+                      value={values.registerPrice}
+                      onChange={handleChange('registerPrice')}
+                    />
+                    <InputRightElement w="100px" borderLeftWidth="1px">
+                      <Center h="full">
+                        <Text textStyle="h4">HTG</Text>
+                      </Center>
+                    </InputRightElement>
+                  </InputGroup>
+                  <FormErrorMessage>{errors.registerPrice}</FormErrorMessage>
+                </FormControl>
+              </FormCellCustom>
+              <FormCellCustom label="Maximum registration shop">
+                <RadioGroup
+                  defaultValue={EShopLimitType.SHOP_LIMIT}
+                  value={values.typeShopLimit}
+                  onChange={handleChange('typeShopLimit')}
+                  size="lg"
+                  pr="20%">
+                  <Stack spacing={5} direction="row">
+                    <Radio value={EShopLimitType.SHOP_LIMIT} flex="1">
+                      Limited
+                    </Radio>
+                    <Radio value={EShopLimitType.NO_LIMIT} flex="1">
+                      No Limited
+                    </Radio>
+                  </Stack>
+                </RadioGroup>
+              </FormCellCustom>
+              {values.typeShopLimit === EShopLimitType.SHOP_LIMIT && (
+                <FormCellCustom>
+                  <FormControl isInvalid={!!errors.maxShopRegister}>
+                    <Input
+                      placeholder="Input"
+                      autoComplete="off"
+                      value={values.maxShopRegister}
+                      type="number"
+                      onChange={handleChange('maxShopRegister')}
+                    />
+                    <FormErrorMessage>{errors.maxShopRegister}</FormErrorMessage>
+                  </FormControl>
+                </FormCellCustom>
+              )}
+              <Text textStyle="h5-sb" color="primary.100" mb="6">
+                {t('voucher.setUpVoucher')}
+              </Text>
+              <FormCellCustom label="Discount Type | Amount">
+                <FormControl isInvalid={!!errors.discountValue}>
+                  <InputGroup>
+                    <InputLeftElement w="200px" mr="200px">
+                      <Select
+                        w="200px"
+                        defaultValue={EDiscountType.CASH}
+                        value={values.typeDiscount}
+                        onChange={handleChange('typeDiscount')}>
+                        <option value={EDiscountType.CASH}>Fix Amount</option>
+                        <option value={EDiscountType.PERCENT}>By Percentage</option>
+                      </Select>
+                    </InputLeftElement>
+                    <Input
+                      ml="220px"
+                      placeholder="Input"
+                      autoComplete="off"
+                      value={values.discountValue}
+                      type="number"
+                      onChange={handleChange('discountValue')}
+                    />
+                    <InputRightElement pointerEvents="none" w="100px" borderLeftWidth="1px">
+                      <Center h="full">
+                        <Text textStyle="h4">
+                          {values.typeDiscount === EDiscountType.CASH ? 'HTG' : '%'}
+                        </Text>
+                      </Center>
+                    </InputRightElement>
+                  </InputGroup>
+                  <FormErrorMessage>{errors.discountValue}</FormErrorMessage>
+                </FormControl>
+              </FormCellCustom>
+              {values.typeDiscount === EDiscountType.PERCENT && (
+                <FormCellCustom label="Maximum Discount Price">
+                  <RadioGroup
+                    value={values.typeLimit}
+                    onChange={handleChange('typeLimit')}
+                    size="lg"
+                    pr="20%">
+                    <Stack spacing={5} direction="row">
+                      <Radio value={EDiscountLimitType.AMOUNT} flex="1">
+                        Limited
+                      </Radio>
+                      <Radio value={EDiscountLimitType.NO_LIMIT} flex="1">
+                        No Limited
+                      </Radio>
+                    </Stack>
+                  </RadioGroup>
+                </FormCellCustom>
+              )}
+              {values.typeDiscount === EDiscountType.PERCENT &&
+                values.typeLimit === EDiscountLimitType.AMOUNT && (
+                  <FormCellCustom>
+                    <FormControl isInvalid={!!errors.discountLimit}>
+                      <InputGroup>
+                        <Input
                           placeholder="Input"
                           autoComplete="off"
-                          error={!!errors.name}
-                          helperText={!!errors.name ? errors.name : ''}
-                        />
-                      </FormCellCustom>
-                      <FormCellCustom label="Registration time" flexStart>
-                        <GridContainer>
-                          <GridItem xs={12} sm={12} md={6}>
-                            <TextField
-                              id="datetime-local"
-                              type="datetime-local"
-                              value={values.registerStart}
-                              onChange={handleChange('registerStart')}
-                              InputLabelProps={{
-                                shrink: true,
-                              }}
-                              fullWidth
-                              inputProps={{
-                                min: dayjs().format(formatDate),
-                                max: dayjs(values.registerEnd).format(formatDate),
-                              }}
-                              error={!!errors.registerStart}
-                              helperText={!!errors.registerStart ? errors.registerStart : ''}
-                            />
-                          </GridItem>
-                          <GridItem xs={12} sm={12} md={6}>
-                            <TextField
-                              id="datetime-local"
-                              type="datetime-local"
-                              value={values.registerEnd}
-                              onChange={handleChange('registerEnd')}
-                              InputLabelProps={{
-                                shrink: true,
-                              }}
-                              fullWidth
-                              inputProps={{
-                                min: dayjs(values.registerStart).add(1, 'hours').format(formatDate),
-                                max: dayjs().add(4, 'months').format(formatDate),
-                              }}
-                              error={!!errors.registerEnd}
-                              helperText={!!errors.registerEnd && errors.registerEnd}
-                            />
-                          </GridItem>
-                        </GridContainer>
-                      </FormCellCustom>
-                      <FormCellCustom flexStart label="Program time">
-                        <GridContainer>
-                          <GridItem xs={12} sm={12} md={6}>
-                            <TextField
-                              id="datetime-local"
-                              type="datetime-local"
-                              value={values.programStart}
-                              onChange={handleChange('programStart')}
-                              InputLabelProps={{
-                                shrink: true,
-                              }}
-                              fullWidth
-                              inputProps={{
-                                min: dayjs().format(formatDate),
-                                max: dayjs(values.programEnd).format(formatDate),
-                              }}
-                              error={!!errors.programStart}
-                              helperText={!!errors.programStart && errors.programStart}
-                            />
-                          </GridItem>
-                          <GridItem xs={12} sm={12} md={6}>
-                            <TextField
-                              id="datetime-local"
-                              type="datetime-local"
-                              value={values.programEnd}
-                              onChange={handleChange('programEnd')}
-                              InputLabelProps={{
-                                shrink: true,
-                              }}
-                              fullWidth
-                              inputProps={{
-                                min: dayjs(values.programStart).format(formatDate),
-                                max: dayjs().add(4, 'months').format(formatDate),
-                              }}
-                              error={!!errors.programEnd}
-                              helperText={!!errors.programEnd && errors.programEnd}
-                            />
-                          </GridItem>
-                        </GridContainer>
-                      </FormCellCustom>
-                      <FormCellCustom label="Registration price" flexStart>
-                        <TextField
-                          id="register-price"
-                          label=""
-                          variant="outlined"
-                          size="small"
+                          value={values.discountLimit}
                           type="number"
-                          inputProps={{
-                            value: values.registerPrice,
-                            onChange: handleChange('registerPrice'),
-                          }}
-                          fullWidth
-                          placeholder="Input"
-                          autoComplete="off"
-                          error={!!errors.registerPrice}
-                          helperText={!!errors.registerPrice && errors.registerPrice}
+                          onChange={handleChange('discountLimit')}
                         />
-                      </FormCellCustom>
-                      <FormCellCustom label="Maximum registration shop" flexStart>
-                        <div className={classes.formCell}>
-                          <FormControl component="fieldset">
-                            <RadioGroup
-                              value={values.typeShopLimit}
-                              onChange={handleChange('typeShopLimit')}
-                              className={classes.flex_center}>
-                              <FormControlLabel
-                                value={EShopLimitType.SHOP_LIMIT}
-                                control={<CustomRadio />}
-                                label="Set Shop"
-                                style={{ color: '#000000' }}
-                              />
-                              <FormControlLabel
-                                value={EShopLimitType.NO_LIMIT}
-                                control={<CustomRadio />}
-                                label="No Limit"
-                                style={{ color: '#000000' }}
-                              />
-                            </RadioGroup>
-                          </FormControl>
-                        </div>
-                      </FormCellCustom>
-                      {values.typeShopLimit === EShopLimitType.SHOP_LIMIT && (
-                        <FormCellCustom flexStart>
-                          <TextField
-                            label=""
-                            variant="outlined"
-                            size="small"
-                            inputProps={{
-                              value: values.maxShopRegister,
-                              onChange: handleChange('maxShopRegister'),
-                            }}
-                            type="number"
-                            fullWidth
-                            placeholder="Input"
-                            autoComplete="off"
-                            error={!!errors.maxShopRegister}
-                            helperText={!!errors.maxShopRegister && errors.maxShopRegister}
-                          />
-                        </FormCellCustom>
-                      )}
-                      <FormCellCustom label="Program details" flexStart>
-                        <TextField
-                          multiline
-                          minRows={12}
-                          variant="outlined"
-                          size="medium"
-                          fullWidth
-                          inputProps={{
-                            value: values.description,
-                            onChange: handleChange('description'),
-                          }}
-                          autoComplete="off"
+                        <InputRightElement w="100px" borderLeftWidth="1px">
+                          <Center h="full">
+                            <Text textStyle="h4">HTG</Text>
+                          </Center>
+                        </InputRightElement>
+                      </InputGroup>
+                      <FormErrorMessage>{errors.discountLimit}</FormErrorMessage>
+                    </FormControl>
+                  </FormCellCustom>
+                )}
+              <FormCellCustom label="Minimum Basket Price">
+                <FormControl isInvalid={!!errors.minOrderPrice}>
+                  <InputGroup>
+                    <Input
+                      placeholder="Input"
+                      autoComplete="off"
+                      value={values.minOrderPrice}
+                      type="number"
+                      onChange={handleChange('minOrderPrice')}
+                    />
+                    <InputRightElement w="100px" borderLeftWidth="1px">
+                      <Center h="full">
+                        <Text textStyle="h4">HTG</Text>
+                      </Center>
+                    </InputRightElement>
+                  </InputGroup>
+                  <FormErrorMessage>{errors.minOrderPrice}</FormErrorMessage>
+                </FormControl>
+              </FormCellCustom>
+              <FormCellCustom label="Usage Quantity">
+                <FormControl isInvalid={!!errors.quantityVoucher}>
+                  <Input
+                    placeholder="Input"
+                    autoComplete="off"
+                    value={values.quantityVoucher}
+                    type="number"
+                    onChange={handleChange('quantityVoucher')}
+                  />
+                  <FormErrorMessage>{errors.quantityVoucher}</FormErrorMessage>
+                </FormControl>
+              </FormCellCustom>
+              <FormCellCustom label="Banner voucher">
+                <Box maxW={{ base: 'unset', '2xl': '60%' }}>
+                  <Box
+                    zIndex={1}
+                    position="relative"
+                    onClick={() => inputRefBanner.current.click()}>
+                    <Flex
+                      justifyContent="center"
+                      alignItems="center"
+                      cursor="pointer"
+                      zIndex={1}
+                      h="140px"
+                      borderWidth="1px"
+                      borderRadius="4px"
+                      overflow="hidden"
+                      borderColor={values.banner ? 'transparent' : 'gray.700'}
+                      position="relative">
+                      {values.banner ? (
+                        <img
+                          src={values.banner}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
-                      </FormCellCustom>
-                    </FormGroupCustom>
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={6}>
-                    <FormGroupCustom title={t('voucher.setUpVoucher')}>
-                      <FormCellCustom label="Discount Type | Amount" flexStart>
-                        <Flex>
-                          <FormControl variant="outlined" size="small">
-                            <Select
-                              id="select-outlined"
-                              value={values.typeDiscount}
-                              onChange={handleChange('typeDiscount')}>
-                              <MenuItem value={EDiscountType.CASH}>Fix Amount</MenuItem>
-                              <MenuItem value={EDiscountType.PERCENT}>By Percentage</MenuItem>
-                            </Select>
-                          </FormControl>
-                          <FormControl
-                            variant="outlined"
-                            size="small"
-                            style={{ flex: 1, marginLeft: 16 }}>
-                            <TextField
-                              variant="outlined"
-                              size="small"
-                              type="number"
-                              fullWidth
-                              value={values.discountValue}
-                              onChange={handleChange('discountValue')}
-                              autoComplete="off"
-                              placeholder="Input"
-                              error={!!errors.discountValue}
-                              helperText={!!errors.discountValue && errors.discountValue}
-                            />
-                          </FormControl>
+                      ) : (
+                        <Flex flexDirection="column" alignItems="center" justifyContent="center">
+                          <Icon as={IoIosCloudUpload} width="32px" height="32px" color="gray.100" />
+                          <Text mt="1">Upload an image of banner voucher</Text>
                         </Flex>
-                      </FormCellCustom>
-                      {values.typeDiscount === EDiscountType.PERCENT && (
-                        <FormCellCustom label="Maximum Discount Price" flexStart>
-                          <div className={classes.formCell}>
-                            <FormControl component="fieldset">
-                              <RadioGroup
-                                value={values.typeLimit}
-                                onChange={handleChange('typeLimit')}
-                                className={classes.flex_center}>
-                                <FormControlLabel
-                                  value={EDiscountLimitType.AMOUNT}
-                                  control={<CustomRadio />}
-                                  label="Set Amount"
-                                  style={{ color: '#000000' }}
-                                />
-                                <FormControlLabel
-                                  value={EDiscountLimitType.NO_LIMIT}
-                                  control={<CustomRadio />}
-                                  label="No Limit"
-                                  style={{ color: '#000000' }}
-                                />
-                              </RadioGroup>
-                            </FormControl>
-                          </div>
-                        </FormCellCustom>
                       )}
-                      {values.typeDiscount === EDiscountType.PERCENT &&
-                        values.typeLimit === EDiscountLimitType.AMOUNT && (
-                          <FormCellCustom flexStart>
-                            <TextField
-                              variant="outlined"
-                              size="small"
-                              fullWidth
-                              value={values.discountLimit}
-                              onChange={handleChange('discountLimit')}
-                              type="number"
-                              autoComplete="off"
-                              style={{ flex: 1 }}
-                              placeholder="Input"
-                              error={!!errors.discountLimit}
-                              helperText={!!errors.discountLimit && errors.discountLimit}
-                            />
-                          </FormCellCustom>
-                        )}
-                      <FormCellCustom label="Minimum Basket Price" flexStart>
-                        <TextField
-                          variant="outlined"
-                          size="small"
-                          fullWidth
-                          value={values.minOrderPrice}
-                          onChange={handleChange('minOrderPrice')}
-                          type="number"
-                          autoComplete="off"
-                          placeholder="Input"
-                          error={!!errors.minOrderPrice}
-                          helperText={!!errors.minOrderPrice && errors.minOrderPrice}
-                        />
-                      </FormCellCustom>
-                      <FormCellCustom label="Usage Quantity" flexStart>
-                        <TextField
-                          variant="outlined"
-                          size="small"
-                          fullWidth
-                          inputProps={{
-                            value: values.quantityVoucher,
-                            onChange: handleChange('quantityVoucher'),
+                      {values.banner && (
+                        <Icon
+                          cursor="pointer"
+                          as={AiOutlineCloseCircle}
+                          width="24px"
+                          height="24px"
+                          color="blue.200"
+                          position="absolute"
+                          right="4px"
+                          top="4px"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setFieldValue('banner', '');
                           }}
-                          placeholder="Input"
-                          autoComplete="off"
-                          type="number"
-                          error={!!errors.quantityVoucher}
-                          helperText={!!errors.quantityVoucher && errors.quantityVoucher}
                         />
-                      </FormCellCustom>
-                      <FormCellCustom flexStart label="Banner voucher" mt={46}>
-                        <Box
-                          zIndex={1}
-                          position="relative"
-                          onClick={() => inputRefBanner.current.click()}>
-                          <Flex
-                            justifyContent="center"
-                            alignItems="center"
-                            cursor="pointer"
-                            zIndex={1}
-                            h="210px"
-                            borderWidth="1px"
-                            borderRadius="4px"
-                            overflow="hidden"
-                            borderColor={values.banner ? 'transparent' : 'gray.400'}
-                            position="relative">
-                            {values.banner ? (
-                              <img
-                                src={values.banner}
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                              />
-                            ) : (
-                              <Flex
-                                flexDirection="column"
-                                alignItems="center"
-                                justifyContent="center">
-                                <Icon
-                                  as={IoIosCloudUpload}
-                                  width="32px"
-                                  height="32px"
-                                  color="gray.100"
-                                />
-                                <Text mt="1">Upload a File</Text>
-                              </Flex>
-                            )}
-                            {values.banner && (
-                              <Icon
-                                cursor="pointer"
-                                as={AiOutlineCloseCircle}
-                                width="24px"
-                                height="24px"
-                                color="blue.200"
-                                position="absolute"
-                                right="4px"
-                                top="4px"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setFieldValue('banner', '');
-                                }}
-                              />
-                            )}
-                          </Flex>
-                          <input
-                            ref={inputRefBanner}
-                            accept="image/*"
-                            id="icon-button-file"
-                            type="file"
-                            multiple
-                            style={{ display: 'none', cursor: 'pointer' }}
-                            onChange={onUploaderBanner}
-                          />
-                        </Box>
-                      </FormCellCustom>
-                    </FormGroupCustom>
-                  </GridItem>
-                </GridContainer>
-              </CardBody>
-              <CardFooter className={classes.flex_end}>
-                <Button variant="control" onClick={() => router.back()} mr="6">
+                      )}
+                    </Flex>
+                    <input
+                      ref={inputRefBanner}
+                      accept="image/*"
+                      id="icon-button-file"
+                      type="file"
+                      multiple
+                      style={{ display: 'none', cursor: 'pointer' }}
+                      onChange={onUploaderBanner}
+                    />
+                  </Box>
+                </Box>
+              </FormCellCustom>
+              <FormCellCustom label="Program details">
+                <Textarea
+                  rows={6}
+                  placeholder="Description"
+                  autoComplete="off"
+                  value={values.description}
+                  onChange={handleChange('description')}
+                />
+              </FormCellCustom>
+              <Box className={classes.flex_end}>
+                <Button variant="control" onClick={() => router.back()} w="150px" mr="6">
                   {t('cancel')}
                 </Button>
-                <Button variant="primary" onClick={() => handleSubmit()}>
+                <Button variant="primary" onClick={() => handleSubmit()} w="150px">
                   {t('confirm')}
                 </Button>
-              </CardFooter>
-            </Card>
+              </Box>
+            </Box>
           </Form>
         );
       }}

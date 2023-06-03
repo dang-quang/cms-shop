@@ -225,7 +225,7 @@ export const TableAll = () => {
                 }
 
                 return (
-                  <Tr cursor="pointer" key={index}>
+                  <Tr key={index}>
                     <Td borderColor="gray.1300">
                       <Text textStyle="h3" color="text-basic">
                         {index + 1}

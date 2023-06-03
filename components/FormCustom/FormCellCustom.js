@@ -29,7 +29,7 @@ export default function FormCellCustom(props) {
 
   return (
     <div className={classes.formCellContainer} style={{ marginTop: mt }}>
-      <GridContainer style={{ alignItems: flexStart ? 'flex-start' : 'center' }}>
+      <GridContainer>
         <GridItem xs={gridLable || 3} sm={gridLable || 3} md={gridLable || 3}>
           <p className={classes.text + ' ' + classes.infoTextPrimary + ' ' + classes.labelCell}>
             {props.label}

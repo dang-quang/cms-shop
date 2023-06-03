@@ -266,10 +266,8 @@ function VoucherProgramApproval() {
         <React.Fragment key={index}>
           <TableRow
             key={index}
-            onClick={() => handleSelect(item)}
             className={tableClasses.tableBodyRow}
             style={{
-              cursor: 'pointer',
               backgroundColor: isItemChecked ? '#fff6f0' : '#fff',
               height: 100,
             }}>

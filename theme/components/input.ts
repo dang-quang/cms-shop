@@ -8,14 +8,15 @@ export const inputStyles = {
           borderRadius: '8px',
         },
       },
-
+      defaultProps: {
+        focusBorderColor: 'red.600',
+      },
       variants: {
         login: (props: StyleFunctionProps) => ({
           field: {
             bg: mode('transparent', 'navy.800')(props),
             borderBottomWidth: '2px',
             color: mode('secondaryGray.900', 'white')(props),
-            focusBorderColor: 'red',
             borderColor: 'gray.200',
             borderRadius: '0px',
             fontSize: '14px',
@@ -29,14 +30,28 @@ export const inputStyles = {
         }),
         outline: (props: StyleFunctionProps) => ({
           field: {
-            bg: mode('transparent', 'navy.800')(props),
+            bg: mode('white', 'navy.800')(props),
             border: '1px solid',
-            color: mode('secondaryGray.900', 'white')(props),
-            borderColor: 'bg-border-1',
-            borderRadius: '0px',
-            fontSize: '14px',
+            color: mode('text-basic', 'white')(props),
+            borderColor: 'gray.700',
+            borderRadius: '4px',
+            fontSize: '16px',
             p: '20px',
-            _placeholder: { color: 'secondaryGray.600' },
+            _placeholder: { color: '#959596' },
+            _focus: {
+              borderColor: 'primary.100',
+              boxShadow: 'none',
+            },
+            _hover: {
+              borderColor: 'primary.100',
+            },
+            _active: {
+              boxShadow: 'none',
+            },
+            _invalid: {
+              borderColor: 'red',
+              boxShadow: 'none',
+            },
           },
         }),
         search: (props: StyleFunctionProps) => ({
@@ -45,7 +60,7 @@ export const inputStyles = {
             border: '1px solid',
             color: mode('text-basic', 'white')(props),
             borderColor: 'gray.1300',
-            borderRadius: '8px',
+            borderRadius: '4px',
             fontSize: '14px',
             p: '20px',
             _placeholder: { color: 'gray.1900' },
@@ -114,14 +129,29 @@ export const inputStyles = {
       },
 
       variants: {
-        main: (props: StyleFunctionProps) => ({
+        outline: (props: StyleFunctionProps) => ({
           field: {
-            bg: mode('transparent', 'navy.800')(props),
+            bg: mode('white', 'navy.800')(props),
             border: '1px solid',
-            color: 'secondaryGray.600',
-            borderColor: mode('secondaryGray.100', 'whiteAlpha.100')(props),
-            borderRadius: '16px',
-            _placeholder: { color: 'secondaryGray.600' },
+            color: mode('text-basic', 'white')(props),
+            borderColor: 'gray.700',
+            borderRadius: '4px',
+            fontSize: '16px',
+            _placeholder: { color: '#959596' },
+            _focus: {
+              boxShadow: 'none',
+              borderColor: 'primary.100',
+            },
+            _hover: {
+              borderColor: 'primary.100',
+            },
+            _active: {
+              boxShadow: 'none',
+            },
+            _invalid: {
+              borderColor: 'red',
+              boxShadow: 'none',
+            },
           },
           icon: {
             color: 'secondaryGray.600',

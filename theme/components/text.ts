@@ -50,6 +50,16 @@ export const textStyles = {
       lineHeight: '21px',
       fontWeight: '400',
     },
+    'h5-sb': {
+      fontSize: '18px',
+      lineHeight: '21px',
+      fontWeight: '500',
+    },
+    'h5-b': {
+      fontSize: '18px',
+      lineHeight: '21px',
+      fontWeight: '600',
+    },
     'h6-t': {
       fontSize: '24px',
       lineHeight: '28px',
@@ -60,16 +70,16 @@ export const textStyles = {
       lineHeight: '28px',
       fontWeight: '400',
     },
-    // 'h6-sb': {
-    //   fontSize: '24px',
-    //   lineHeight: '100%',
-    //   fontWeight: '500',
-    // },
-    // 'h6-b': {
-    //   fontSize: '24px',
-    //   lineHeight: '100%',
-    //   fontWeight: 'bold',
-    // },
+    'h6-sb': {
+      fontSize: '24px',
+      lineHeight: '100%',
+      fontWeight: '500',
+    },
+    'h6-b': {
+      fontSize: '24px',
+      lineHeight: '100%',
+      fontWeight: 'bold',
+    },
     h7: {
       fontSize: '36px',
       lineHeight: '100%',

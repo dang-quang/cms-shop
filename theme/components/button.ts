@@ -3,10 +3,11 @@ export const buttonStyles = {
   components: {
     Button: {
       baseStyle: {
-        borderRadius: '6px',
+        borderRadius: '4px',
         boxShadow: '45px 76px 113px 7px rgba(112, 144, 176, 0.08)',
         transition: '.25s all ease',
         boxSizing: 'border-box',
+        fontWeight: '400',
         _focus: {
           boxShadow: 'none',
         },

@@ -137,6 +137,7 @@ export const inputStyles = {
             borderColor: 'gray.700',
             borderRadius: '4px',
             fontSize: '16px',
+            h: '41px',
             _placeholder: { color: '#959596' },
             _focus: {
               boxShadow: 'none',

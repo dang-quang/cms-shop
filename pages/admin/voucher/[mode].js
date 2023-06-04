@@ -2,18 +2,8 @@ import React from 'react';
 import { NotificationManager } from 'react-light-notifications';
 import 'react-light-notifications/lib/main.css';
 import Admin from 'layouts/Admin.js';
-import Card from 'components/Card/Card.js';
-import CardHeader from 'components/Card/CardHeader.js';
-import CardBody from 'components/Card/CardBody.js';
-import CardFooter from 'components/Card/CardFooter.js';
-import { makeStyles } from '@material-ui/core';
 import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
-import GridContainer from 'components/Grid/GridContainer.js';
-import GridItem from 'components/Grid/GridItem.js';
-import FormGroupCustom from 'components/FormCustom/FormGroupCustom.js';
-import FormCellCustom from 'components/FormCustom/FormCellCustom.js';
 import { useRouter } from 'next/router';
-import styles from 'assets/jss/natcash/views/voucher/addVoucherStyle.js';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
@@ -22,13 +12,12 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
   Grid,
+  GridItem,
   HStack,
   Icon,
   Input,
   InputGroup,
-  InputLeftElement,
   InputRightElement,
   Radio,
   RadioGroup,
@@ -83,9 +72,6 @@ function AddVoucherPage() {
   const router = useRouter();
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const useStyles = makeStyles(styles);
-  const classes = useStyles();
-
   const inputRefBanner = React.useRef(null);
 
   const voucher =
@@ -227,7 +213,22 @@ function AddVoucherPage() {
       is: EDiscountType.PERCENT,
       then: yup.string().required(t('error_field_empty')),
     }),
-    discountValue: yup.string().required(t('error_field_empty')),
+    discountValue: yup
+      .string()
+      .when('typeDiscount', {
+        is: EDiscountType.PERCENT,
+        then: yup
+          .string()
+          .required(t('error_field_empty'))
+          .matches(/^\d+(\.\d+)?$/, t('errorInvalid'))
+          .test('maxPercent', t('errorPercentMax'), function (value) {
+            return parseFloat(value) <= 100;
+          }),
+      })
+      .when('typeDiscount', {
+        is: EDiscountType.CASH,
+        then: yup.string().required(t('error_field_empty')),
+      }),
     minOrderPrice: yup.string().required(t('error_field_empty')),
     quantityVoucher: yup.string().required(t('error_field_empty')),
   });
@@ -306,7 +307,7 @@ function AddVoucherPage() {
               <Text textStyle="h5-sb" color="primary.100" mb="6">
                 Basic information
               </Text>
-              <FormCellCustom label="Promotion name">
+              <FormGroup title="Promotion name">
                 <FormControl isInvalid={!!errors.name}>
                   <Input
                     placeholder="Input"
@@ -316,8 +317,8 @@ function AddVoucherPage() {
                   />
                   <FormErrorMessage>{errors.name}</FormErrorMessage>
                 </FormControl>
-              </FormCellCustom>
-              <FormCellCustom label="Registration time">
+              </FormGroup>
+              <FormGroup title="Registration time" mt="6">
                 <SimpleGrid columns={{ base: 1, xl: 2 }} gap="5" pr={{ base: 'unset', xl: '20%' }}>
                   <FormControl isInvalid={!!errors.registerStart}>
                     <Input
@@ -341,8 +342,8 @@ function AddVoucherPage() {
                     <FormErrorMessage>{errors.registerEnd}</FormErrorMessage>
                   </FormControl>
                 </SimpleGrid>
-              </FormCellCustom>
-              <FormCellCustom label="Program time">
+              </FormGroup>
+              <FormGroup title="Program time" mt="6">
                 <SimpleGrid columns={{ base: 1, xl: 2 }} gap="5" pr={{ base: 'unset', xl: '20%' }}>
                   <FormControl isInvalid={!!errors.programStart}>
                     <Input
@@ -366,8 +367,8 @@ function AddVoucherPage() {
                     <FormErrorMessage>{errors.programEnd}</FormErrorMessage>
                   </FormControl>
                 </SimpleGrid>
-              </FormCellCustom>
-              <FormCellCustom label="Registration price">
+              </FormGroup>
+              <FormGroup title="Registration price" mt="6">
                 <FormControl isInvalid={!!errors.registerPrice}>
                   <InputGroup>
                     <Input
@@ -384,8 +385,8 @@ function AddVoucherPage() {
                   </InputGroup>
                   <FormErrorMessage>{errors.registerPrice}</FormErrorMessage>
                 </FormControl>
-              </FormCellCustom>
-              <FormCellCustom label="Maximum registration shop">
+              </FormGroup>
+              <FormGroup title="Maximum registration shop" mt="6">
                 <RadioGroup
                   defaultValue={EShopLimitType.SHOP_LIMIT}
                   value={values.typeShopLimit}
@@ -401,9 +402,9 @@ function AddVoucherPage() {
                     </Radio>
                   </Stack>
                 </RadioGroup>
-              </FormCellCustom>
+              </FormGroup>
               {values.typeShopLimit === EShopLimitType.SHOP_LIMIT && (
-                <FormCellCustom>
+                <FormGroup mt="6">
                   <FormControl isInvalid={!!errors.maxShopRegister}>
                     <Input
                       placeholder="Input"
@@ -414,64 +415,66 @@ function AddVoucherPage() {
                     />
                     <FormErrorMessage>{errors.maxShopRegister}</FormErrorMessage>
                   </FormControl>
-                </FormCellCustom>
+                </FormGroup>
               )}
-              <Text textStyle="h5-sb" color="primary.100" mb="6">
+              <Text textStyle="h5-sb" color="primary.100" mt="6">
                 {t('voucher.setUpVoucher')}
               </Text>
-              <FormCellCustom label="Discount Type | Amount">
-                <FormControl isInvalid={!!errors.discountValue}>
-                  <InputGroup>
-                    <InputLeftElement w="200px" mr="200px">
-                      <Select
-                        w="200px"
-                        defaultValue={EDiscountType.CASH}
-                        value={values.typeDiscount}
-                        onChange={handleChange('typeDiscount')}>
-                        <option value={EDiscountType.CASH}>Fix Amount</option>
-                        <option value={EDiscountType.PERCENT}>By Percentage</option>
-                      </Select>
-                    </InputLeftElement>
-                    <Input
-                      ml="220px"
-                      placeholder="Input"
-                      autoComplete="off"
-                      value={values.discountValue}
-                      type="number"
-                      onChange={handleChange('discountValue')}
-                    />
-                    <InputRightElement pointerEvents="none" w="100px" borderLeftWidth="1px">
-                      <Center h="full">
-                        <Text textStyle="h4">
-                          {values.typeDiscount === EDiscountType.CASH ? 'HTG' : '%'}
-                        </Text>
-                      </Center>
-                    </InputRightElement>
-                  </InputGroup>
-                  <FormErrorMessage>{errors.discountValue}</FormErrorMessage>
-                </FormControl>
-              </FormCellCustom>
+              <FormGroup title="Discount Type | Amount" mt="6">
+                <Grid templateColumns="repeat(10,1fr)" gap="5">
+                  <GridItem colSpan={3}>
+                    <Select
+                      defaultValue={EDiscountType.CASH}
+                      value={values.typeDiscount}
+                      onChange={handleChange('typeDiscount')}>
+                      <option value={EDiscountType.CASH}>Fix Amount</option>
+                      <option value={EDiscountType.PERCENT}>By Percentage</option>
+                    </Select>
+                  </GridItem>
+                  <GridItem colSpan={7}>
+                    <InputGroup>
+                      <FormControl isInvalid={!!errors.discountValue}>
+                        <Input
+                          placeholder="Input"
+                          autoComplete="off"
+                          value={values.discountValue}
+                          type="number"
+                          onChange={handleChange('discountValue')}
+                        />
+                        <FormErrorMessage>{errors.discountValue}</FormErrorMessage>
+                      </FormControl>
+                      <InputRightElement pointerEvents="none" w="100px" borderLeftWidth="1px">
+                        <Center h="full">
+                          <Text textStyle="h4">
+                            {values.typeDiscount === EDiscountType.CASH ? 'HTG' : '%'}
+                          </Text>
+                        </Center>
+                      </InputRightElement>
+                    </InputGroup>
+                  </GridItem>
+                </Grid>
+              </FormGroup>
               {values.typeDiscount === EDiscountType.PERCENT && (
-                <FormCellCustom label="Maximum Discount Price">
+                <FormGroup title="Maximum Discount Price" mt="6">
                   <RadioGroup
                     value={values.typeLimit}
                     onChange={handleChange('typeLimit')}
                     size="lg"
                     pr="20%">
-                    <Stack spacing={5} direction="row">
+                    <HStack spacing={5} direction="row">
                       <Radio value={EDiscountLimitType.AMOUNT} flex="1">
                         Limited
                       </Radio>
                       <Radio value={EDiscountLimitType.NO_LIMIT} flex="1">
                         No Limited
                       </Radio>
-                    </Stack>
+                    </HStack>
                   </RadioGroup>
-                </FormCellCustom>
+                </FormGroup>
               )}
               {values.typeDiscount === EDiscountType.PERCENT &&
                 values.typeLimit === EDiscountLimitType.AMOUNT && (
-                  <FormCellCustom>
+                  <FormGroup mt="6">
                     <FormControl isInvalid={!!errors.discountLimit}>
                       <InputGroup>
                         <Input
@@ -489,9 +492,9 @@ function AddVoucherPage() {
                       </InputGroup>
                       <FormErrorMessage>{errors.discountLimit}</FormErrorMessage>
                     </FormControl>
-                  </FormCellCustom>
+                  </FormGroup>
                 )}
-              <FormCellCustom label="Minimum Basket Price">
+              <FormGroup title="Minimum Basket Price" mt="6">
                 <FormControl isInvalid={!!errors.minOrderPrice}>
                   <InputGroup>
                     <Input
@@ -509,8 +512,8 @@ function AddVoucherPage() {
                   </InputGroup>
                   <FormErrorMessage>{errors.minOrderPrice}</FormErrorMessage>
                 </FormControl>
-              </FormCellCustom>
-              <FormCellCustom label="Usage Quantity">
+              </FormGroup>
+              <FormGroup title="Usage Quantity" mt="6">
                 <FormControl isInvalid={!!errors.quantityVoucher}>
                   <Input
                     placeholder="Input"
@@ -521,8 +524,8 @@ function AddVoucherPage() {
                   />
                   <FormErrorMessage>{errors.quantityVoucher}</FormErrorMessage>
                 </FormControl>
-              </FormCellCustom>
-              <FormCellCustom label="Banner voucher">
+              </FormGroup>
+              <FormGroup title="Banner voucher" mt="6">
                 <Box maxW={{ base: 'unset', '2xl': '60%' }}>
                   <Box
                     zIndex={1}
@@ -578,8 +581,8 @@ function AddVoucherPage() {
                     />
                   </Box>
                 </Box>
-              </FormCellCustom>
-              <FormCellCustom label="Program details">
+              </FormGroup>
+              <FormGroup title="Program details" mt="6">
                 <Textarea
                   rows={6}
                   placeholder="Description"
@@ -587,15 +590,15 @@ function AddVoucherPage() {
                   value={values.description}
                   onChange={handleChange('description')}
                 />
-              </FormCellCustom>
-              <Box className={classes.flex_end}>
-                <Button variant="control" onClick={() => router.back()} w="150px" mr="6">
+              </FormGroup>
+              <HStack justifyContent="flex-end" gap="6" mt="6">
+                <Button variant="control" onClick={() => router.back()} w="150px">
                   {t('cancel')}
                 </Button>
                 <Button variant="primary" onClick={() => handleSubmit()} w="150px">
                   {t('confirm')}
                 </Button>
-              </Box>
+              </HStack>
             </Box>
           </Form>
         );

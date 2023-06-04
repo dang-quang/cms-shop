@@ -61,6 +61,7 @@ const PaginationPanel: React.FC<PaginationPanelProps> = ({
                 fontSize="md"
                 fontWeight="500"
                 jumpSize={11}
+                borderRadius="0px"
               />
             }>
             {pages &&
@@ -103,12 +104,12 @@ const PaginationPanel: React.FC<PaginationPanelProps> = ({
               bg: 'primary.100',
               color: 'white',
             }}
+            borderRadius="0px"
             color="text-basic"
             bg="transparent"
             ml="12px"
             w="40px"
-            h="40px"
-            borderRadius="0px">
+            h="40px">
             <Icon as={IconRightArrow} w="16px" h="16px" />
           </PaginationNext>
         </PaginationContainer>

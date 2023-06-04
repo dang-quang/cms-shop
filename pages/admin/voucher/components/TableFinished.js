@@ -176,7 +176,7 @@ export const TableFinished = () => {
       </InputGroup>
       <Box
         bg="white"
-        borderRadius="12px"
+        borderRadius="4px"
         overflow="auto"
         borderWidth="1px"
         borderColor="gray.400"

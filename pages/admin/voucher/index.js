@@ -17,7 +17,7 @@ function VoucherPage() {
 
   return (
     <Box>
-      <Tabs display={{ base: 'none', xl: 'block' }} variant="soft-rounded" mt="8">
+      <Tabs variant="soft-rounded" mt="8">
         <Flex justifyContent="space-between">
           <TabList w="auto" mb="16px" borderRadius="full" bg="white" p="1">
             {tabs.map((name, index) => (

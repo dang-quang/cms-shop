@@ -136,6 +136,27 @@ const dashboardRoutes = [
       //   parent: 'operation',
       //   permission: 'marketing_sms',
       // },
+      {
+        path: '/flash-sale-shop',
+        name: 'flashSaleShop',
+        layout: '/shop',
+        parent: 'operation',
+        permission: 'shop_voucher_coupon',
+      },
+      {
+        path: '/flash-sale-natshop',
+        name: 'flashSaleNatShop',
+        layout: '/shop',
+        parent: 'operation',
+        permission: 'shop_voucher_coupon',
+      },
+      {
+        path: '/voucher-coupon',
+        name: 'voucher_coupon',
+        layout: '/shop',
+        parent: 'operation',
+        permission: 'shop_voucher_coupon',
+      },
     ],
   },
   {

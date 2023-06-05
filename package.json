@@ -41,7 +41,7 @@
     "dayjs": "^1.11.7",
     "dayzed": "^3.2.3",
     "device-uuid": "^1.0.4",
-    "formik": "^2.2.9",
+    "formik": "^2.4.1",
     "framer-motion": "^4.1.17",
     "history": "5.0.0",
     "i18next": "^22.4.9",

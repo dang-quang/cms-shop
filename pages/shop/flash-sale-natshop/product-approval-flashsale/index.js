@@ -19,7 +19,23 @@ import Pagination from '@material-ui/lab/Pagination';
 import { useTranslation } from 'react-i18next';
 import styles from 'assets/jss/natcash/views/productApproval/productApprovalStyle';
 import { NotificationContainer, NotificationManager } from 'react-light-notifications';
-import { AspectRatio, Box, Center, Checkbox, Flex, Image, Input, Text, Tab, TabList, TabPanel, TabPanels, Tabs, InputGroup, InputRightElement, } from '@chakra-ui/react';
+import {
+  AspectRatio,
+  Box,
+  Center,
+  Checkbox,
+  Flex,
+  Image,
+  Input,
+  Text,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  InputGroup,
+  InputRightElement,
+} from '@chakra-ui/react';
 import { formatCurrency, formatNumber } from 'utilities/utils';
 import { requestApproveProduct, requestGetListProductApprove } from 'utilities/ApiManage';
 import { setShowLoader } from 'redux/actions/app';
@@ -31,8 +47,6 @@ import { setSelectedProducts } from 'redux/actions/product';
 import _ from 'lodash';
 import { EAppKey } from 'constants/types';
 import { Formik, Form, Field, FieldArray } from 'formik';
-
-
 
 function ProductApproval() {
   const { t } = useTranslation();
@@ -323,7 +337,7 @@ function ProductApproval() {
                   autoComplete="off"
                   // style={{ }}
                   value={0}
-                  onChange={() => { }}
+                  onChange={() => {}}
                 />
                 <InputRightElement w="30px" borderLeftWidth="1px">
                   <Center h="full">
@@ -334,12 +348,7 @@ function ProductApproval() {
             </TableCell>
             <TableCell className={tableClasses.tableCell} key="shopCode">
               <InputGroup style={{ width: 110 }}>
-                <Input
-                  placeholder="Input"
-                  autoComplete="off"
-                  value={0}
-                  onChange={() => { }}
-                />
+                <Input placeholder="Input" autoComplete="off" value={0} onChange={() => {}} />
                 <InputRightElement w="60px" borderLeftWidth="1px">
                   <Center h="full">
                     <Text textStyle="h2">% Giảm</Text>
@@ -363,7 +372,6 @@ function ProductApproval() {
                 5
               </Text>
             </TableCell>
-
           </TableRow>
         </React.Fragment>
       );
@@ -385,28 +393,54 @@ function ProductApproval() {
             [NGÀNH HÀNG THỜI TRANG] - [SIÊU SALE HÀNG HIỆU] - [00:00 09/09/2022 - 23:59 09/09/2022]
           </Text>
         </Box>
-        <Box w={'70%'} borderWidth='0.3px' overflow='hidden' borderColor='#B4B4B4' justifyContent={'center'} alignItems={'center'}>
+        <Box
+          w={'70%'}
+          borderWidth="0.3px"
+          overflow="hidden"
+          borderColor="#B4B4B4"
+          justifyContent={'center'}
+          alignItems={'center'}>
           <Flex m={'2px'} justifyContent={'space-between'}>
-            <AspectRatio
-              w="210px"
-              ratio={2 / 1}
-              mr="2"
-              borderRadius="8px"
-              overflow="hidden">
-              <Image w="100%" h="100%" objectFit="cover" src={"https://cf.shopee.vn/file/sg-11134004-7qvg9-lh7djcs0g92vb7"} />
+            <AspectRatio w="210px" ratio={2 / 1} mr="2" borderRadius="8px" overflow="hidden">
+              <Image
+                w="100%"
+                h="100%"
+                objectFit="cover"
+                src={'https://cf.shopee.vn/file/sg-11134004-7qvg9-lh7djcs0g92vb7'}
+              />
             </AspectRatio>
             <Box>
-              <Flex h="100%" flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
-                <Text textStyle="h5" color="text-basic">Thời gian đăng ký</Text>
-                <Text textStyle="h2" color="text-basic">00:00 16-08-2022 - 13:30 05-09-2022</Text>
-                <Text textStyle="h2" color="text-basic">Hiện tại bạn có thể đăng ký 7 Khung giờ</Text>
+              <Flex
+                h="100%"
+                flexDirection={'column'}
+                justifyContent={'center'}
+                alignItems={'center'}>
+                <Text textStyle="h5" color="text-basic">
+                  Thời gian đăng ký
+                </Text>
+                <Text textStyle="h2" color="text-basic">
+                  00:00 16-08-2022 - 13:30 05-09-2022
+                </Text>
+                <Text textStyle="h2" color="text-basic">
+                  Hiện tại bạn có thể đăng ký 7 Khung giờ
+                </Text>
               </Flex>
             </Box>
             <Box marginRight={'20px'}>
-              <Flex h="100%" flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
-                <Text textStyle="h5" color="text-basic">Thời gian diễn ra</Text>
-                <Text textStyle="h2" color="text-basic">00:00 09-09-2022 - 23:59 09-09-2022</Text>
-                <Text textStyle="h2" color="text-basic">0 Khung giờ bạn đã đăng ký đang diễn ra</Text>
+              <Flex
+                h="100%"
+                flexDirection={'column'}
+                justifyContent={'center'}
+                alignItems={'center'}>
+                <Text textStyle="h5" color="text-basic">
+                  Thời gian diễn ra
+                </Text>
+                <Text textStyle="h2" color="text-basic">
+                  00:00 09-09-2022 - 23:59 09-09-2022
+                </Text>
+                <Text textStyle="h2" color="text-basic">
+                  0 Khung giờ bạn đã đăng ký đang diễn ra
+                </Text>
               </Flex>
             </Box>
           </Flex>
@@ -436,46 +470,25 @@ function ProductApproval() {
             <TabPanel p="0">
               <Box w={'50%'}>
                 <Text>
-                  [NGÀNH HÀNG THỜI TRANG] - [SIÊU SALE HÀNG HIỆU] - [00:00 09/09/2022 - 23:59 09/09/2022] - GIÁ TRÊN 199K
-                  Đây là chương trình diễn ra vào ngày 09.09 dành riêng cho Ngành hàng Thời Trang
-                  Hỗ trợ Người bán tăng doanh số và thu hút thêm khách hàng mới.
-                  Shopee không trợ giá.
-                  Freeship từ 0Đ toàn sàn
-                  + Thời gian đăng kí: [00:00 - 16/08/2022] đến [13:30 - 05/09/2022]
-                  + Thời gian xét duyệt: [13:31 - 05/09/2022] đến [16:00 - 05/09/2022]
-                  thêm
+                  [NGÀNH HÀNG THỜI TRANG] - [SIÊU SALE HÀNG HIỆU] - [00:00 09/09/2022 - 23:59
+                  09/09/2022] - GIÁ TRÊN 199K Đây là chương trình diễn ra vào ngày 09.09 dành riêng
+                  cho Ngành hàng Thời Trang Hỗ trợ Người bán tăng doanh số và thu hút thêm khách
+                  hàng mới. Shopee không trợ giá. Freeship từ 0Đ toàn sàn + Thời gian đăng kí:
+                  [00:00 - 16/08/2022] đến [13:30 - 05/09/2022] + Thời gian xét duyệt: [13:31 -
+                  05/09/2022] đến [16:00 - 05/09/2022] thêm
                 </Text>
               </Box>
             </TabPanel>
             <TabPanel p="0">
               <Box w={'50%'}>
                 <Text>
-                  Điều kiện của shop
-                  Không giới hạn
-                  Điều kiện Mã giảm giá
-                  Số mã có thể sử dụng
-                  : 30 ~ 100
-                  Giá trị đơn hàng tối thiểu
-                  : ₫0 ~ ₫0
-                  Thời gian bắt đầu lưu Mã giảm giá
-                  : Sớm hơn hoặc đúng 2023/06/01 00:00:00
-                  Thời gian kết thúc lưu Mã giảm giá
-                  : Muộn hơn hoặc đúng 2023/06/06 23:59:59
-                  Loại Mã giảm giá
-                  : Mã giảm giá toàn Shop
-                  Thiết lập hiển thị mã giảm giá
-                  : Hiển thị nhiều nơi
-                  Loại Mã giảm giá
-                  Giảm theo phần trăm
-                  Phần trăm giảm
-                  : 10%GIẢM ~ 10%GIẢM
-                  Giảm tối đa
-                  : ₫10.000 ~ ₫100.000
-                  Hoàn xu
-                  Phần trăm giảm
-                  : 10% ~ 10%
-                  Giảm tối đa
-                  : ₫10.000 ~ ₫100.000
+                  Điều kiện của shop Không giới hạn Điều kiện Mã giảm giá Số mã có thể sử dụng : 30
+                  ~ 100 Giá trị đơn hàng tối thiểu : ₫0 ~ ₫0 Thời gian bắt đầu lưu Mã giảm giá : Sớm
+                  hơn hoặc đúng 2023/06/01 00:00:00 Thời gian kết thúc lưu Mã giảm giá : Muộn hơn
+                  hoặc đúng 2023/06/06 23:59:59 Loại Mã giảm giá : Mã giảm giá toàn Shop Thiết lập
+                  hiển thị mã giảm giá : Hiển thị nhiều nơi Loại Mã giảm giá Giảm theo phần trăm
+                  Phần trăm giảm : 10%GIẢM ~ 10%GIẢM Giảm tối đa : ₫10.000 ~ ₫100.000 Hoàn xu Phần
+                  trăm giảm : 10% ~ 10% Giảm tối đa : ₫10.000 ~ ₫100.000
                 </Text>
               </Box>
             </TabPanel>
@@ -526,22 +539,25 @@ function ProductApproval() {
           <div className={tableClasses.tableResponsive} style={{ marginTop: '0' }}>
             <Formik
               initialValues={products}
-              onSubmit={values => {
+              onSubmit={(values) => {
                 console.log('onSubmit', values);
                 setTimeout(() => {
                   alert(JSON.stringify(values, null, 2));
-                }, 500)
+                }, 500);
               }}
               render={({ values }) => (
                 <Form>
                   <FieldArray
                     // name="friends"
-                    render={arrayHelpers => (
+                    render={(arrayHelpers) => (
                       <div className={tableClasses.tableResponsive} style={{ marginTop: '0' }}>
                         <Table className={tableClasses.table}>
                           <TableHead className={tableClasses['primary' + 'TableHeader']}>
                             <TableRow className={tableClasses.tableHeadRow}>
-                              <TableCell className={tableClasses.tableCell + ' ' + tableClasses.tableHeadCell}>
+                              <TableCell
+                                className={
+                                  tableClasses.tableCell + ' ' + tableClasses.tableHeadCell
+                                }>
                                 <Checkbox
                                   isChecked={selectedProducts[currentPage - 1].isSelectAll}
                                   tabIndex={-1}
@@ -553,7 +569,9 @@ function ProductApproval() {
                                 return (
                                   <TableCell
                                     style={{ width: key === 5 || key === 6 ? '7%' : null }}
-                                    className={tableClasses.tableCell + ' ' + tableClasses.tableHeadCell}
+                                    className={
+                                      tableClasses.tableCell + ' ' + tableClasses.tableHeadCell
+                                    }
                                     key={key}>
                                     <Text textStyle="h3">{prop}</Text>
                                   </TableCell>
@@ -563,11 +581,7 @@ function ProductApproval() {
                           </TableHead>
                           {values.map((friend, index) => {
                             if (index < 2) {
-                              return (
-                                <TableBody>
-                                  {renderProduct(friend, index)};
-                                </TableBody>
-                              )
+                              return <TableBody>{renderProduct(friend, index)};</TableBody>;
                             }
                           })}
                         </Table>

@@ -32,6 +32,19 @@ export const buttonStyles = {
             bg: mode('primary.200', 'primary.200')(props),
           },
         }),
+        secondary: (props: StyleFunctionProps) => ({
+          bg: mode('secondary.100', 'secondary.100')(props),
+          color: 'white',
+          _focus: {
+            bg: mode('secondary.100', 'secondary.100')(props),
+          },
+          _active: {
+            bg: mode('secondary.100', 'secondary.100')(props),
+          },
+          _hover: {
+            bg: mode('secondary.100', 'secondary.100')(props),
+          },
+        }),
         control: (props: StyleFunctionProps) => ({
           bg: mode('gray.1700', 'gray.1700')(props),
           color: 'white',
@@ -56,6 +69,19 @@ export const buttonStyles = {
           },
           _hover: {
             bg: mode('green.100', 'green.100')(props),
+          },
+        }),
+        danger: (props: StyleFunctionProps) => ({
+          bg: mode('red', 'red')(props),
+          color: 'white',
+          _focus: {
+            bg: mode('red', 'red')(props),
+          },
+          _active: {
+            bg: mode('red', 'red')(props),
+          },
+          _hover: {
+            bg: mode('red', 'red')(props),
           },
         }),
       },

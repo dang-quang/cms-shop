@@ -52,11 +52,15 @@ export const TableAll = () => {
   const [doSearch, { on: onSearch, off: offSearch }] = useBoolean(false);
 
   const headers = [
-    t('serial_number'),
-    'Flash Sale Name',
-    'Product',
-    'Status | Claiming Period',
-    'Actions',
+    'STT',
+    'Code Voucher/Name',
+    'Type code',
+    'Discount',
+    'Quantily',
+    'Used',
+    'Status',
+    'Time',
+    'Action',
   ];
 
   const { pages, pagesCount, currentPage, setCurrentPage, isDisabled } = usePagination({
@@ -232,13 +236,6 @@ export const TableAll = () => {
                       </Text>
                     </Td>
                     <Td borderColor="gray.1300">
-                      <Flex>
-                        <Text textStyle="h3-m" color="text-basic">
-                          {item ? item.name : ''}
-                        </Text>
-                      </Flex>
-                    </Td>
-                    <Td borderColor="gray.1300">
                       {item && item.discountValue && (
                         <Flex>
                           <AspectRatio
@@ -254,6 +251,13 @@ export const TableAll = () => {
                           </Text>
                         </Flex>
                       )}
+                    </Td>
+                    <Td borderColor="gray.1300">
+                      <Flex>
+                        <Text textStyle="h3-m" color="text-basic">
+                          {item ? item.name : ''}
+                        </Text>
+                      </Flex>
                     </Td>
                     <Td borderColor="gray.1300">
                       {item && (

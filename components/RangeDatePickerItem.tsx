@@ -11,38 +11,36 @@ const RangeDatePickerItem: React.FC<RangeDatePickerItemProps> = ({ ...rest }) =>
       propsConfigs={{
         dateNavBtnProps: {
           variant: 'outline',
-          bg: 'secondary.100',
+          bg: 'primary.100',
           color: 'white',
           borderColor: 'transparent',
         },
         dayOfMonthBtnProps: {
           defaultBtnProps: {
-            color: 'secondary.100',
+            color: 'primary.100',
             _hover: {
               color: 'white',
-              bg: 'secondary.100',
+              bg: 'primary.100',
             },
             borderRadius: 8,
           },
           isInRangeBtnProps: {
-            color: 'secondary.100',
-            bg: 'secondary.200',
+            color: 'white',
+            bg: 'primary.200',
             borderColor: 'transparent',
           },
           selectedBtnProps: {
-            bg: 'secondary.100',
+            bg: 'primary.100',
             color: 'white',
           },
           todayBtnProps: {
             borderRadius: 8,
-            borderColor: 'primary.100',
-            color: 'primary.100',
-            bg: 'secondary.100',
+            color: 'secondary.100',
           },
         },
         inputProps: {
           size: 'sm',
-          width: '200px',
+          width: '300px',
           borderColor: 'gray.1300',
           color: 'text-basic',
           fontWeight: '300',
@@ -61,7 +59,7 @@ const RangeDatePickerItem: React.FC<RangeDatePickerItemProps> = ({ ...rest }) =>
         popoverCompProps: {
           popoverContentProps: {
             borderRadius: '8px',
-            color: 'secondary.100',
+            color: 'primary.100',
             borderColor: 'gray.1300',
             _hover: {
               borderColor: 'gray.1300',

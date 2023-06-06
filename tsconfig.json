@@ -25,5 +25,5 @@
     "tsBuildInfoFile": ".next/static/build-info.json"
   },
   "exclude": ["node_modules"],
-  "include": ["next-env.d.ts", "pages/**/*", "store/**/*"]
+  "include": ["next-env.d.ts", "pages/**/*", "store/**/*", "components/PaginationPanel.tsx"]
 }

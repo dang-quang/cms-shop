@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from 'react';
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import { useSelector, useDispatch } from "react-redux";
-import { Bar } from "react-chartjs-2";
+import { makeStyles } from '@material-ui/core/styles';
+import { useSelector, useDispatch } from 'react-redux';
+import { Bar } from 'react-chartjs-2';
 import {
   primaryColor,
   whiteColor,
@@ -11,28 +11,28 @@ import {
   successColor,
   infoColor,
   orangeColor,
-} from "assets/jss/natcash.js";
+} from 'assets/jss/natcash.js';
 // layout for this page
-import Admin from "layouts/Admin.js";
+import Admin from 'layouts/Admin.js';
 // core components
-import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardBody from "components/Card/CardBody.js";
-import CardFooter from "components/Card/CardFooter.js";
-import Button from "components/CustomButtons/Button.js";
-import WithAuthentication from "components/WithAuthentication/WithAuthentication";
-import { useRouter } from "next/router";
-import Switch from "@material-ui/core/Switch";
-import { withStyles } from "@material-ui/core/styles";
-import FormControl from "@material-ui/core/FormControl";
-import dashStyles from "assets/jss/natcash/views/dashboardStyle.js";
-import Link from "next/link";
-import moment from "moment";
-import Icon from "@material-ui/core/Icon";
-import { Table, TableBody, TableCell, TableRow } from "@material-ui/core";
-import ConfirmationNumberOutlinedIcon from "@material-ui/icons/ConfirmationNumberOutlined";
-import { getProductDetail } from "../../../utilities/ApiManage";
-import { setShowLoader } from "../../../redux/actions/app";
+import Card from 'components/Card/Card.js';
+import CardHeader from 'components/Card/CardHeader.js';
+import CardBody from 'components/Card/CardBody.js';
+import CardFooter from 'components/Card/CardFooter.js';
+import Button from 'components/CustomButtons/Button.js';
+import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
+import { useRouter } from 'next/router';
+import Switch from '@material-ui/core/Switch';
+import { withStyles } from '@material-ui/core/styles';
+import FormControl from '@material-ui/core/FormControl';
+import dashStyles from 'assets/jss/natcash/views/dashboardStyle.js';
+import Link from 'next/link';
+import moment from 'moment';
+import Icon from '@material-ui/core/Icon';
+import { Table, TableBody, TableCell, TableRow } from '@material-ui/core';
+import ConfirmationNumberOutlinedIcon from '@material-ui/icons/ConfirmationNumberOutlined';
+import { setShowLoader } from 'redux/actions/app';
+import { getProductDetail } from 'utilities/ApiManage';
 
 function ProductDetailPage() {
   const dispatch = useDispatch();
@@ -57,34 +57,34 @@ function ProductDetailPage() {
     labels: listDate,
     datasets: [
       {
-        type: "line",
-        label: "Giá khuyến mại",
+        type: 'line',
+        label: 'Giá khuyến mại',
         borderColor: infoColor[0],
         borderWidth: 2,
         fill: false,
         data: listDataFake,
       },
       {
-        type: "line",
-        label: "Giá sau mã giảm giá",
-        borderColor: "#ffe100",
+        type: 'line',
+        label: 'Giá sau mã giảm giá',
+        borderColor: '#ffe100',
         borderWidth: 2,
         fill: false,
         data: listDataFake2,
       },
       {
-        type: "bar",
-        label: "Doanh thu",
+        type: 'bar',
+        label: 'Doanh thu',
         backgroundColor: primaryColor[0],
         data: listDataFake,
-        borderColor: "white",
+        borderColor: 'white',
         borderWidth: 2,
       },
     ],
   };
   useEffect(() => {
     window.addEventListener(
-      "resize",
+      'resize',
       () => {
         setIsMobile(window.innerWidth < 1379);
       },
@@ -95,19 +95,19 @@ function ProductDetailPage() {
       if (item.item_id == id) setProduct(item);
     });
     var now = moment();
-    var beginDate = moment().subtract(30, "days");
+    var beginDate = moment().subtract(30, 'days');
     for (let i = 29; i > 0; i--) {
-      let cdate = moment().subtract(i, "days");
+      let cdate = moment().subtract(i, 'days');
       var cdateNum = cdate.date();
       if (cdateNum < 10 && cdateNum > 1) {
-        listDate.push("0" + cdateNum);
+        listDate.push('0' + cdateNum);
       } else {
         if (cdateNum == 1) {
           var cmonth = cdate.month() + 1;
           if (cmonth < 10) {
-            listDate.push("0" + cdateNum + "/" + "0" + cmonth);
+            listDate.push('0' + cdateNum + '/' + '0' + cmonth);
           } else {
-            listDate.push("0" + cdateNum + "/" + cmonth);
+            listDate.push('0' + cdateNum + '/' + cmonth);
           }
         } else {
           listDate.push(cdateNum);
@@ -129,21 +129,21 @@ function ProductDetailPage() {
     },
   };
 
-  useEffect(async() => {
-    dispatch(setShowLoader(true))
-    const res = await getProductDetail(id)
-    setProduct(res.data)
-    dispatch(setShowLoader(false))
+  useEffect(async () => {
+    dispatch(setShowLoader(true));
+    const res = await getProductDetail(id);
+    setProduct(res.data);
+    dispatch(setShowLoader(false));
   }, []);
 
   const CustomSwitch = withStyles({
     switchBase: {
-      color: "#fff",
-      "&$checked": {
-        color: "#f96606",
+      color: '#fff',
+      '&$checked': {
+        color: '#f96606',
       },
-      "&$checked + $track": {
-        backgroundColor: "#f3a36f",
+      '&$checked + $track': {
+        backgroundColor: '#f3a36f',
       },
     },
     checked: {},
@@ -158,17 +158,17 @@ function ProductDetailPage() {
         </CardHeader>
         <CardBody className={classes.bodyContainer}>
           <div className={classes.proContainer}>
-            <FormControl
-              className={dashClasses.formControl + " " + classes.proContent}
-            >
+            <FormControl className={dashClasses.formControl + ' ' + classes.proContent}>
               <img
                 className={classes.proImg}
-                src={product?.detail?.image?.image_url_list? product?.detail?.image?.image_url_list[0] : product?.detail?.images[0]}
+                src={
+                  product?.detail?.image?.image_url_list
+                    ? product?.detail?.image?.image_url_list[0]
+                    : product?.detail?.images[0]
+                }
               />
             </FormControl>
-            <FormControl
-              className={dashClasses.formControl + " " + classes.proContent}
-            >
+            <FormControl className={dashClasses.formControl + ' ' + classes.proContent}>
               <div className={classes.formProContent}>
                 <p className={classes.proInfoTitle}>Giá bán</p>
                 {product?.detail?.has_model ? (
@@ -186,9 +186,7 @@ function ProductDetailPage() {
                 </p>
               </div>
             </FormControl>
-            <FormControl
-              className={dashClasses.formControl + " " + classes.proContent}
-            >
+            <FormControl className={dashClasses.formControl + ' ' + classes.proContent}>
               <div className={classes.formProContent}>
                 <p className={classes.proInfoTitle}>Tên gian hàng</p>
                 <img className={classes.shopImg} src={product?.shop_icon} />
@@ -203,17 +201,13 @@ function ProductDetailPage() {
                 />
               </div>
             </FormControl>
-            <FormControl
-              className={dashClasses.formControl + " " + classes.proContent}
-            >
+            <FormControl className={dashClasses.formControl + ' ' + classes.proContent}>
               <div className={classes.formProContent}>
                 <p className={classes.proInfoTitle}>Mã SKU</p>
                 <p className={classes.proInfoValue}>{product?.item_sku}</p>
               </div>
             </FormControl>
-            <FormControl
-              className={dashClasses.formControl + " " + classes.proContent}
-            >
+            <FormControl className={dashClasses.formControl + ' ' + classes.proContent}>
               <div className={classes.formProContent}>
                 <p className={classes.proInfoTitle}>Sản phẩm kho</p>
                 {product?.isConnect ? (
@@ -221,7 +215,7 @@ function ProductDetailPage() {
                 ) : (
                   <div className={classes.formProContent}>
                     <p className={classes.proInfoValue}>Chưa có liên kết</p>
-                    <Link href={"/admin/product/" + product.id}>
+                    <Link href={'/admin/product/' + product.id}>
                       <a className={classes.createConenct}>Tạo ngay</a>
                     </Link>
                   </div>
@@ -237,20 +231,14 @@ function ProductDetailPage() {
             <p className={classes.titleInfoChart}>Thống kê</p>
           </div>
           <FormControl
-            className={dashClasses.formControl + " " + classes.chartContainer}
-            style={{ width: isMobile ? "100%" : "70%" }}
-          >
+            className={dashClasses.formControl + ' ' + classes.chartContainer}
+            style={{ width: isMobile ? '100%' : '70%' }}>
             <p className={classes.titleChart}>Xu hướng doanh thu 30 ngày qua</p>
-            <Bar
-              data={dataChart}
-              options={options}
-              style={{ marginLeft: "30px" }}
-            ></Bar>
+            <Bar data={dataChart} options={options} style={{ marginLeft: '30px' }}></Bar>
           </FormControl>
           <FormControl
-            className={dashClasses.formControl + " " + classes.basicContainer}
-            style={{ width: isMobile ? "35%" : "25%" }}
-          >
+            className={dashClasses.formControl + ' ' + classes.basicContainer}
+            style={{ width: isMobile ? '35%' : '25%' }}>
             <p className={classes.titleChart}>Thông tin cơ bản</p>
             <div>
               <Table>
@@ -292,8 +280,7 @@ function ProductDetailPage() {
                     <TableCell className={classes.tableCell}>
                       <div className={classes.basicInfoContainer}>
                         <ConfirmationNumberOutlinedIcon
-                          className={classes.basicInfoIcon}
-                        ></ConfirmationNumberOutlinedIcon>
+                          className={classes.basicInfoIcon}></ConfirmationNumberOutlinedIcon>
                         <p className={classes.basicInfoTitle}>Đơn có voucher</p>
                       </div>
                     </TableCell>
@@ -309,20 +296,14 @@ function ProductDetailPage() {
                       </div>
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      <p className={classes.basicInfoValue}>
-                        0.57 sản phẩm/ngày
-                      </p>
+                      <p className={classes.basicInfoValue}>0.57 sản phẩm/ngày</p>
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell className={classes.tableCell}>
                       <div className={classes.basicInfoContainer}>
-                        <Icon className={classes.basicInfoIcon}>
-                          pause_presentation
-                        </Icon>
-                        <p className={classes.basicInfoTitle}>
-                          Dự kiến hết hàng
-                        </p>
+                        <Icon className={classes.basicInfoIcon}>pause_presentation</Icon>
+                        <p className={classes.basicInfoTitle}>Dự kiến hết hàng</p>
                       </div>
                     </TableCell>
                     <TableCell className={classes.tableCell}>
@@ -341,102 +322,102 @@ function ProductDetailPage() {
 
 const styles = {
   cardTitleWhite: {
-    color: "#FFFFFF",
-    marginTop: "0px",
-    minHeight: "auto",
-    fontWeight: "300",
+    color: '#FFFFFF',
+    marginTop: '0px',
+    minHeight: 'auto',
+    fontWeight: '300',
     fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    marginBottom: "3px",
-    textDecoration: "none",
+    marginBottom: '3px',
+    textDecoration: 'none',
   },
   footerContainer: {
-    display: "flex",
-    flexDirection: "column",
-    width: "100%",
-    textAlign: "center",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    textAlign: 'center',
+    alignItems: 'center',
   },
   proContent: {
-    minWidth: "150px !important",
-    padding: "0 50px",
+    minWidth: '150px !important',
+    padding: '0 50px',
   },
   formProContent: {
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    alignItems: 'center',
   },
   proImg: {
-    width: "100px",
-    height: "100px",
-    padding: "10px",
-    boxShadow: "0 1px 4px 0 rgb(0 0 0 / 14%)",
-    borderRadius: "5px",
+    width: '100px',
+    height: '100px',
+    padding: '10px',
+    boxShadow: '0 1px 4px 0 rgb(0 0 0 / 14%)',
+    borderRadius: '5px',
   },
   proInfoTitle: {
-    fontSize: ".875rem",
-    fontWeight: "500",
-    marginRight: "20px",
+    fontSize: '.875rem',
+    fontWeight: '500',
+    marginRight: '20px',
     //color: primaryColor[0],
   },
   proInfoValue: {
-    fontSize: ".875rem",
+    fontSize: '.875rem',
   },
   createConenct: {
-    marginLeft: "10px",
+    marginLeft: '10px',
     color: primaryColor[0],
-    "&:hover,&:focus": {
+    '&:hover,&:focus': {
       color: primaryColor[0],
     },
   },
   titleChartContainer: {
-    borderBottom: "1px solid #D2D2D2",
+    borderBottom: '1px solid #D2D2D2',
   },
   titleInfoChart: {
-    marginBottom: "0 !important",
-    width: "fit-content",
-    borderBottom: "2px solid " + primaryColor[0],
-    padding: "7px 10px",
-    cursor: "pointer",
-    marginLeft: "20px",
-    "&:hover,&:focus": {
+    marginBottom: '0 !important',
+    width: 'fit-content',
+    borderBottom: '2px solid ' + primaryColor[0],
+    padding: '7px 10px',
+    cursor: 'pointer',
+    marginLeft: '20px',
+    '&:hover,&:focus': {
       color: primaryColor[0],
     },
   },
   titleChart: {
-    fontSize: "20px",
-    fontWeight: "500",
-    marginLeft: "20px",
+    fontSize: '20px',
+    fontWeight: '500',
+    marginLeft: '20px',
   },
   chartContainer: {
-    minWidth: "275px !important",
+    minWidth: '275px !important',
   },
   basicContainer: {
-    minWidth: "275px !important",
-    marginLeft: "2%",
+    minWidth: '275px !important',
+    marginLeft: '2%',
   },
   basicInfoContainer: {
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    alignItems: 'center',
   },
   basicInfoIcon: {
-    marginRight: "10px",
-    color: "rgba(0, 0, 0, 0.87)",
+    marginRight: '10px',
+    color: 'rgba(0, 0, 0, 0.87)',
   },
   basicInfoTitle: {
-    marginRight: "50px",
+    marginRight: '50px',
   },
   basicInfoValue: {
-    fontWeight: "500",
+    fontWeight: '500',
   },
   tableCell: {
-    border: "0",
-    padding: "0",
+    border: '0',
+    padding: '0',
   },
   shopImg: {
-    width: "17px",
-    height: "17px",
-    borderRadius: "4px",
-    marginRight: "5px",
-    marginBottom: "3px",
+    width: '17px',
+    height: '17px',
+    borderRadius: '4px',
+    marginRight: '5px',
+    marginBottom: '3px',
   },
 };
 

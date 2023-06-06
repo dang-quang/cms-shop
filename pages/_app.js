@@ -67,7 +67,7 @@ const MyApp = ({ Component, pageProps }) => {
                   name="viewport"
                   content="width=device-width, initial-scale=1, shrink-to-fit=no"
                 />
-                <title>natcash Platform</title>
+                <title>Natcash</title>
               </Head>
               <Layout>
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>

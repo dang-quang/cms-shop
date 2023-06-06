@@ -21,7 +21,6 @@ import {
 import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
 
-import PaginationPanel from './PaginationPanel';
 import { requestDeleteVoucher, requestGetListVoucher } from 'utilities/ApiManage';
 import { useDispatch } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
@@ -29,7 +28,7 @@ import { EAppKey, EVoucherStatus } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
 import { AiFillEdit, AiOutlineSearch } from 'react-icons/ai';
 import { useRouter } from 'next/router';
-import { ModalConfirm } from 'components';
+import { ModalConfirm, PaginationPanel } from 'components';
 import { isEmpty } from 'lodash';
 import Images from 'assets';
 import { FiTrash2 } from 'react-icons/fi';
@@ -196,8 +195,7 @@ export const TableAll = () => {
                     textStyle="b-md"
                     textTransform="capitalize"
                     // textAlign="center"
-                    isNumeric={index === headers.length - 1}
-                  >
+                    isNumeric={index === headers.length - 1}>
                     {item}
                   </Th>
                 );
@@ -269,8 +267,8 @@ export const TableAll = () => {
                               item.status === EVoucherStatus.UPCOMING
                                 ? 'red.700'
                                 : item.status === EVoucherStatus.HAPPENING
-                                  ? 'green.200'
-                                  : 'gray.2000'
+                                ? 'green.200'
+                                : 'gray.2000'
                             }
                             alignItems="center"
                             borderRadius="full">
@@ -280,15 +278,15 @@ export const TableAll = () => {
                                 item.status === EVoucherStatus.UPCOMING
                                   ? 'red.600'
                                   : item.status === EVoucherStatus.HAPPENING
-                                    ? 'green.100'
-                                    : 'gray.100'
+                                  ? 'green.100'
+                                  : 'gray.100'
                               }
                               textTransform="capitalize">
                               {item.status === EVoucherStatus.UPCOMING
                                 ? 'Upcoming'
                                 : item.status === EVoucherStatus.HAPPENING
-                                  ? 'Happening'
-                                  : 'Finished'}
+                                ? 'Happening'
+                                : 'Finished'}
                             </Text>
                           </Flex>
                           {item && item.programStart && item.programEnd && (

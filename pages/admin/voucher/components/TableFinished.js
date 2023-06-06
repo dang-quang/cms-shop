@@ -21,17 +21,14 @@ import {
 import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
 
-import PaginationPanel from './PaginationPanel';
 import { requestDeleteVoucher, requestGetListVoucher } from 'utilities/ApiManage';
 import { useDispatch } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
 import { EAppKey, EVoucherStatus } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
 import { AiFillEdit, AiOutlineSearch } from 'react-icons/ai';
-import { useRouter } from 'next/router';
-import { ModalConfirm } from 'components';
+import { ModalConfirm, PaginationPanel } from 'components';
 import { isEmpty } from 'lodash';
-import Images from 'assets';
 import { FiTrash2 } from 'react-icons/fi';
 import { BASE_API_URL } from 'utilities/const';
 import { formatCurrency } from 'utilities/utils';
@@ -155,12 +152,12 @@ export const TableFinished = () => {
 
   return (
     <Box>
-      <InputGroup maxW="420px" my="4">
+      <InputGroup maxW="420px" my="6">
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           variant="search"
-          placeholder={'VoucherName/Code'}
+          placeholder={'Voucher Name/Code'}
         />
         <InputRightElement>
           <Flex
@@ -180,8 +177,7 @@ export const TableFinished = () => {
         overflow="auto"
         borderWidth="1px"
         borderColor="gray.400"
-        pb="4"
-        display={{ base: 'none', xl: 'block' }}>
+        pb="4">
         <Table variant="simple">
           <Thead h="52px" bg="primary.100">
             <Tr>

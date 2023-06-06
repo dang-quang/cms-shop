@@ -65,3 +65,8 @@ export enum EVoucherStatus {
   UPCOMING = 'UPCOMING',
   FINISHED = 'FINISHED',
 }
+
+export enum EMode {
+  ADD = 'add',
+  UPDATE = 'update',
+}

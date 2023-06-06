@@ -17,12 +17,11 @@ import {
   Td,
   AspectRatio,
   HStack,
-  Button
+  Button,
 } from '@chakra-ui/react';
 import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
 
-import PaginationPanel from './PaginationPanel';
 import { requestDeleteVoucher, requestGetListVoucher } from 'utilities/ApiManage';
 // import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
 import { useDispatch } from 'react-redux';
@@ -31,7 +30,7 @@ import { EAppKey, EVoucherStatus } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
 import { AiFillEdit, AiOutlineSearch } from 'react-icons/ai';
 import { useRouter } from 'next/router';
-import { ModalConfirm } from 'components';
+import { ModalConfirm, PaginationPanel } from 'components';
 import { isEmpty } from 'lodash';
 import Images from 'assets';
 import { FiTrash2 } from 'react-icons/fi';
@@ -153,7 +152,6 @@ export const TableWait = () => {
     }
   }, [selectedVoucher]);
 
-
   return (
     <Box>
       <InputGroup maxW="420px" my="4">
@@ -181,10 +179,8 @@ export const TableWait = () => {
         overflow="auto"
         borderWidth="1px"
         borderColor="gray.400"
-        pb="4"
-      >
+        pb="4">
         <Table variant="simple">
-
           {isEmpty(vouchers) ? (
             <Box />
           ) : (
@@ -222,7 +218,6 @@ export const TableWait = () => {
                             overflow="hidden">
                             <Image w="100%" h="100%" objectFit="cover" src={_image} />
                           </AspectRatio>
-
                         </Flex>
                       )}
                     </Td>
@@ -238,8 +233,8 @@ export const TableWait = () => {
                                 item.status === EVoucherStatus.UPCOMING
                                   ? 'red.700'
                                   : item.status === EVoucherStatus.HAPPENING
-                                    ? 'green.200'
-                                    : 'gray.2000'
+                                  ? 'green.200'
+                                  : 'gray.2000'
                               }
                               alignItems="center"
                               borderRadius="full">
@@ -249,25 +244,26 @@ export const TableWait = () => {
                                   item.status === EVoucherStatus.UPCOMING
                                     ? 'red.600'
                                     : item.status === EVoucherStatus.HAPPENING
-                                      ? 'green.100'
-                                      : 'gray.100'
+                                    ? 'green.100'
+                                    : 'gray.100'
                                 }
                                 textTransform="capitalize">
                                 {item.status === EVoucherStatus.UPCOMING
                                   ? 'Upcoming'
                                   : item.status === EVoucherStatus.HAPPENING
-                                    ? 'Happening'
-                                    : 'Finished'}
+                                  ? 'Happening'
+                                  : 'Finished'}
                               </Text>
-
                             </Flex>
                             <Text textStyle="h5" color="text-basic" style={{ marginLeft: 10 }}>
                               {/* {formatCurrency(item.discountValue ?? 0)} */}
                               Ngành hang thời trang - siêu sale kịch sàn
                             </Text>
                           </Flex>
-                          <Flex flexDirection='row'>
-                            <Text textStyle="h3" color="text-basic">Thời gian chương trình:</Text>
+                          <Flex flexDirection="row">
+                            <Text textStyle="h3" color="text-basic">
+                              Thời gian chương trình:
+                            </Text>
                             <Text textStyle="h3" color="text-basic">
                               {dayjs(item.programStart).format('DD-MM-YYYY HH:MM')}
                             </Text>
@@ -278,8 +274,8 @@ export const TableWait = () => {
                           </Flex>
                           <Text color="#333333">
                             {/* {formatCurrency(item.discountValue ?? 0)} */}
-                            Đăng ký:
-                            7 Khung giờ đang có sẵn, thời gian kết thúc đề đăng kí gần nhất trong 19 ngày 3 giờ.
+                            Đăng ký: 7 Khung giờ đang có sẵn, thời gian kết thúc đề đăng kí gần nhất
+                            trong 19 ngày 3 giờ.
                           </Text>
                         </Center>
                       )}

@@ -14,7 +14,7 @@ const FormGroup: React.FC<FormGroupProps> = ({ title, children, ...rest }) => {
       gap={{ base: '2', md: '6' }}
       {...rest}>
       <GridItem
-        colSpan={3}
+        colSpan={2}
         rowSpan={{ base: 2, md: 1 }}
         alignItems="center"
         justifyContent={{ base: 'unset', md: 'flex-end' }}
@@ -23,7 +23,7 @@ const FormGroup: React.FC<FormGroupProps> = ({ title, children, ...rest }) => {
           {title}
         </Text>
       </GridItem>
-      <GridItem colSpan={7} rowSpan={1}>
+      <GridItem colSpan={8} rowSpan={1}>
         {children}
       </GridItem>
     </Grid>

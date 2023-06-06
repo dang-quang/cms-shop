@@ -17,9 +17,9 @@ function VoucherPage() {
 
   return (
     <Box>
-      <Tabs variant="soft-rounded" mt="8">
+      <Tabs variant="soft-rounded" mt="4">
         <Flex justifyContent="space-between">
-          <TabList w="auto" mb="16px" borderRadius="full" bg="white" p="1">
+          <TabList w="auto" borderRadius="full" bg="white" p="1">
             {tabs.map((name, index) => (
               <Tab
                 key={index}
@@ -38,12 +38,13 @@ function VoucherPage() {
             ))}
           </TabList>
           <Button
+            size="lg"
             variant="primary"
             children="Add Voucher"
             onClick={() => router.push('/admin/voucher/add')}
           />
         </Flex>
-        <TabPanels>
+        <TabPanels mt="6">
           <TabPanel p="0">
             <TableAll />
           </TabPanel>

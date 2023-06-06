@@ -15,16 +15,19 @@ const ModalConfirm = ({ isOpen, title, description, onClose, buttonLeft, buttonR
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered closeOnOverlayClick size="lg">
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>{title}</ModalHeader>
+      <ModalContent p="2">
+        <ModalHeader textAlign="center">{title}</ModalHeader>
+        <ModalCloseButton _focus={{ boxShadow: 'none' }} onClick={onClose} />
         <ModalBody>
-          <Text textAlign="center">{description}</Text>
+          <Text textAlign="center" color="text-basic">
+            {description}
+          </Text>
         </ModalBody>
-        <ModalFooter>
-          <Button colorScheme="red" mr={3} onClick={buttonLeft.onClick}>
+        <ModalFooter justifyContent="space-around" mt="8">
+          <Button variant="outline-danger" minW="150px" mr={3} onClick={buttonLeft.onClick}>
             {buttonLeft.title}
           </Button>
-          <Button colorScheme="primary" onClick={buttonRight.onClick}>
+          <Button variant="primary" minW="150px" onClick={buttonRight.onClick}>
             {buttonRight.title}
           </Button>
         </ModalFooter>

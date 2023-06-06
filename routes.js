@@ -129,13 +129,6 @@ const dashboardRoutes = [
         parent: 'operation',
         permission: 'shop_marketing_broadcast',
       },
-      // {
-      //   path: '/smsPackage',
-      //   name: 'smsPackage',
-      //   layout: '/admin',
-      //   parent: 'operation',
-      //   permission: 'marketing_sms',
-      // },
       {
         path: '/flash-sale-shop',
         name: 'flashSaleShop',
@@ -156,6 +149,13 @@ const dashboardRoutes = [
         layout: '/shop',
         parent: 'operation',
         permission: 'shop_voucher_coupon',
+      },
+      {
+        path: '/sms-messages',
+        name: 'smsPackage',
+        layout: '/shop',
+        parent: 'operation',
+        permission: 'shop_sms_message',
       },
     ],
   },

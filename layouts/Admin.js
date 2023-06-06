@@ -127,7 +127,7 @@ export default function Admin({ children, ...rest }) {
   }, [isProductApprove, isVoucherApprove]);
 
   return (
-    <div className={classes.wrapper}>
+    <Box position="relative" h="100vh" bg="bg-2">
       {showSidebar ? (
         <Sidebar
           routes={routes}
@@ -163,7 +163,7 @@ export default function Admin({ children, ...rest }) {
             <div className={classes.map}>{children}</div>
           </React.Fragment>
         )}
-        {getRoute() ? <Footer /> : null}
+        {/* {getRoute() ? <Footer /> : null} */}
         {/*<FixedPlugin*/}
         {/*  handleImageClick={handleImageClick}*/}
         {/*  handleColorClick={handleColorClick}*/}
@@ -195,7 +195,7 @@ export default function Admin({ children, ...rest }) {
           </HStack>
         </Flex>
       )}
-    </div>
+    </Box>
   );
 }
 

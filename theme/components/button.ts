@@ -84,6 +84,22 @@ export const buttonStyles = {
             bg: mode('red', 'red')(props),
           },
         }),
+        'outline-danger': (props: StyleFunctionProps) => ({
+          borderColor: mode('red', 'red')(props),
+          borderWidth: '1px',
+          bg: 'transparent',
+          color: 'red',
+          _focus: {
+            bg: mode('red', 'red')(props),
+          },
+          _active: {
+            bg: mode('red', 'red')(props),
+          },
+          _hover: {
+            bg: mode('red', 'red')(props),
+            color: 'white',
+          },
+        }),
       },
     },
   },

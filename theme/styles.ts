@@ -8,11 +8,9 @@ export const globalStyles = {
       700: '#E31A1A20',
     },
     primary: {
-      100: '#f77927',
+      100: '#F28230',
       200: '#e68f55',
-      300: '#f96606',
-      400: '#ffe2cf',
-      500: '#F28230',
+      600: '#FEF1EF',
     },
     secondary: {
       100: '#00659F',
@@ -20,9 +18,7 @@ export const globalStyles = {
     },
     warning: {
       100: '#ff9800',
-      200: '#ffa726',
-      300: '#fb8c00',
-      400: '#ffa21a',
+      200: '#ff980020',
     },
     danger: {
       100: '#f44336',
@@ -48,10 +44,10 @@ export const globalStyles = {
     },
     gray: {
       100: '#999',
-      200: '#777',
-      300: '#3C4858',
+      200: '#F6F6F6',
+      300: '#B7B7B7',
       400: '#AAAAAA',
-      500: '#D2D2D2',
+      500: '#E5E5E5',
       600: '#DDD',
       700: '#808D93',
       800: '#555555',
@@ -64,16 +60,17 @@ export const globalStyles = {
       1500: '#263238',
       1600: '#E0E0E0',
       1700: '#BABABA',
-      1800: '#001737',
+      1800: '#333333',
       1900: '#A0AEC0',
       2000: '#99999920',
+      2100: '#F6F6F6',
     },
   },
   styles: {
     global: (props: StyleFunctionProps) => ({
       body: {
         overflowX: 'hidden',
-        bg: mode('secondaryGray.300', 'navy.900')(props),
+        bg: mode('white', 'navy.900')(props),
         fontFamily: 'Roboto',
         letterSpacing: '-0.5px',
       },

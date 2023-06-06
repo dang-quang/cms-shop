@@ -112,11 +112,11 @@ const OrderInformation = () => {
         {t('number_order', { number: '#210720D0KFC7B0' })}
       </Text>
       <SimpleGrid mt="6" columns={{ base: 1, lg: 2 }} gap={{ base: '4', lg: '6' }}>
-        <Box borderWidth="1px" py="4" px="6" borderRadius="16px" borderColor="bg-border-1">
+        <Box borderWidth="1px" py="4" px="6" borderRadius="16px" borderColor="border-1">
           <Text textStyle="h5" color="text-basic">
             {t('order_information')}
           </Text>
-          <Divider mt="4" orientation="horizontal" borderColor="bg-border-1" />
+          <Divider mt="4" orientation="horizontal" borderColor="border-1" />
           {orderInformation.map((item, index) => {
             return <InformationItem key={index} {...item} />;
           })}
@@ -152,7 +152,7 @@ const OrderInformation = () => {
             <Textarea
               value={note}
               maxW="75%"
-              borderColor="bg-border-1"
+              borderColor="border-1"
               onChange={(e) => setNote(e.target.value)}
               placeholder={t('note')}
               height={{ base: '60px', xl: '120px' }}
@@ -162,11 +162,11 @@ const OrderInformation = () => {
             <Button variant="success" children={t('save')} minW="135px" />
           </Flex>
         </Box>
-        <Box borderWidth="1px" py="4" px="6" borderRadius="16px" borderColor="bg-border-1">
+        <Box borderWidth="1px" py="4" px="6" borderRadius="16px" borderColor="border-1">
           <Text textStyle="h5" color="text-basic">
             {t('customer_information')}
           </Text>
-          <Divider mt="4" orientation="horizontal" borderColor="bg-border-1" />
+          <Divider mt="4" orientation="horizontal" borderColor="border-1" />
           {customerInformation.map((item, index) => {
             return (
               <InformationItem
@@ -179,7 +179,7 @@ const OrderInformation = () => {
         </Box>
       </SimpleGrid>
       {data && data.length > 0 && (
-        <Box borderWidth="1px" py="4" px="6" borderRadius="16px" borderColor="bg-border-1" mt="4">
+        <Box borderWidth="1px" py="4" px="6" borderRadius="16px" borderColor="border-1" mt="4">
           <Text textStyle="h5" color="text-basic">
             {t('products')}
           </Text>
@@ -190,7 +190,7 @@ const OrderInformation = () => {
                   {productsTableHeader.map((item, index) => {
                     return (
                       <Th
-                        borderColor="bg-border-1"
+                        borderColor="border-1"
                         fontSize="15px"
                         fontWeight="400"
                         textTransform="capitalize"

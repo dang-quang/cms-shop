@@ -1,80 +1,100 @@
 import React from 'react';
 import { RangeDatepicker, RangeDatepickerProps } from 'chakra-dayzed-datepicker';
+import { Center, HStack, Icon } from '@chakra-ui/react';
+import { BiCalendar } from 'react-icons/bi';
 
 interface RangeDatePickerItemProps extends RangeDatepickerProps {}
 
 const RangeDatePickerItem: React.FC<RangeDatePickerItemProps> = ({ ...rest }) => {
   return (
-    <RangeDatepicker
-      {...rest}
-      configs={{ firstDayOfWeek: 1, dateFormat: 'dd/MM/yyyy' }}
-      propsConfigs={{
-        dateNavBtnProps: {
-          variant: 'outline',
-          bg: 'primary.100',
-          color: 'white',
-          borderColor: 'transparent',
-        },
-        dayOfMonthBtnProps: {
-          defaultBtnProps: {
-            color: 'primary.100',
-            _hover: {
-              color: 'white',
-              bg: 'primary.100',
-            },
-            borderRadius: 8,
-          },
-          isInRangeBtnProps: {
-            color: 'white',
-            bg: 'primary.200',
+    <HStack
+      bg="bg-1"
+      h="42px"
+      borderRadius="4px"
+      position="relative"
+      w="fit-content"
+      borderWidth="1px"
+      borderColor="border-5"
+      _hover={{
+        borderColor: 'border-3',
+      }}>
+      <Center w="32px" h="100%" position="absolute" ml="3">
+        <Icon as={BiCalendar} w="24px" h="24px" color="white" fill="border-1" />
+      </Center>
+      <RangeDatepicker
+        {...rest}
+        configs={{ firstDayOfWeek: 1, dateFormat: 'dd/MM/yyyy' }}
+        propsConfigs={{
+          dateNavBtnProps: {
+            variant: 'outline',
+            bg: 'transparent',
+            color: 'text-basic',
             borderColor: 'transparent',
           },
-          selectedBtnProps: {
-            bg: 'primary.100',
-            color: 'white',
+          dayOfMonthBtnProps: {
+            defaultBtnProps: {
+              color: 'text-basic',
+              _hover: {
+                bg: 'primary.100',
+                color: 'white',
+              },
+              borderRadius: 8,
+            },
+            isInRangeBtnProps: {
+              color: 'text-basic',
+              bg: 'primary.600',
+              borderColor: 'transparent',
+            },
+            selectedBtnProps: {
+              bg: 'primary.100',
+              color: 'white',
+            },
+            todayBtnProps: {
+              borderRadius: 8,
+              color: 'primary.100',
+              fontWeight: '500',
+            },
           },
-          todayBtnProps: {
+          inputProps: {
+            size: 'lg',
+            width: '350px',
+            pl: '52px',
+            color: 'text-basic',
+            fontWeight: '400',
             borderRadius: 8,
-            color: 'secondary.100',
-          },
-        },
-        inputProps: {
-          size: 'sm',
-          width: '300px',
-          borderColor: 'gray.1300',
-          color: 'text-basic',
-          fontWeight: '300',
-          borderRadius: 8,
-          cursor: 'pointer',
-          _active: {
-            borderColor: 'primary.100',
-          },
-          _focus: {
-            borderColor: 'primary.100',
-          },
-          _hover: {
-            borderColor: 'primary.100',
-          },
-        },
-        popoverCompProps: {
-          popoverContentProps: {
-            borderRadius: '8px',
-            color: 'primary.100',
-            borderColor: 'gray.1300',
-            _hover: {
-              borderColor: 'gray.1300',
+            bg: 'transparent',
+            borderWidth: '0px',
+            cursor: 'pointer',
+            _active: {
+              borderColor: 'primary.100',
             },
             _focus: {
-              borderColor: 'gray.1300',
+              borderColor: 'primary.100',
+            },
+            _hover: {
+              borderColor: 'primary.100',
             },
           },
-          popoverBodyProps: {
-            borderColor: 'gray.1300',
-            borderRadius: 8,
+          popoverCompProps: {
+            popoverContentProps: {
+              borderRadius: '8px',
+              color: 'text-basic',
+              borderColor: 'gray.1300',
+              _hover: {
+                borderColor: 'gray.1300',
+              },
+              _focus: {
+                borderColor: 'gray.1300',
+              },
+            },
+            popoverBodyProps: {
+              borderColor: 'gray.1300',
+              borderRadius: 8,
+            },
           },
-        },
-      }}
-    />
+        }}
+      />
+    </HStack>
   );
 };
 

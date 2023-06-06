@@ -151,7 +151,7 @@ const ModalUpdateFeaturedProduct = ({ isOpen, onClose }) => {
                 borderWidth="1px"
                 py="4"
                 borderRadius="16px"
-                borderColor="bg-border-1"
+                borderColor="border-1"
                 mt="12">
                 <Text textStyle="h5" color="text-basic">
                   {t('products')}
@@ -163,7 +163,7 @@ const ModalUpdateFeaturedProduct = ({ isOpen, onClose }) => {
                         {productsTableHeader.map((item, index) => {
                           return (
                             <Th
-                              borderColor="bg-border-1"
+                              borderColor="border-1"
                               fontSize="15px"
                               fontWeight="400"
                               textTransform="capitalize"

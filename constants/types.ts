@@ -35,6 +35,16 @@ export interface IShop {
   status: number;
 }
 
+export interface ISMSMessage {
+  image: string;
+  code: string;
+  quantity: number;
+  startDate: number;
+  endDate: number;
+  price: number;
+  status: ESMSStatus;
+}
+
 export enum EAppKey {
   LOGIN_TOKEN = 'LOGIN_TOKEN',
   ACCESS_TOKEN = 'ACCESS_TOKEN',
@@ -69,4 +79,10 @@ export enum EVoucherStatus {
 export enum EMode {
   ADD = 'add',
   UPDATE = 'update',
+}
+
+export enum ESMSStatus {
+  UNREGISTERED = 'UNREGISTERED',
+  AWAITING_REGISTRATION = 'AWAITING_REGISTRATION',
+  REGISTERED = 'REGISTERED',
 }

@@ -269,7 +269,7 @@ const ModalUpdateInformationShop = ({ isOpen, onClose }) => {
                       mt="3"
                       value={values.description}
                       size="lg"
-                      borderColor="bg-border-1"
+                      borderColor="border-1"
                       onChange={handleChange('description')}
                       placeholder={t('address')}
                       height={{ base: '80px', md: '120px', xl: '160px' }}

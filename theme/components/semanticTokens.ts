@@ -23,8 +23,8 @@ export const semanticTokens = {
         _dark: 'gray.200',
       },
       'text-placeholder': {
-        default: 'gray.400',
-        _dark: 'gray.500',
+        default: 'gray.300',
+        _dark: 'gray.300',
       },
       'text-sub': {
         default: 'gray.500',
@@ -71,7 +71,7 @@ export const semanticTokens = {
         _dark: 'whiteAlpha.100',
       },
       'bg-2': {
-        default: 'white',
+        default: 'gray.200',
         _dark: 'navy.800',
       },
       'bg-3': {
@@ -82,23 +82,27 @@ export const semanticTokens = {
         default: 'gray.50',
         _dark: 'black',
       },
-      'bg-border': {
-        default: 'gray.200',
-        _dark: 'gray.700',
-      },
-      'bg-border-1': {
+      'border-1': {
         default: 'gray.1700',
         _dark: 'secondaryGray.100',
       },
-      'bg-border-2': {
+      'border-2': {
         default: 'gray.1300',
         _dark: 'secondaryGray.100',
       },
-      'bg-border-4': {
-        default: 'secondaryGray.400',
+      'border-3': {
+        default: 'gray.300',
+        _dark: 'secondaryGray.100',
+      },
+      'border-4': {
+        default: 'gray.400',
         _dark: 'whiteAlpha.200',
       },
-      'bg-border-content': {
+      'border-5': {
+        default: 'gray.500',
+        _dark: 'gray.500',
+      },
+      'border-content': {
         default: 'gray.100',
         _dark: 'gray.600',
       },

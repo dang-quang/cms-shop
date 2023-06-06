@@ -132,7 +132,7 @@ function BroadcastMessagesDetails() {
       </Box>
       <ModalConfirm
         isOpen={isShowModal}
-        onClose={onShowModal}
+        onClose={offShowModal}
         title="Confirm Deletion"
         description={t('deleteConfirm')}
         buttonLeft={{ title: t('cancel'), onClick: offShowModal }}

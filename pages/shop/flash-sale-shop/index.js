@@ -39,8 +39,8 @@ function VoucherPage() {
           </TabList>
           <Button
             variant="primary"
-            children="Add Voucher"
-            onClick={() => router.push('/admin/voucher/add')}
+            children="Add FlashSale"
+            onClick={() => router.push('/shop/flash-sale-shop/product-flashsale')}
           />
         </Flex>
         <TabPanels>

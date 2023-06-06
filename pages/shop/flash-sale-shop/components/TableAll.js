@@ -51,11 +51,12 @@ export const TableAll = () => {
   const [doSearch, { on: onSearch, off: offSearch }] = useBoolean(false);
 
   const headers = [
-    t('serial_number'),
-    'Flash Sale Name',
+    'STT',
+    'Name',
     'Product',
-    'Status | Claiming Period',
-    'Actions',
+    'Status',
+    'Time',
+    'Action',
   ];
 
   const { pages, pagesCount, currentPage, setCurrentPage, isDisabled } = usePagination({
@@ -237,67 +238,29 @@ export const TableAll = () => {
                       </Flex>
                     </Td>
                     <Td borderColor="gray.1300">
-                      {item && item.discountValue && (
-                        <Flex>
-                          <AspectRatio
-                            w="80px"
-                            ratio={2 / 1}
-                            mr="2"
-                            borderRadius="8px"
-                            overflow="hidden">
-                            <Image w="100%" h="100%" objectFit="cover" src={_image} />
-                          </AspectRatio>
-                          <Text textStyle="h3" color="text-basic">
-                            {formatCurrency(item.discountValue ?? 0)}
-                          </Text>
-                        </Flex>
-                      )}
+                      <Flex>
+                        <Text textStyle="h3-m" color="text-basic">
+                          số sản phẩm tham gia: 10
+                        </Text>
+                      </Flex>
                     </Td>
                     <Td borderColor="gray.1300">
-                      {item && (
-                        <Center flexDirection="column" alignItems="flex-start">
-                          <Flex
-                            py="1"
-                            px="2"
-                            bg={
-                              item.status === EVoucherStatus.UPCOMING
-                                ? 'red.700'
-                                : item.status === EVoucherStatus.HAPPENING
-                                ? 'green.200'
-                                : 'gray.2000'
-                            }
-                            alignItems="center"
-                            borderRadius="full">
-                            <Text
-                              textStyle="h2-m"
-                              color={
-                                item.status === EVoucherStatus.UPCOMING
-                                  ? 'red.600'
-                                  : item.status === EVoucherStatus.HAPPENING
-                                  ? 'green.100'
-                                  : 'gray.100'
-                              }
-                              textTransform="capitalize">
-                              {item.status === EVoucherStatus.UPCOMING
-                                ? 'Upcoming'
-                                : item.status === EVoucherStatus.HAPPENING
-                                ? 'Happening'
-                                : 'Finished'}
-                            </Text>
-                          </Flex>
-                          {item && item.programStart && item.programEnd && (
-                            <HStack mt="2">
-                              <Text textStyle="h3" color="text-basic">
-                                {dayjs(item.programStart).format('DD-MM-YYYY HH:MM')}
-                              </Text>
-                              <Text>-</Text>
-                              <Text textStyle="h3" color="text-basic">
-                                {dayjs(item.programEnd).format('DD-MM-YYYY HH:MM')}
-                              </Text>
-                            </HStack>
-                          )}
-                        </Center>
-                      )}
+                      <Flex>
+                        <Text textStyle="h3-m" color="text-basic">
+                          Đang diễn ra
+                        </Text>
+                      </Flex>
+                    </Td>
+                    <Td borderColor="gray.1300">
+                      <HStack mt="2">
+                        <Text textStyle="h3" color="text-basic">
+                          {dayjs(item.programStart).format('HH:MM DD-MM-YYYY')}
+                        </Text>
+                        <Text>-</Text>
+                        <Text textStyle="h3" color="text-basic">
+                          {dayjs(item.programEnd).format('HH:MM DD-MM-YYYY')}
+                        </Text>
+                      </HStack>
                     </Td>
                     <Td isNumeric borderColor="gray.1300">
                       <Flex justifyContent="flex-end">

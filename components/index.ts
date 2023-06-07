@@ -4,6 +4,7 @@ import ModalConfirm from './ModalConfirm';
 import FormGroup from './FormGroup';
 import PaginationPanel from './PaginationPanel';
 import WithAuthentication from './WithAuthentication/WithAuthentication';
+import SmsMessageItem from './SmsMessageItem';
 
 export {
   RangeDatePickerItem,
@@ -12,4 +13,5 @@ export {
   FormGroup,
   WithAuthentication,
   PaginationPanel,
+  SmsMessageItem,
 };

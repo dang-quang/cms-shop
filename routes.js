@@ -151,6 +151,13 @@ const dashboardRoutes = [
         permission: 'shop_voucher_coupon',
       },
       {
+        path: '/shop-infomation',
+        name: 'shopInformation',
+        layout: '/shop',
+        parent: 'operation',
+        permission: 'shop_voucher_coupon',
+      },
+      {
         path: '/voucher-coupon',
         name: 'voucher_coupon',
         layout: '/shop',

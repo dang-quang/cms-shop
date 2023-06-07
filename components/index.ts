@@ -5,6 +5,7 @@ import FormGroup from './FormGroup';
 import PaginationPanel from './PaginationPanel';
 import WithAuthentication from './WithAuthentication/WithAuthentication';
 import SmsMessageItem from './SmsMessageItem';
+import VoucherShopItem from './VoucherShopItem';
 
 export {
   RangeDatePickerItem,
@@ -14,4 +15,5 @@ export {
   WithAuthentication,
   PaginationPanel,
   SmsMessageItem,
+  VoucherShopItem,
 };

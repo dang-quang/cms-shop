@@ -29,7 +29,8 @@
     "next-env.d.ts",
     "pages/**/*",
     "store/**/*",
-    "components/PaginationPanel.tsx",
-    "components/SmsMessageItem.tsx"
+    "components/**/*",
+    "constants/**/*",
+    "hooks/**/*"
   ]
 }

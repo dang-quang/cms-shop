@@ -45,6 +45,32 @@ export interface ISMSMessage {
   status: ESMSStatus;
 }
 
+export interface IVoucher {
+  banner?: string;
+  createAt?: number;
+  description?: string;
+  discountLimit?: number;
+  discountValue: number;
+  id?: number;
+  maxDiscount?: number;
+  maxOrderPrice?: number;
+  maxShopRegister?: number;
+  minDiscount?: number;
+  minOrderPrice?: number;
+  name?: string;
+  programEnd: number;
+  programStart: number;
+  quantityVoucher: number;
+  registerEnd: number;
+  registerPrice: number;
+  registerStart: number;
+  shopRegister?: null;
+  status: EVoucherStatus;
+  typeDiscount?: EDiscountType;
+  typeLimit?: EDiscountLimitType;
+  updateAt?: number;
+}
+
 export enum EAppKey {
   LOGIN_TOKEN = 'LOGIN_TOKEN',
   ACCESS_TOKEN = 'ACCESS_TOKEN',

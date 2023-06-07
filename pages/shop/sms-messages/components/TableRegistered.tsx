@@ -23,8 +23,7 @@ import { useRouter } from 'next/router';
 import { isEmpty } from 'lodash';
 import Images from 'assets';
 import dayjs from 'dayjs';
-import SmsMessageItem from './SmsMessageItem';
-import { PaginationPanel, RangeDatePickerItem } from 'components';
+import { PaginationPanel, RangeDatePickerItem, SmsMessageItem } from 'components';
 import { ESMSStatus } from 'constants/types';
 
 export const data_registered = [

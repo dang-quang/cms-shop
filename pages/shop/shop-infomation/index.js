@@ -11,7 +11,7 @@ import Admin from 'layouts/Admin.js';
 import Card from 'components/Card/Card.js';
 import CardHeader from 'components/Card/CardHeader.js';
 import CardBody from 'components/Card/CardBody.js';
-import Button from 'components/CustomButtons/Button.js';
+// import Button from 'components/CustomButtons/Button.js';
 import {
   ClickAwayListener,
   FormControl,
@@ -85,6 +85,7 @@ import {
   Flex,
   Image,
   Input,
+  Button,
   Text,
   // Tab,
   TabList,
@@ -173,59 +174,126 @@ function ShopInfomationPage() {
 
       <CardBody className={classes.cardBody}>
         <Box>
-          <Text textStyle="h5" color="text-basic" marginBottom={'10px'}>
-            [NGÀNH HÀNG THỜI TRANG] - [SIÊU SALE HÀNG HIỆU] - [00:00 09/09/2022 - 23:59 09/09/2022]
+          <Text textStyle="h6" color="text-basic" marginBottom={'10px'}>
+            Shop infomation
           </Text>
         </Box>
         <Box
-          w={'70%'}
-          borderWidth="0.3px"
+          w={'100%'}
+          // borderWidth="0.3px"
           overflow="hidden"
-          borderColor="#B4B4B4"
+          // borderColor="#B4B4B4"
           justifyContent={'center'}
           alignItems={'center'}>
-          <Flex m={'2px'} justifyContent={'space-between'}>
-            <AspectRatio w="210px" ratio={2 / 1} mr="2" borderRadius="8px" overflow="hidden">
-              <Image
-                w="100%"
-                h="100%"
-                objectFit="cover"
-                src={'https://cf.shopee.vn/file/sg-11134004-7qvg9-lh7djcs0g92vb7'}
+          <Box borderWidth="0.3px" borderColor="#B4B4B4" marginTop="20px" marginBottom="20px" height={"1px"}></Box>
+
+          {/* <Flex flexDirection={'column'}>
+            <Box backgroundImage={'https://down-ws-vn.img.susercontent.com/e03048a5576062894717bb1ab92241f2'} w={'375px'} h={'162px'}>
+
+            </Box>
+            <Box w={'375px'} h={'82px'} position='absolute' bottom={'15px'}>
+              <Flex flexDirection={'row'} marginLeft='10px' marginTop='10px'>
+                <Image
+                  borderRadius='full'
+                  boxSize='60px'
+                  src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAMAAAAKE/YAAAABJlBMVEXP2NxgfYtjf412j5uMoavO19uis7vG0dVxi5fBzNJyjJhjgI56kp5hfoxxi5h5kZ2ouL9ohJGInaipucCHnah3kJyxv8bL1NnM1dlphJGXqrN4kZzM1tqUp7Gnt76InqlkgY6wvsWGnKdrhpOnuL+xwMZ8lJ+3xMvAzNGCmaTFz9Sdr7fN1trN19tlgY5qhZJkgI6/y9COoqzL1dlphJJ0jZp7k566x8y7x81ng5CywMegsrp4kZ14kJyhs7uJn6nH0dZlgY+Fm6bG0daWqrO2xMqzwcfF0NXBzdK3xcu0wsh7k5+qusG0wsmzwchuiJVviZaYq7S7yM2Kn6m8yM6/y9GInqiWqbKNoqxzjJmjtLyqucGfsbmdr7iwv8WKoKpuiZVif42PQ9RwAAABzUlEQVR4Xu3YVZLjShBA0UyBmZmamXuYmZmZ3tv/Jua3Y8JWTdsKKR1zzwruR1aVlDIdAAAAAAAAAAAAAAAAAADyN1t+3fPqfiOTl7kQ1qp6QqkZinmdnP6hcFVs6wY6RtATwx75OlY7K2ZlczpBzmx194ZONOyKTbc0QiAmrWikFTHoIKeRKgdiz7o6LIo919XhophzRp3yYs01dcqINavqtCTWXFAnX6y5ok7nxZqyOhWJNjAeHERzVx6Py7Y6PRZzqnP4wSQ1dajN4U9AIRSDOhqpIyYFGuGs2HRuqBMNR/O3rKlYXjG1dazhbTGsF4yd557YtlFwrHpNCpslPeHZ81DmQj7T8OvFYt9vfM3LPwkAgOzDzMLdUqV/qHqnXymtLmRe3hPD9h/s7RzpGEc7e1v7Yk+4dX/zWCMsbw6eiClPgzV107XPL8SI3cEr/Wuv3+xK+t4ueXoq3rv3kq4PrbKeWvnjtqRn9MnTqXiDkaTkUkGn9uWypKK5rDM4/CYp+K4z+iGJW9SZrSc+z57OzEt6rtsag6ok6qfGYkOS1NJY/JIk/aexyEmS/tdYHEuSNCbzGU000UQTTTQAAAAAAAAAAAAAAAAAAL8BwZgl987F+p8AAAAASUVORK5CYII='
+                  alt='Dan Abramov'
+                />
+                <Flex marginLeft='10px'>
+                  <Text color='white' textStyle='h4' fontWeight='bold'>Shop thời trang</Text>
+                </Flex>
+              </Flex>
+
+            </Box>
+          </Flex> */}
+
+          <Flex>
+            <Flex flexDirection="column">
+              <Box flexDirection="column" width='150px' textAlign='center'>
+                <Image src='https://www.phutungtt.com/wp-content/uploads/2022/09/logo-shopee-trong-tin-part.png' w={150} height={150} />
+                <Text textStyle="h3" color="text-basic" marginBottom={'10px'} >
+                  Avata
+                </Text>
+              </Box>
+              <Box flexDirection="column" width='280px' textAlign='center'>
+                {/* <Image src='https://down-ws-vn.img.susercontent.com/e03048a5576062894717bb1ab92241f2' w={150} height={150} /> */}
+                <AspectRatio
+                  w="280px"
+                  ratio={2 / 1}
+                  mr="2"
+                  borderRadius="8px"
+                  overflow="hidden">
+                  <Image src='https://a.ipricegroup.com/media/Eye/Shopee__Logo__x_iPrice_Thailand.jpg' w="100%" h="100%" objectFit="cover" />
+                </AspectRatio>
+                <Text textStyle="h3" color="text-basic" marginBottom={'10px'} >
+                  Banner
+                </Text>
+              </Box>
+            </Flex>
+            <Box alignItems='center' justifyContent='center' marginLeft={'20px'} h='300px' w={'50%'}>
+              <Text textStyle="h3" color="text-basic" marginBottom={'10px'} >
+                Mô tả: Nếu như bạn đam mê mở một shop quần áo nhưng không có quá nhiều chi phí và diện tích cũng không được lớn. Vậy làm sao để thiết kế shop quần áo nhỏ 10m2 nhưng vẫn phải đẹp và đầy đủ công năng? Để giải quyết vấn đề khó khăn của bạn, chúng tôi ở đây sẽ mang lại cho bạn những kinh nghiệm để thiết kế một shop quần áo ưng ý nhất.
+              </Text>
+              <Text textStyle="h3" color="text-basic" marginBottom={'10px'}>
+                Địa chỉ:  09 Đường số 01, Khu dân cư Trung tâm phường 6, TP. Tân An, Long An
+              </Text>
+            </Box>
+            <Box alignItems='center' marginLeft={'20px'}>
+              <Button
+                size="lg"
+                variant="primary"
+                children="Update"
+                onClick={() => router.push('/admin/voucher/add')}
               />
-            </AspectRatio>
-            <Box>
-              <Flex
-                h="100%"
-                flexDirection={'column'}
-                justifyContent={'center'}
-                alignItems={'center'}>
-                <Text textStyle="h5" color="text-basic">
-                  Thời gian đăng ký
-                </Text>
-                <Text textStyle="h2" color="text-basic">
-                  00:00 16-08-2022 - 13:30 05-09-2022
-                </Text>
-                <Text textStyle="h2" color="text-basic">
-                  Hiện tại bạn có thể đăng ký 7 Khung giờ
-                </Text>
+            </Box>
+          </Flex>
+
+          <Box marginTop='20px'>
+            <Text textStyle="h4" color="text-basic" marginBottom={'5px'}>
+              Featured products
+            </Text>
+          </Box>
+          <Box borderWidth="0.3px" borderColor="#B4B4B4" marginTop="20px" marginBottom="20px" height={"1px"}></Box>
+          <Flex flexDirection='row' justifyContent='space-between' w='70%'>
+            <Box textAlign='center'>
+              <Image src='https://shopdunk.com/images/thumbs/0008502_macbook-air-m2-2022-8gb-ram-256gb-ssd_240.png  ' w={150} height={150} />
+              <Text>Bộ đồ thu đông</Text>
+              <Flex flexDirection='row' textAlign='center'>
+                <Text textStyle="h3" color="text-basic">Giá niêm yết:</Text>
+                <Text textStyle="h3" color="red" marginLeft='3px'>  200.000đ</Text>
               </Flex>
             </Box>
-            <Box marginRight={'20px'}>
-              <Flex
-                h="100%"
-                flexDirection={'column'}
-                justifyContent={'center'}
-                alignItems={'center'}>
-                <Text textStyle="h5" color="text-basic">
-                  Thời gian diễn ra
-                </Text>
-                <Text textStyle="h2" color="text-basic">
-                  00:00 09-09-2022 - 23:59 09-09-2022
-                </Text>
-                <Text textStyle="h2" color="text-basic">
-                  0 Khung giờ bạn đã đăng ký đang diễn ra
-                </Text>
+            <Box textAlign='center'>
+              <Image src='https://shopdunk.com/images/thumbs/0012005_airpods-max_240.webp' w={150} height={150} />
+              <Text>Bộ đồ thu đông</Text>
+              <Flex flexDirection='row' textAlign='center'>
+                <Text textStyle="h3" color="text-basic">Giá niêm yết:</Text>
+                <Text textStyle="h3" color="red" marginLeft='3px'>  200.000đ</Text>
               </Flex>
+            </Box>
+            <Box textAlign='center'>
+              <Image src='https://shopdunk.com/images/thumbs/0007301_ipad-pro-m2-129-inch-wifi-128gb_240.png' w={150} height={150} />
+              <Text>Bộ đồ thu đông</Text>
+              <Flex flexDirection='row' textAlign='center'>
+                <Text textStyle="h3" color="text-basic">Giá niêm yết:</Text>
+                <Text textStyle="h3" color="red" marginLeft='3px'>  200.000đ</Text>
+              </Flex>
+            </Box>
+            <Box textAlign='center'>
+              <Image src='https://shopdunk.com/images/thumbs/0007808_iphone-14-pro-max-128gb_240.png' w={150} height={150} />
+              <Text>Bộ đồ thu đông</Text>
+              <Flex flexDirection='row' textAlign='center'>
+                <Text textStyle="h3" color="text-basic">Giá niêm yết:</Text>
+                <Text textStyle="h3" color="red" marginLeft='3px'>  200.000đ</Text>
+              </Flex>
+            </Box>
+            <Box>
+              <Button
+                size="lg"
+                variant="primary"
+                children="Add Voucher"
+                onClick={() => router.push('/admin/voucher/add')}
+              />
             </Box>
           </Flex>
         </Box>
@@ -238,4 +306,5 @@ function ShopInfomationPage() {
 
 ShopInfomationPage.layout = Admin;
 
-export default WithAuthentication(ShopInfomationPage);
+export default ShopInfomationPage;
+// export default WithAuthentication(ShopInfomationPage);

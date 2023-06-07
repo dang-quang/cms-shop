@@ -154,26 +154,20 @@ export const TableWait = () => {
 
   return (
     <Box>
-      <InputGroup maxW="420px" my="4">
+      <InputGroup maxW="570px" borderRadius="4px" overflow="hidden">
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          variant="search"
-          placeholder={'VoucherName/Code'}
+          placeholder="Search flash sale name"
         />
-        <InputRightElement>
-          <Flex
-            justifyContent="center"
-            alignItems="center"
-            h="100%"
-            px="3"
-            cursor="pointer"
-            onClick={onSearch}>
-            <Icon as={AiOutlineSearch} w="24px" h="24px" color="text-basic" />
-          </Flex>
+        <InputRightElement borderRadius="4px" cursor="pointer" h="full" bg="primary.100" w="100px">
+          <Center onClick={onSearch}>
+            <Icon as={AiOutlineSearch} w="24px" h="24px" color="white" />
+          </Center>
         </InputRightElement>
       </InputGroup>
       <Box
+        mt="6"
         bg="white"
         borderRadius="4px"
         overflow="auto"

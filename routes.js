@@ -115,13 +115,6 @@ const dashboardRoutes = [
       //   parent: 'operation',
       //   permission: 'shop_interface_management',
       // },
-      // {
-      //   path: '/voucher-coupon',
-      //   name: 'voucher_coupon',
-      //   layout: '/shop',
-      //   parent: 'operation',
-      //   permission: 'shop_voucher_coupon',
-      // },
       {
         path: '/broadcast-messages',
         name: 'broadcastMessages',

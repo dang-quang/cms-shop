@@ -1,30 +1,18 @@
 import React from 'react';
-import Admin from 'layouts/Admin.js';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
-import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
+import { Box, Flex, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 
-import MyShop from './components/MyShop';
-import NatShop from './components/NatShop';
-import { HiPlus } from 'react-icons/hi';
-
-function VoucherCoupon() {
+const NatShop = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const tabs = ['My Shop', 'NatShop'];
+  const tabs = ['All', 'Happening', 'Upcoming', 'Finished'];
 
   return (
     <Box>
-      <Flex alignItems="center" justifyContent="space-between" mt="4">
-        <Text textStyle="h6-sb" color="text-basic">
-          Vouchers
-        </Text>
-        <Button leftIcon={<HiPlus />} variant="primary" children="Create Voucher" size="lg" />
-      </Flex>
       <Tabs variant="soft-rounded" mt="4">
-        <Flex justifyContent="space-between" position="relative">
+        <Flex justifyContent="space-between">
           <TabList h="48px" w="full" borderBottomWidth="1px" borderBottomColor="border-5">
             {tabs.map((name, index) => (
               <Tab
@@ -48,19 +36,20 @@ function VoucherCoupon() {
             ))}
           </TabList>
         </Flex>
-        <TabPanels mt="6" pl="8">
+        {/* <TabPanels mt="6">
           <TabPanel p="0">
-            <MyShop />
+            <TableAll />
           </TabPanel>
           <TabPanel p="0">
-            <NatShop />
+            <TableAwaitingRegistration />
           </TabPanel>
-        </TabPanels>
+          <TabPanel p="0">
+            <TableRegistered />
+          </TabPanel>
+        </TabPanels> */}
       </Tabs>
     </Box>
   );
-}
+};
 
-VoucherCoupon.layout = Admin;
-
-export default WithAuthentication(VoucherCoupon);
+export default NatShop;

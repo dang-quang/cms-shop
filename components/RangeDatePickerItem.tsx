@@ -2,10 +2,13 @@ import React from 'react';
 import { RangeDatepicker, RangeDatepickerProps } from 'chakra-dayzed-datepicker';
 import { Center, HStack, Icon } from '@chakra-ui/react';
 import { BiCalendar } from 'react-icons/bi';
+import { AiOutlineCloseCircle } from 'react-icons/ai';
 
-interface RangeDatePickerItemProps extends RangeDatepickerProps {}
+interface RangeDatePickerItemProps extends RangeDatepickerProps {
+  onClear?(): void;
+}
 
-const RangeDatePickerItem: React.FC<RangeDatePickerItemProps> = ({ ...rest }) => {
+const RangeDatePickerItem: React.FC<RangeDatePickerItemProps> = ({ onClear, ...rest }) => {
   return (
     <HStack
       bg="bg-1"
@@ -59,6 +62,7 @@ const RangeDatePickerItem: React.FC<RangeDatePickerItemProps> = ({ ...rest }) =>
             size: 'lg',
             width: '350px',
             pl: '52px',
+            placeholder: 'Select Date',
             color: 'text-basic',
             fontWeight: '400',
             borderRadius: 8,
@@ -94,6 +98,9 @@ const RangeDatePickerItem: React.FC<RangeDatePickerItemProps> = ({ ...rest }) =>
           },
         }}
       />
+      <Center w="32px" h="100%" position="absolute" cursor="pointer" right="0" onClick={onClear}>
+        <Icon as={AiOutlineCloseCircle} w="16px" h="16px" color="white" fill="border-1" />
+      </Center>
     </HStack>
   );
 };

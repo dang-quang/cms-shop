@@ -21,33 +21,160 @@ import {
 import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
 
-import { requestDeleteVoucher, requestGetListVoucher } from 'utilities/ApiManage';
 import { useDispatch } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
 import { EAppKey, EVoucherStatus } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
 import { AiFillEdit, AiOutlineSearch } from 'react-icons/ai';
 import { useRouter } from 'next/router';
-import { ModalConfirm, PaginationPanel } from 'components';
+import { ModalConfirm, PaginationPanel, RangeDatePickerItem } from 'components';
 import { isEmpty } from 'lodash';
 import { FiTrash2 } from 'react-icons/fi';
 import { BASE_API_URL } from 'utilities/const';
 import { formatCurrency } from 'utilities/utils';
 import dayjs from 'dayjs';
 
-export const TableAll = () => {
+const data_all = [
+  {
+    banner: null,
+    createAt: 1685773253000,
+    description: null,
+    discountLimit: null,
+    discountValue: 10000,
+    id: 8,
+    maxDiscount: null,
+    maxOrderPrice: null,
+    maxShopRegister: 2000,
+    minDiscount: null,
+    minOrderPrice: 200000,
+    name: 'Voucher 2k',
+    programEnd: 1685777400000,
+    programStart: 1685773800000,
+    quantityVoucher: 200,
+    registerEnd: 1685777400000,
+    registerPrice: 10000,
+    registerStart: 1685773800000,
+    shopRegister: null,
+    status: 'UPCOMING',
+    typeDiscount: 'CASH',
+    typeLimit: 'AMOUNT',
+    updateAt: null,
+  },
+  {
+    banner: 'natshop/voucher/20230603/voucher_1685772984515.jpg',
+    createAt: 1685772905000,
+    description: null,
+    discountLimit: null,
+    discountValue: 200000,
+    id: 24,
+    maxDiscount: null,
+    maxOrderPrice: null,
+    maxShopRegister: 0,
+    minDiscount: null,
+    minOrderPrice: 10000000,
+    name: 'Voucher 100k',
+    programEnd: 1685970000000,
+    programStart: 1685883600000,
+    quantityVoucher: 1000,
+    registerEnd: 1685970000000,
+    registerPrice: 100000,
+    registerStart: 1685859300000,
+    shopRegister: null,
+    status: 'UPCOMING',
+    typeDiscount: 'CASH',
+    typeLimit: 'AMOUNT',
+    updateAt: 1685772984000,
+  },
+  {
+    banner: 'natshop/voucher/20230603/voucher_1685771075742.jpg',
+    createAt: 1685771075000,
+    description: 'Test',
+    discountLimit: null,
+    discountValue: 20000,
+    id: 7,
+    maxDiscount: null,
+    maxOrderPrice: null,
+    maxShopRegister: 0,
+    minDiscount: null,
+    minOrderPrice: 2000,
+    name: 'Voucher 50k',
+    programEnd: 1685775180000,
+    programStart: 1685771580000,
+    quantityVoucher: 1000,
+    registerEnd: 1685775180000,
+    registerPrice: 200000,
+    registerStart: 1685771580000,
+    shopRegister: null,
+    status: 'UPCOMING',
+    typeDiscount: 'CASH',
+    typeLimit: 'AMOUNT',
+    updateAt: null,
+  },
+  {
+    banner: 'natshop/voucher/20230602/voucher_1685681948077.jpg',
+    createAt: 1685671916000,
+    description: 'Sale 50% off for all order',
+    discountLimit: 50,
+    discountValue: 0,
+    id: 23,
+    maxDiscount: null,
+    maxOrderPrice: null,
+    maxShopRegister: 0,
+    minDiscount: null,
+    minOrderPrice: 0,
+    name: 'Discount for summer',
+    programEnd: 1729386000000,
+    programStart: 1689987600000,
+    quantityVoucher: 0,
+    registerEnd: 1696208400000,
+    registerPrice: 0,
+    registerStart: 1689775320000,
+    shopRegister: null,
+    status: 'UPCOMING',
+    typeDiscount: 'PERCENT',
+    typeLimit: 'AMOUNT',
+    updateAt: 1685681948000,
+  },
+  {
+    banner: 'natshop/shop/20230601/voucher_1685593735779.jpg',
+    createAt: 1685593735000,
+    description: null,
+    discountLimit: null,
+    discountValue: 100000,
+    id: 22,
+    maxDiscount: null,
+    maxOrderPrice: null,
+    maxShopRegister: 10000,
+    minDiscount: null,
+    minOrderPrice: 10000,
+    name: 'name',
+    programEnd: 1685597880000,
+    programStart: 1685594280000,
+    quantityVoucher: 1000,
+    registerEnd: 1685597880000,
+    registerPrice: 10000,
+    registerStart: 1685594280000,
+    shopRegister: null,
+    status: 'UPCOMING',
+    typeDiscount: 'CASH',
+    typeLimit: 'AMOUNT',
+    updateAt: null,
+  },
+];
+
+const TableAllMyShop = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const pageSize = 50;
-
+  const refInputSearch = React.useRef(null);
   const [vouchers, setVouchers] = React.useState([]);
   const [selectedVoucher, setSelectedVoucher] = React.useState(null);
   const [isShowModal, { on: onShowModal, off: offShowModal }] = useBoolean(false);
   const [totalPage, setTotalPage] = React.useState(1);
   const [totalRecords, setTotalRecords] = React.useState(0);
-  const [search, setSearch] = React.useState('');
   const [doSearch, { on: onSearch, off: offSearch }] = useBoolean(false);
+  const [selectedDates, setSelectedDates] = React.useState([]);
 
   const headers = [
     t('serial_number'),
@@ -76,18 +203,20 @@ export const TableAll = () => {
     (async () => {
       try {
         dispatch(setShowLoader(true));
-        const res = await requestGetListVoucher({ page: 1 });
+        setVouchers(data_all);
 
-        if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
-          setVouchers(res.data.results);
-          setTotalPage(res.data.totalPages);
-          setTotalRecords(res.data.totalRecords);
-        } else {
-          NotificationManager.error({
-            title: t('error'),
-            message: `No data exists`,
-          });
-        }
+        // const res = await requestGetListVoucher({ page: 1 });
+
+        // if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
+        //   setVouchers(res.data.results);
+        //   setTotalPage(res.data.totalPages);
+        //   setTotalRecords(res.data.totalRecords);
+        // } else {
+        //   NotificationManager.error({
+        //     title: t('error'),
+        //     message: `No data exists`,
+        //   });
+        // }
       } finally {
         dispatch(setShowLoader(false));
       }
@@ -98,52 +227,52 @@ export const TableAll = () => {
     (async () => {
       try {
         let key;
-        if (doSearch) {
-          dispatch(setShowLoader(true));
-          if (doSearch) {
-            key = search;
-          }
+        // if (doSearch) {
+        //   dispatch(setShowLoader(true));
+        //   if (doSearch) {
+        //     key = search;
+        //   }
 
-          const res = await requestGetListVoucher({
-            keyWord: key,
-            page: currentPage,
-          });
+        //   const res = await requestGetListVoucher({
+        //     keyWord: key,
+        //     page: currentPage,
+        //   });
 
-          if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
-            setVouchers(res.data.results === null ? [] : res.data.results);
-            setTotalPage(res.data.totalPages);
-            setTotalRecords(res.data.totalRecords);
-          } else {
-            setVouchers([]);
-            setTotalPage(1);
-            setTotalRecords(0);
-            NotificationManager.error({
-              title: t('no_results_found'),
-              message: t('no_results_found_for_your_search'),
-            });
-          }
-        }
+        //   if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
+        //     setVouchers(res.data.results === null ? [] : res.data.results);
+        //     setTotalPage(res.data.totalPages);
+        //     setTotalRecords(res.data.totalRecords);
+        //   } else {
+        //     setVouchers([]);
+        //     setTotalPage(1);
+        //     setTotalRecords(0);
+        //     NotificationManager.error({
+        //       title: t('no_results_found'),
+        //       message: t('no_results_found_for_your_search'),
+        //     });
+        //   }
+        // }
       } finally {
         dispatch(setShowLoader(false));
         offSearch();
       }
     })();
-  }, [doSearch, currentPage, search]);
+  }, [doSearch, currentPage, refInputSearch.current]);
 
   const handleDeleteVoucher = React.useCallback(async () => {
     try {
       offShowModal();
-      dispatch(setShowLoader(true));
-      const res = await requestDeleteVoucher({ id: selectedVoucher.id });
-      if (res.code === EAppKey.MSG_SUCCESS) {
-        setSelectedVoucher(null);
-        router.push('/admin/voucher');
-      } else {
-        NotificationManager.error({
-          title: t('error'),
-          message: res.message ? res.message.text : 'Error',
-        });
-      }
+      //       dispatch(setShowLoader(true));
+      //       const res = await requestDeleteVoucher({ id: selectedVoucher.id });
+      //       if (res.code === EAppKey.MSG_SUCCESS) {
+      //         setSelectedVoucher(null);
+      //         router.push('/admin/voucher');
+      //       } else {
+      //         NotificationManager.error({
+      //           title: t('error'),
+      //           message: res.message ? res.message.text : 'Error',
+      //         });
+      //       }
     } catch (error) {
       console.log('delete voucher error');
     } finally {
@@ -151,30 +280,23 @@ export const TableAll = () => {
     }
   }, [selectedVoucher]);
 
-  console.log('quang debug vouchers', vouchers);
-
   return (
     <Box>
-      <InputGroup maxW="420px" my="6">
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          variant="search"
-          placeholder={'Voucher Name/Code'}
-        />
-        <InputRightElement>
-          <Flex
-            justifyContent="center"
-            alignItems="center"
-            h="100%"
-            px="3"
-            cursor="pointer"
-            onClick={onSearch}>
-            <Icon as={AiOutlineSearch} w="24px" h="24px" color="text-basic" />
-          </Flex>
+      <InputGroup maxW="570px" borderRadius="4px" overflow="hidden">
+        <Input ref={refInputSearch} placeholder="Search Message Code" />
+        <InputRightElement borderRadius="4px" cursor="pointer" h="full" bg="primary.100" w="100px">
+          <Center onClick={onSearch}>
+            <Icon as={AiOutlineSearch} w="24px" h="24px" color="white" />
+          </Center>
         </InputRightElement>
       </InputGroup>
+      <RangeDatePickerItem
+        selectedDates={selectedDates}
+        onDateChange={setSelectedDates}
+        onClear={() => setSelectedDates([])}
+      />
       <Box
+        mt="6"
         bg="white"
         borderRadius="4px"
         overflow="auto"
@@ -390,4 +512,4 @@ export const TableAll = () => {
   );
 };
 
-export default TableAll;
+export default TableAllMyShop;

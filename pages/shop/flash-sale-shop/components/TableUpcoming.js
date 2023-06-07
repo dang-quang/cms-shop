@@ -152,26 +152,32 @@ export const TableUpcoming = () => {
 
   return (
     <Box>
-      <InputGroup maxW="420px" my="4">
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          variant="search"
-          placeholder={'VoucherName/Code'}
-        />
-        <InputRightElement>
-          <Flex
-            justifyContent="center"
-            alignItems="center"
-            h="100%"
-            px="3"
+      <Flex gap="6" flexDirection={{ base: 'column', xl: 'row' }}>
+        <InputGroup maxW="570px" borderRadius="4px" overflow="hidden">
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search flash sale name"
+          />
+          <InputRightElement
+            borderRadius="4px"
             cursor="pointer"
-            onClick={onSearch}>
-            <Icon as={AiOutlineSearch} w="24px" h="24px" color="text-basic" />
-          </Flex>
-        </InputRightElement>
-      </InputGroup>
+            h="full"
+            bg="primary.100"
+            w="100px">
+            <Center onClick={onSearch}>
+              <Icon as={AiOutlineSearch} w="24px" h="24px" color="white" />
+            </Center>
+          </InputRightElement>
+        </InputGroup>
+        {/* <RangeDatePickerItem
+          selectedDates={selectedDates}
+          onDateChange={setSelectedDates}
+          onClear={() => setSelectedDates([])}
+        /> */}
+      </Flex>
       <Box
+        mt="6"
         bg="white"
         borderRadius="4px"
         overflow="auto"

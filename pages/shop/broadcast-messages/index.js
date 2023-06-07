@@ -31,6 +31,7 @@ import { usePagination } from '@ajna/pagination';
 import { setShowLoader } from 'redux/actions/app';
 import { useDispatch } from 'react-redux';
 import Images from 'assets';
+import { HiPlus } from 'react-icons/hi';
 
 const messages_data = [
   {
@@ -113,31 +114,23 @@ function BroadcastMessages() {
   return (
     <Box>
       <Flex
-        mt="4"
-        flexDirection={{ base: 'column', xl: 'row' }}
+        alignItems="center"
         justifyContent="space-between"
-        alignItems="center">
-        <InputGroup maxW="420px">
-          <Input ref={searchRef} variant="search" placeholder={'Message Name/Code'} />
-          <InputRightElement>
-            <Flex
-              justifyContent="center"
-              alignItems="center"
-              h="100%"
-              px="3"
-              cursor="pointer"
-              onClick={onSearch}>
-              <Icon as={AiOutlineSearch} w="24px" h="24px" color="text-basic" />
-            </Flex>
-          </InputRightElement>
-        </InputGroup>
-        <Button
-          size="lg"
-          variant="primary"
-          children="Add Message"
-          onClick={() => router.push('/shop/broadcast-messages/add')}
-        />
+        mt="4"
+        onClick={() => router.push('/shop/broadcast-messages/add')}>
+        <Text textStyle="h6-sb" color="text-basic">
+          Broadcast Messages
+        </Text>
+        <Button leftIcon={<HiPlus />} variant="primary" children="Add Message" size="lg" />
       </Flex>
+      <InputGroup maxW="570px" borderRadius="4px" overflow="hidden" mt="6">
+        <Input ref={searchRef} placeholder="Search message name, code" />
+        <InputRightElement borderRadius="4px" cursor="pointer" h="full" bg="primary.100" w="100px">
+          <Center onClick={onSearch}>
+            <Icon as={AiOutlineSearch} w="24px" h="24px" color="white" />
+          </Center>
+        </InputRightElement>
+      </InputGroup>
       <Box
         mt="6"
         bg="white"

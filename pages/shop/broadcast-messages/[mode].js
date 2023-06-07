@@ -147,7 +147,7 @@ function AddUpdateMessagePage() {
       {({ handleChange, handleSubmit, setFieldValue, values, errors }) => {
         return (
           <Form>
-            <Text textStyle="h6-sb" color="primary.100" mt="4">
+            <Text textStyle="h6-sb" color="text-basic" mt="4">
               {message ? 'Update Message' : 'Create New Message'}
             </Text>
 

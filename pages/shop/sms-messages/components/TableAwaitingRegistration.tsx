@@ -152,7 +152,7 @@ const TableAwaitingRegistration = () => {
   return (
     <Box>
       <InputGroup maxW="570px" borderRadius="4px" overflow="hidden">
-        <Input ref={refInputSearch} placeholder="Search Message Code" />
+        <Input ref={refInputSearch} placeholder="Search message code" />
         <InputRightElement borderRadius="4px" cursor="pointer" h="full" bg="primary.100" w="100px">
           <Center onClick={onSearch}>
             <Icon as={AiOutlineSearch} w="24px" h="24px" color="white" />

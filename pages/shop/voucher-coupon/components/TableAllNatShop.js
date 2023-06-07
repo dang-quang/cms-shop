@@ -229,7 +229,7 @@ const TableAllNatShop = () => {
     <Box>
       <Flex gap="6" flexDirection={{ base: 'column', xl: 'row' }}>
         <InputGroup maxW="570px" borderRadius="4px" overflow="hidden">
-          <Input ref={refInputSearch} placeholder="Search Voucher Name/Code" />
+          <Input ref={refInputSearch} placeholder="Search voucher name, code" />
           <InputRightElement
             borderRadius="4px"
             cursor="pointer"

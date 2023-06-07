@@ -294,7 +294,7 @@ function AddVoucherPage() {
 
         return (
           <Form>
-            <Text textStyle="h6-sb" color="primary.100" mt="4">
+            <Text textStyle="h6-sb" color="text-basic" mt="4">
               {voucher ? 'Update Voucher Program' : 'Create New Voucher Program'}
             </Text>
             <Box

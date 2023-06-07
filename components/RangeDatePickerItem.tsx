@@ -71,7 +71,7 @@ const RangeDatePickerItem: React.FC<RangeDatePickerItemProps> = ({
             size: 'lg',
             width: '350px',
             pl: '52px',
-            placeholder: 'Select Date',
+            placeholder: 'Select date range to search',
             color: 'text-basic',
             fontWeight: '400',
             borderRadius: 8,

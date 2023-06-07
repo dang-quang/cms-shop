@@ -151,7 +151,7 @@ export const TableAll = () => {
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search Voucher Name/Code"
+          placeholder="Search voucher name, code"
         />
         <InputRightElement borderRadius="4px" cursor="pointer" h="full" bg="primary.100" w="100px">
           <Center onClick={onSearch}>

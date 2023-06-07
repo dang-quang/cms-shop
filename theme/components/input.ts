@@ -142,17 +142,17 @@ export const inputStyles = {
             bg: mode('white', 'navy.800')(props),
             border: '1px solid',
             color: mode('text-basic', 'white')(props),
-            borderColor: 'gray.700',
+            borderColor: 'border-5',
             borderRadius: '4px',
             fontSize: '16px',
             h: '41px',
-            _placeholder: { color: '#959596' },
+            _placeholder: { color: 'text-placeholder' },
             _focus: {
               boxShadow: 'none',
-              borderColor: 'primary.100',
+              borderColor: 'border-3',
             },
             _hover: {
-              borderColor: 'primary.100',
+              borderColor: 'border-3',
             },
             _active: {
               boxShadow: 'none',

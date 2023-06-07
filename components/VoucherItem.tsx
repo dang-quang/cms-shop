@@ -7,14 +7,14 @@ import dayjs from 'dayjs';
 import { AiFillEdit } from 'react-icons/ai';
 import { FiTrash2 } from 'react-icons/fi';
 
-interface VoucherShopItemProps {
+interface VoucherItemProps {
   index: number;
   item: IVoucher;
   onUpdate?(): void;
   onDelete?(): void;
 }
 
-const VoucherShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpdate, onDelete }) => {
+const VoucherItem: React.FC<VoucherItemProps> = ({ item, index, onUpdate, onDelete }) => {
   const {
     banner,
     name,
@@ -128,4 +128,4 @@ const VoucherShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpdate
   );
 };
 
-export default VoucherShopItem;
+export default VoucherItem;

@@ -50,17 +50,15 @@ import useWindowSize from 'components/Hooks/useWindowSize.js';
 import CartTotalInfo from 'components/CartTotalInfo/CartTotalInfo.js';
 import PropTypes from 'prop-types';
 
-import { formatCurrency } from '../../../utilities/utils';
-
 import { useRouter } from 'next/router';
 import styles from 'assets/jss/natcash/views/voucher/voucherStyle.js';
 
 import imgMoney from 'assets/img/money.png';
 import imgPercent from 'assets/img/percent.png';
 import { useTranslation } from 'react-i18next';
-import CustomInput from '../../../components/CustomInput/CustomInput';
 import Search from '@material-ui/icons/Search';
 import { Input } from '@chakra-ui/react';
+import { formatCurrency } from 'utilities/utils';
 
 function VoucherPage() {
   const router = useRouter();

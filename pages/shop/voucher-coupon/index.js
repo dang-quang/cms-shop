@@ -17,11 +17,15 @@ function VoucherCoupon() {
 
   return (
     <Box>
-      <Flex alignItems="center" justifyContent="space-between" mt="4">
+      <Flex
+        alignItems="center"
+        justifyContent="space-between"
+        mt="4"
+        onClick={() => router.push('/shop/voucher-coupon/add')}>
         <Text textStyle="h6-sb" color="text-basic">
           Vouchers
         </Text>
-        <Button leftIcon={<HiPlus />} variant="primary" children="Create Voucher" size="lg" />
+        <Button leftIcon={<HiPlus />} variant="primary" children="Add Voucher" size="lg" />
       </Flex>
       <Tabs variant="soft-rounded" mt="4">
         <Flex justifyContent="space-between" position="relative">

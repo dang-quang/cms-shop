@@ -3,11 +3,12 @@ import Admin from 'layouts/Admin.js';
 import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { Box, Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import TableAll from './components/TableAll';
 import TableHappening from './components/TableHappening';
 import TableUpcoming from './components/TableUpcoming';
 import TableFinished from './components/TableFinished';
+import { HiPlus } from 'react-icons/hi';
 
 function VoucherPage() {
   const router = useRouter();
@@ -17,33 +18,39 @@ function VoucherPage() {
 
   return (
     <Box>
+      <Flex
+        alignItems="center"
+        justifyContent="space-between"
+        mt="4"
+        onClick={() => router.push('/admin/voucher/add')}>
+        <Text textStyle="h6-sb" color="text-basic">
+          Voucher
+        </Text>
+        <Button leftIcon={<HiPlus />} variant="primary" children="Add Voucher" size="lg" />
+      </Flex>
       <Tabs variant="soft-rounded" mt="4">
-        <Flex justifyContent="space-between">
-          <TabList w="auto" borderRadius="full" bg="white" p="1">
-            {tabs.map((name, index) => (
-              <Tab
-                key={index}
-                borderRadius="full"
-                textStyle="b-lg"
-                fontWeight="500"
-                textTransform="capitalize"
-                _focus={{ border: 'none' }}
-                _selected={{
-                  bg: 'primary.100',
-                  color: 'white',
-                }}
-                color="text-body">
-                {name}
-              </Tab>
-            ))}
-          </TabList>
-          <Button
-            size="lg"
-            variant="primary"
-            children="Add Voucher"
-            onClick={() => router.push('/admin/voucher/add')}
-          />
-        </Flex>
+        <TabList h="48px" w="full" borderBottomWidth="1px" borderBottomColor="border-5">
+          {tabs.map((name, index) => (
+            <Tab
+              key={index}
+              fontSize="14px"
+              fontWeight="400"
+              borderRadius="unset"
+              textTransform="capitalize"
+              borderBottomWidth="1px"
+              borderBottomColor="transparent"
+              _focus={{ showBox: 'none' }}
+              _selected={{
+                fontWeight: '500',
+                color: 'primary.100',
+                borderBottomWidth: '1px',
+                borderBottomColor: 'primary.100',
+              }}
+              color="text-basic">
+              {name}
+            </Tab>
+          ))}
+        </TabList>
         <TabPanels mt="6">
           <TabPanel p="0">
             <TableAll />

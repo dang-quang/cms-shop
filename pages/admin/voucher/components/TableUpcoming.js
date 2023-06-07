@@ -14,9 +14,6 @@ import {
   Text,
   Image,
   Center,
-  Td,
-  AspectRatio,
-  HStack,
 } from '@chakra-ui/react';
 import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
@@ -26,15 +23,15 @@ import { useDispatch } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
 import { EAppKey, EVoucherStatus } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
-import { AiFillEdit, AiOutlineSearch } from 'react-icons/ai';
-import { ModalConfirm, PaginationPanel } from 'components';
+import { AiOutlineSearch } from 'react-icons/ai';
+import { ModalConfirm, PaginationPanel, VoucherItem } from 'components';
 import { isEmpty } from 'lodash';
-import { FiTrash2 } from 'react-icons/fi';
-import { BASE_API_URL } from 'utilities/const';
-import { formatCurrency } from 'utilities/utils';
-import dayjs from 'dayjs';
+
+import Images from 'assets';
+import { useRouter } from 'next/router';
 
 export const TableUpcoming = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const pageSize = 50;
@@ -152,26 +149,20 @@ export const TableUpcoming = () => {
 
   return (
     <Box>
-      <InputGroup maxW="420px" my="6">
+      <InputGroup maxW="570px" borderRadius="4px" overflow="hidden">
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          variant="search"
-          placeholder={'Voucher Name/Code'}
+          placeholder="Search Voucher Name/Code"
         />
-        <InputRightElement>
-          <Flex
-            justifyContent="center"
-            alignItems="center"
-            h="100%"
-            px="3"
-            cursor="pointer"
-            onClick={onSearch}>
-            <Icon as={AiOutlineSearch} w="24px" h="24px" color="text-basic" />
-          </Flex>
+        <InputRightElement borderRadius="4px" cursor="pointer" h="full" bg="primary.100" w="100px">
+          <Center onClick={onSearch}>
+            <Icon as={AiOutlineSearch} w="24px" h="24px" color="white" />
+          </Center>
         </InputRightElement>
       </InputGroup>
       <Box
+        mt="6"
         bg="white"
         borderRadius="4px"
         overflow="auto"
@@ -197,157 +188,38 @@ export const TableUpcoming = () => {
             </Tr>
           </Thead>
           {isEmpty(vouchers) ? (
-            <Box />
+            <Box minH="220px">
+              <Center
+                h="220px"
+                position="absolute"
+                insetX="0"
+                flexDirection="column"
+                alignSelf="center">
+                <Image w="150px" h="100px" src={Images.no_data} />
+                <Text textStyle="body" textAlign="center" color="primary.100" mt="1">
+                  No Data Found
+                </Text>
+              </Center>
+            </Box>
           ) : (
-            // <Center minH="200px" alignSelf="center">
-            //   <Image w="80px" h="80px" src={Images.no_data} />
-            // </Center>
             <>
               {vouchers.map((item, index) => {
-                if (!item) {
-                  return;
-                }
-
-                let _image = '';
-
-                if (item && item.banner) {
-                  let firstChar = item.banner.substring(0, 4);
-
-                  if (firstChar === 'http' || firstChar === 'https') {
-                    _image = item.banner;
-                  } else {
-                    _image = BASE_API_URL + '/assets/' + item.banner;
-                  }
-                }
-
                 return (
-                  <Tr key={index}>
-                    <Td borderColor="gray.1300">
-                      <Text textStyle="h3" color="text-basic">
-                        {index + 1}
-                      </Text>
-                    </Td>
-                    <Td borderColor="gray.1300">
-                      <Flex>
-                        <AspectRatio
-                          w="180px"
-                          ratio={2 / 1}
-                          mr="2"
-                          borderRadius="8px"
-                          overflow="hidden">
-                          <Image w="100%" h="100%" objectFit="cover" src={_image} />
-                        </AspectRatio>
-                        <Text textStyle="h3-m" color="text-basic">
-                          {item ? item.name : ''}
-                        </Text>
-                      </Flex>
-                    </Td>
-                    <Td isNumeric borderColor="gray.1300">
-                      {item && item.discountValue && (
-                        <Text textStyle="h3" color="text-basic">
-                          {formatCurrency(item.discountValue ?? 0)}
-                        </Text>
-                      )}
-                    </Td>
-                    <Td isNumeric borderColor="gray.1300">
-                      {item && item.quantityVoucher && (
-                        <Text textStyle="h3" color="text-basic">
-                          {item.quantityVoucher}
-                        </Text>
-                      )}
-                    </Td>
-                    <Td borderColor="gray.1300">
-                      <Center>
-                        <Text textStyle="h3" color="text-basic">
-                          {item && item.shopRegister}
-                        </Text>
-                      </Center>
-                    </Td>
-                    <Td borderColor="gray.1300">
-                      {item && (
-                        <Center flexDirection="column" alignItems="flex-start">
-                          <Flex
-                            py="1"
-                            px="2"
-                            bg={
-                              item.status === EVoucherStatus.UPCOMING
-                                ? 'red.700'
-                                : item.status === EVoucherStatus.HAPPENING
-                                ? 'green.200'
-                                : 'gray.2000'
-                            }
-                            alignItems="center"
-                            borderRadius="full">
-                            <Text
-                              textStyle="h2-m"
-                              color={
-                                item.status === EVoucherStatus.UPCOMING
-                                  ? 'red.600'
-                                  : item.status === EVoucherStatus.HAPPENING
-                                  ? 'green.100'
-                                  : 'gray.100'
-                              }
-                              textTransform="capitalize">
-                              {item.status === EVoucherStatus.UPCOMING
-                                ? 'Upcoming'
-                                : item.status === EVoucherStatus.HAPPENING
-                                ? 'Happening'
-                                : 'Finished'}
-                            </Text>
-                          </Flex>
-                          {item && item.programStart && item.programEnd && (
-                            <HStack mt="2">
-                              <Text textStyle="h3" color="text-basic">
-                                {dayjs(item.programStart).format('DD-MM-YYYY HH:MM')}
-                              </Text>
-                              <Text>-</Text>
-                              <Text textStyle="h3" color="text-basic">
-                                {dayjs(item.programEnd).format('DD-MM-YYYY HH:MM')}
-                              </Text>
-                            </HStack>
-                          )}
-                        </Center>
-                      )}
-                    </Td>
-                    <Td isNumeric borderColor="gray.1300">
-                      <Flex justifyContent="flex-end">
-                        <HStack>
-                          <Center
-                            boxSize="40px"
-                            cursor="pointer"
-                            onClick={() => {
-                              router.push({
-                                pathname: '/admin/voucher/update',
-                                query: item,
-                              });
-                            }}>
-                            <Icon
-                              as={AiFillEdit}
-                              w="18px"
-                              h="18px"
-                              color="text-basic"
-                              cursor="pointer"
-                            />
-                          </Center>
-                          <Center
-                            boxSize="40px"
-                            cursor="pointer"
-                            onClick={() => {
-                              setSelectedVoucher(item);
-                              onShowModal();
-                            }}>
-                            <Icon
-                              as={FiTrash2}
-                              w="18px"
-                              h="18px"
-                              color="red.600"
-                              cursor="pointer"
-                            />
-                          </Center>
-                        </HStack>
-                      </Flex>
-                    </Td>
-                  </Tr>
+                  <VoucherItem
+                    item={item}
+                    key={index}
+                    index={index}
+                    onUpdate={() => {
+                      router.push({
+                        pathname: '/admin/voucher/update',
+                        query: item,
+                      });
+                    }}
+                    onDelete={() => {
+                      setSelectedVoucher(item);
+                      onShowModal();
+                    }}
+                  />
                 );
               })}
             </>

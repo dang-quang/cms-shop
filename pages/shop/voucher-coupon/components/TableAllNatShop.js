@@ -28,7 +28,7 @@ import { isEmpty } from 'lodash';
 import Images from 'assets';
 import { EVoucherStatus } from 'constants/types';
 
-const data_all = [
+const data = [
   {
     banner: 'natshop/voucher/20230603/voucher_1685772984515.jpg',
     createAt: 1685772905000,
@@ -55,56 +55,6 @@ const data_all = [
     updateAt: 1685772984000,
   },
   {
-    banner: 'natshop/voucher/20230603/voucher_1685771075742.jpg',
-    createAt: 1685771075000,
-    description: 'Test',
-    discountLimit: null,
-    discountValue: 20000,
-    id: 7,
-    maxDiscount: null,
-    maxOrderPrice: null,
-    maxShopRegister: 0,
-    minDiscount: null,
-    minOrderPrice: 2000,
-    name: 'Voucher 50k',
-    programEnd: 1685775180000,
-    programStart: 1685771580000,
-    quantityVoucher: 1000,
-    registerEnd: 1685775180000,
-    registerPrice: 200000,
-    registerStart: 1685771580000,
-    shopRegister: null,
-    status: EVoucherStatus.HAPPENING,
-    typeDiscount: 'CASH',
-    typeLimit: 'AMOUNT',
-    updateAt: null,
-  },
-  {
-    banner: 'natshop/shop/20230601/voucher_1685593735779.jpg',
-    createAt: 1685593735000,
-    description: null,
-    discountLimit: null,
-    discountValue: 100000,
-    id: 22,
-    maxDiscount: null,
-    maxOrderPrice: null,
-    maxShopRegister: 10000,
-    minDiscount: null,
-    minOrderPrice: 10000,
-    name: 'Voucher 10k',
-    programEnd: 1685597880000,
-    programStart: 1685594280000,
-    quantityVoucher: 1000,
-    registerEnd: 1685597880000,
-    registerPrice: 10000,
-    registerStart: 1685594280000,
-    shopRegister: null,
-    status: EVoucherStatus.HAPPENING,
-    typeDiscount: 'CASH',
-    typeLimit: 'AMOUNT',
-    updateAt: null,
-  },
-  {
     banner: 'natshop/shop/20230601/voucher_1685593735779.jpg',
     createAt: 1685593735000,
     description: null,
@@ -129,31 +79,7 @@ const data_all = [
     typeLimit: 'AMOUNT',
     updateAt: null,
   },
-  {
-    banner: 'natshop/shop/20230601/voucher_1685593735779.jpg',
-    createAt: 1685593735000,
-    description: null,
-    discountLimit: null,
-    discountValue: 100000,
-    id: 22,
-    maxDiscount: null,
-    maxOrderPrice: null,
-    maxShopRegister: 10000,
-    minDiscount: null,
-    minOrderPrice: 10000,
-    name: 'Voucher 35k',
-    programEnd: 1685597880000,
-    programStart: 1685594280000,
-    quantityVoucher: 1000,
-    registerEnd: 1685597880000,
-    registerPrice: 10000,
-    registerStart: 1685594280000,
-    shopRegister: null,
-    status: EVoucherStatus.UPCOMING,
-    typeDiscount: 'CASH',
-    typeLimit: 'AMOUNT',
-    updateAt: null,
-  },
+
   {
     banner: 'natshop/shop/20230601/voucher_1685593735779.jpg',
     createAt: 1685593735000,
@@ -179,34 +105,9 @@ const data_all = [
     typeLimit: 'AMOUNT',
     updateAt: null,
   },
-  {
-    banner: 'natshop/shop/20230601/voucher_1685593735779.jpg',
-    createAt: 1685593735000,
-    description: null,
-    discountLimit: null,
-    discountValue: 100000,
-    id: 22,
-    maxDiscount: null,
-    maxOrderPrice: null,
-    maxShopRegister: 10000,
-    minDiscount: null,
-    minOrderPrice: 10000,
-    name: 'Voucher 50k',
-    programEnd: 1685597880000,
-    programStart: 1685594280000,
-    quantityVoucher: 1000,
-    registerEnd: 1685597880000,
-    registerPrice: 10000,
-    registerStart: 1685594280000,
-    shopRegister: null,
-    status: EVoucherStatus.FINISHED,
-    typeDiscount: 'CASH',
-    typeLimit: 'AMOUNT',
-    updateAt: null,
-  },
 ];
 
-const TableAllMyShop = () => {
+const TableAllNatShop = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -247,7 +148,7 @@ const TableAllMyShop = () => {
     (async () => {
       try {
         dispatch(setShowLoader(true));
-        setVouchers(data_all);
+        setVouchers(data);
 
         // const res = await requestGetListVoucher({ page: 1 });
 
@@ -265,7 +166,7 @@ const TableAllMyShop = () => {
         dispatch(setShowLoader(false));
       }
     })();
-  }, []);
+  }, [data]);
 
   React.useEffect(() => {
     (async () => {
@@ -444,4 +345,4 @@ const TableAllMyShop = () => {
   );
 };
 
-export default TableAllMyShop;
+export default TableAllNatShop;

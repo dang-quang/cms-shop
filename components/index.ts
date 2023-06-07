@@ -6,6 +6,7 @@ import PaginationPanel from './PaginationPanel';
 import WithAuthentication from './WithAuthentication/WithAuthentication';
 import SmsMessageItem from './SmsMessageItem';
 import VoucherShopItem from './VoucherShopItem';
+import VoucherItem from './VoucherItem';
 
 export {
   RangeDatePickerItem,
@@ -16,4 +17,5 @@ export {
   PaginationPanel,
   SmsMessageItem,
   VoucherShopItem,
+  VoucherItem,
 };

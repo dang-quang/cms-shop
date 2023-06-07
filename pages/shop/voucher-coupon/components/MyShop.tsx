@@ -1,11 +1,13 @@
 import React from 'react';
-import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { Box, Flex, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+
 import TableAllMyShop from './TableAllMyShop';
+import TableHappeningMyShop from './TableHappeningMyShop';
+import TableUpcomingMyShop from './TableUpcomingMyShop';
+import TableFinishedMyShop from './TableFinishedMyShop';
 
 const MyShop = () => {
-  const router = useRouter();
   const { t } = useTranslation();
 
   const tabs = ['All', 'Happening', 'Upcoming', 'Finished'];
@@ -41,12 +43,15 @@ const MyShop = () => {
           <TabPanel p="0">
             <TableAllMyShop />
           </TabPanel>
-          {/* <TabPanel p="0">
-            <TableAwaitingRegistration />
-          </TabPanel> */}
-          {/* <TabPanel p="0">
-            <TableRegistered />
-          </TabPanel> */}
+          <TabPanel p="0">
+            <TableHappeningMyShop />
+          </TabPanel>
+          <TabPanel p="0">
+            <TableUpcomingMyShop />
+          </TabPanel>
+          <TabPanel p="0">
+            <TableFinishedMyShop />
+          </TabPanel>
         </TabPanels>
       </Tabs>
     </Box>

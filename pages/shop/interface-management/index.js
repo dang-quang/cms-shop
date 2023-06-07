@@ -69,7 +69,7 @@ const InterfaceManagement = () => {
       <Text mx={{ base: 'unset', sm: '6', xl: '10' }} mt="6" color="text-basic" textStyle="h5-h6">
         {t('general_information')}
       </Text>
-      <Divider mt="2" orientation="horizontal" borderColor="bg-border-1" />
+      <Divider mt="2" orientation="horizontal" borderColor="border-1" />
       <Flex
         px={{ base: 'unset', sm: '6', xl: '10' }}
         flexDirection={{ base: 'column', lg: 'row' }}
@@ -125,7 +125,7 @@ const InterfaceManagement = () => {
       <Text mx={{ base: 'unset', sm: '6', xl: '10' }} mt="6" color="text-basic" textStyle="h5-h6">
         {t('featured_products')}
       </Text>
-      <Divider mt="2" orientation="horizontal" borderColor="bg-border-1" />
+      <Divider mt="2" orientation="horizontal" borderColor="border-1" />
       <Flex
         px={{ base: 'unset', sm: '6', xl: '10' }}
         flexDirection={{ base: 'column', lg: 'row' }}

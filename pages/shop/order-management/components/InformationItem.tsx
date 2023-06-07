@@ -13,7 +13,7 @@ const InformationItem: React.FC<InformationItemProps> = ({ title, content, isLas
       justifyContent="space-between"
       alignItems="center"
       borderBottomWidth="1px"
-      borderColor={isLast ? 'transparent' : 'bg-border-1'}
+      borderColor={isLast ? 'transparent' : 'border-1'}
       py="3"
       pr="2">
       <Text color="text-basic" textStyle="body-b">

@@ -94,13 +94,13 @@ const dashboardRoutes = [
     parent: 'operation',
     permission: 'stocks',
     subMenu: [
-      // {
-      //   path: '/product',
-      //   name: 'product',
-      //   layout: '/shop',
-      //   parent: 'operation',
-      //   permission: 'shop_shop',
-      // },
+      {
+        path: '/product',
+        name: 'my_products',
+        layout: '/shop',
+        parent: 'operation',
+        permission: 'shop_my_products',
+      },
       // {
       //   path: '/order-management',
       //   name: 'order_management',

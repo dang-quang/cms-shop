@@ -18,15 +18,16 @@ function VoucherPage() {
 
   return (
     <Box>
-      <Flex
-        alignItems="center"
-        justifyContent="space-between"
-        mt="4"
-        onClick={() => router.push('/shop/flash-sale-shop/product-flashsale')}>
+      <Flex alignItems="center" justifyContent="space-between" mt="4">
         <Text textStyle="h6-sb" color="text-basic">
           Flash Sale Shop
         </Text>
-        <Button leftIcon={<HiPlus />} variant="primary" children="Add Flash Sale" />
+        <Button
+          leftIcon={<HiPlus />}
+          variant="primary"
+          children="Add Flash Sale"
+          onClick={() => router.push('/shop/flash-sale-shop/product-flashsale')}
+        />
       </Flex>
       <Tabs variant="soft-rounded" mt="8">
         <TabList h="48px" w="full" borderBottomWidth="1px" borderBottomColor="border-5">

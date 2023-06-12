@@ -4,8 +4,13 @@ export const radioStyles: { components: { Radio: StyleConfig } } = {
     Radio: {
       baseStyle: {
         width: '40px',
+        height: '40px',
         control: {
           borderWidth: 1,
+          borderColor: 'border-5',
+          _hover: {
+            borderColor: 'border-3',
+          },
           _checked: {
             padding: 1,
             bg: 'white',
@@ -14,11 +19,10 @@ export const radioStyles: { components: { Radio: StyleConfig } } = {
             _before: {
               padding: 1,
               bg: 'primary.100',
-              borderColor: 'red',
             },
             _hover: {
               bg: 'unset',
-              borderColor: 'unset',
+              borderColor: 'primary.100',
             },
           },
           _focus: {

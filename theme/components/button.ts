@@ -16,20 +16,46 @@ export const buttonStyles = {
         },
       },
       variants: {
-        outline: () => ({
-          borderRadius: '16px',
+        outline: (props: StyleFunctionProps) => ({
+          bg: 'transparent',
+          color: 'primary.100',
+          borderWidth: '1px',
+          borderColor: 'primary.100',
+          _focus: {
+            bg: mode('primary.200', 'primary.200')(props),
+            color: 'white',
+            borderColor: 'transparent',
+          },
+          _active: {
+            bg: mode('primary.100', 'primary.100')(props),
+            color: 'white',
+            borderColor: 'transparent',
+          },
+          _hover: {
+            bg: mode('primary.100', 'primary.100')(props),
+            color: 'white',
+            borderColor: 'transparent',
+          },
         }),
         primary: (props: StyleFunctionProps) => ({
-          bg: mode('primary.100', 'primary.100')(props),
+          bg: 'primary.100',
           color: 'white',
           _focus: {
             bg: mode('primary.200', 'primary.200')(props),
           },
           _active: {
-            bg: mode('primary.100', 'primary.100')(props),
+            bg: mode('primary.200', 'primary.200')(props),
           },
           _hover: {
             bg: mode('primary.200', 'primary.200')(props),
+            _disabled: {
+              bg: 'primary.100',
+              color: 'white',
+            },
+          },
+          _disabled: {
+            bg: 'primary.100',
+            color: 'white',
           },
         }),
         secondary: (props: StyleFunctionProps) => ({
@@ -98,6 +124,23 @@ export const buttonStyles = {
           _hover: {
             bg: mode('red', 'red')(props),
             color: 'white',
+          },
+        }),
+        'outline-control': (props: StyleFunctionProps) => ({
+          bg: 'transparent',
+          borderColor: 'border-5',
+          color: 'text-basic',
+          borderWidth: '1px',
+          borderRadius: '4px',
+          _focus: {
+            bg: 'bg-2',
+          },
+          _active: {
+            bg: 'bg-3',
+          },
+          _hover: {
+            borderColor: 'border-3',
+            bg: 'bg-2',
           },
         }),
       },

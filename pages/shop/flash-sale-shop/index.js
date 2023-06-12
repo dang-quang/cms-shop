@@ -26,7 +26,7 @@ function VoucherPage() {
         <Text textStyle="h6-sb" color="text-basic">
           Flash Sale Shop
         </Text>
-        <Button leftIcon={<HiPlus />} variant="primary" children="Add Flash Sale" size="lg" />
+        <Button leftIcon={<HiPlus />} variant="primary" children="Add Flash Sale" />
       </Flex>
       <Tabs variant="soft-rounded" mt="8">
         <TabList h="48px" w="full" borderBottomWidth="1px" borderBottomColor="border-5">

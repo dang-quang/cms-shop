@@ -24,7 +24,7 @@ import { loadTranslations } from 'ni18n';
 import { ni18nConfig } from '../ni18n.config';
 import { Box, Button, Flex, HStack } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { approveProducts, rejectProducts } from 'redux/actions/product';
+import { approveProducts, rejectProducts, setApproveProducts } from 'redux/actions/product';
 import product from 'redux/reducers/product';
 import _ from 'lodash';
 import { EAppKey } from 'constants/types';
@@ -32,7 +32,7 @@ import { requestApproveProduct } from 'utilities/ApiManage';
 import { setShowLoader, SHOW_SIDEBAR } from 'redux/actions/app';
 import { NotificationManager } from 'react-light-notifications';
 import { approveVouchers, rejectVouchers, setSelectedVouchers } from 'redux/actions/voucher';
-import { setSelectedProducts } from 'store/slices/productSlice';
+import { ModalSelectProducts } from 'components';
 
 let ps;
 
@@ -52,15 +52,15 @@ export default function Admin({ children, ...rest }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const showSidebar = useSelector((state) => state.app.showSidebar);
   const showLoader = useSelector((state) => state.app.showLoader);
-  const selectedProducts = useSelector((state) => state.product.selectedProducts);
+  const approveProducts = useSelector((state) => state.product.approveProducts);
   const selectedVouchers = useSelector((state) => state.voucher.selectedVouchers);
 
-  const isProductApprove = _.some(selectedProducts, (obj) => !_.isEmpty(obj.products));
+  const isProductApprove = _.some(approveProducts, (obj) => !_.isEmpty(obj.products));
   const isVoucherApprove = _.some(selectedVouchers, (obj) => !_.isEmpty(obj.vouchers));
 
   React.useEffect(() => {
     const handleRouteChange = (url, { shallow }) => {
-      dispatch(setSelectedProducts([{ isSelectAll: false, products: [] }]));
+      dispatch(setApproveProducts([{ isSelectAll: false, products: [] }]));
       dispatch(setSelectedVouchers([{ isSelectAll: false, vouchers: [] }]));
     };
 
@@ -195,6 +195,7 @@ export default function Admin({ children, ...rest }) {
           </HStack>
         </Flex>
       )}
+      <ModalSelectProducts />
     </Box>
   );
 }

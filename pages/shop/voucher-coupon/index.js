@@ -25,7 +25,7 @@ function VoucherCoupon() {
         <Text textStyle="h6-sb" color="text-basic">
           Vouchers
         </Text>
-        <Button leftIcon={<HiPlus />} variant="primary" children="Add Voucher" size="lg" />
+        <Button leftIcon={<HiPlus />} variant="primary" children="Add Voucher" />
       </Flex>
       <Tabs variant="soft-rounded" mt="4">
         <TabList h="48px" w="full" borderBottomWidth="1px" borderBottomColor="border-5">

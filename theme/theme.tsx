@@ -14,6 +14,7 @@ import { semanticTokens } from './components/semanticTokens';
 import { checkBoxStyles } from './components/checkBox';
 import { formError } from './components/form-error';
 import { radioStyles } from './components/radio';
+import { menuStyles } from './components/menu';
 
 export default extendTheme(
   globalStyles,
@@ -30,7 +31,8 @@ export default extendTheme(
   semanticTokens, // app theme colors
   checkBoxStyles, // checkbox styles
   formError, // form error styles
-  radioStyles // radio styles
+  radioStyles, // radio styles
+  menuStyles // menu item styles
 );
 
 export interface CustomCardProps extends HTMLChakraProps<'div'>, ThemingProps {}

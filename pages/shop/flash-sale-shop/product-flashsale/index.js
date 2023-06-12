@@ -1,24 +1,6 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import Admin from 'layouts/Admin.js';
-import Card from 'components/Card/Card.js';
-import CardHeader from 'components/Card/CardHeader.js';
-import CardBody from 'components/Card/CardBody.js';
-import CardFooter from 'components/Card/CardFooter.js';
-import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import Search from '@material-ui/icons/Search';
-import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
-import tableStyles from 'assets/jss/natcash/components/tableStyle.js';
-import taskStyles from 'assets/jss/natcash/components/tasksStyle.js';
-import Pagination from '@material-ui/lab/Pagination';
-import { useTranslation } from 'react-i18next';
-import styles from 'assets/jss/natcash/views/productApproval/productApprovalStyle';
-import { NotificationContainer, NotificationManager } from 'react-light-notifications';
 import {
   AspectRatio,
   Box,
@@ -35,539 +17,276 @@ import {
   Tabs,
   FormControl,
   FormErrorMessage,
-  InputGroup, SimpleGrid,
+  InputGroup,
+  SimpleGrid,
   InputRightElement,
+  Icon,
+  useBoolean,
+  Button,
+  useDisclosure,
 } from '@chakra-ui/react';
-import { formatCurrency, formatNumber } from 'utilities/utils';
-import { requestApproveProduct, requestGetListProductApprove } from 'utilities/ApiManage';
-import { setShowLoader } from 'redux/actions/app';
+import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
+import { useTranslation } from 'react-i18next';
+import { NotificationContainer, NotificationManager } from 'react-light-notifications';
+
 import dayjs from 'dayjs';
 import router from 'next/router';
 import { RangeDatePickerItem } from 'components';
-import { BASE_API_URL } from 'utilities/const';
-import { setSelectedProducts } from 'redux/actions/product';
 import _ from 'lodash';
-import { EAppKey } from 'constants/types';
 import { Formik, Form, Field, FieldArray } from 'formik';
 import { FormGroup } from 'components';
+import { AiOutlineSearch } from 'react-icons/ai';
+import * as yup from 'yup';
+import { HiPlus } from 'react-icons/hi';
+import { setModalSelectProducts } from 'redux/actions/product';
 
-function ProductApproval() {
+const formatDate = 'YYYY-MM-DDTHH:mm';
+
+const initialValues = {
+  name: '',
+  programStart: dayjs().add(10, 'minutes').format(formatDate),
+  programEnd: dayjs().add(1, 'hours').add(10, 'minutes').format(formatDate),
+};
+
+const ProductFlashSale = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const useStyles = makeStyles(styles);
-  const useTableStyles = makeStyles(tableStyles);
-  const classes = useStyles();
-  const tableClasses = useTableStyles();
-  const useTaskStyles = makeStyles(taskStyles);
-  const taskClasses = useTaskStyles();
 
-  // const TABLE_HEAD = [
-  //   t('serial_number'),
-  //   t('name'),
-  //   t('sideBar.category'),
-  //   t('price'),
-  //   t('code_shop'),
-  //   t('created_by'),
-  //   t('qrManagement.publishTime'),
-  // ];
-  const TABLE_HEAD = [
-    'Tên sản phẩm',
-    'Giá gốc',
-    'Giá sau giảm',
-    'Giảm giá',
-    'Kho hàng',
-    'Số lượng sản phẩm',
-    'Giới hạn mua tối đa',
-  ];
-  const tabs = ['Chi tiết chương trình', 'Điều kiện tham gia'];
-
-  const formatDate = 'YYYY-MM-DD';
-  const FROM_DATE = dayjs().subtract(30, 'days').toDate();
   const TO_DATE = dayjs().toDate();
+  const FROM_DATE = dayjs().subtract(30, 'days').toDate();
 
   const refInput = React.useRef();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(1);
-  const [totalRecords, setTotalRecords] = React.useState(0);
-  const [search, setSearch] = React.useState('');
-  const [showDate, setShowDate] = React.useState(false);
-  const [selectedDates, setSelectedDates] = React.useState([FROM_DATE, TO_DATE]);
-  const [doFilter, setDoFilter] = useState(false);
-  const [doSearch, setDoSearch] = useState(false);
+  const [doSearch, { on: onSearch, off: offSearch }] = useBoolean(false);
   const [products, setProducts] = React.useState([]);
-  const selectedProducts = useSelector((state) => state.product.selectedProducts);
 
-  React.useEffect(() => {
-    (async () => {
-      try {
-        dispatch(setShowLoader(true));
-        const res = await requestGetListProductApprove({ page: 1 });
-        if (res.code === EAppKey.MSG_SUCCESS && res.result && res.result.results) {
-          let _initSelectedProducts = [];
-          for (let i = 0; i < res?.result.totalPages; i++) {
-            _initSelectedProducts.push({ isSelectAll: false, products: [] });
-          }
-          dispatch(setSelectedProducts(_initSelectedProducts));
-          setProducts(res.result.results === null ? [] : res.result.results);
-          setTotalPage(res?.result.totalPages);
-          setTotalRecords(res.result.totalRecords);
-        } else {
-          NotificationManager.error({
-            title: t('error'),
-            message: `No data exists`,
-          });
-        }
-      } finally {
-        dispatch(setShowLoader(false));
-      }
-    })();
-  }, []);
+  // const renderProduct = React.useCallback(
+  //   (item, index) => {
+  //     const { categoryName, createAt, createBy, image, name, price, shopCode, productCode } = item;
 
-  React.useEffect(() => {
-    (async () => {
-      try {
-        if (doSearch) {
-          dispatch(setShowLoader(true));
-          const res = await requestGetListProductApprove({
-            keyWord: refInput.current.value,
-            page: currentPage,
-          });
+  //     let _image = '';
 
-          if (res.code === EAppKey.MSG_SUCCESS && res.result && res.result.results) {
-            // let _initSelectedProducts = [];
-            // for (let i = 0; i < res?.result.totalPages; i++) {
-            //   _initSelectedProducts.push({ isSelectAll: false, products: [] });
-            // }
-            //dispatch(setSelectedProducts(_initSelectedProducts));
-            setProducts(res.result.results === null ? [] : res.result.results);
-            setTotalPage(res?.result.totalPages);
-            setTotalRecords(res.result.totalRecords);
-          } else {
-            setProducts([]);
-            setTotalPage(1);
-            setTotalRecords(0);
-            NotificationManager.error({
-              title: t('no_results_found'),
-              message: t('no_results_found_for_your_search'),
-            });
-          }
-        }
-      } finally {
-        dispatch(setShowLoader(false));
-        setDoSearch(false);
-      }
-    })();
-  }, [doSearch, currentPage, refInput.current]);
+  //     var firstChar = image.substring(0, 4);
 
-  React.useEffect(() => {
-    (async () => {
-      try {
-        if (doFilter) {
-          dispatch(setShowLoader(true));
-          const res = await requestGetListProductApprove({
-            fromDate: dayjs(selectedDates[0]).format(formatDate),
-            toDate: dayjs(selectedDates[1]).format(formatDate),
-            page: currentPage,
-          });
+  //     if (firstChar === 'http' || firstChar === 'https') {
+  //       _image = image;
+  //     } else {
+  //       _image = BASE_API_URL + '/assets/' + image;
+  //     }
 
-          if (res.code === EAppKey.MSG_SUCCESS && res.result && res.result.results) {
-            let _initSelectedProducts = [];
-            // for (let i = 0; i < res?.result.totalPages; i++) {
-            //   _initSelectedProducts.push({ isSelectAll: false, products: [] });
-            // }
-            // dispatch(setSelectedProducts(_initSelectedProducts));
-            setProducts(res.result.results === null ? [] : res.result.results);
-            setTotalPage(res?.result.totalPages);
-            setTotalRecords(res.result.totalRecords);
-          } else {
-            setProducts([]);
-            setTotalPage(1);
-            setTotalRecords(0);
-            NotificationManager.error({
-              title: t('no_results_found'),
-              message: t('no_results_found_for_your_search'),
-            });
-          }
-        }
-      } finally {
-        dispatch(setShowLoader(false));
-        setDoFilter(false);
-      }
-    })();
-  }, [doFilter, currentPage, selectedDates]);
+  //     const isItemChecked = (() => {
+  //       for (let i = 0; i < selectedProducts[currentPage - 1]?.products?.length; i++) {
+  //         if (selectedProducts[currentPage - 1]?.products[i].id === item.id) {
+  //           return true;
+  //         }
+  //       }
+  //       return false;
+  //     })();
 
-  const resetFilterDate = React.useCallback(() => {
-    setSelectedDates([FROM_DATE, TO_DATE]);
-    setShowDate(false);
-    setDoFilter(false);
-  }, []);
+  //     return (
+  //       <React.Fragment key={index}>
+  //         <TableRow
+  //           key={index}
+  //           onClick={() => handleSelect(item)}
+  //           className={tableClasses.tableBodyRow}
+  //           style={{
+  //             cursor: 'pointer',
+  //             backgroundColor: isItemChecked ? '#fff6f0' : '#fff',
+  //             height: 100,
+  //           }}>
+  //           <TableCell key="check">
+  //             <Checkbox isChecked={isItemChecked} onChange={() => handleSelect(item)} />
+  //           </TableCell>
+  //           <TableCell className={tableClasses.tableCell} key="shopCode2">
+  //             <Flex alignItems="center">
+  //               <AspectRatio
+  //                 overflow="hidden"
+  //                 w="80px"
+  //                 ratio={1 / 1}
+  //                 shadow="sm"
+  //                 borderRadius="6px">
+  //                 <Image src={_image} w="100%" h="100%" objectFit="contain" />
+  //               </AspectRatio>
+  //               <Flex flexDirection="column" ml="3" flex="1">
+  //                 <Text textStyle="h4" color="text-basic" noOfLines={2}>
+  //                   {name}
+  //                 </Text>
+  //                 <Text mt="2" textStyle="c-sm" color="text-body" mr="1">
+  //                   {shopCode}
+  //                   <Text as="span" mx="3">
+  //                     -
+  //                   </Text>
+  //                   <Text as="span" textStyle="c-sm" color="text-body">
+  //                     {productCode}
+  //                   </Text>
+  //                 </Text>
+  //               </Flex>
+  //             </Flex>
+  //           </TableCell>
+  //           <TableCell className={tableClasses.tableCell} key="shopCode">
+  //             <Text textStyle="h3" color="text-basic">
+  //               {formatCurrency(price ?? 0)}
+  //             </Text>
+  //           </TableCell>
+  //           <TableCell className={tableClasses.tableCell} key="shopCode1">
+  //             <InputGroup style={{ width: 110 }}>
+  //               <Input
+  //                 placeholder="Input"
+  //                 autoComplete="off"
+  //                 // style={{ }}
+  //                 value={0}
+  //                 onChange={() => {}}
+  //               />
+  //               <InputRightElement w="30px" borderLeftWidth="1px">
+  //                 <Center h="full">
+  //                   <Text textStyle="h2">HTG</Text>
+  //                 </Center>
+  //               </InputRightElement>
+  //             </InputGroup>
+  //           </TableCell>
+  //           <TableCell className={tableClasses.tableCell} key="shopCode3">
+  //             <InputGroup style={{ width: 110 }}>
+  //               <Input placeholder="Input" autoComplete="off" value={0} onChange={() => {}} />
+  //               <InputRightElement w="60px" borderLeftWidth="1px">
+  //                 <Center h="full">
+  //                   <Text textStyle="h2">% Giảm</Text>
+  //                 </Center>
+  //               </InputRightElement>
+  //             </InputGroup>
+  //           </TableCell>
 
-  const handleCheckAll = React.useCallback(async () => {
-    if (selectedProducts[currentPage - 1].isSelectAll) {
-      const updatedSelectedProducts = [...selectedProducts];
-      updatedSelectedProducts[currentPage - 1] = {
-        products: [],
-        isSelectAll: false,
-      };
-      dispatch(setSelectedProducts(updatedSelectedProducts));
-    } else {
-      const updatedSelectedProducts = [...selectedProducts];
-      updatedSelectedProducts[currentPage - 1] = {
-        products: products,
-        isSelectAll: true,
-      };
-      dispatch(setSelectedProducts(updatedSelectedProducts));
+  //           <TableCell className={tableClasses.tableCell} key="createBy">
+  //             <Text textStyle="h3" color="text-basic">
+  //               1000
+  //             </Text>
+  //           </TableCell>
+  //           <TableCell className={tableClasses.tableCell} key={'publish'}>
+  //             <Text textStyle="h3" color="text-basic">
+  //               30
+  //             </Text>
+  //           </TableCell>
+  //           <TableCell className={tableClasses.tableCell} key={'publish1'}>
+  //             <Text textStyle="h3" color="text-basic">
+  //               5
+  //             </Text>
+  //           </TableCell>
+  //         </TableRow>
+  //       </React.Fragment>
+  //     );
+  //   },
+  //   [selectedProducts, currentPage]
+  // );
+
+  const handleSubmitVoucher = React.useCallback(async ({ name, programStart, programEnd }) => {
+    try {
+      dispatch(setShowLoader(true));
+    } finally {
+      dispatch(setShowLoader(false));
     }
-  }, [selectedProducts, currentPage, products]);
+  }, []);
 
-  const handleSelect = React.useCallback(
-    async (item) => {
-      const updatedSelectedProducts = [...selectedProducts];
-      const currentPageProducts = updatedSelectedProducts[currentPage - 1];
-
-      const updatedProducts = currentPageProducts.products.filter(
-        (product) => product.id !== item.id
-      );
-
-      if (updatedProducts.length === currentPageProducts.products.length) {
-        currentPageProducts.products.push(item);
-      } else {
-        currentPageProducts.products = updatedProducts;
-        currentPageProducts.isSelectAll = false;
-      }
-
-      dispatch(setSelectedProducts(updatedSelectedProducts));
-    },
-    [selectedProducts, currentPage]
-  );
-
-  const handleSelectTab = React.useCallback(
-    async (e, value) => {
-      setCurrentPage(value);
-      const res = await requestGetListProductApprove({ page: value });
-      if (res.code === EAppKey.MSG_SUCCESS && res.result && res.result.results) {
-        let _initSelectedProducts = [];
-        for (let i = 0; i < res?.result.totalPages; i++) {
-          _initSelectedProducts.push({ isSelectAll: false, products: [] });
-        }
-
-        if (selectedProducts) {
-          dispatch(setSelectedProducts(selectedProducts));
-        } else {
-          dispatch(setSelectedProducts(_initSelectedProducts));
-        }
-
-        setProducts(res.result.results === null ? [] : res.result.results);
-        setTotalPage(res?.result.totalPages);
-        setTotalRecords(res.result.totalRecords);
-      }
-    },
-    [selectedProducts]
-  );
-
-  const renderProduct = React.useCallback(
-    (item, index) => {
-      const { categoryName, createAt, createBy, image, name, price, shopCode, productCode } = item;
-
-      let _image = '';
-
-      var firstChar = image.substring(0, 4);
-
-      if (firstChar === 'http' || firstChar === 'https') {
-        _image = image;
-      } else {
-        _image = BASE_API_URL + '/assets/' + image;
-      }
-
-      const isItemChecked = (() => {
-        for (let i = 0; i < selectedProducts[currentPage - 1]?.products?.length; i++) {
-          if (selectedProducts[currentPage - 1]?.products[i].id === item.id) {
-            return true;
-          }
-        }
-        return false;
-      })();
-
-      return (
-        <React.Fragment key={index}>
-          <TableRow
-            key={index}
-            onClick={() => handleSelect(item)}
-            className={tableClasses.tableBodyRow}
-            style={{
-              cursor: 'pointer',
-              backgroundColor: isItemChecked ? '#fff6f0' : '#fff',
-              height: 100,
-            }}>
-            <TableCell key="check">
-              <Checkbox isChecked={isItemChecked} onChange={() => handleSelect(item)} />
-            </TableCell>
-            <TableCell className={tableClasses.tableCell} key="shopCode2">
-              <Flex alignItems="center">
-                <AspectRatio
-                  overflow="hidden"
-                  w="80px"
-                  ratio={1 / 1}
-                  shadow="sm"
-                  borderRadius="6px">
-                  <Image src={_image} w="100%" h="100%" objectFit="contain" />
-                </AspectRatio>
-                <Flex flexDirection="column" ml="3" flex="1">
-                  <Text textStyle="h4" color="text-basic" noOfLines={2}>
-                    {name}
-                  </Text>
-                  <Text mt="2" textStyle="c-sm" color="text-body" mr="1">
-                    {shopCode}
-                    <Text as="span" mx="3">
-                      -
-                    </Text>
-                    <Text as="span" textStyle="c-sm" color="text-body">
-                      {productCode}
-                    </Text>
-                  </Text>
-                </Flex>
-              </Flex>
-            </TableCell>
-            <TableCell className={tableClasses.tableCell} key="shopCode">
-              <Text textStyle="h3" color="text-basic">
-                {formatCurrency(price ?? 0)}
-              </Text>
-            </TableCell>
-            <TableCell className={tableClasses.tableCell} key="shopCode1">
-              <InputGroup style={{ width: 110 }}>
-                <Input
-                  placeholder="Input"
-                  autoComplete="off"
-                  // style={{ }}
-                  value={0}
-                  onChange={() => { }}
-                />
-                <InputRightElement w="30px" borderLeftWidth="1px">
-                  <Center h="full">
-                    <Text textStyle="h2">HTG</Text>
-                  </Center>
-                </InputRightElement>
-              </InputGroup>
-            </TableCell>
-            <TableCell className={tableClasses.tableCell} key="shopCode3">
-              <InputGroup style={{ width: 110 }}>
-                <Input placeholder="Input" autoComplete="off" value={0} onChange={() => { }} />
-                <InputRightElement w="60px" borderLeftWidth="1px">
-                  <Center h="full">
-                    <Text textStyle="h2">% Giảm</Text>
-                  </Center>
-                </InputRightElement>
-              </InputGroup>
-            </TableCell>
-
-            <TableCell className={tableClasses.tableCell} key="createBy">
-              <Text textStyle="h3" color="text-basic">
-                1000
-              </Text>
-            </TableCell>
-            <TableCell className={tableClasses.tableCell} key={'publish'}>
-              <Text textStyle="h3" color="text-basic">
-                30
-              </Text>
-            </TableCell>
-            <TableCell className={tableClasses.tableCell} key={'publish1'}>
-              <Text textStyle="h3" color="text-basic">
-                5
-              </Text>
-            </TableCell>
-          </TableRow>
-        </React.Fragment>
-      );
-    },
-    [selectedProducts, currentPage]
-  );
+  const validationSchema = yup.object().shape({
+    name: yup.string().required(t('error_field_empty')),
+    programStart: yup
+      .date()
+      .min(dayjs().toDate(), 'Please enter a start time that is later than the current time.'),
+    programEnd: yup
+      .date()
+      .min(
+        yup.ref('programStart'),
+        'Please enter a start time that is later than the current time.'
+      ),
+  });
 
   return (
-    <Card>
-      <CardHeader color="primary">
-        <Text textStyle="h5" color="white">
-          {t('sideBar.productApproval')}
-        </Text>
-      </CardHeader>
-
-      <CardBody className={classes.cardBody}>
-        <Box
-          mt="4"
-          bg="bg-1"
-          shadow="md"
-          py={{ base: '6', xl: '8' }}
-          pl={{ base: '6', xl: '8' }}
-          pr={{ base: '10', xl: '100px' }}>
-          <Text textStyle="h5-sb" color="primary.100" mb="6">
-            Basic information
-          </Text>
-          <FormGroup title="Flash sale name">
-            <FormControl
-            // isInvalid={!!errors.name}
-            >
-              <Input
-                placeholder="Input"
-                autoComplete="off"
-                value={""}
-              // onChange={handleChange('name')}
-              />
-              <FormErrorMessage>{"errors.name"}</FormErrorMessage>
-            </FormControl>
-          </FormGroup>
-          <FormGroup title="Program time" mt="6">
-            <SimpleGrid columns={{ base: 1, xl: 2 }} gap="5" pr={{ base: 'unset', xl: '20%' }}>
-              <FormControl
-              // isInvalid={!!errors.programStart}
-              >
-                <Input
-                  type="datetime-local"
-                  placeholder="Select Date and Time"
-                  value={""}
-                  // value={values.programStart}
-                  // onChange={handleChange('programStart')}
-                  min={dayjs().format(formatDate)}
-                />
-                {/* <FormErrorMessage>{errors.programStart}</FormErrorMessage> */}
-              </FormControl>
-              <FormControl
-              // isInvalid={!!errors.programEnd}
-              >
-                <Input
-                  type="datetime-local"
-                  placeholder="Select Date and Time"
-                  value={""}
-                  // value={values.programEnd}
-                  // onChange={handleChange('programEnd')}
-                  min={dayjs().format(formatDate)}
-                  max={dayjs().add(4, 'months').format(formatDate)}
-                />
-                {/* <FormErrorMessage>{errors.programEnd}</FormErrorMessage> */}
-              </FormControl>
-            </SimpleGrid>
-          </FormGroup>
-        </Box>
-
-      </CardBody>
-
-      <CardBody className={classes.cardBody}>
-        <Flex
-          flexDirection={{ base: 'column', md: 'row' }}
-          alignItems={{ base: 'unset', md: 'center' }}
-          justifyContent={{ base: 'flex-start', md: 'space-between' }}>
-          <Flex
-            flexDirection={{ base: 'column', sm: 'row' }}
-            alignItems={{ base: 'unset', sm: 'center' }}
-            flex="1">
-            <Flex mx={{ base: 'unset', sm: '2' }} flex="1" alignItems="center">
-              <Input
-                ref={refInput}
-                variant="search"
-                placeholder="Enter product code, name."
-                flex="1"
-                maxW="400px"
-              />
-              <Center
-                h="100%"
-                mx="2"
-                cursor="pointer"
-                boxSize="40px"
-                w="40px"
-                borderRadius="full"
-                color="gray.400"
-                shadow="md"
-                onClick={() => setDoSearch(!doSearch)}>
-                <Search />
-              </Center>
-              {/* <RangeDatePickerItem
-                selectedDates={selectedDates}
-                onDateChange={setSelectedDates}
-                maxDate={moment().toDate()}
-              /> */}
-            </Flex>
-          </Flex>
-        </Flex>
-      </CardBody>
-      {products && products.length > 0 && (
-        <CardFooter>
-          <div className={tableClasses.tableResponsive} style={{ marginTop: '0' }}>
-            <Formik
-              initialValues={products}
-              onSubmit={(values) => {
-                console.log('onSubmit', values);
-                setTimeout(() => {
-                  alert(JSON.stringify(values, null, 2));
-                }, 500);
-              }}
-              render={({ values }) => (
-                <Form>
-                  <FieldArray
-                    // name="friends"
-                    render={(arrayHelpers) => (
-                      <div className={tableClasses.tableResponsive} style={{ marginTop: '0' }}>
-                        <Table className={tableClasses.table}>
-                          <TableHead className={tableClasses['primary' + 'TableHeader']}>
-                            <TableRow className={tableClasses.tableHeadRow}>
-                              <TableCell
-                                className={
-                                  tableClasses.tableCell + ' ' + tableClasses.tableHeadCell
-                                }>
-                                <Checkbox
-                                  isChecked={selectedProducts[currentPage - 1].isSelectAll}
-                                  tabIndex={-1}
-                                  onChange={() => handleCheckAll()}
-                                  ml="2"
-                                />
-                              </TableCell>
-                              {TABLE_HEAD.map((prop, key) => {
-                                return (
-                                  <TableCell
-                                    style={{ width: key === 5 || key === 6 ? '7%' : null }}
-                                    className={
-                                      tableClasses.tableCell + ' ' + tableClasses.tableHeadCell
-                                    }
-                                    key={key}>
-                                    <Text textStyle="h3">{prop}</Text>
-                                  </TableCell>
-                                );
-                              })}
-                            </TableRow>
-                          </TableHead>
-                          {values.map((friend, index) => {
-                            if (index < 2) {
-                              return <TableBody>{renderProduct(friend, index)};</TableBody>;
-                            }
-                          })}
-                        </Table>
-                        <div>
-                          <button type="submit">Submit</button>
-                        </div>
-                      </div>
-                    )}
+    <Formik
+      validateOnChange={false}
+      validationSchema={validationSchema}
+      enableReinitialize={true}
+      initialValues={initialValues}
+      onSubmit={handleSubmitVoucher}>
+      {({ handleChange, handleSubmit, setFieldValue, values, errors }) => {
+        return (
+          <Box>
+            <Text textStyle="h6-sb" color="text-basic" mt="6">
+              Create new new program
+            </Text>
+            <Box mt="6" bg="bg-1" shadow="md" borderRadius="4px" p="6">
+              <Text textStyle="h5-sb" color="text-basic" mb="6">
+                Basic information
+              </Text>
+              <FormGroup title="Flash sale name">
+                <FormControl isInvalid={!!errors.name}>
+                  <Input
+                    placeholder="Input"
+                    autoComplete="off"
+                    value={values.name}
+                    onChange={handleChange('name')}
                   />
-                </Form>
-              )}
-            />
-            <Flex justifyContent="space-between" pt="6" pr="6" pb="6">
-              <Pagination count={totalPage} page={currentPage} onChange={handleSelectTab} />
-              <Box>
-                <Text>
-                  {t('results_page', {
-                    start: (currentPage - 1) * 50 + 1,
-                    end: (currentPage - 1) * 50 + products.length,
-                    total: totalRecords,
-                  })}
-                </Text>
-              </Box>
-            </Flex>
-          </div>
-        </CardFooter>
-      )}
-      <NotificationContainer />
-    </Card>
+                  <FormErrorMessage>{errors.name}</FormErrorMessage>
+                </FormControl>
+              </FormGroup>
+              <FormGroup title="Program time" mt="6">
+                <SimpleGrid columns={{ base: 1, xl: 2 }} gap="5" pr={{ base: 'unset', xl: '20%' }}>
+                  <FormControl isInvalid={!!errors.programStart}>
+                    <Input
+                      type="datetime-local"
+                      placeholder="Select Date and Time"
+                      value={values.programStart}
+                      onChange={handleChange('programStart')}
+                      min={dayjs().format(formatDate)}
+                    />
+                    <FormErrorMessage>{errors.programStart}</FormErrorMessage>
+                  </FormControl>
+                  <FormControl isInvalid={!!errors.programEnd}>
+                    <Input
+                      type="datetime-local"
+                      placeholder="Select Date and Time"
+                      value={values.programEnd}
+                      onChange={handleChange('programEnd')}
+                      min={dayjs().format(formatDate)}
+                      max={dayjs().add(4, 'months').format(formatDate)}
+                    />
+                    <FormErrorMessage>{errors.programEnd}</FormErrorMessage>
+                  </FormControl>
+                </SimpleGrid>
+              </FormGroup>
+              {/* <InputGroup maxW="570px" borderRadius="4px" overflow="hidden" mt="6">
+                <Input ref={refInput} placeholder="Search product name" />
+                <InputRightElement
+                  borderRadius="4px"
+                  cursor="pointer"
+                  h="full"
+                  bg="primary.100"
+                  w="100px">
+                  <Center onClick={() => setDoSearch(!doSearch)}>
+                    <Icon as={AiOutlineSearch} w="24px" h="24px" color="white" />
+                  </Center>
+                </InputRightElement>
+              </InputGroup> */}
+            </Box>
+            <Box mt="6" bg="bg-1" borderRadius="4px" shadow="md" p="6">
+              <Text textStyle="h5-sb" color="text-basic">
+                Shop's Flash Sale Products
+              </Text>
+              <Text textStyle="body" color="text-body" mt="2">
+                Please review the product criteria before adding items to your promotion.
+              </Text>
+              <Button
+                mt="2"
+                leftIcon={<HiPlus />}
+                variant="outline"
+                children="Add Products"
+                onClick={() => dispatch(setModalSelectProducts(true))}
+              />
+            </Box>
+            <NotificationContainer />
+          </Box>
+        );
+      }}
+    </Formik>
   );
-}
+};
 
-ProductApproval.layout = Admin;
+ProductFlashSale.layout = Admin;
 
-// export default ProductApproval;
-export default WithAuthentication(ProductApproval);
+export default WithAuthentication(ProductFlashSale);

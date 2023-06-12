@@ -2,8 +2,8 @@ import { EAppKey } from 'constants/types';
 import _ from 'lodash';
 import Router from 'next/router';
 import { NotificationManager } from 'react-light-notifications';
-import { setShowLoader } from 'store/slices/appSlice';
 import { requestApproveVoucherShopRegisterProgram } from 'utilities/ApiManage';
+import { setShowLoader } from './app';
 
 export const SELECTED_VOUCHERS = 'SELECTED_VOUCHERS';
 

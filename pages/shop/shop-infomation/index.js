@@ -157,11 +157,6 @@ function ShopInfomationPage() {
     },
   ];
 
-
-
-
-
-
   return (
     <>
       <Card>
@@ -185,7 +180,12 @@ function ShopInfomationPage() {
           // borderColor="#B4B4B4"
           justifyContent={'center'}
           alignItems={'center'}>
-          <Box borderWidth="0.3px" borderColor="#B4B4B4" marginTop="20px" marginBottom="20px" height={"1px"}></Box>
+          <Box
+            borderWidth="0.3px"
+            borderColor="#B4B4B4"
+            marginTop="20px"
+            marginBottom="20px"
+            height={'1px'}></Box>
 
           {/* <Flex flexDirection={'column'}>
             <Box backgroundImage={'https://down-ws-vn.img.susercontent.com/e03048a5576062894717bb1ab92241f2'} w={'375px'} h={'162px'}>
@@ -209,38 +209,49 @@ function ShopInfomationPage() {
 
           <Flex>
             <Flex flexDirection="column">
-              <Box flexDirection="column" width='150px' textAlign='center'>
-                <Image src='https://www.phutungtt.com/wp-content/uploads/2022/09/logo-shopee-trong-tin-part.png' w={150} height={150} />
-                <Text textStyle="h3" color="text-basic" marginBottom={'10px'} >
+              <Box flexDirection="column" width="150px" textAlign="center">
+                <Image
+                  src="https://www.phutungtt.com/wp-content/uploads/2022/09/logo-shopee-trong-tin-part.png"
+                  w={150}
+                  height={150}
+                />
+                <Text textStyle="h3" color="text-basic" marginBottom={'10px'}>
                   Avata
                 </Text>
               </Box>
-              <Box flexDirection="column" width='280px' textAlign='center'>
+              <Box flexDirection="column" width="280px" textAlign="center">
                 {/* <Image src='https://down-ws-vn.img.susercontent.com/e03048a5576062894717bb1ab92241f2' w={150} height={150} /> */}
-                <AspectRatio
-                  w="280px"
-                  ratio={2 / 1}
-                  mr="2"
-                  borderRadius="8px"
-                  overflow="hidden">
-                  <Image src='https://a.ipricegroup.com/media/Eye/Shopee__Logo__x_iPrice_Thailand.jpg' w="100%" h="100%" objectFit="cover" />
+                <AspectRatio w="280px" ratio={2 / 1} mr="2" borderRadius="8px" overflow="hidden">
+                  <Image
+                    src="https://a.ipricegroup.com/media/Eye/Shopee__Logo__x_iPrice_Thailand.jpg"
+                    w="100%"
+                    h="100%"
+                    objectFit="cover"
+                  />
                 </AspectRatio>
-                <Text textStyle="h3" color="text-basic" marginBottom={'10px'} >
+                <Text textStyle="h3" color="text-basic" marginBottom={'10px'}>
                   Banner
                 </Text>
               </Box>
             </Flex>
-            <Box alignItems='center' justifyContent='center' marginLeft={'20px'} h='300px' w={'50%'}>
-              <Text textStyle="h3" color="text-basic" marginBottom={'10px'} >
-                Mô tả: Nếu như bạn đam mê mở một shop quần áo nhưng không có quá nhiều chi phí và diện tích cũng không được lớn. Vậy làm sao để thiết kế shop quần áo nhỏ 10m2 nhưng vẫn phải đẹp và đầy đủ công năng? Để giải quyết vấn đề khó khăn của bạn, chúng tôi ở đây sẽ mang lại cho bạn những kinh nghiệm để thiết kế một shop quần áo ưng ý nhất.
+            <Box
+              alignItems="center"
+              justifyContent="center"
+              marginLeft={'20px'}
+              h="300px"
+              w={'50%'}>
+              <Text textStyle="h3" color="text-basic" marginBottom={'10px'}>
+                Mô tả: Nếu như bạn đam mê mở một shop quần áo nhưng không có quá nhiều chi phí và
+                diện tích cũng không được lớn. Vậy làm sao để thiết kế shop quần áo nhỏ 10m2 nhưng
+                vẫn phải đẹp và đầy đủ công năng? Để giải quyết vấn đề khó khăn của bạn, chúng tôi ở
+                đây sẽ mang lại cho bạn những kinh nghiệm để thiết kế một shop quần áo ưng ý nhất.
               </Text>
               <Text textStyle="h3" color="text-basic" marginBottom={'10px'}>
-                Địa chỉ:  09 Đường số 01, Khu dân cư Trung tâm phường 6, TP. Tân An, Long An
+                Địa chỉ: 09 Đường số 01, Khu dân cư Trung tâm phường 6, TP. Tân An, Long An
               </Text>
             </Box>
-            <Box alignItems='center' marginLeft={'20px'}>
+            <Box alignItems="center" marginLeft={'20px'}>
               <Button
-                size="lg"
                 variant="primary"
                 children="Update"
                 onClick={() => router.push('/admin/voucher/add')}
@@ -248,48 +259,88 @@ function ShopInfomationPage() {
             </Box>
           </Flex>
 
-          <Box marginTop='20px'>
+          <Box marginTop="20px">
             <Text textStyle="h4" color="text-basic" marginBottom={'5px'}>
               Featured products
             </Text>
           </Box>
-          <Box borderWidth="0.3px" borderColor="#B4B4B4" marginTop="20px" marginBottom="20px" height={"1px"}></Box>
-          <Flex flexDirection='row' justifyContent='space-between' w='70%'>
-            <Box textAlign='center'>
-              <Image src='https://shopdunk.com/images/thumbs/0008502_macbook-air-m2-2022-8gb-ram-256gb-ssd_240.png  ' w={150} height={150} />
+          <Box
+            borderWidth="0.3px"
+            borderColor="#B4B4B4"
+            marginTop="20px"
+            marginBottom="20px"
+            height={'1px'}></Box>
+          <Flex flexDirection="row" justifyContent="space-between" w="70%">
+            <Box textAlign="center">
+              <Image
+                src="https://shopdunk.com/images/thumbs/0008502_macbook-air-m2-2022-8gb-ram-256gb-ssd_240.png  "
+                w={150}
+                height={150}
+              />
               <Text>Bộ đồ thu đông</Text>
-              <Flex flexDirection='row' textAlign='center'>
-                <Text textStyle="h3" color="text-basic">Giá niêm yết:</Text>
-                <Text textStyle="h3" color="red" marginLeft='3px'>  200.000đ</Text>
+              <Flex flexDirection="row" textAlign="center">
+                <Text textStyle="h3" color="text-basic">
+                  Giá niêm yết:
+                </Text>
+                <Text textStyle="h3" color="red" marginLeft="3px">
+                  {' '}
+                  200.000đ
+                </Text>
               </Flex>
             </Box>
-            <Box textAlign='center'>
-              <Image src='https://shopdunk.com/images/thumbs/0012005_airpods-max_240.webp' w={150} height={150} />
+            <Box textAlign="center">
+              <Image
+                src="https://shopdunk.com/images/thumbs/0012005_airpods-max_240.webp"
+                w={150}
+                height={150}
+              />
               <Text>Bộ đồ thu đông</Text>
-              <Flex flexDirection='row' textAlign='center'>
-                <Text textStyle="h3" color="text-basic">Giá niêm yết:</Text>
-                <Text textStyle="h3" color="red" marginLeft='3px'>  200.000đ</Text>
+              <Flex flexDirection="row" textAlign="center">
+                <Text textStyle="h3" color="text-basic">
+                  Giá niêm yết:
+                </Text>
+                <Text textStyle="h3" color="red" marginLeft="3px">
+                  {' '}
+                  200.000đ
+                </Text>
               </Flex>
             </Box>
-            <Box textAlign='center'>
-              <Image src='https://shopdunk.com/images/thumbs/0007301_ipad-pro-m2-129-inch-wifi-128gb_240.png' w={150} height={150} />
+            <Box textAlign="center">
+              <Image
+                src="https://shopdunk.com/images/thumbs/0007301_ipad-pro-m2-129-inch-wifi-128gb_240.png"
+                w={150}
+                height={150}
+              />
               <Text>Bộ đồ thu đông</Text>
-              <Flex flexDirection='row' textAlign='center'>
-                <Text textStyle="h3" color="text-basic">Giá niêm yết:</Text>
-                <Text textStyle="h3" color="red" marginLeft='3px'>  200.000đ</Text>
+              <Flex flexDirection="row" textAlign="center">
+                <Text textStyle="h3" color="text-basic">
+                  Giá niêm yết:
+                </Text>
+                <Text textStyle="h3" color="red" marginLeft="3px">
+                  {' '}
+                  200.000đ
+                </Text>
               </Flex>
             </Box>
-            <Box textAlign='center'>
-              <Image src='https://shopdunk.com/images/thumbs/0007808_iphone-14-pro-max-128gb_240.png' w={150} height={150} />
+            <Box textAlign="center">
+              <Image
+                src="https://shopdunk.com/images/thumbs/0007808_iphone-14-pro-max-128gb_240.png"
+                w={150}
+                height={150}
+              />
               <Text>Bộ đồ thu đông</Text>
-              <Flex flexDirection='row' textAlign='center'>
-                <Text textStyle="h3" color="text-basic">Giá niêm yết:</Text>
-                <Text textStyle="h3" color="red" marginLeft='3px'>  200.000đ</Text>
+              <Flex flexDirection="row" textAlign="center">
+                <Text textStyle="h3" color="text-basic">
+                  Giá niêm yết:
+                </Text>
+                <Text textStyle="h3" color="red" marginLeft="3px">
+                  {' '}
+                  200.000đ
+                </Text>
               </Flex>
             </Box>
             <Box>
               <Button
-                size="lg"
                 variant="primary"
                 children="Add Voucher"
                 onClick={() => router.push('/admin/voucher/add')}
@@ -297,9 +348,7 @@ function ShopInfomationPage() {
             </Box>
           </Flex>
         </Box>
-
       </CardBody>
-
     </>
   );
 }

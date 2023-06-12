@@ -157,6 +157,13 @@ const dashboardRoutes = [
         parent: 'operation',
         permission: 'shop_sms_message',
       },
+      {
+        path: '/voucher',
+        name: 'voucher',
+        layout: '/shop',
+        parent: 'operation',
+        permission: 'shop_voucher',
+      },
     ],
   },
   {

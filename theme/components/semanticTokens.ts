@@ -75,7 +75,7 @@ export const semanticTokens = {
         _dark: 'navy.800',
       },
       'bg-3': {
-        default: 'gray.400',
+        default: 'gray.300',
         _dark: 'navy.800',
       },
       'bg-content': {

@@ -7,6 +7,7 @@ import WithAuthentication from './WithAuthentication/WithAuthentication';
 import SmsMessageItem from './SmsMessageItem';
 import VoucherShopItem from './VoucherShopItem';
 import VoucherItem from './VoucherItem';
+import ModalSelectProducts from './ModalSelectProducts';
 
 export {
   RangeDatePickerItem,
@@ -18,4 +19,5 @@ export {
   SmsMessageItem,
   VoucherShopItem,
   VoucherItem,
+  ModalSelectProducts,
 };

@@ -11,18 +11,26 @@ export const textareaStyles = {
       },
       variants: {
         basic: (props: StyleFunctionProps) => ({
-          borderWidth: '1px',
-          color: mode('secondaryGray.900', 'white')(props),
-          borderColor: 'gray.700',
+          bg: mode('white', 'navy.800')(props),
+          border: '1px solid',
+          color: mode('text-basic', 'white')(props),
+          borderColor: 'border-5',
           borderRadius: '4px',
           fontSize: '16px',
-          p: '4',
-          _placeholder: { color: '#959596' },
+          _placeholder: { color: 'text-placeholder' },
           _focus: {
-            borderColor: 'primary.100',
+            boxShadow: 'none',
+            borderColor: 'border-3',
           },
           _hover: {
-            borderColor: 'primary.100',
+            borderColor: 'border-3',
+          },
+          _active: {
+            boxShadow: 'none',
+          },
+          _invalid: {
+            borderColor: 'red',
+            boxShadow: 'none',
           },
         }),
       },

@@ -121,7 +121,7 @@ function BroadcastMessages() {
         <Text textStyle="h6-sb" color="text-basic">
           Broadcast Messages
         </Text>
-        <Button leftIcon={<HiPlus />} variant="primary" children="Add Message" size="lg" />
+        <Button leftIcon={<HiPlus />} variant="primary" children="Add Message" />
       </Flex>
       <InputGroup maxW="570px" borderRadius="4px" overflow="hidden" mt="6">
         <Input ref={searchRef} placeholder="Search message name, code" />

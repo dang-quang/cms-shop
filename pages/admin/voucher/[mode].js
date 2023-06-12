@@ -540,7 +540,8 @@ function AddVoucherPage() {
                       borderWidth="1px"
                       borderRadius="4px"
                       overflow="hidden"
-                      borderColor={values.banner ? 'transparent' : 'gray.700'}
+                      borderColor={values.banner ? 'transparent' : 'border-5'}
+                      _hover={{ borderColor: 'border-3' }}
                       position="relative">
                       {values.banner ? (
                         <img

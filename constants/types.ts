@@ -71,6 +71,15 @@ export interface IVoucher {
   updateAt?: number;
 }
 
+export interface IProduct {
+  id: number;
+  name: string;
+  image: string;
+  sales: number;
+  price: number;
+  stock: number;
+}
+
 export enum EAppKey {
   LOGIN_TOKEN = 'LOGIN_TOKEN',
   ACCESS_TOKEN = 'ACCESS_TOKEN',

@@ -8,7 +8,7 @@ export const textStyles = {
     h2: {
       fontSize: '12px',
       lineHeight: '16px',
-      fontWeight: '300',
+      fontWeight: '400',
     },
     'h2-m': {
       fontSize: '12px',
@@ -168,10 +168,10 @@ export const textStyles = {
       lineHeight: '22px',
       fontWeight: '300',
     },
-    // 'c-xs': {
-    //   fontSize: '12px',
-    //   lineHeight: '16px',
-    // },
+    'c-xs': {
+      fontSize: '12px',
+      lineHeight: '16px',
+    },
     'b-xl': {
       fontSize: '26px',
       lineHeight: '30px',
@@ -187,18 +187,19 @@ export const textStyles = {
       lineHeight: '20px',
       fontWeight: '400',
     },
-    // 'b-sm': {
-    //   fontSize: '14px',
-    //   lineHeight: '16px',
-    // },
+    'b-sm': {
+      fontSize: '14px',
+      lineHeight: '16px',
+    },
     // 'b-sb': {
     //   fontSize: '14px',
     //   lineHeight: '16px',
     //   fontWeight: '500',
     // },
-    // 'b-xs': {
-    //   fontSize: '12px',
-    //   lineHeight: '16px',
-    // },
+    'b-xs': {
+      fontSize: '12px',
+      lineHeight: '16px',
+      fontWeight: '400',
+    },
   },
 };

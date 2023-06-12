@@ -43,10 +43,10 @@ import dayjs from 'dayjs';
 import router from 'next/router';
 import { RangeDatePickerItem } from 'components';
 import { BASE_API_URL } from 'utilities/const';
-import { setSelectedProducts } from 'redux/actions/product';
 import _ from 'lodash';
 import { EAppKey } from 'constants/types';
 import { Formik, Form, Field, FieldArray } from 'formik';
+import { setApproveProducts } from 'redux/actions/product';
 
 function ProductApproval() {
   const { t } = useTranslation();
@@ -92,7 +92,7 @@ function ProductApproval() {
   const [doFilter, setDoFilter] = useState(false);
   const [doSearch, setDoSearch] = useState(false);
   const [products, setProducts] = React.useState([]);
-  const selectedProducts = useSelector((state) => state.product.selectedProducts);
+  const approveProducts = useSelector((state) => state.product.approveProducts);
 
   React.useEffect(() => {
     (async () => {
@@ -104,7 +104,7 @@ function ProductApproval() {
           for (let i = 0; i < res?.result.totalPages; i++) {
             _initSelectedProducts.push({ isSelectAll: false, products: [] });
           }
-          dispatch(setSelectedProducts(_initSelectedProducts));
+          dispatch(setApproveProducts(_initSelectedProducts));
           setProducts(res.result.results === null ? [] : res.result.results);
           setTotalPage(res?.result.totalPages);
           setTotalRecords(res.result.totalRecords);
@@ -135,7 +135,7 @@ function ProductApproval() {
             // for (let i = 0; i < res?.result.totalPages; i++) {
             //   _initSelectedProducts.push({ isSelectAll: false, products: [] });
             // }
-            //dispatch(setSelectedProducts(_initSelectedProducts));
+            //dispatch(setApproveProducts(_initSelectedProducts));
             setProducts(res.result.results === null ? [] : res.result.results);
             setTotalPage(res?.result.totalPages);
             setTotalRecords(res.result.totalRecords);
@@ -172,7 +172,7 @@ function ProductApproval() {
             // for (let i = 0; i < res?.result.totalPages; i++) {
             //   _initSelectedProducts.push({ isSelectAll: false, products: [] });
             // }
-            // dispatch(setSelectedProducts(_initSelectedProducts));
+            // dispatch(setApproveProducts(_initSelectedProducts));
             setProducts(res.result.results === null ? [] : res.result.results);
             setTotalPage(res?.result.totalPages);
             setTotalRecords(res.result.totalRecords);
@@ -200,26 +200,26 @@ function ProductApproval() {
   }, []);
 
   const handleCheckAll = React.useCallback(async () => {
-    if (selectedProducts[currentPage - 1].isSelectAll) {
-      const updatedSelectedProducts = [...selectedProducts];
+    if (approveProducts[currentPage - 1].isSelectAll) {
+      const updatedSelectedProducts = [...approveProducts];
       updatedSelectedProducts[currentPage - 1] = {
         products: [],
         isSelectAll: false,
       };
-      dispatch(setSelectedProducts(updatedSelectedProducts));
+      dispatch(setApproveProducts(updatedSelectedProducts));
     } else {
-      const updatedSelectedProducts = [...selectedProducts];
+      const updatedSelectedProducts = [...approveProducts];
       updatedSelectedProducts[currentPage - 1] = {
         products: products,
         isSelectAll: true,
       };
-      dispatch(setSelectedProducts(updatedSelectedProducts));
+      dispatch(setApproveProducts(updatedSelectedProducts));
     }
-  }, [selectedProducts, currentPage, products]);
+  }, [approveProducts, currentPage, products]);
 
   const handleSelect = React.useCallback(
     async (item) => {
-      const updatedSelectedProducts = [...selectedProducts];
+      const updatedSelectedProducts = [...approveProducts];
       const currentPageProducts = updatedSelectedProducts[currentPage - 1];
 
       const updatedProducts = currentPageProducts.products.filter(
@@ -233,9 +233,9 @@ function ProductApproval() {
         currentPageProducts.isSelectAll = false;
       }
 
-      dispatch(setSelectedProducts(updatedSelectedProducts));
+      dispatch(setApproveProducts(updatedSelectedProducts));
     },
-    [selectedProducts, currentPage]
+    [approveProducts, currentPage]
   );
 
   const handleSelectTab = React.useCallback(
@@ -248,10 +248,10 @@ function ProductApproval() {
           _initSelectedProducts.push({ isSelectAll: false, products: [] });
         }
 
-        if (selectedProducts) {
-          dispatch(setSelectedProducts(selectedProducts));
+        if (approveProducts) {
+          dispatch(setApproveProducts(approveProducts));
         } else {
-          dispatch(setSelectedProducts(_initSelectedProducts));
+          dispatch(setApproveProducts(_initSelectedProducts));
         }
 
         setProducts(res.result.results === null ? [] : res.result.results);
@@ -259,7 +259,7 @@ function ProductApproval() {
         setTotalRecords(res.result.totalRecords);
       }
     },
-    [selectedProducts]
+    [approveProducts]
   );
 
   const renderProduct = React.useCallback(
@@ -277,8 +277,8 @@ function ProductApproval() {
       }
 
       const isItemChecked = (() => {
-        for (let i = 0; i < selectedProducts[currentPage - 1]?.products?.length; i++) {
-          if (selectedProducts[currentPage - 1]?.products[i].id === item.id) {
+        for (let i = 0; i < approveProducts[currentPage - 1]?.products?.length; i++) {
+          if (approveProducts[currentPage - 1]?.products[i].id === item.id) {
             return true;
           }
         }
@@ -376,7 +376,7 @@ function ProductApproval() {
         </React.Fragment>
       );
     },
-    [selectedProducts, currentPage]
+    [approveProducts, currentPage]
   );
 
   return (
@@ -559,7 +559,7 @@ function ProductApproval() {
                                   tableClasses.tableCell + ' ' + tableClasses.tableHeadCell
                                 }>
                                 <Checkbox
-                                  isChecked={selectedProducts[currentPage - 1].isSelectAll}
+                                  isChecked={approveProducts[currentPage - 1].isSelectAll}
                                   tabIndex={-1}
                                   onChange={() => handleCheckAll()}
                                   ml="2"

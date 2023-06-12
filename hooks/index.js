@@ -1,7 +1,7 @@
 import useLanguage from './useLanguage';
-import useBoolean from './useBoolean';
 import useWindowDimensions from './useWindowDimensions';
 import useMobile from './useMobile';
 import useDisplayImage from './useDisplayImage';
+import useImageHandler from './useImageHandler';
 
-export { useLanguage, useBoolean, useWindowDimensions, useMobile, useDisplayImage };
+export { useLanguage, useWindowDimensions, useMobile, useDisplayImage, useImageHandler };

@@ -1,31 +1,27 @@
-import { EAppKey } from 'constants/types';
+import { ActionTypes, EAppKey } from 'constants/types';
 import _ from 'lodash';
 import Router from 'next/router';
 import { NotificationManager } from 'react-light-notifications';
 import { requestApproveProduct } from 'utilities/ApiManage';
 import { setShowLoader } from './app';
 
-export const APPROVE_PRODUCTS = 'APPROVE_PRODUCTS';
-export const MODAL_SELECT_PRODUCTS = 'MODAL_SELECTED_PRODUCTS';
-export const SELECTED_PRODUCTS = 'SELECTED_PRODUCTS';
-
 export function setApproveProducts(approveProducts) {
   return {
-    type: APPROVE_PRODUCTS,
+    type: ActionTypes.APPROVE_PRODUCTS,
     approveProducts,
   };
 }
 
 export function setModalSelectProducts(isOpenModalSelectProducts) {
   return {
-    type: MODAL_SELECT_PRODUCTS,
+    type: ActionTypes.MODAL_SELECT_PRODUCTS,
     isOpenModalSelectProducts,
   };
 }
 
 export function setSelectedProducts(selectedProducts) {
   return {
-    type: SELECTED_PRODUCTS,
+    type: ActionTypes.SELECTED_PRODUCTS,
     selectedProducts,
   };
 }

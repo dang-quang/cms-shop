@@ -208,7 +208,7 @@ const ProductFlashSale = () => {
         return (
           <Box>
             <Text textStyle="h6-sb" color="text-basic" mt="6">
-              Create new new program
+              Create New My Shop's Flash Sale
             </Text>
             <Box mt="6" bg="bg-1" shadow="md" borderRadius="4px" p="6">
               <Text textStyle="h5-sb" color="text-basic" mb="6">

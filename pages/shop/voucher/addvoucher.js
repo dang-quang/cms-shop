@@ -80,7 +80,7 @@ import imgShop from "assets/img/shop.png";
 import imgProduct from "assets/img/product.png";
 import ModalCustom from "components/ModalCustom/ModalCustom.js";
 import styles from "assets/jss/natcash/views/voucher/addVoucherStyle.js";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 function AddVoucherPage() {
   const useStyles = makeStyles(styles);
@@ -94,7 +94,7 @@ function AddVoucherPage() {
   const [filterValue, setFilterValue] = useState("");
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [checked, setChecked] = useState([]);
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const [values, setValues] = React.useState({
     code_type: "all",
@@ -116,10 +116,10 @@ function AddVoucherPage() {
 
 
   const TABLE_HEAD = [
-      t('product'),
-      t('sold'),
-      t('price'),
-      t('quantity')
+    t('product'),
+    t('sold'),
+    t('price'),
+    t('quantity')
   ];
 
 
@@ -179,7 +179,23 @@ function AddVoucherPage() {
     {
       id: "1245362324",
       avatar: "https://cf.shopee.vn/file/98e319478083a8b4a446ce038837f3a9",
-      name: "Chăn lưới OTK xuất Nga cho bé",
+      name: "Chăn lưới OTK xuất Nga cho bé 3",
+      sold: 10,
+      original_price: 120000,
+      quantity: 8,
+    },
+    {
+      id: "124536232412",
+      avatar: "https://cf.shopee.vn/file/98e319478083a8b4a446ce038837f3a9",
+      name: "Chăn lưới OTK xuất Nga cho bé 2",
+      sold: 10,
+      original_price: 120000,
+      quantity: 8,
+    },
+    {
+      id: "124536232124",
+      avatar: "https://cf.shopee.vn/file/98e319478083a8b4a446ce038837f3a9",
+      name: "Chăn lưới OTK xuất Nga cho bé 1",
       sold: 10,
       original_price: 120000,
       quantity: 8,
@@ -392,7 +408,7 @@ function AddVoucherPage() {
         </FormCellCustom>
         {/* Voucher Code */}
         <FormCellCustom
-            label={t('voucher.voucherCode')}
+          label={t('voucher.voucherCode')}
           helperText={t('category.categoryCodeDes')}
         >
           <div className={classes.formCell}>
@@ -412,7 +428,7 @@ function AddVoucherPage() {
         </FormCellCustom>
         {/* Time */}
         <FormCellCustom
-            label={t('time')}
+          label={t('time')}
           helperText={t('voucher.timeDes')}
         >
           <div className={classes.formCell + " " + classes.flex_center}>
@@ -457,7 +473,7 @@ function AddVoucherPage() {
       <FormGroupCustom title={t('voucher.setUpVoucher')}>
         {/* Voucher type */}
         <FormCellCustom label={t('voucher.voucherType')}
-                                    helperText={""}>
+          helperText={""}>
           <div className={classes.formCell}>
             <FormControl component="fieldset">
               <RadioGroup
@@ -483,7 +499,7 @@ function AddVoucherPage() {
         </FormCellCustom>
         {/* Discount */}
         <FormCellCustom
-            label={t('voucher.discountType')}
+          label={t('voucher.discountType')}
           helperText={
             values.voucher_type == "recoin" ? t('voucher.discountTypeDes') : null
           }
@@ -546,7 +562,7 @@ function AddVoucherPage() {
         </FormCellCustom>
         {/* Discount maximum */}
         <FormCellCustom
-            label={t('voucher.maxReduction')}
+          label={t('voucher.maxReduction')}
           helperText={
             values.discount_max_type == "limit" ? t('voucher.maxReductionDes') : null
           }
@@ -595,8 +611,8 @@ function AddVoucherPage() {
           </div>
         </FormCellCustom>
         {/* Minimum order value */}
-        <FormCellCustom      label={t('voucher.minOrder')}
-                                    helperText={""}>
+        <FormCellCustom label={t('voucher.minOrder')}
+          helperText={""}>
           <div className={classes.formCell + " " + classes.flex_center}>
             <FormControl component="fieldset" size="small" style={{ flex: 1 }}>
               <OutlinedInput
@@ -614,8 +630,8 @@ function AddVoucherPage() {
         </FormCellCustom>
         {/* Maximum usage */}
         <FormCellCustom
-            label={t('voucher.maxUse')}
-            helperText={t('voucher.maxUseDes')}
+          label={t('voucher.maxUse')}
+          helperText={t('voucher.maxUseDes')}
         >
           <div className={classes.formCell + " " + classes.flex_center}>
             <FormControl component="fieldset" size="small" style={{ flex: 1 }}>
@@ -645,7 +661,7 @@ function AddVoucherPage() {
       <FormGroupCustom title={t('voucher.displayVoucher')}>
         {/* Display */}
         <FormCellCustom label={t('voucher.settingDisplay')}
-                                    helperText={""}>
+          helperText={""}>
           <div className={classes.formCell}>
             <FormControl component="fieldset">
               <RadioGroup

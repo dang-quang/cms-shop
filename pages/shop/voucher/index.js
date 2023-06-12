@@ -611,7 +611,7 @@ function VoucherPage() {
                 <AntTab label={item} {...a11yProps(index)} key={'tab' + index} />
               ))}
             </AntTabs>
-            <Link href={'/admin/voucher/addvoucher'}>
+            <Link href={'/shop/voucher/addvoucher'}>
               <Button color="primary">
                 <Icon className={classes.btnFilter}>add</Icon>
                 {t('addNew')}

@@ -1,44 +1,36 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Admin from 'layouts/Admin.js';
 import {
-  AspectRatio,
   Box,
-  Center,
   Checkbox,
   Flex,
-  Image,
   Input,
   Text,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
   FormControl,
   FormErrorMessage,
-  InputGroup,
   SimpleGrid,
-  InputRightElement,
-  Icon,
   useBoolean,
   Button,
+  Table,
+  Thead,
+  Tr,
+  Th,
   useDisclosure,
 } from '@chakra-ui/react';
-import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
 import { useTranslation } from 'react-i18next';
 import { NotificationContainer, NotificationManager } from 'react-light-notifications';
 
 import dayjs from 'dayjs';
-import router from 'next/router';
-import { RangeDatePickerItem } from 'components';
-import _ from 'lodash';
-import { Formik, Form, Field, FieldArray } from 'formik';
+import { useRouter } from 'next/router';
+import { ModalConfirm, ProductFlashSaleItem, WithAuthentication } from 'components';
+import _, { isEmpty } from 'lodash';
+import { Formik, FieldArray } from 'formik';
 import { FormGroup } from 'components';
-import { AiOutlineSearch } from 'react-icons/ai';
 import * as yup from 'yup';
 import { HiPlus } from 'react-icons/hi';
-import { setModalSelectProducts } from 'redux/actions/product';
+import { setModalSelectProducts, setSelectedProducts } from 'redux/actions/product';
+import { setShowLoader } from 'redux/actions/app';
 
 const formatDate = 'YYYY-MM-DDTHH:mm';
 
@@ -46,143 +38,63 @@ const initialValues = {
   name: '',
   programStart: dayjs().add(10, 'minutes').format(formatDate),
   programEnd: dayjs().add(1, 'hours').add(10, 'minutes').format(formatDate),
+  products: [],
+  flashSaleProducts: [],
 };
 
 const ProductFlashSale = () => {
+  const router = useRouter();
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const selectedProducts = useSelector((state) => state.product.selectedProducts);
 
-  const TO_DATE = dayjs().toDate();
-  const FROM_DATE = dayjs().subtract(30, 'days').toDate();
+  const [product, setProduct] = React.useState(null);
 
-  const refInput = React.useRef();
-  const [doSearch, { on: onSearch, off: offSearch }] = useBoolean(false);
-  const [products, setProducts] = React.useState([]);
+  const [selectAll, { toggle: toggleSelectAll, off: offSelectAll, on: onSelectAll }] =
+    useBoolean(false);
+  const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
+  //const { isOpen: isOpenConfirm, onOpen: onOpenConfirm, onClose: onCloseConfirm } = useDisclosure();
 
-  // const renderProduct = React.useCallback(
-  //   (item, index) => {
-  //     const { categoryName, createAt, createBy, image, name, price, shopCode, productCode } = item;
+  React.useEffect(() => {
+    const handleRouteChange = () => {
+      if (isEmpty(selectedProducts)) {
+        return;
+      }
+      const confirmLeave = window.confirm('The information will not be saved. Sure to leave?');
+      if (!confirmLeave) {
+        router.events.emit('routeChangeError');
+        throw 'routeChange aborted.';
+      } else {
+        dispatch(setSelectedProducts([]));
+      }
+    };
 
-  //     let _image = '';
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
 
-  //     var firstChar = image.substring(0, 4);
+    window.onbeforeunload = handleBeforeUnload;
 
-  //     if (firstChar === 'http' || firstChar === 'https') {
-  //       _image = image;
-  //     } else {
-  //       _image = BASE_API_URL + '/assets/' + image;
-  //     }
+    router.events.on('routeChangeStart', handleRouteChange);
 
-  //     const isItemChecked = (() => {
-  //       for (let i = 0; i < selectedProducts[currentPage - 1]?.products?.length; i++) {
-  //         if (selectedProducts[currentPage - 1]?.products[i].id === item.id) {
-  //           return true;
-  //         }
-  //       }
-  //       return false;
-  //     })();
+    return () => {
+      window.onbeforeunload = null;
+      router.events.off('routeChangeStart', handleRouteChange);
+    };
+  }, [selectedProducts]);
 
-  //     return (
-  //       <React.Fragment key={index}>
-  //         <TableRow
-  //           key={index}
-  //           onClick={() => handleSelect(item)}
-  //           className={tableClasses.tableBodyRow}
-  //           style={{
-  //             cursor: 'pointer',
-  //             backgroundColor: isItemChecked ? '#fff6f0' : '#fff',
-  //             height: 100,
-  //           }}>
-  //           <TableCell key="check">
-  //             <Checkbox isChecked={isItemChecked} onChange={() => handleSelect(item)} />
-  //           </TableCell>
-  //           <TableCell className={tableClasses.tableCell} key="shopCode2">
-  //             <Flex alignItems="center">
-  //               <AspectRatio
-  //                 overflow="hidden"
-  //                 w="80px"
-  //                 ratio={1 / 1}
-  //                 shadow="sm"
-  //                 borderRadius="6px">
-  //                 <Image src={_image} w="100%" h="100%" objectFit="contain" />
-  //               </AspectRatio>
-  //               <Flex flexDirection="column" ml="3" flex="1">
-  //                 <Text textStyle="h4" color="text-basic" noOfLines={2}>
-  //                   {name}
-  //                 </Text>
-  //                 <Text mt="2" textStyle="c-sm" color="text-body" mr="1">
-  //                   {shopCode}
-  //                   <Text as="span" mx="3">
-  //                     -
-  //                   </Text>
-  //                   <Text as="span" textStyle="c-sm" color="text-body">
-  //                     {productCode}
-  //                   </Text>
-  //                 </Text>
-  //               </Flex>
-  //             </Flex>
-  //           </TableCell>
-  //           <TableCell className={tableClasses.tableCell} key="shopCode">
-  //             <Text textStyle="h3" color="text-basic">
-  //               {formatCurrency(price ?? 0)}
-  //             </Text>
-  //           </TableCell>
-  //           <TableCell className={tableClasses.tableCell} key="shopCode1">
-  //             <InputGroup style={{ width: 110 }}>
-  //               <Input
-  //                 placeholder="Input"
-  //                 autoComplete="off"
-  //                 // style={{ }}
-  //                 value={0}
-  //                 onChange={() => {}}
-  //               />
-  //               <InputRightElement w="30px" borderLeftWidth="1px">
-  //                 <Center h="full">
-  //                   <Text textStyle="h2">HTG</Text>
-  //                 </Center>
-  //               </InputRightElement>
-  //             </InputGroup>
-  //           </TableCell>
-  //           <TableCell className={tableClasses.tableCell} key="shopCode3">
-  //             <InputGroup style={{ width: 110 }}>
-  //               <Input placeholder="Input" autoComplete="off" value={0} onChange={() => {}} />
-  //               <InputRightElement w="60px" borderLeftWidth="1px">
-  //                 <Center h="full">
-  //                   <Text textStyle="h2">% Giảm</Text>
-  //                 </Center>
-  //               </InputRightElement>
-  //             </InputGroup>
-  //           </TableCell>
-
-  //           <TableCell className={tableClasses.tableCell} key="createBy">
-  //             <Text textStyle="h3" color="text-basic">
-  //               1000
-  //             </Text>
-  //           </TableCell>
-  //           <TableCell className={tableClasses.tableCell} key={'publish'}>
-  //             <Text textStyle="h3" color="text-basic">
-  //               30
-  //             </Text>
-  //           </TableCell>
-  //           <TableCell className={tableClasses.tableCell} key={'publish1'}>
-  //             <Text textStyle="h3" color="text-basic">
-  //               5
-  //             </Text>
-  //           </TableCell>
-  //         </TableRow>
-  //       </React.Fragment>
-  //     );
-  //   },
-  //   [selectedProducts, currentPage]
-  // );
-
-  const handleSubmitVoucher = React.useCallback(async ({ name, programStart, programEnd }) => {
-    try {
-      dispatch(setShowLoader(true));
-    } finally {
-      dispatch(setShowLoader(false));
-    }
-  }, []);
+  const handleSubmitVoucher = React.useCallback(
+    async ({ name, programStart, programEnd, products, flashSaleProducts }) => {
+      console.log('flashSaleProducts', flashSaleProducts);
+      try {
+        dispatch(setShowLoader(true));
+      } finally {
+        dispatch(setShowLoader(false));
+      }
+    },
+    []
+  );
 
   const validationSchema = yup.object().shape({
     name: yup.string().required(t('error_field_empty')),
@@ -195,6 +107,33 @@ const ProductFlashSale = () => {
         yup.ref('programStart'),
         'Please enter a start time that is later than the current time.'
       ),
+    products: yup.array().of(
+      yup.object().shape({
+        discounted_price: yup
+          .number()
+          .required('Discounted price is required.')
+          .min(0, 'Discounted price must be greater than or equal to 0.')
+          .test(
+            'discounted-price',
+            'Promotion price must less than original price',
+            function (value) {
+              return value <= this.parent.price;
+            }
+          ),
+        campaign_stock: yup
+          .number()
+          .required('Campaign stock is required.')
+          .min(1, 'Stock should be more than 1 and less than stock')
+          .test(
+            'campaign-stock',
+            `Stock should be more than 1 and less than stock`,
+            function (value) {
+              const stock = this.parent.stock;
+              return value > 1 && value <= stock;
+            }
+          ),
+      })
+    ),
   });
 
   return (
@@ -205,6 +144,85 @@ const ProductFlashSale = () => {
       initialValues={initialValues}
       onSubmit={handleSubmitVoucher}>
       {({ handleChange, handleSubmit, setFieldValue, values, errors }) => {
+        React.useEffect(() => {
+          if (isEmpty(selectedProducts)) {
+            return;
+          }
+
+          let list = [];
+
+          for (let i = 0; i < selectedProducts.length; i++) {
+            list.push({
+              ...selectedProducts[i],
+              discounted_price: selectedProducts[i].price,
+              discount_percent: 0,
+              campaign_stock: selectedProducts[i].stock,
+            });
+          }
+          setFieldValue('products', list);
+        }, [selectedProducts]);
+
+        const handleSelectAll = React.useCallback(() => {
+          if (isEmpty(values.products)) {
+            return;
+          }
+
+          toggleSelectAll();
+          if (selectAll) {
+            setFieldValue('flashSaleProducts', []);
+          } else {
+            setFieldValue('flashSaleProducts', values.products);
+          }
+        }, [selectAll, values.products]);
+
+        const handleDeleteProduct = React.useCallback(
+          async (remove) => {
+            onCloseDelete();
+            const indexToRemove = values.products.findIndex((item) => item.id === product.id);
+            if (indexToRemove !== -1) {
+              remove(indexToRemove);
+            }
+            const newList = _.filter(values.products, (i) => i.id !== product.id);
+            dispatch(setSelectedProducts(newList));
+            setProduct(null);
+          },
+          [product]
+        );
+
+        const handleSelectItem = React.useCallback(
+          (item) => {
+            const exist = values.flashSaleProducts.find((i) => i.id === item.id);
+            if (exist) {
+              const updatedProducts = values.flashSaleProducts.filter((i) => i.id !== item.id);
+              setFieldValue('flashSaleProducts', updatedProducts);
+
+              const isEqual = _.isEqual(updatedProducts, values.products);
+              if (isEqual && !selectAll) {
+                return;
+              }
+              offSelectAll();
+            } else {
+              // If item is not selected, add it to the array
+              if (!isEmpty(values.flashSaleProducts)) {
+                let list = [...values.flashSaleProducts, item];
+
+                setFieldValue('flashSaleProducts', list);
+
+                const areArraysEqual = _.isEqualWith(list, values.products, (obj1, obj2) => {
+                  return obj1.id === obj2.id;
+                });
+                if (!areArraysEqual) {
+                  return;
+                }
+                onSelectAll();
+              } else {
+                setFieldValue('flashSaleProducts', [item]);
+              }
+            }
+          },
+          [values.flashSaleProducts, values.products]
+        );
+
         return (
           <Box>
             <Text textStyle="h6-sb" color="text-basic" mt="6">
@@ -250,35 +268,256 @@ const ProductFlashSale = () => {
                   </FormControl>
                 </SimpleGrid>
               </FormGroup>
-              {/* <InputGroup maxW="570px" borderRadius="4px" overflow="hidden" mt="6">
-                <Input ref={refInput} placeholder="Search product name" />
-                <InputRightElement
-                  borderRadius="4px"
-                  cursor="pointer"
-                  h="full"
-                  bg="primary.100"
-                  w="100px">
-                  <Center onClick={() => setDoSearch(!doSearch)}>
-                    <Icon as={AiOutlineSearch} w="24px" h="24px" color="white" />
-                  </Center>
-                </InputRightElement>
-              </InputGroup> */}
             </Box>
             <Box mt="6" bg="bg-1" borderRadius="4px" shadow="md" p="6">
-              <Text textStyle="h5-sb" color="text-basic">
-                Shop's Flash Sale Products
-              </Text>
-              <Text textStyle="body" color="text-body" mt="2">
-                Please review the product criteria before adding items to your promotion.
-              </Text>
+              <Flex alignItems="center" justifyContent="space-between">
+                <Box>
+                  <Text textStyle="h5-sb" color="text-basic">
+                    Shop's Flash Sale Products
+                  </Text>
+                  <Text textStyle="body" color="text-body" mt="2">
+                    Please review the product criteria before adding items to your promotion.
+                  </Text>
+                </Box>
+                <Button
+                  display={!isEmpty(selectedProducts) ? 'block' : 'none'}
+                  leftIcon={<HiPlus />}
+                  variant="outline"
+                  children="Add Products"
+                  onClick={() => dispatch(setModalSelectProducts(true))}
+                />
+              </Flex>
               <Button
+                display={isEmpty(selectedProducts) ? 'block' : 'none'}
                 mt="2"
                 leftIcon={<HiPlus />}
                 variant="outline"
                 children="Add Products"
                 onClick={() => dispatch(setModalSelectProducts(true))}
               />
+              {values.products && values.products.length > 0 && (
+                <FieldArray
+                  name="products"
+                  render={({ remove }) => {
+                    return (
+                      <Box
+                        mt="8"
+                        overflow="auto"
+                        position="relative"
+                        borderWidth="1px"
+                        borderRadius="4"
+                        borderColor="border-5">
+                        <Table variant="simple" minW="5xl">
+                          <Thead h="52px" bg="bg-2">
+                            <Tr>
+                              <Th
+                                borderBottomWidth="0px"
+                                color="text-note"
+                                textStyle="b-md"
+                                textTransform="capitalize">
+                                <Checkbox isChecked={selectAll} onChange={handleSelectAll} />
+                              </Th>
+                              <Th
+                                borderBottomWidth="0px"
+                                color="text-note"
+                                textStyle="b-md"
+                                textTransform="capitalize">
+                                Product Name
+                              </Th>
+                              <Th
+                                borderBottomWidth="0px"
+                                color="text-note"
+                                textStyle="b-md"
+                                textTransform="capitalize">
+                                Original Price
+                              </Th>
+                              <Th
+                                borderBottomWidth="0px"
+                                color="text-note"
+                                textStyle="b-md"
+                                textTransform="capitalize">
+                                Discounted Price
+                              </Th>
+                              <Th
+                                borderBottomWidth="0px"
+                                color="text-note"
+                                textStyle="b-md"
+                                textTransform="capitalize">
+                                Discount
+                              </Th>
+                              <Th
+                                borderBottomWidth="0px"
+                                color="text-note"
+                                textStyle="b-md"
+                                textTransform="capitalize">
+                                Campaign Stock
+                              </Th>
+                              <Th
+                                borderBottomWidth="0px"
+                                color="text-note"
+                                textStyle="b-md"
+                                textTransform="capitalize">
+                                Stock
+                              </Th>
+                              <Th
+                                borderBottomWidth="0px"
+                                color="text-note"
+                                textStyle="b-md"
+                                textTransform="capitalize">
+                                Action
+                              </Th>
+                            </Tr>
+                          </Thead>
+                          {values.products &&
+                            values.products.length > 0 &&
+                            values.products.map((item, idx) => {
+                              const isChecked = !!values.flashSaleProducts.find(
+                                (i) => i.id === item.id
+                              );
+                              return (
+                                <ProductFlashSaleItem
+                                  key={idx}
+                                  item={item}
+                                  isChecked={isChecked}
+                                  onDelete={() => {
+                                    setProduct(item);
+                                    onOpenDelete();
+                                  }}
+                                  isLast={idx === values.products.length - 1}
+                                  onClick={() => handleSelectItem(item)}
+                                  discountedPrice={{
+                                    onChange: (e) => {
+                                      setFieldValue(
+                                        `products.${idx}.discounted_price`,
+                                        e.target.value
+                                      );
+                                      const roundedValue = Math.floor(
+                                        ((values.products[idx].price - parseFloat(e.target.value)) /
+                                          values.products[idx].price) *
+                                          100
+                                      );
+
+                                      if (roundedValue < 0) {
+                                        setFieldValue(`products.${idx}.discount_percent`, 0);
+                                      } else {
+                                        setFieldValue(
+                                          `products.${idx}.discount_percent`,
+                                          roundedValue
+                                        );
+                                      }
+                                      const updatedFlashSaleProducts = [
+                                        ...values.flashSaleProducts,
+                                      ];
+                                      updatedFlashSaleProducts[idx] = {
+                                        ...updatedFlashSaleProducts[idx],
+                                        discounted_price: e.target.value,
+                                        discount_percent: roundedValue,
+                                      };
+
+                                      setFieldValue('flashSaleProducts', updatedFlashSaleProducts);
+                                    },
+                                    errors:
+                                      errors.products &&
+                                      errors.products.length > 0 &&
+                                      errors.products[idx] &&
+                                      errors.products[idx].discounted_price,
+                                  }}
+                                  discount={{
+                                    onChange: (e) => {
+                                      const discountValue = parseFloat(e.target.value);
+                                      const clampedDiscount = Math.min(
+                                        Math.max(discountValue, 0),
+                                        100
+                                      );
+                                      const discountedPrice =
+                                        values.products[idx].price -
+                                        (values.products[idx].price * clampedDiscount) / 100;
+
+                                      setFieldValue(
+                                        `products.${idx}.discount_percent`,
+                                        clampedDiscount
+                                      );
+
+                                      if (discountedPrice) {
+                                        setFieldValue(
+                                          `products.${idx}.discounted_price`,
+                                          discountedPrice
+                                        );
+                                      } else {
+                                        setFieldValue(
+                                          `products.${idx}.discounted_price`,
+                                          values.products[idx].price
+                                        );
+                                      }
+
+                                      const updatedFlashSaleProducts = [
+                                        ...values.flashSaleProducts,
+                                      ];
+                                      updatedFlashSaleProducts[idx] = {
+                                        ...updatedFlashSaleProducts[idx],
+                                        discount_percent: clampedDiscount,
+                                        discounted_price: discountedPrice,
+                                      };
+
+                                      setFieldValue('flashSaleProducts', updatedFlashSaleProducts);
+                                    },
+                                  }}
+                                  campaignStock={{
+                                    onChange: (e) => {
+                                      setFieldValue(
+                                        `products.${idx}.campaign_stock`,
+                                        e.target.value
+                                      );
+
+                                      const updatedFlashSaleProducts = [
+                                        ...values.flashSaleProducts,
+                                      ];
+                                      updatedFlashSaleProducts[idx] = {
+                                        ...updatedFlashSaleProducts[idx],
+                                        campaign_stock: e.target.value,
+                                      };
+
+                                      setFieldValue('flashSaleProducts', updatedFlashSaleProducts);
+                                    },
+                                    errors:
+                                      errors.products &&
+                                      errors.products.length > 0 &&
+                                      errors.products[idx] &&
+                                      errors.products[idx].campaign_stock,
+                                  }}
+                                />
+                              );
+                            })}
+                        </Table>
+                        <ModalConfirm
+                          isOpen={isOpenDelete}
+                          onClose={onCloseDelete}
+                          title="Confirm Deletion"
+                          description={t('deleteConfirm')}
+                          buttonLeft={{ title: t('cancel'), onClick: onCloseDelete }}
+                          buttonRight={{
+                            title: t('confirm'),
+                            onClick: () => handleDeleteProduct(remove),
+                          }}
+                        />
+                      </Box>
+                    );
+                  }}
+                />
+              )}
             </Box>
+            <Flex mt="6" alignItems="center" justifyContent="flex-end">
+              <Button variant="outline-control" minW="150px" mr="4" onClick={() => router.back()}>
+                {t('cancel')}
+              </Button>
+              <Button
+                variant="primary"
+                minW="150px"
+                isDisabled={isEmpty(values.flashSaleProducts)}
+                onClick={() => handleSubmit()}>
+                {t('confirm')}
+              </Button>
+            </Flex>
             <NotificationContainer />
           </Box>
         );

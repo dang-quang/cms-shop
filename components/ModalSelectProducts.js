@@ -30,7 +30,7 @@ import {
   useBoolean,
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { ChevronDownIcon } from '@chakra-ui/icons';
+import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import { AiOutlineSearch } from 'react-icons/ai';
 import _, { isEmpty } from 'lodash';
 import SelectProductItem from './SelectProductItem';
@@ -59,6 +59,11 @@ const data = [
   },
 ];
 
+const categories_data = [
+  { id: '0', name: 'All Categories' },
+  { id: 1, name: 'Men Shoes' },
+];
+
 const ModalSelectProducts = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -68,16 +73,20 @@ const ModalSelectProducts = () => {
 
   const [doSearch, { on: onSearch, off: offSearch }] = useBoolean(false);
   const [products, setProducts] = React.useState([]);
+  const [categories, setCategories] = React.useState([]);
+  const [category, setCategory] = React.useState(categories_data[0]);
   const [selectAll, { toggle: toggleSelectAll, off: offSelectAll, on: onSelectAll }] =
     useBoolean(false);
+  const [focus, { on: onFocus, off: offFocus }] = useBoolean(false);
 
   const [selectedItems, setSelectedItems] = React.useState([]);
 
   React.useEffect(() => {
     (async () => {
       setProducts(data);
+      setCategories(categories_data);
     })();
-  }, [data]);
+  }, [data, categories_data]);
 
   React.useEffect(() => {
     if (!isEmpty(selectedProducts) && isOpen) {
@@ -89,6 +98,9 @@ const ModalSelectProducts = () => {
         return;
       }
       onSelectAll();
+    } else {
+      setSelectedItems([]);
+      offSelectAll();
     }
   }, [selectedProducts, isOpen, products]);
 
@@ -152,21 +164,47 @@ const ModalSelectProducts = () => {
         <ModalHeader color="text-basic">Select Products</ModalHeader>
         <ModalCloseButton _focus={{ boxShadow: 'none' }} onClick={onClose} />
         <ModalBody>
-          <Flex alignItems="center" justifyContent="space-between">
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                All Category
+          <Flex
+            flexDirection={{ base: 'column', lg: 'row' }}
+            alignItems={{ base: 'unset', lg: 'center' }}
+            justifyContent="space-between">
+            <Menu onClose={offFocus}>
+              <MenuButton
+                bg="bg-1"
+                w="200px"
+                h="40px"
+                borderWidth="1px"
+                borderRadius="4px"
+                borderColor="border-5"
+                _hover={{ borderColor: 'border-3' }}
+                _active={{ bg: 'bg-1' }}
+                onClick={onFocus}>
+                <Flex flex="1" justifyContent="space-between" px="2" alignItems="center">
+                  <Text noOfLines={1}>{category.name}</Text>
+                  <Icon
+                    color="text-basic"
+                    as={focus ? ChevronUpIcon : ChevronDownIcon}
+                    w="16px"
+                    h="16px"
+                  />
+                </Flex>
               </MenuButton>
               <MenuList>
-                <MenuItem minH="48px">
-                  <span>All Categories</span>
-                </MenuItem>
-                <MenuItem minH="40px">
-                  <span>Men Shoes</span>
-                </MenuItem>
+                {categories &&
+                  categories.map((item, index) => {
+                    return (
+                      <MenuItem key={index} minH="48px" onClick={() => setCategory(item)}>
+                        <span>{item.name}</span>
+                      </MenuItem>
+                    );
+                  })}
               </MenuList>
             </Menu>
-            <HStack flex="1" gap="4" justifyContent="flex-end">
+            <HStack
+              mt={{ base: '6', lg: 'unset' }}
+              flex="1"
+              gap="4"
+              justifyContent={{ base: 'unset', lg: 'flex-end' }}>
               <InputGroup maxW="570px" borderRadius="4px" overflow="hidden">
                 <Input ref={refInput} placeholder="Search product name, id" />
                 <InputRightElement

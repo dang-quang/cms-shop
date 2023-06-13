@@ -8,6 +8,7 @@ import SmsMessageItem from './SmsMessageItem';
 import VoucherShopItem from './VoucherShopItem';
 import VoucherItem from './VoucherItem';
 import ModalSelectProducts from './ModalSelectProducts';
+import ProductFlashSaleItem from './ProductFlashSaleItem';
 
 export {
   RangeDatePickerItem,
@@ -20,4 +21,5 @@ export {
   VoucherShopItem,
   VoucherItem,
   ModalSelectProducts,
+  ProductFlashSaleItem,
 };

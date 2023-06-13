@@ -2,6 +2,15 @@ import { mode, StyleFunctionProps } from '@chakra-ui/theme-tools';
 export const inputStyles = {
   components: {
     Input: {
+      sizes: {
+        xs: {
+          field: {
+            h: '24px',
+            borderWidth: '4px',
+            borderStyle: 'solid',
+          },
+        },
+      },
       baseStyle: {
         field: {
           fontWeight: 400,
@@ -36,7 +45,6 @@ export const inputStyles = {
             borderColor: 'border-5',
             borderRadius: '4px',
             fontSize: '16px',
-            p: '20px',
             _placeholder: { color: 'text-placeholder' },
             _focus: {
               borderColor: 'border-3',

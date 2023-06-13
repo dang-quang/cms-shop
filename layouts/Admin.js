@@ -52,11 +52,11 @@ export default function Admin({ children, ...rest }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const showSidebar = useSelector((state) => state.app.showSidebar);
   const showLoader = useSelector((state) => state.app.showLoader);
-  const approveProducts = useSelector((state) => state.product.approveProducts);
-  const selectedVouchers = useSelector((state) => state.voucher.selectedVouchers);
+  const _approveProducts = useSelector((state) => state.product.approveProducts);
+  const _selectedVouchers = useSelector((state) => state.voucher.selectedVouchers);
 
-  const isProductApprove = _.some(approveProducts, (obj) => !_.isEmpty(obj.products));
-  const isVoucherApprove = _.some(selectedVouchers, (obj) => !_.isEmpty(obj.vouchers));
+  const isProductApprove = _.some(_approveProducts, (obj) => !_.isEmpty(obj.products));
+  const isVoucherApprove = _.some(_selectedVouchers, (obj) => !_.isEmpty(obj.vouchers));
 
   React.useEffect(() => {
     const handleRouteChange = (url, { shallow }) => {

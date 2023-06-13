@@ -1,11 +1,20 @@
 export const menuStyles = {
   components: {
     Menu: {
-      bg: 'red',
       baseStyle: {
-        bg: 'blue',
-        _focus: {
-          border: '1x solid red', // neither of these modify the MenuItem's base _focus style
+        list: {
+          shadow: 'lg',
+        },
+        item: {
+          color: 'text-basic',
+          _hover: {
+            color: 'primary.100',
+            fontWeight: '500',
+          },
+          _focus: {
+            outline: 'none',
+            background: 'gray.200',
+          },
         },
       },
     },

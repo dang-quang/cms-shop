@@ -29,7 +29,13 @@ const SelectProductItem: React.FC<SelectProductItemProps> = ({
     <Tr aria-disabled={isDisable} _disabled={{ _hover: { cursor: 'not-allowed' }, opacity: 0.5 }}>
       <Td borderColor={borderColor}>
         <Flex alignItems="center">
-          <Checkbox disabled={isDisable} isChecked={isChecked} onChange={onClick} mr="3" />
+          <Checkbox
+            defaultChecked={isChecked}
+            disabled={isDisable}
+            isChecked={isChecked}
+            onChange={onClick}
+            mr="3"
+          />
           <Flex alignItems="center">
             <AspectRatio w="40px" ratio={1} mr="2" borderRadius="4px" overflow="hidden">
               <Image w="100%" h="100%" objectFit="cover" src={_image} />

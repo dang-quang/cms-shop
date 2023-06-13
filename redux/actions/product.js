@@ -29,8 +29,8 @@ export function setSelectedProducts(selectedProducts) {
 export const approveProducts = () => {
   return async (dispatch, getState) => {
     try {
-      const { selectedProducts } = getState().product;
-      const ids = _.flatMap(selectedProducts, 'products').map(({ id }) => id);
+      const { approveProducts } = getState().product;
+      const ids = _.flatMap(approveProducts, 'products').map(({ id }) => id);
 
       dispatch(setShowLoader(true));
 
@@ -64,8 +64,8 @@ export const approveProducts = () => {
 export const rejectProducts = () => {
   return async (dispatch, getState) => {
     try {
-      const { selectedProducts } = getState().product;
-      const ids = _.flatMap(selectedProducts, 'products').map(({ id }) => id);
+      const { approveProducts } = getState().product;
+      const ids = _.flatMap(approveProducts, 'products').map(({ id }) => id);
 
       dispatch(setShowLoader(true));
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tr, Icon, Flex, Text, Image, Center, Td, AspectRatio, HStack } from '@chakra-ui/react';
+import { Tr, Icon, Flex, Text, Image, Center, Td, AspectRatio, HStack, Button } from '@chakra-ui/react';
 import { EVoucherStatus, IVoucher } from 'constants/types';
 import { BASE_API_URL } from 'utilities/const';
 import { formatCurrency } from 'utilities/utils';
@@ -14,7 +14,7 @@ interface VoucherShopItemProps {
   onDelete?(): void;
 }
 
-const VoucherShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpdate, onDelete }) => {
+const VoucherNatShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpdate, onDelete }) => {
   const {
     banner,
     name,
@@ -113,7 +113,14 @@ const VoucherShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpdate
         </Center>
       </Td>
       <Td isNumeric borderColor="gray.1300">
-        <Flex justifyContent="flex-end">
+        <Button
+          variant="primary"
+          children="Register now"
+          onClick={() =>
+            router.push('/shop/flash-sale-natshop/product-approval-flashsale')
+          }
+        />
+        {/* <Flex justifyContent="flex-end">
           <HStack>
             <Center boxSize="40px" cursor="pointer" onClick={onUpdate}>
               <Icon as={AiFillEdit} w="18px" h="18px" color="text-basic" cursor="pointer" />
@@ -122,10 +129,10 @@ const VoucherShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpdate
               <Icon as={FiTrash2} w="18px" h="18px" color="red.600" cursor="pointer" />
             </Center>
           </HStack>
-        </Flex>
+        </Flex> */}
       </Td>
     </Tr>
   );
 };
 
-export default VoucherShopItem;
+export default VoucherNatShopItem;

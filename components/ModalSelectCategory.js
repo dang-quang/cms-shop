@@ -21,7 +21,7 @@ import _, { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { useFormikContext } from 'formik';
-import CategoryItem from './CategoryItem';
+import { CategoryItem } from 'components';
 
 const ModalSelectCategory = ({ isOpen, onClose, onConfirm }) => {
   const { t } = useTranslation();

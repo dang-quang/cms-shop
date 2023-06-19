@@ -43,20 +43,22 @@ import {
 } from '@chakra-ui/react';
 import { NotificationManager } from 'react-light-notifications';
 //import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
-
-import { FormGroup, WithAuthentication } from 'components';
+import {
+  FormGroup,
+  ModalSelectCategory,
+  ProductImage,
+  VariationItem,
+  VariationTableItem,
+  WithAuthentication,
+} from 'components';
 import { RiImageAddFill } from 'react-icons/ri';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { AiFillEdit } from 'react-icons/ai';
 import { HiPlus } from 'react-icons/hi';
-import { parseNumber } from 'utilities/parseNumber';
 
-import VariationItem from './components/VariationItem';
-import ProductImage from './components/ProductImage';
-import VariationTableItem from './components/VariationTableItem';
-import ModalSelectCategory from './components/ModalSelectCategory';
-import { requestCreateUpdateProduct, requestGetListCategory } from 'utilities/ApiShop';
 import { EAppKey } from 'constants/types';
+import { parseNumber } from 'utilities/parseNumber';
+import { requestCreateUpdateProduct, requestGetListCategory } from 'utilities/ApiShop';
 
 const initialValues = {
   id: '',
@@ -94,7 +96,7 @@ function CreateProduct() {
     onOpen: onOpenCategory,
     onClose: onCloseCategory,
   } = useDisclosure();
-  const [focus, { on: onFocus, off: offFocus }] = useBoolean(false);
+  //const [focus, { on: onFocus, off: offFocus }] = useBoolean(false);
 
   const handleSubmitProduct = React.useCallback(
     async ({ id, images, name, category, description, list_variation, price, stock }) => {

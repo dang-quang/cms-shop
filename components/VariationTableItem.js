@@ -19,9 +19,9 @@ import {
 import { RiImageAddFill } from 'react-icons/ri';
 import { useDisplayImage } from 'hooks';
 import { useFormikContext } from 'formik';
-import ProductImage from './ProductImage';
 import { useTranslation } from 'react-i18next';
 import { parseNumber } from 'utilities/parseNumber';
+import ProductImage from './ProductImage';
 
 const VariationTableItem = ({ item, index, isLast }) => {
   const { variations } = item;

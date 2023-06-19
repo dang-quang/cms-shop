@@ -6,6 +6,7 @@ import { formatCurrency } from 'utilities/utils';
 import dayjs from 'dayjs';
 import { AiFillEdit } from 'react-icons/ai';
 import { FiTrash2 } from 'react-icons/fi';
+import { useImageHandler } from 'hooks';
 
 interface VoucherItemProps {
   index: number;
@@ -25,17 +26,9 @@ const VoucherItem: React.FC<VoucherItemProps> = ({ item, index, onUpdate, onDele
     programEnd,
     status,
   } = item;
-  let _image = '';
 
-  if (banner) {
-    let firstChar = banner.substring(0, 4);
+  const _image = useImageHandler(banner);
 
-    if (firstChar === 'http' || firstChar === 'https') {
-      _image = banner;
-    } else {
-      _image = BASE_API_URL + '/assets/' + banner;
-    }
-  }
   return (
     <Tr key={index}>
       <Td borderColor="gray.1300">

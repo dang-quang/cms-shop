@@ -6,6 +6,7 @@ import { formatCurrency } from 'utilities/utils';
 import dayjs from 'dayjs';
 import { AiFillEdit } from 'react-icons/ai';
 import { FiTrash2 } from 'react-icons/fi';
+import { useImageHandler } from 'hooks';
 
 interface VoucherShopItemProps {
   index: number;
@@ -25,17 +26,9 @@ const VoucherShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpdate
     programEnd,
     status,
   } = item;
-  let _image = '';
 
-  if (banner) {
-    let firstChar = banner.substring(0, 4);
+  const _image = useImageHandler(banner);
 
-    if (firstChar === 'http' || firstChar === 'https') {
-      _image = banner;
-    } else {
-      _image = BASE_API_URL + '/assets/' + banner;
-    }
-  }
   return (
     <Tr key={index}>
       <Td borderColor="gray.1300">
@@ -79,8 +72,8 @@ const VoucherShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpdate
               status === EVoucherStatus.UPCOMING
                 ? 'red.700'
                 : status === EVoucherStatus.HAPPENING
-                  ? 'green.200'
-                  : 'gray.2000'
+                ? 'green.200'
+                : 'gray.2000'
             }
             alignItems="center"
             borderRadius="full">
@@ -90,15 +83,15 @@ const VoucherShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpdate
                 status === EVoucherStatus.UPCOMING
                   ? 'red.600'
                   : status === EVoucherStatus.HAPPENING
-                    ? 'green.100'
-                    : 'gray.100'
+                  ? 'green.100'
+                  : 'gray.100'
               }
               textTransform="capitalize">
               {status === EVoucherStatus.UPCOMING
                 ? 'Upcoming'
                 : status === EVoucherStatus.HAPPENING
-                  ? 'Happening'
-                  : 'Finished'}
+                ? 'Happening'
+                : 'Finished'}
             </Text>
           </Flex>
           <HStack mt="2">

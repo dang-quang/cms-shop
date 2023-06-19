@@ -6,7 +6,7 @@ import {
     Flex,
     Image,
     Input,
-    Button,
+    // Button,
     HStack,
     Icon,
     Text,
@@ -29,7 +29,7 @@ import { Form, Formik } from 'formik';
 import { IoIosCloudUpload } from 'react-icons/io';
 import { useDisplayImage } from 'hooks';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
-
+import Button from "components/CustomButtons/Button.js";
 
 const formatDate = 'YYYY-MM-DDTHH:mm';
 
@@ -88,10 +88,13 @@ function ModalUpdateInfo() {
     ) => { })
     return (
         <>
-            <Button onClick={() => {
+            <Button color="primary" onClick={() => onOpen()}>
+                Update
+            </Button>
+            {/* <Button onClick={() => {
                 // setOverlay(<OverlayOne />)
                 onOpen()
-            }}>Update</Button>
+            }}>Update</Button> */}
 
             <Modal
                 blockScrollOnMount={false}
@@ -143,124 +146,125 @@ function ModalUpdateInfo() {
                                 });
                                 return (
                                     <Box>
-                                        <Flex flexDirection={'row'} justifyContent='center' alignItems='center'>
-                                            <FormGroup title="Avata" mt="3">
-                                                {/* <AspectRatio ratio={1 / 1} > */}
-                                                <AspectRatio ratio={1 / 1}
-                                                    w='140px'
+                                        <Flex flexDirection={'row'} justifyContent='space-around' alignItems='center'>
+                                            {/* <FormGroup title="Avata" mt="3"> */}
+
+                                            <AspectRatio ratio={1 / 1}
+                                                w='140px'
+                                                zIndex={1}
+                                                position="relative"
+                                                onClick={() => inputRefAvata.current.click()}>
+                                                <Box w='100%' h='100%'>
+                                                    <Flex
+                                                        justifyContent="center"
+                                                        alignItems="center"
+                                                        cursor="pointer"
+                                                        zIndex={1}
+                                                        h="100%"
+                                                        w="100%"
+                                                        borderWidth="1px"
+                                                        borderRadius="4px"
+                                                        overflow="hidden"
+                                                        borderColor={values.avata ? 'transparent' : 'gray.700'}
+                                                        position="relative">
+                                                        {values.avata ? (
+                                                            <img
+                                                                src={values.avata}
+                                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                            />
+                                                        ) : (
+                                                            <Flex flexDirection="column" alignItems="center" justifyContent="center">
+                                                                <Icon as={IoIosCloudUpload} width="32px" height="32px" color="gray.100" />
+                                                                <Text mt="1">Upload avata</Text>
+                                                            </Flex>
+                                                        )}
+                                                        {values.avata && (
+                                                            <Icon
+                                                                cursor="pointer"
+                                                                as={AiOutlineCloseCircle}
+                                                                width="24px"
+                                                                height="24px"
+                                                                color="blue.200"
+                                                                position="absolute"
+                                                                right="4px"
+                                                                top="4px"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setFieldValue('avata', '');
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </Flex>
+                                                    <input
+                                                        ref={inputRefAvata}
+                                                        accept="image/*"
+                                                        id="icon-button-file"
+                                                        type="file"
+                                                        multiple
+                                                        style={{ display: 'none', cursor: 'pointer' }}
+                                                        onChange={onUploaderAvata}
+                                                    />
+                                                </Box>
+                                            </AspectRatio>
+                                            {/* </FormGroup> */}
+                                            {/* <FormGroup title="Banner voucher" mt="3"> */}
+                                            <Box maxW={{ base: 'unset', '2xl': '50%' }}>
+                                                <Box
                                                     zIndex={1}
                                                     position="relative"
-                                                    onClick={() => inputRefAvata.current.click()}>
-                                                    <Box w='100%' h='100%'>
-                                                        <Flex
-                                                            justifyContent="center"
-                                                            alignItems="center"
-                                                            cursor="pointer"
-                                                            zIndex={1}
-                                                            h="100%"
-                                                            w="100%"
-                                                            borderWidth="1px"
-                                                            borderRadius="4px"
-                                                            overflow="hidden"
-                                                            borderColor={values.avata ? 'transparent' : 'gray.700'}
-                                                            position="relative">
-                                                            {values.avata ? (
-                                                                <img
-                                                                    src={values.avata}
-                                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                                                />
-                                                            ) : (
-                                                                <Flex flexDirection="column" alignItems="center" justifyContent="center">
-                                                                    <Icon as={IoIosCloudUpload} width="32px" height="32px" color="gray.100" />
-                                                                    <Text mt="1">Upload avata</Text>
-                                                                </Flex>
-                                                            )}
-                                                            {values.avata && (
-                                                                <Icon
-                                                                    cursor="pointer"
-                                                                    as={AiOutlineCloseCircle}
-                                                                    width="24px"
-                                                                    height="24px"
-                                                                    color="blue.200"
-                                                                    position="absolute"
-                                                                    right="4px"
-                                                                    top="4px"
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        setFieldValue('avata', '');
-                                                                    }}
-                                                                />
-                                                            )}
-                                                        </Flex>
-                                                        <input
-                                                            ref={inputRefAvata}
-                                                            accept="image/*"
-                                                            id="icon-button-file"
-                                                            type="file"
-                                                            multiple
-                                                            style={{ display: 'none', cursor: 'pointer' }}
-                                                            onChange={onUploaderAvata}
-                                                        />
-                                                    </Box>
-                                                </AspectRatio>
-                                            </FormGroup>
-                                            <FormGroup title="Banner voucher" mt="3">
-                                                <Box maxW={{ base: 'unset', '2xl': '50%' }}>
-                                                    <Box
+                                                    onClick={() => inputRefBanner.current.click()}>
+                                                    <Flex
+                                                        justifyContent="center"
+                                                        alignItems="center"
+                                                        cursor="pointer"
                                                         zIndex={1}
-                                                        position="relative"
-                                                        onClick={() => inputRefBanner.current.click()}>
-                                                        <Flex
-                                                            justifyContent="center"
-                                                            alignItems="center"
-                                                            cursor="pointer"
-                                                            zIndex={1}
-                                                            h="140px"
-                                                            borderWidth="1px"
-                                                            borderRadius="4px"
-                                                            overflow="hidden"
-                                                            borderColor={values.banner ? 'transparent' : 'gray.700'}
-                                                            position="relative">
-                                                            {values.banner ? (
-                                                                <img
-                                                                    src={values.banner}
-                                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                                                />
-                                                            ) : (
-                                                                <Flex flexDirection="column" alignItems="center" justifyContent="center">
-                                                                    <Icon as={IoIosCloudUpload} width="32px" height="32px" color="gray.100" />
-                                                                    <Text mt="1">Upload an image of banner</Text>
-                                                                </Flex>
-                                                            )}
-                                                            {values.banner && (
-                                                                <Icon
-                                                                    cursor="pointer"
-                                                                    as={AiOutlineCloseCircle}
-                                                                    width="24px"
-                                                                    height="24px"
-                                                                    color="blue.200"
-                                                                    position="absolute"
-                                                                    right="4px"
-                                                                    top="4px"
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        setFieldValue('banner', '');
-                                                                    }}
-                                                                />
-                                                            )}
-                                                        </Flex>
-                                                        <input
-                                                            ref={inputRefBanner}
-                                                            accept="image/*"
-                                                            id="icon-button-file"
-                                                            type="file"
-                                                            multiple
-                                                            style={{ display: 'none', cursor: 'pointer' }}
-                                                            onChange={onUploaderBanner}
-                                                        />
-                                                    </Box>
+                                                        h="140px"
+                                                        w='350px'
+                                                        borderWidth="1px"
+                                                        borderRadius="4px"
+                                                        overflow="hidden"
+                                                        borderColor={values.banner ? 'transparent' : 'gray.700'}
+                                                        position="relative">
+                                                        {values.banner ? (
+                                                            <img
+                                                                src={values.banner}
+                                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                            />
+                                                        ) : (
+                                                            <Flex flexDirection="column" alignItems="center" justifyContent="center">
+                                                                <Icon as={IoIosCloudUpload} width="32px" height="32px" color="gray.100" />
+                                                                <Text mt="1">Upload an image of banner</Text>
+                                                            </Flex>
+                                                        )}
+                                                        {values.banner && (
+                                                            <Icon
+                                                                cursor="pointer"
+                                                                as={AiOutlineCloseCircle}
+                                                                width="24px"
+                                                                height="24px"
+                                                                color="blue.200"
+                                                                position="absolute"
+                                                                right="4px"
+                                                                top="4px"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setFieldValue('banner', '');
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </Flex>
+                                                    <input
+                                                        ref={inputRefBanner}
+                                                        accept="image/*"
+                                                        id="icon-button-file"
+                                                        type="file"
+                                                        multiple
+                                                        style={{ display: 'none', cursor: 'pointer' }}
+                                                        onChange={onUploaderBanner}
+                                                    />
                                                 </Box>
-                                            </FormGroup>
+                                            </Box>
+                                            {/* </FormGroup> */}
                                         </Flex>
                                         {/* <Flex flexDirection={'row'} mt='20px'> */}
                                         <FormGroup title="Address" mt='20px'>

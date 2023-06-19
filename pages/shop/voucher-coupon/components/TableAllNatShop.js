@@ -27,6 +27,7 @@ import { ModalConfirm, PaginationPanel, RangeDatePickerItem, VoucherShopItem } f
 import { isEmpty } from 'lodash';
 import Images from 'assets';
 import { EVoucherStatus } from 'constants/types';
+import VoucherNatShopItem from 'components/VoucherNatShopItem';
 
 const data = [
   {
@@ -129,6 +130,7 @@ const TableAllNatShop = () => {
     'Usage',
     'Status | Claiming Period',
     'Actions',
+    '',
   ];
 
   const { pages, pagesCount, currentPage, setCurrentPage, isDisabled } = usePagination({
@@ -266,7 +268,7 @@ const TableAllNatShop = () => {
                     color="white"
                     textStyle="b-md"
                     textTransform="capitalize"
-                    isNumeric={index === 2 || index === 3 || index === headers.length - 1}>
+                    isNumeric={index === 2 || index === 3}>
                     {item}
                   </Th>
                 );
@@ -291,7 +293,7 @@ const TableAllNatShop = () => {
             <>
               {vouchers.map((item, index) => {
                 return (
-                  <VoucherShopItem
+                  <VoucherNatShopItem
                     item={item}
                     key={index}
                     index={index}

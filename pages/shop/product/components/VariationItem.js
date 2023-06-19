@@ -151,7 +151,7 @@ const VariationItem = ({ item, index }) => {
                                   imgUri: values.list_variation[idx]?.variations[0].imgUri ?? '',
                                   price: '',
                                   stock: 0,
-                                  sku: '',
+                                  //sku: '',
                                 });
                               }
                             } else {
@@ -163,7 +163,7 @@ const VariationItem = ({ item, index }) => {
                                 imgUri: '',
                                 price: '',
                                 stock: 0,
-                                sku: '',
+                                //sku: '',
                               });
                             }
 
@@ -194,7 +194,7 @@ const VariationItem = ({ item, index }) => {
                                 imgUri: values.list_variation?.[i].variations?.[0]?.imgUri ?? '',
                                 price: '',
                                 stock: 0,
-                                sku: '',
+                                //sku: '',
                               };
                               setFieldValue(`list_variation.${i}.variations`, [
                                 ...(values.list_variation?.[i]?.variations ?? []),
@@ -313,7 +313,7 @@ const VariationItem = ({ item, index }) => {
                 setFieldValue('list_variation', []);
                 setFieldValue('set_variation.price', '');
                 setFieldValue('set_variation.stock', '');
-                setFieldValue('set_variation.sku', '');
+                //setFieldValue('set_variation.sku', '');
               }
             } else {
               setFieldValue(`variations.${1}`, { name: '', options: [''], isShow: false });
@@ -332,7 +332,7 @@ const VariationItem = ({ item, index }) => {
                         imgUri: variation.variations[0]?.imgUri ?? '',
                         price: '',
                         stock: 0,
-                        sku: '',
+                        //sku: '',
                       },
                     ],
                   };

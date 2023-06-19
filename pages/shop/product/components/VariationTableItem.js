@@ -192,35 +192,40 @@ const VariationTableItem = ({ item, index, isLast }) => {
             );
           })}
       </Td>
-      <Td borderColor={borderColor} borderWidth="1px" flex="1" m="-1px" p="0">
-        {variations.length > 0 &&
-          variations.map((i, idx) => {
-            return (
-              <Center
-                key={idx}
-                flex="1"
-                borderBottomWidth="1px"
-                borderColor={idx < variations.length - 1 ? 'border-5' : 'transparent'}
-                p="6">
-                <FormControl
-                  w="100%"
-                  isInvalid={!!errors?.list_variation?.[index]?.variations[idx]?.sku}>
-                  <Input
-                    size="sm"
-                    value={i.sku}
-                    placeholder={t('input')}
-                    onChange={(e) =>
-                      setFieldValue(`list_variation.${index}.variations.${idx}.sku`, e.target.value)
-                    }
-                  />
-                  <FormErrorMessage>
-                    {errors?.list_variation?.[index]?.variations[idx]?.sku}
-                  </FormErrorMessage>
-                </FormControl>
-              </Center>
-            );
-          })}
-      </Td>
+      {false && (
+        <Td borderColor={borderColor} borderWidth="1px" flex="1" m="-1px" p="0">
+          {variations.length > 0 &&
+            variations.map((i, idx) => {
+              return (
+                <Center
+                  key={idx}
+                  flex="1"
+                  borderBottomWidth="1px"
+                  borderColor={idx < variations.length - 1 ? 'border-5' : 'transparent'}
+                  p="6">
+                  <FormControl
+                    w="100%"
+                    isInvalid={!!errors?.list_variation?.[index]?.variations[idx]?.sku}>
+                    <Input
+                      size="sm"
+                      value={i.sku}
+                      placeholder={t('input')}
+                      onChange={(e) =>
+                        setFieldValue(
+                          `list_variation.${index}.variations.${idx}.sku`,
+                          e.target.value
+                        )
+                      }
+                    />
+                    <FormErrorMessage>
+                      {errors?.list_variation?.[index]?.variations[idx]?.sku}
+                    </FormErrorMessage>
+                  </FormControl>
+                </Center>
+              );
+            })}
+        </Td>
+      )}
     </Tr>
   );
 };

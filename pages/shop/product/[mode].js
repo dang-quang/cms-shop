@@ -55,7 +55,8 @@ import VariationItem from './components/VariationItem';
 import ProductImage from './components/ProductImage';
 import VariationTableItem from './components/VariationTableItem';
 import ModalSelectCategory from './components/ModalSelectCategory';
-import { requestCreateUpdateProduct } from 'utilities/ApiShop';
+import { requestCreateUpdateProduct, requestGetListCategory } from 'utilities/ApiShop';
+import { EAppKey } from 'constants/types';
 
 const initialValues = {
   id: '',
@@ -71,7 +72,7 @@ const initialValues = {
   set_variation: {
     price: '',
     stock: '',
-    sku: '',
+    //sku: '',
   },
   price: '',
   stock: 0,
@@ -96,55 +97,57 @@ function CreateProduct() {
   const [focus, { on: onFocus, off: offFocus }] = useBoolean(false);
 
   const handleSubmitProduct = React.useCallback(
-    async (
-      { id, images, name, category, description, list_variation, price, stock },
-      { setFieldError }
-    ) => {
+    async ({ id, images, name, category, description, list_variation, price, stock }) => {
       try {
         dispatch(setShowLoader(true));
 
-        let _product = {
-          id: id,
-          //shopId: 143, // add shop Id
-          //categoryId: 106, // add category
+        let _product;
+        let _details = [];
+
+        _product = {
+          //TODO add shop Id - need update authentication flow
+          shopId: 143,
+          categoryId: category[category.length - 1].selectedCategory.id,
           name: name,
-          image: images[0] && images[0],
-          image1: images[1] && images[1],
-          image2: images[2] && images[2],
-          image3: images[3] && images[3],
-          image4: images[4] && images[4],
-          image5: images[5] && images[5],
           description: description,
         };
 
-        if (product) {
-          let _details = [];
-
-          if (list_variation.length > 0) {
-            const listVariationVariations = list_variation.flatMap((item) => item.variations);
-
-            _details = listVariationVariations;
-
-            _product.details = _details;
-            let totalStock = 0;
-            let minPrice = Infinity;
-            list_variation.forEach((item) => {
-              item.variations.forEach((variation) => {
-                totalStock += parseFloat(variation.stock);
-                if (parseFloat(variation.price) < minPrice) {
-                  minPrice = parseFloat(variation.price);
-                }
-              });
-            });
-
-            _product.price = minPrice;
-            _product.stock = totalStock;
-          } else {
-            _product.price = parseFloat(price);
-            _product.stock = parseFloat(stock);
+        for (let i = 0; i < images.length; i++) {
+          if (images[i]) {
+            const modifiedImage = images[i].replace(/^data:image\/(png|jpg|jpeg);base64,/, '');
+            _product[`image${i}`] = modifiedImage;
           }
+        }
+        if (list_variation.length > 0) {
+          const listVariationVariations = list_variation.flatMap((item) => item.variations);
 
-          const res = await requestCreateUpdateProduct({ product: _product });
+          _details = listVariationVariations;
+
+          _product.details = _details;
+          let totalStock = 0;
+          let minPrice = Infinity;
+          list_variation.forEach((item) => {
+            item.variations.forEach((variation) => {
+              if (!!variation.stock) {
+                totalStock += parseFloat(variation.stock);
+              }
+              if (parseFloat(variation.price) < minPrice) {
+                minPrice = parseFloat(variation.price);
+              }
+            });
+          });
+
+          _product.price = minPrice;
+          _product.stock = totalStock;
+        } else {
+          _product.price = parseFloat(price);
+          _product.stock = parseFloat(stock);
+        }
+
+        if (product) {
+          _product.id = id;
+
+          const res = await requestCreateUpdateProduct(_product);
           if (res.code === EAppKey.MSG_SUCCESS) {
             NotificationManager.success({
               title: t('success'),
@@ -160,33 +163,7 @@ function CreateProduct() {
             });
           }
         } else {
-          let _details = [];
-
-          if (list_variation.length > 0) {
-            const listVariationVariations = list_variation.flatMap((item) => item.variations);
-
-            _details = listVariationVariations;
-
-            _product.details = _details;
-            let totalStock = 0;
-            let minPrice = Infinity;
-            list_variation.forEach((item) => {
-              item.variations.forEach((variation) => {
-                totalStock += parseFloat(variation.stock);
-                if (parseFloat(variation.price) < minPrice) {
-                  minPrice = parseFloat(variation.price);
-                }
-              });
-            });
-
-            _product.price = minPrice;
-            _product.stock = totalStock;
-          } else {
-            _product.price = parseFloat(price);
-            _product.stock = parseFloat(stock);
-          }
-
-          const res = await requestCreateUpdateProduct({ product: _product });
+          const res = await requestCreateUpdateProduct(_product);
           if (res.code === EAppKey.MSG_SUCCESS) {
             NotificationManager.success({
               title: t('success'),
@@ -210,6 +187,10 @@ function CreateProduct() {
   );
 
   const validationSchema = yup.object().shape({
+    images: yup
+      .array()
+      .required(t('error_field_empty'))
+      .min(6, t('shop_product.error_image_missing')),
     name: yup
       .string()
       .required(t('error_field_empty'))
@@ -294,6 +275,15 @@ function CreateProduct() {
       initialValues={initialValues}
       onSubmit={handleSubmitProduct}>
       {({ handleChange, handleSubmit, setFieldValue, setFieldError, values, errors }) => {
+        React.useEffect(() => {
+          (async () => {
+            const res = await requestGetListCategory({});
+            if (res && res.code === EAppKey.MSG_SUCCESS) {
+              setFieldValue('categories', res.categoryList);
+            }
+          })();
+        }, []);
+
         const { onUploader } = useMultiImageUpload((images) => {
           try {
             let updatedImages = [...values.images];
@@ -341,73 +331,81 @@ function CreateProduct() {
                 </Text>
               </FormGroup>
               <FormGroup title="" mt="2">
-                <FieldArray
-                  name="images"
-                  render={({ remove }) => {
-                    return (
-                      <DragDropContext onDragEnd={handleDragEnd}>
-                        <Droppable droppableId="droppable" direction="horizontal">
-                          {(provided) => (
-                            <Wrap spacing="4" ref={provided.innerRef} {...provided.droppableProps}>
-                              {values.images.map((item, index) => (
-                                <Draggable key={item} draggableId={item} index={index}>
-                                  {(provided) => (
-                                    <Flex
-                                      key={index}
-                                      ref={provided.innerRef}
-                                      {...provided.draggableProps}
-                                      {...provided.dragHandleProps}>
-                                      <ProductImage
-                                        image={item}
-                                        isCover={index === 0}
-                                        onDelete={() => remove(index)}
-                                      />
-                                    </Flex>
-                                  )}
-                                </Draggable>
-                              ))}
-                              {provided.placeholder}
-                              <AspectRatio
-                                onClick={() => refImages.current.click()}
-                                borderStyle="dashed"
-                                cursor="pointer"
-                                display={values.images.length >= maxImages ? 'none' : 'block'}
-                                w="80px"
-                                ratio={1 / 1}
-                                borderWidth="1px"
-                                borderColor="border-3"
-                                borderRadius="4px"
-                                flexDirection="column"
-                                _hover={{
-                                  bg: 'primary.600',
-                                  borderColor: 'primary.100',
-                                }}>
-                                <Box w="100%" h="100%" flexDirection="column">
-                                  <Icon as={RiImageAddFill} boxSize="20px" color="text-primary" />
-                                  <Text textStyle="b-xs" color="text-primary" mt="1">
-                                    {t('add_image')}
-                                  </Text>
-                                  <Text textStyle="b-xs" color="text-primary" mt="1">
-                                    {values.images.length}/{maxImages}
-                                  </Text>
-                                  <Input
-                                    ref={refImages}
-                                    accept="image/*"
-                                    id="icon-button-file"
-                                    type="file"
-                                    multiple
-                                    display="none"
-                                    onChange={onUploader}
-                                  />
-                                </Box>
-                              </AspectRatio>
-                            </Wrap>
-                          )}
-                        </Droppable>
-                      </DragDropContext>
-                    );
-                  }}
-                />
+                <FormControl isInvalid={!!errors.images}>
+                  <FieldArray
+                    name="images"
+                    render={({ remove }) => {
+                      return (
+                        <DragDropContext onDragEnd={handleDragEnd}>
+                          <Droppable droppableId="droppable" direction="horizontal">
+                            {(provided) => (
+                              <Wrap
+                                spacing="4"
+                                ref={provided.innerRef}
+                                {...provided.droppableProps}>
+                                {values.images.map((item, index) => (
+                                  <Draggable
+                                    key={`${item}-${index}`}
+                                    draggableId={item}
+                                    index={index}>
+                                    {(provided) => (
+                                      <Flex
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}>
+                                        <ProductImage
+                                          image={item}
+                                          isCover={index === 0}
+                                          onDelete={() => remove(index)}
+                                        />
+                                      </Flex>
+                                    )}
+                                  </Draggable>
+                                ))}
+                                {provided.placeholder}
+                                <AspectRatio
+                                  onClick={() => refImages.current.click()}
+                                  borderStyle="dashed"
+                                  cursor="pointer"
+                                  display={values.images.length >= maxImages ? 'none' : 'block'}
+                                  w="80px"
+                                  ratio={1 / 1}
+                                  borderWidth="1px"
+                                  borderColor="border-3"
+                                  borderRadius="4px"
+                                  flexDirection="column"
+                                  _hover={{
+                                    bg: 'primary.600',
+                                    borderColor: 'primary.100',
+                                  }}>
+                                  <Box w="100%" h="100%" flexDirection="column">
+                                    <Icon as={RiImageAddFill} boxSize="20px" color="text-primary" />
+                                    <Text textStyle="b-xs" color="text-primary" mt="1">
+                                      {t('add_image')}
+                                    </Text>
+                                    <Text textStyle="b-xs" color="text-primary" mt="1">
+                                      {values.images.length}/{maxImages}
+                                    </Text>
+                                    <Input
+                                      ref={refImages}
+                                      accept="image/*"
+                                      id="icon-button-file"
+                                      type="file"
+                                      multiple
+                                      display="none"
+                                      onChange={onUploader}
+                                    />
+                                  </Box>
+                                </AspectRatio>
+                              </Wrap>
+                            )}
+                          </Droppable>
+                        </DragDropContext>
+                      );
+                    }}
+                  />
+                  <FormErrorMessage>{errors.images}</FormErrorMessage>
+                </FormControl>
               </FormGroup>
               <FormGroup title={t('product_name')} mt="6" isRequire>
                 <FormControl isInvalid={!!errors.name}>
@@ -581,7 +579,7 @@ function CreateProduct() {
                                       imgUri: '',
                                       price: '',
                                       stock: 0,
-                                      sku: '',
+                                      //sku: '',
                                     },
                                   ],
                                 },
@@ -603,7 +601,7 @@ function CreateProduct() {
               {!isEmpty(values.list_variation) && (
                 <FormGroup title={t('shop_product.variation_list')} isCentered={false} mt="6">
                   <Flex flex="1">
-                    <SimpleGrid columns={3} flex="1">
+                    <SimpleGrid columns={2} flex="1">
                       <FormControl isInvalid={!!errors?.set_variation?.price}>
                         <InputGroup>
                           <Box w="full">
@@ -651,7 +649,7 @@ function CreateProduct() {
                         </InputGroup>
                         <FormErrorMessage>{errors?.set_variation?.stock}</FormErrorMessage>
                       </FormControl>
-                      <FormControl isInvalid={!!errors?.set_variation?.sku}>
+                      {/* <FormControl isInvalid={!!errors?.set_variation?.sku}>
                         <InputGroup>
                           <Box w="full">
                             <Input
@@ -666,7 +664,7 @@ function CreateProduct() {
                           </Box>
                         </InputGroup>
                         <FormErrorMessage>{errors?.set_variation?.sku}</FormErrorMessage>
-                      </FormControl>
+                      </FormControl> */}
                     </SimpleGrid>
                     <Button
                       variant="primary"
@@ -674,12 +672,11 @@ function CreateProduct() {
                       w="140px"
                       ml="4"
                       disabled={
-                        values.set_variation.price === '' &&
-                        values.set_variation.stock === '' &&
-                        values.set_variation.sku === ''
+                        values.set_variation.price === '' && values.set_variation.stock === ''
+                        // && values.set_variation.sku === ''
                       }
                       onClick={() => {
-                        const { price, stock, sku } = values.set_variation;
+                        const { price, stock } = values.set_variation;
 
                         if (!!price && price < 1000) {
                           setFieldError('set_variation.price', t('error_price_minimum'));
@@ -696,7 +693,7 @@ function CreateProduct() {
                             ...item,
                             price,
                             stock,
-                            sku,
+                            //sku,
                           })),
                         }));
 
@@ -749,7 +746,7 @@ function CreateProduct() {
                             </Th>
                           )}
                           <Th
-                            w="25%"
+                            w="35%"
                             borderBottomWidth="0px"
                             color="text-note"
                             borderRightWidth="1px"
@@ -759,7 +756,7 @@ function CreateProduct() {
                             <Center>{t('price')}</Center>
                           </Th>
                           <Th
-                            w="25%"
+                            w="35%"
                             borderBottomWidth="0px"
                             color="text-note"
                             borderRightWidth="1px"
@@ -768,16 +765,18 @@ function CreateProduct() {
                             textTransform="capitalize">
                             <Center>{t('stock')}</Center>
                           </Th>
-                          <Th
-                            w="25%"
-                            borderBottomWidth="0px"
-                            color="text-note"
-                            borderRightWidth="1px"
-                            textStyle="b-md"
-                            borderColor="border-5"
-                            textTransform="capitalize">
-                            <Center>{t('sku')}</Center>
-                          </Th>
+                          {false && (
+                            <Th
+                              w="25%"
+                              borderBottomWidth="0px"
+                              color="text-note"
+                              borderRightWidth="1px"
+                              textStyle="b-md"
+                              borderColor="border-5"
+                              textTransform="capitalize">
+                              <Center>{t('sku')}</Center>
+                            </Th>
+                          )}
                         </Tr>
                       </Thead>
                       {values.list_variation.map((item, index) => {
@@ -835,7 +834,11 @@ function CreateProduct() {
               <Button variant="outline-control" minW="150px" mr="4" onClick={() => router.back()}>
                 {t('cancel')}
               </Button>
-              <Button variant="primary" minW="150px" onClick={() => handleSubmit()}>
+              <Button
+                variant="primary"
+                minW="150px"
+                disabled={isEmpty(values.category)}
+                onClick={() => handleSubmit()}>
                 {t('confirm')}
               </Button>
             </Flex>

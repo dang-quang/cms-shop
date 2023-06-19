@@ -155,7 +155,8 @@
     "option_variations_exist": "Options of variations should be different.",
     "variation": "Variation {{number}}",
     "options": "Options",
-    "variation_list": "Variation List"
+    "variation_list": "Variation List",
+    "error_image_missing": "Please provide images for this product."
   },
   "sideBar": {
     "shop": "Shop",

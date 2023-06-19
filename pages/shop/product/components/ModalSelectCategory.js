@@ -16,183 +16,26 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-  useBoolean,
 } from '@chakra-ui/react';
 import _, { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { FieldArray, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
 import CategoryItem from './CategoryItem';
 
-const data = [
-  {
-    id: 121,
-    code: 'IP1',
-    name: 'IPhone',
-    parentId: null,
-    status: 1,
-    promotion: 0,
-    image: 'natshop/category/20230612/category_1686562303071.jpg',
-    createAt: 1686562303000,
-    updateAt: null,
-    listChild: [
-      {
-        id: 123,
-        code: 'IP12',
-        name: 'IPhone 12',
-        parentId: 121,
-        status: 1,
-        promotion: 0,
-        image: 'natshop/category/20230612/category_1686562303071.jpg',
-        createAt: 1686542400000,
-        updateAt: null,
-        listChild: [
-          {
-            id: 127,
-            code: 'IP20',
-            name: 'IPhone 12 CC',
-            parentId: 123,
-            status: 1,
-            promotion: 0,
-            image: 'natshop/category/20230612/category_1686564485212.jpg',
-            createAt: 1686715200000,
-            updateAt: null,
-            listChild: [
-              {
-                id: 128,
-                code: null,
-                name: 'IPhone 12 CC DD',
-                parentId: 127,
-                status: 1,
-                promotion: 0,
-                image: 'natshop/category/20230612/category_1686562303071.jpg',
-                createAt: 1686715200000,
-                updateAt: null,
-                listChild: null,
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: 122,
-        code: 'IP11',
-        name: 'IPhone 11',
-        parentId: 121,
-        status: 1,
-        promotion: 0,
-        image: 'natshop/category/20230612/category_1686562377930.jpg',
-        createAt: 1686562377000,
-        updateAt: null,
-        listChild: null,
-      },
-      {
-        id: 124,
-        code: 'IP13',
-        name: 'IPhone 13',
-        parentId: 121,
-        status: 1,
-        promotion: 0,
-        image: 'natshop/category/20230612/category_1686562430626.jpg',
-        createAt: 1686562430000,
-        updateAt: null,
-        listChild: null,
-      },
-      {
-        id: 125,
-        code: 'IP14',
-        name: 'IPhone 14',
-        parentId: 121,
-        status: 1,
-        promotion: 0,
-        image: 'natshop/category/20230612/category_1686562475246.jpg',
-        createAt: 1686562475000,
-        updateAt: null,
-        listChild: null,
-      },
-      {
-        id: 126,
-        code: '123',
-        name: 'Macbook Air 1',
-        parentId: 121,
-        status: 1,
-        promotion: 0,
-        image: 'natshop/category/20230612/category_1686564485212.jpg',
-        createAt: 1686564485000,
-        updateAt: null,
-        listChild: null,
-      },
-    ],
-  },
-  {
-    id: 105,
-    code: 'MAC',
-    name: 'Macbook',
-    parentId: null,
-    status: 1,
-    promotion: 0,
-    image: 'natshop/category/20230612/category_1686562745565.jpg',
-    createAt: 1686562745000,
-    updateAt: null,
-    listChild: [
-      {
-        id: 107,
-        code: 'MAC2',
-        name: 'Macbook Pro',
-        parentId: 105,
-        status: 1,
-        promotion: 0,
-        image: 'natshop/category/20230612/category_1686562793070.jpg',
-        createAt: 1686562793000,
-        updateAt: null,
-        listChild: null,
-      },
-      {
-        id: 106,
-        code: 'MAC1',
-        name: 'Macbook Air',
-        parentId: 105,
-        status: 1,
-        promotion: 0,
-        image: 'natshop/category/20230612/category_1686562769620.jpg',
-        createAt: 1686562769000,
-        updateAt: null,
-        listChild: null,
-      },
-    ],
-  },
-];
-
-interface ModalSelectCategoryProps {
-  isOpen?: boolean;
-  onClose?(): void;
-  onConfirm?(e: any[]): void;
-}
-
-const ModalSelectCategory: React.FC<ModalSelectCategoryProps> = ({
-  isOpen,
-  onClose,
-  onConfirm,
-}) => {
+const ModalSelectCategory = ({ isOpen, onClose, onConfirm }) => {
   const { t } = useTranslation();
-  const [search, setSearch] = React.useState<string>('');
+  const [search, setSearch] = React.useState('');
   const { values, setFieldValue } = useFormikContext();
 
   const [categories, setCategories] = React.useState([]);
 
   React.useEffect(() => {
-    (async () => {
-      try {
-        if (isEmpty(data)) {
-          return;
-        }
-        //setFieldValue('categories', [{ list: data }]);
-        setCategories([{ list: data }]);
-      } catch (error) {
-        console.log('get categories error', error);
-      }
-    })();
-  }, [data]);
+    if (isEmpty(values.categories)) {
+      return;
+    }
+    setCategories([{ list: values.categories }]);
+  }, [values.categories]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick size="5xl" isCentered>
@@ -222,7 +65,7 @@ const ModalSelectCategory: React.FC<ModalSelectCategoryProps> = ({
           </InputGroup>
           <Flex mt="4" bg="bg-1" borderRadius="4px" py="3" h="344px" overflowX="scroll">
             {categories &&
-              categories.map((item: any, index: number) => {
+              categories.map((item, index) => {
                 const { list } = item;
                 return (
                   <Box
@@ -238,7 +81,7 @@ const ModalSelectCategory: React.FC<ModalSelectCategoryProps> = ({
                     pr="1">
                     {list &&
                       list.length > 0 &&
-                      list.map((i: any, idx: number) => {
+                      list.map((i, idx) => {
                         return (
                           <CategoryItem
                             item={i}
@@ -280,7 +123,7 @@ const ModalSelectCategory: React.FC<ModalSelectCategoryProps> = ({
                   No category has been chosen
                 </Text>
               ) : (
-                categories.map((item: any, index: number) => (
+                categories.map((item, index) => (
                   <Text as="span" key={index}>
                     <Text as="span" textStyle="h3-b" color="text-basic" key={index}>
                       {item.selectedCategory ? `${item.selectedCategory.name} ` : ''}
@@ -302,11 +145,10 @@ const ModalSelectCategory: React.FC<ModalSelectCategoryProps> = ({
                   // If selectedCategory exists, set it back as the selected category
                   // setFieldValue('selectedCategory', values.selectedCategory);
                   // setFieldValue('categories', values.category);
-                  setCategories([{ list: data }]);
+                  setCategories([{ list: values.categories }]);
                   setFieldValue('category', []);
                 } else {
-                  //setFieldValue('categories', );
-                  setCategories([{ list: data }]);
+                  setCategories([{ list: values.categories }]);
                 }
                 onClose();
               }}>

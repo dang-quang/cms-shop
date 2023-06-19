@@ -98,41 +98,29 @@ export const inputStyles = {
       },
 
       variants: {
-        main: () => ({
+        outline: (props: StyleFunctionProps) => ({
           field: {
-            bg: 'transparent',
+            bg: mode('white', 'navy.800')(props),
             border: '1px solid',
-            borderColor: 'secondaryGray.100',
-            borderRadius: '16px',
-            _placeholder: { color: 'secondaryGray.600' },
-          },
-        }),
-        auth: () => ({
-          field: {
-            bg: 'transparent',
-            border: '1px solid',
-
-            borderColor: 'secondaryGray.100',
-            borderRadius: '16px',
-            _placeholder: { color: 'secondaryGray.600' },
-          },
-        }),
-        authSecondary: () => ({
-          field: {
-            bg: 'transparent',
-            border: '1px solid',
-            borderColor: 'secondaryGray.100',
-            borderRadius: '16px',
-            _placeholder: { color: 'secondaryGray.600' },
-          },
-        }),
-        search: () => ({
-          field: {
-            border: 'none',
-            py: '11px',
-            borderRadius: '8px',
-            bg: 'red',
-            _placeholder: { color: 'secondaryGray.600' },
+            color: mode('text-basic', 'white')(props),
+            borderColor: 'border-5',
+            borderRadius: '4px',
+            fontSize: '16px',
+            _placeholder: { color: 'text-placeholder' },
+            _focus: {
+              borderColor: 'border-3',
+              boxShadow: 'none',
+            },
+            _hover: {
+              borderColor: 'border-3',
+            },
+            _active: {
+              boxShadow: 'none',
+            },
+            _invalid: {
+              borderColor: 'red',
+              boxShadow: 'none',
+            },
           },
         }),
       },

@@ -1,7 +1,6 @@
 import React from 'react';
 import Admin from 'layouts/Admin';
 import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
-//@ts-ignore
 import { NotificationContainer } from 'react-light-notifications';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';

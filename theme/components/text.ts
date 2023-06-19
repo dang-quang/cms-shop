@@ -190,6 +190,7 @@ export const textStyles = {
     'b-sm': {
       fontSize: '14px',
       lineHeight: '16px',
+      fontWeight: '400px',
     },
     // 'b-sb': {
     //   fontSize: '14px',

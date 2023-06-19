@@ -87,3 +87,9 @@ export const IconRightArrow = createIcon({
     </svg>
   ),
 });
+
+{
+  /* <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M15.108 12.036L8.57251 5.5005L9.49951 4.5705L16.5 11.574V12.501L9.49951 19.5L8.57251 18.5715L15.108 12.036Z" fill="black"/>
+</svg> */
+}

@@ -2,6 +2,10 @@ export const semanticTokens = {
   semanticTokens: {
     colors: {
       error: 'red.500',
+      'text-primary': {
+        default: 'primary.100',
+        _dark: 'primary.100',
+      },
       'text-basic': {
         default: 'gray.1800',
         _dark: 'white',
@@ -18,37 +22,9 @@ export const semanticTokens = {
         default: 'gray.600',
         _dark: 'gray.300',
       },
-      'text-info': {
-        default: 'gray.700',
-        _dark: 'gray.200',
-      },
       'text-placeholder': {
         default: 'gray.300',
         _dark: 'gray.300',
-      },
-      'text-sub': {
-        default: 'gray.500',
-        _dark: 'gray.400',
-      },
-      'text-link-hover': {
-        default: 'gray.900',
-        _dark: 'white',
-      },
-      'text-token': {
-        default: 'blackAlpha.500',
-        _dark: 'blackAlpha.500',
-      },
-      'text-description': {
-        default: 'blackAlpha.900',
-        _dark: 'whiteAlpha.900',
-      },
-      'text-content': {
-        default: 'blue.500',
-        _dark: 'white',
-      },
-      'text-gray-6': {
-        default: 'secondaryGray.600',
-        _dark: 'secondaryGray.600',
       },
       'text-black': {
         default: 'black.500',
@@ -57,14 +33,6 @@ export const semanticTokens = {
       'text-white': {
         default: 'white',
         _dark: 'white',
-      },
-      'text-gray-7': {
-        default: 'secondaryGray.700',
-        _dark: 'secondaryGray.700',
-      },
-      'bg-main': {
-        default: 'secondaryGray.300',
-        _dark: 'navy.900',
       },
       'bg-1': {
         default: 'white',
@@ -77,10 +45,6 @@ export const semanticTokens = {
       'bg-3': {
         default: 'gray.300',
         _dark: 'navy.800',
-      },
-      'bg-content': {
-        default: 'gray.50',
-        _dark: 'black',
       },
       'border-1': {
         default: 'gray.1700',
@@ -101,14 +65,6 @@ export const semanticTokens = {
       'border-5': {
         default: 'gray.500',
         _dark: 'gray.500',
-      },
-      'border-content': {
-        default: 'gray.100',
-        _dark: 'gray.600',
-      },
-      'bg-link-active': {
-        default: 'blue.50',
-        _dark: 'blue.800',
       },
     },
   },

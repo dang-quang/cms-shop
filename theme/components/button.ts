@@ -22,7 +22,7 @@ export const buttonStyles = {
           borderWidth: '1px',
           borderColor: 'primary.100',
           _focus: {
-            bg: mode('primary.200', 'primary.200')(props),
+            bg: 'primary.100',
             color: 'white',
             borderColor: 'transparent',
           },
@@ -141,6 +141,24 @@ export const buttonStyles = {
           _hover: {
             borderColor: 'border-3',
             bg: 'bg-2',
+          },
+        }),
+        'outline-primary': (props: StyleFunctionProps) => ({
+          bg: 'bg-1',
+          borderColor: 'border-3',
+          color: 'primary.100',
+          borderWidth: '1px',
+          borderStyle: 'dashed',
+          borderRadius: '4px',
+          _focus: {
+            bg: 'bg-2',
+          },
+          _active: {
+            bg: 'bg-3',
+          },
+          _hover: {
+            borderColor: 'primary.100',
+            bg: 'primary.600',
           },
         }),
       },

@@ -158,7 +158,7 @@ function AddUpdateMessagePage() {
               py={{ base: '6', xl: '8' }}
               pl={{ base: '6', xl: '8' }}
               pr={{ base: '10', xl: '100px' }}>
-              <Text textStyle="h5-sb" color="primary.100" mb="6">
+              <Text textStyle="h5-b" color="primary.100" mb="6">
                 Basic information
               </Text>
               <FormGroup title="Topic Name">

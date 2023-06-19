@@ -138,9 +138,9 @@ const ModalSelectProducts = () => {
       } else {
         // If item is not selected, add it to the array
         if (!isEmpty(selectedItems)) {
-          let arr = [...selectedItems, item];
+          let _selectedItems = [...selectedItems, item];
 
-          setSelectedItems(arr);
+          setSelectedItems(_selectedItems);
 
           const areArraysEqual = _.isEqualWith(arr, products, (obj1, obj2) => {
             return obj1.id === obj2.id;

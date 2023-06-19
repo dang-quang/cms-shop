@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-//@ts-ignore
 import { NotificationManager } from 'react-light-notifications';
 import 'react-light-notifications/lib/main.css';
 import Admin from 'layouts/Admin';

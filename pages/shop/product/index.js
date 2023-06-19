@@ -473,7 +473,7 @@ const ShopUserProduct = () => {
               position: isMobile ? 'static' : 'absolute',
               right: '0',
             }}>
-            <Link href={'/shop/product/create'}>
+            <Link href={'/shop/product/add'}>
               <Button id="update-label" color="green">
                 {t('shopUser.create_product')}
               </Button>

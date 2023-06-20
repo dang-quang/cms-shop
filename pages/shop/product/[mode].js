@@ -118,7 +118,11 @@ function CreateProduct() {
         for (let i = 0; i < images.length; i++) {
           if (images[i]) {
             const modifiedImage = images[i].replace(/^data:image\/(png|jpg|jpeg);base64,/, '');
-            _product[`image${i}`] = modifiedImage;
+            if (i === 0) {
+              _product['image'] = modifiedImage;
+            } else {
+              _product[`image${i}`] = modifiedImage;
+            }
           }
         }
         if (list_variation.length > 0) {

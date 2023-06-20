@@ -36,7 +36,7 @@ import {
   Th,
   Thead,
   Tr,
-  useBoolean,
+  //useBoolean,
   useDisclosure,
   useToast,
   Wrap,
@@ -59,6 +59,7 @@ import { HiPlus } from 'react-icons/hi';
 import { EAppKey } from 'constants/types';
 import { parseNumber } from 'utilities/parseNumber';
 import { requestCreateUpdateProduct, requestGetListCategory } from 'utilities/ApiShop';
+import { setSelectedCategory } from 'redux/actions/product';
 
 const initialValues = {
   id: '',
@@ -121,7 +122,14 @@ function CreateProduct() {
           }
         }
         if (list_variation.length > 0) {
-          const listVariationVariations = list_variation.flatMap((item) => item.variations);
+          let listVariationVariations = list_variation.flatMap((item) => item.variations);
+
+          for (let i = 0; i < listVariationVariations.length; i++) {
+            listVariationVariations[i].imgUri = listVariationVariations[i].imgUri.replace(
+              /^data:image\/(png|jpg|jpeg);base64,/,
+              ''
+            );
+          }
 
           _details = listVariationVariations;
 
@@ -158,6 +166,7 @@ function CreateProduct() {
             setTimeout(() => {
               router.push('/shop/product');
             }, 1000);
+            dispatch(setSelectedCategory([]));
           } else {
             NotificationManager.error({
               title: t('error'),
@@ -174,6 +183,7 @@ function CreateProduct() {
             setTimeout(() => {
               router.push('/shop/product');
             }, 1000);
+            dispatch(setSelectedCategory([]));
           } else {
             NotificationManager.error({
               title: t('error'),
@@ -192,7 +202,7 @@ function CreateProduct() {
     images: yup
       .array()
       .required(t('error_field_empty'))
-      .min(6, t('shop_product.error_image_missing')),
+      .min(1, t('shop_product.error_image_missing')),
     name: yup
       .string()
       .required(t('error_field_empty'))

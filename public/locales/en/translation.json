@@ -156,7 +156,7 @@
     "variation": "Variation {{number}}",
     "options": "Options",
     "variation_list": "Variation List",
-    "error_image_missing": "Please provide images for this product."
+    "error_image_missing": "Image is missing, please make sure at least this product has one cover image."
   },
   "sideBar": {
     "shop": "Shop",

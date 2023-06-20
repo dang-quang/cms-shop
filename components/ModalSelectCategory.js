@@ -20,22 +20,23 @@ import {
 import _, { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { useFormikContext } from 'formik';
 import { CategoryItem } from 'components';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedCategory } from 'redux/actions/product';
 
-const ModalSelectCategory = ({ isOpen, onClose, onConfirm }) => {
+const ModalSelectCategory = ({ isOpen, onClose, data }) => {
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   const [search, setSearch] = React.useState('');
-  const { values, setFieldValue } = useFormikContext();
-
   const [categories, setCategories] = React.useState([]);
+  const selectedCategory = useSelector((state) => state.product.selectedCategory);
 
   React.useEffect(() => {
-    if (isEmpty(values.categories)) {
+    if (isEmpty(data)) {
       return;
     }
-    setCategories([{ list: values.categories }]);
-  }, [values.categories]);
+    setCategories([{ list: data }]);
+  }, [data]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick size="5xl" isCentered>
@@ -101,7 +102,6 @@ const ModalSelectCategory = ({ isOpen, onClose, onConfirm }) => {
                               // Update the selected category at the current level
                               updatedCategories[index].selectedCategory = i;
 
-                              //setFieldValue('categories', updatedCategories);
                               setCategories(updatedCategories);
                             }}
                           />
@@ -141,14 +141,11 @@ const ModalSelectCategory = ({ isOpen, onClose, onConfirm }) => {
               variant="outline-control"
               minW="150px"
               onClick={() => {
-                if (!isEmpty(values.category)) {
-                  // If selectedCategory exists, set it back as the selected category
-                  // setFieldValue('selectedCategory', values.selectedCategory);
-                  // setFieldValue('categories', values.category);
-                  setCategories([{ list: values.categories }]);
-                  setFieldValue('category', []);
+                if (!isEmpty(selectedCategory)) {
+                  setCategories([{ list: data }]);
+                  dispatch(setSelectedCategory(selectedCategory));
                 } else {
-                  setCategories([{ list: values.categories }]);
+                  setCategories([{ list: data }]);
                 }
                 onClose();
               }}>
@@ -159,7 +156,8 @@ const ModalSelectCategory = ({ isOpen, onClose, onConfirm }) => {
               disabled={isEmpty(categories) || !categories[categories.length - 1].selectedCategory}
               minW="150px"
               onClick={() => {
-                onConfirm(categories);
+                dispatch(setSelectedCategory(categories));
+                onClose();
               }}>
               {t('confirm')}
             </Button>

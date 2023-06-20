@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Admin from 'layouts/Admin';
 import { useTranslation } from 'react-i18next';
 
@@ -65,7 +65,6 @@ const initialValues = {
   images: [],
   name: '',
   categories: [],
-  category: [],
   description: '',
   brands: [],
   brand: undefined,
@@ -87,6 +86,7 @@ function CreateProduct() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const refImages = React.useRef(null);
+  const selectedCategory = useSelector((state) => state.product.selectedCategory);
 
   const product =
     !_.isEmpty(router.query) && router.query.mode === 'update' ? router.query : undefined;
@@ -99,7 +99,7 @@ function CreateProduct() {
   //const [focus, { on: onFocus, off: offFocus }] = useBoolean(false);
 
   const handleSubmitProduct = React.useCallback(
-    async ({ id, images, name, category, description, list_variation, price, stock }) => {
+    async ({ id, images, name, description, list_variation, price, stock }) => {
       try {
         dispatch(setShowLoader(true));
 
@@ -109,7 +109,7 @@ function CreateProduct() {
         _product = {
           //TODO add shop Id - need update authentication flow
           shopId: 143,
-          categoryId: category[category.length - 1].selectedCategory.id,
+          categoryId: selectedCategory[selectedCategory.length - 1].selectedCategory.id,
           name: name,
           description: description,
         };
@@ -185,7 +185,7 @@ function CreateProduct() {
         dispatch(setShowLoader(false));
       }
     },
-    [product]
+    [product, selectedCategory]
   );
 
   const validationSchema = yup.object().shape({
@@ -446,14 +446,14 @@ function CreateProduct() {
                   _hover={{ borderColor: 'border-3' }}
                   alignItems="center">
                   <Box flex="1" px="4">
-                    {values.category && values.category.length > 0 ? (
-                      values.category.map((item, index) => (
+                    {selectedCategory && selectedCategory.length > 0 ? (
+                      selectedCategory.map((item, index) => (
                         <Text as="span" key={index}>
                           <Text as="span" textStyle="h4" color="text-basic" key={index}>
                             {item && item.selectedCategory ? `${item.selectedCategory.name} ` : ''}
-                            {index < values.category.length - 1 &&
-                            values.category[index + 1] &&
-                            values.category[index + 1].selectedCategory
+                            {index < selectedCategory.length - 1 &&
+                            selectedCategory[index + 1] &&
+                            selectedCategory[index + 1].selectedCategory
                               ? '> '
                               : ''}
                           </Text>
@@ -839,18 +839,15 @@ function CreateProduct() {
               <Button
                 variant="primary"
                 minW="150px"
-                disabled={isEmpty(values.category)}
+                disabled={isEmpty(selectedCategory)}
                 onClick={() => handleSubmit()}>
                 {t('confirm')}
               </Button>
             </Flex>
             <ModalSelectCategory
+              data={values.categories}
               isOpen={isOpenCategory}
               onClose={onCloseCategory}
-              onConfirm={(e) => {
-                setFieldValue('category', e);
-                onCloseCategory();
-              }}
             />
           </Form>
         );

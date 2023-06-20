@@ -26,6 +26,13 @@ export function setSelectedProducts(selectedProducts) {
   };
 }
 
+export function setSelectedCategory(selectedCategory) {
+  return {
+    type: ActionTypes.SELECTED_CATEGORY,
+    selectedCategory,
+  };
+}
+
 export const approveProducts = () => {
   return async (dispatch, getState) => {
     try {

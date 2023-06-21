@@ -52,6 +52,7 @@ import { setModalSelectProducts } from 'redux/actions/product';
 import { HiPlus } from 'react-icons/hi';
 import * as yup from 'yup';
 import { ModalConfirm, ProductFlashSaleItem, WithAuthentication } from 'components';
+import { useRouter } from 'next/router';
 
 
 const formatDate = 'YYYY-MM-DDTHH:mm';
@@ -67,6 +68,7 @@ const initialValues = {
 
 const ProductApproval = () => {
   const { t } = useTranslation();
+  const router = useRouter();
   const dispatch = useDispatch();
   const useStyles = makeStyles(styles);
   const classes = useStyles();
@@ -106,6 +108,9 @@ const ProductApproval = () => {
       router.events.off('routeChangeStart', handleRouteChange);
     };
   }, [selectedProducts]);
+
+  const flashSale = router.query;
+  console.log('ProductApproval', flashSale);
 
 
   const validationSchema = yup.object().shape({
@@ -258,7 +263,7 @@ const ProductApproval = () => {
             <CardBody className={classes.cardBody}>
               <Box>
                 <Text textStyle="h5" color="text-basic" marginBottom={'10px'}>
-                  [NGÀNH HÀNG THỜI TRANG] - [SIÊU SALE HÀNG HIỆU] - [00:00 09/09/2022 - 23:59 09/09/2022]
+                  {flashSale.name} {`[${dayjs(Number(flashSale.programStart)).format('HH:MM DD-MM-YYYY ')} - ${dayjs(Number(flashSale.programEnd)).format('HH:MM DD-MM-YYYY')} ]`}
                 </Text>
               </Box>
               <Box
@@ -274,7 +279,7 @@ const ProductApproval = () => {
                       w="100%"
                       h="100%"
                       objectFit="cover"
-                      src={'https://cf.shopee.vn/file/sg-11134004-7qvg9-lh7djcs0g92vb7'}
+                      src={BASE_API_URL + '/assets/' + flashSale.banner}
                     />
                   </AspectRatio>
                   <Box>
@@ -287,10 +292,10 @@ const ProductApproval = () => {
                         Thời gian đăng ký
                       </Text>
                       <Text textStyle="h2" color="text-basic">
-                        00:00 16-08-2022 - 13:30 05-09-2022
+                        {dayjs(Number(flashSale.registerStart)).format('HH:MM DD-MM-YYYY ')} - {dayjs(Number(flashSale.registerEnd)).format('HH:MM DD-MM-YYYY ')}
                       </Text>
                       <Text textStyle="h2" color="text-basic">
-                        Hiện tại bạn có thể đăng ký 7 Khung giờ
+                        {/* Hiện tại bạn có thể đăng ký 7 Khung giờ */}
                       </Text>
                     </Flex>
                   </Box>
@@ -304,10 +309,10 @@ const ProductApproval = () => {
                         Thời gian diễn ra
                       </Text>
                       <Text textStyle="h2" color="text-basic">
-                        00:00 09-09-2022 - 23:59 09-09-2022
+                        {dayjs(Number(flashSale.programStart)).format('HH:MM DD-MM-YYYY ')} - {dayjs(Number(flashSale.programEnd)).format('HH:MM DD-MM-YYYY ')}
                       </Text>
                       <Text textStyle="h2" color="text-basic">
-                        0 Khung giờ bạn đã đăng ký đang diễn ra
+                        {/* 0 Khung giờ bạn đã đăng ký đang diễn ra */}
                       </Text>
                     </Flex>
                   </Box>
@@ -338,26 +343,20 @@ const ProductApproval = () => {
                   <TabPanel p="0">
                     <Box w={'50%'}>
                       <Text>
-                        [NGÀNH HÀNG THỜI TRANG] - [SIÊU SALE HÀNG HIỆU] - [00:00 09/09/2022 - 23:59
-                        09/09/2022] - GIÁ TRÊN 199K Đây là chương trình diễn ra vào ngày 09.09 dành riêng
-                        cho Ngành hàng Thời Trang Hỗ trợ Người bán tăng doanh số và thu hút thêm khách
-                        hàng mới. Shopee không trợ giá. Freeship từ 0Đ toàn sàn + Thời gian đăng kí:
-                        [00:00 - 16/08/2022] đến [13:30 - 05/09/2022] + Thời gian xét duyệt: [13:31 -
-                        05/09/2022] đến [16:00 - 05/09/2022] thêm
+                        {flashSale.description ?? ""}
                       </Text>
                     </Box>
                   </TabPanel>
                   <TabPanel p="0">
                     <Box w={'50%'}>
-                      <Text>
-                        Điều kiện của shop Không giới hạn Điều kiện Mã giảm giá Số mã có thể sử dụng : 30
-                        ~ 100 Giá trị đơn hàng tối thiểu : ₫0 ~ ₫0 Thời gian bắt đầu lưu Mã giảm giá : Sớm
-                        hơn hoặc đúng 2023/06/01 00:00:00 Thời gian kết thúc lưu Mã giảm giá : Muộn hơn
-                        hoặc đúng 2023/06/06 23:59:59 Loại Mã giảm giá : Mã giảm giá toàn Shop Thiết lập
-                        hiển thị mã giảm giá : Hiển thị nhiều nơi Loại Mã giảm giá Giảm theo phần trăm
-                        Phần trăm giảm : 10%GIẢM ~ 10%GIẢM Giảm tối đa : ₫10.000 ~ ₫100.000 Hoàn xu Phần
-                        trăm giảm : 10% ~ 10% Giảm tối đa : ₫10.000 ~ ₫100.000
-                      </Text>
+                      <Flex flexDirection={'column'}>
+                        <Text>Điều Kiện Shop:</Text>
+                        <Text>-Số sản phẩm tối đa mỗi Shop được đăng ký: {flashSale.maxProductRegister}</Text>
+                      </Flex>
+                      <Flex flexDirection={'column'}>
+                        <Text>Điều Kiện Sản Phẩm:</Text>
+                        <Text>-Điều Kiện Giảm Giá: {flashSale.minDiscount} ~ {flashSale.maxDiscount} {flashSale.minDiscount !== "PERCENT" ? "%" : "HTG"}</Text>
+                      </Flex>
                     </Box>
                   </TabPanel>
                 </TabPanels>

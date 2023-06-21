@@ -291,6 +291,44 @@ function CreateProduct() {
       initialValues={initialValues}
       onSubmit={handleSubmitProduct}>
       {({ handleChange, handleSubmit, setFieldValue, setFieldError, values, errors }) => {
+        // React.useEffect(() => {
+        //   if (voucher && voucher.banner) {
+        //     const str = BASE_API_URL + '/assets/' + voucher.banner;
+
+        //     const img = new Image();
+        //     img.crossOrigin = 'anonymous';
+        //     img.src = str;
+        //     img.onload = async () => {
+        //       const canvas = document.createElement('canvas');
+        //       canvas.width = img.width;
+        //       canvas.height = img.height;
+        //       const ctx = canvas.getContext('2d');
+        //       ctx.drawImage(img, 0, 0);
+        //       const dataURL = canvas.toDataURL('image/png');
+
+        //       setFieldValue('banner', dataURL);
+        //     };
+        //   }
+
+        //   if (voucher) {
+        //     setFieldValue(
+        //       'registerStart',
+        //       dayjs(parseFloat(voucher.registerStart)).format(formatDate)
+        //     );
+        //     setFieldValue('registerEnd', dayjs(parseFloat(voucher.registerEnd)).format(formatDate));
+        //     setFieldValue(
+        //       'programStart',
+        //       dayjs(parseFloat(voucher.programStart)).format(formatDate)
+        //     );
+        //     setFieldValue('programEnd', dayjs(parseFloat(voucher.programEnd)).format(formatDate));
+        //     if (voucher.maxShopRegister === 0) {
+        //       setFieldValue('typeShopLimit', EShopLimitType.NO_LIMIT);
+        //     } else {
+        //       setFieldValue('typeShopLimit', EShopLimitType.SHOP_LIMIT);
+        //     }
+        //   }
+        // }, [voucher]);
+
         React.useEffect(() => {
           (async () => {
             const res = await requestGetListCategory({});

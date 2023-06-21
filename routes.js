@@ -123,6 +123,13 @@ const dashboardRoutes = [
         permission: 'shop_marketing_broadcast',
       },
       {
+        path: '/buy-ad-placement',
+        name: 'buyAdPlace',
+        layout: '/shop',
+        parent: 'operation',
+        permission: 'shop_marketing_broadcast',
+      },
+      {
         path: '/flash-sale-shop',
         name: 'flashSaleShop',
         layout: '/shop',

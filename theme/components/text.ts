@@ -40,6 +40,11 @@ export const textStyles = {
       lineHeight: '100%',
       fontWeight: '500',
     },
+    'h4-l': {
+      fontSize: '16px',
+      lineHeight: '100%',
+      fontWeight: '300',
+    },
     h4: {
       fontSize: '16px',
       lineHeight: '100%',
@@ -59,6 +64,11 @@ export const textStyles = {
       fontSize: '18px',
       lineHeight: '21px',
       fontWeight: '600',
+    },
+    '20': {
+      fontSize: '20px',
+      lineHeight: '24px',
+      fontWeight: '400',
     },
     'h6-t': {
       fontSize: '24px',

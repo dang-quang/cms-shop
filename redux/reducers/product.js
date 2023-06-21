@@ -17,6 +17,11 @@ export default function product(state = {}, action) {
         ...state,
         isOpenModalSelectProducts: action.isOpenModalSelectProducts,
       };
+    case ActionTypes.SELECTED_CATEGORY:
+      return {
+        ...state,
+        selectedCategory: action.selectedCategory,
+      };
     default:
       return state;
   }

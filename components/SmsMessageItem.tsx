@@ -4,6 +4,7 @@ import { ESMSStatus, ISMSMessage } from 'constants/types';
 import { BASE_API_URL } from 'utilities/const';
 import { formatCurrency } from 'utilities/utils';
 import dayjs from 'dayjs';
+import { useImageHandler } from 'hooks';
 
 interface SmsMessageItemProps {
   item: ISMSMessage;
@@ -14,17 +15,7 @@ const SmsMessageItem: React.FC<SmsMessageItemProps> = ({ item, onRegister }) => 
   const formatDate = 'YYYY/MM/DD';
   const { image, code, quantity, startDate, endDate, price, status } = item;
 
-  let _image = '';
-
-  if (image) {
-    let firstChar = image.substring(0, 4);
-
-    if (firstChar === 'http' || firstChar === 'https') {
-      _image = image;
-    } else {
-      _image = BASE_API_URL + '/assets/' + image;
-    }
-  }
+  const _image = useImageHandler(image);
 
   return (
     <Box shadow="md" _hover={{ shadow: 'lg' }} p="2" borderRadius="4px" overflow="hidden">

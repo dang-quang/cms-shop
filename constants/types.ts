@@ -80,6 +80,35 @@ export interface IProduct {
   stock: number;
 }
 
+export interface IShopProduct {
+  categoryId?: number;
+  categoryName?: string;
+  countLike?: number;
+  countView?: number;
+  createAt?: number;
+  createBy?: number;
+  description?: string;
+  discount?: number;
+  discountType?: string;
+  distance?: number;
+  id?: number;
+  image?: string;
+  like?: string;
+  listImage?: string;
+  location?: string;
+  name?: string;
+  price?: number;
+  productCode?: number;
+  productDetail?: string;
+  rating?: number;
+  shopCode?: string;
+  shopId?: number;
+  shopName?: string;
+  soldQuantity?: number;
+  status?: string;
+  stock?: number;
+}
+
 export enum EAppKey {
   LOGIN_TOKEN = 'LOGIN_TOKEN',
   ACCESS_TOKEN = 'ACCESS_TOKEN',
@@ -88,6 +117,8 @@ export enum EAppKey {
   REJECT = 'REJECT',
   LANGUAGE = 'LANGUAGE',
   CHANNEL = 'CHANNEL',
+  DELETE = 'DELETE',
+  DELIST = 'DELIST',
 }
 
 export enum EDiscountType {
@@ -126,4 +157,11 @@ export enum ActionTypes {
   APPROVE_PRODUCTS = 'APPROVE_PRODUCTS',
   MODAL_SELECT_PRODUCTS = 'MODAL_SELECT_PRODUCTS',
   SELECTED_PRODUCTS = 'SELECTED_PRODUCTS',
+  SELECTED_CATEGORY = 'SELECTED_CATEGORY',
+}
+
+export enum EProductType {
+  STOCK = 'STOCK',
+  SOLD_OUT = 'SOLD_OUT',
+  DELIST = 'DELIST',
 }

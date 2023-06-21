@@ -1,4 +1,6 @@
-export const formError = {
+import { StyleConfig } from '@chakra-ui/theme-tools';
+
+export const formError: { components: { FormError: StyleConfig } } = {
   components: {
     FormError: {
       baseStyle: {

@@ -19,7 +19,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { NotificationContainer, NotificationManager } from 'react-light-notifications';
+import { NotificationManager } from 'react-light-notifications';
 
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
@@ -229,7 +229,7 @@ const ProductFlashSale = () => {
               Create New My Shop's Flash Sale
             </Text>
             <Box mt="6" bg="bg-1" shadow="md" borderRadius="4px" p="6">
-              <Text textStyle="h5-sb" color="text-basic" mb="6">
+              <Text textStyle="h5-b" color="text-basic" mb="6">
                 Basic information
               </Text>
               <FormGroup title="Flash sale name">
@@ -272,7 +272,7 @@ const ProductFlashSale = () => {
             <Box mt="6" bg="bg-1" borderRadius="4px" shadow="md" p="6">
               <Flex alignItems="center" justifyContent="space-between">
                 <Box>
-                  <Text textStyle="h5-sb" color="text-basic">
+                  <Text textStyle="h5-b" color="text-basic">
                     Shop's Flash Sale Products
                   </Text>
                   <Text textStyle="body" color="text-body" mt="2">
@@ -518,7 +518,6 @@ const ProductFlashSale = () => {
                 {t('confirm')}
               </Button>
             </Flex>
-            <NotificationContainer />
           </Box>
         );
       }}

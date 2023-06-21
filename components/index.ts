@@ -9,6 +9,12 @@ import VoucherShopItem from './VoucherShopItem';
 import VoucherItem from './VoucherItem';
 import ModalSelectProducts from './ModalSelectProducts';
 import ProductFlashSaleItem from './ProductFlashSaleItem';
+import CategoryItem from './CategoryItem';
+import ProductImage from './ProductImage';
+import VariationItem from './VariationItem';
+import VariationTableItem from './VariationTableItem';
+import ModalSelectCategory from './ModalSelectCategory';
+import ShopProductItem from './ShopProductItem';
 
 export {
   RangeDatePickerItem,
@@ -22,4 +28,10 @@ export {
   VoucherItem,
   ModalSelectProducts,
   ProductFlashSaleItem,
+  CategoryItem,
+  ProductImage,
+  VariationItem,
+  VariationTableItem,
+  ModalSelectCategory,
+  ShopProductItem,
 };

@@ -1,11 +1,10 @@
 import React from 'react';
-import { Tr, Icon, Flex, Text, Image, Center, Td, AspectRatio, HStack, Button } from '@chakra-ui/react';
+import { Tr, Flex, Text, Image, Center, Td, AspectRatio, HStack, Button } from '@chakra-ui/react';
 import { EVoucherStatus, IVoucher } from 'constants/types';
-import { BASE_API_URL } from 'utilities/const';
 import { formatCurrency } from 'utilities/utils';
 import dayjs from 'dayjs';
-import { AiFillEdit } from 'react-icons/ai';
-import { FiTrash2 } from 'react-icons/fi';
+import { useRouter } from 'next/router';
+import { useImageHandler } from 'hooks';
 
 interface VoucherShopItemProps {
   index: number;
@@ -14,7 +13,13 @@ interface VoucherShopItemProps {
   onDelete?(): void;
 }
 
-const VoucherNatShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpdate, onDelete }) => {
+const VoucherNatShopItem: React.FC<VoucherShopItemProps> = ({
+  item,
+  index,
+  onUpdate,
+  onDelete,
+}) => {
+  const router = useRouter();
   const {
     banner,
     name,
@@ -25,17 +30,9 @@ const VoucherNatShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpd
     programEnd,
     status,
   } = item;
-  let _image = '';
 
-  if (banner) {
-    let firstChar = banner.substring(0, 4);
+  const _image = useImageHandler(banner);
 
-    if (firstChar === 'http' || firstChar === 'https') {
-      _image = banner;
-    } else {
-      _image = BASE_API_URL + '/assets/' + banner;
-    }
-  }
   return (
     <Tr key={index}>
       <Td borderColor="gray.1300">
@@ -79,8 +76,8 @@ const VoucherNatShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpd
               status === EVoucherStatus.UPCOMING
                 ? 'red.700'
                 : status === EVoucherStatus.HAPPENING
-                  ? 'green.200'
-                  : 'gray.2000'
+                ? 'green.200'
+                : 'gray.2000'
             }
             alignItems="center"
             borderRadius="full">
@@ -90,15 +87,15 @@ const VoucherNatShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpd
                 status === EVoucherStatus.UPCOMING
                   ? 'red.600'
                   : status === EVoucherStatus.HAPPENING
-                    ? 'green.100'
-                    : 'gray.100'
+                  ? 'green.100'
+                  : 'gray.100'
               }
               textTransform="capitalize">
               {status === EVoucherStatus.UPCOMING
                 ? 'Upcoming'
                 : status === EVoucherStatus.HAPPENING
-                  ? 'Happening'
-                  : 'Finished'}
+                ? 'Happening'
+                : 'Finished'}
             </Text>
           </Flex>
           <HStack mt="2">
@@ -116,9 +113,7 @@ const VoucherNatShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpd
         <Button
           variant="primary"
           children="Register now"
-          onClick={() =>
-            router.push('/shop/flash-sale-natshop/product-approval-flashsale')
-          }
+          onClick={() => router.push('/shop/flash-sale-natshop/product-approval-flashsale')}
         />
         {/* <Flex justifyContent="flex-end">
           <HStack>

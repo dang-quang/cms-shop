@@ -304,7 +304,7 @@ function AddVoucherPage() {
               py={{ base: '6', xl: '8' }}
               pl={{ base: '6', xl: '8' }}
               pr={{ base: '10', xl: '100px' }}>
-              <Text textStyle="h5-sb" color="primary.100" mb="6">
+              <Text textStyle="h5-b" color="primary.100" mb="6">
                 Basic information
               </Text>
               <FormGroup title="Promotion name">
@@ -417,7 +417,7 @@ function AddVoucherPage() {
                   </FormControl>
                 </FormGroup>
               )}
-              <Text textStyle="h5-sb" color="primary.100" mt="6">
+              <Text textStyle="h5-b" color="primary.100" mt="6">
                 {t('voucher.setUpVoucher')}
               </Text>
               <FormGroup title="Discount Type | Amount" mt="6">

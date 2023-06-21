@@ -14,6 +14,7 @@ import ProductImage from './ProductImage';
 import VariationItem from './VariationItem';
 import VariationTableItem from './VariationTableItem';
 import ModalSelectCategory from './ModalSelectCategory';
+import ShopProductItem from './ShopProductItem';
 
 export {
   RangeDatePickerItem,
@@ -32,4 +33,5 @@ export {
   VariationItem,
   VariationTableItem,
   ModalSelectCategory,
+  ShopProductItem,
 };

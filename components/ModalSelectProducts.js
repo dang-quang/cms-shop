@@ -142,7 +142,7 @@ const ModalSelectProducts = () => {
 
           setSelectedItems(_selectedItems);
 
-          const areArraysEqual = _.isEqualWith(arr, products, (obj1, obj2) => {
+          const areArraysEqual = _.isEqualWith(_selectedItems, products, (obj1, obj2) => {
             return obj1.id === obj2.id;
           });
           if (!areArraysEqual) {

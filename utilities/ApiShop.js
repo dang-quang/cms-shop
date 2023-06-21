@@ -9,3 +9,11 @@ export function requestCreateUpdateProduct(payload) {
   console.log('create update product parma==>', payload);
   return postWithCheckingToken(`${BASE_API_URL}/shop/add-product`, {}, payload);
 }
+
+export function requestGetListShopProduct(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/shop/list-product`, {}, obj);
+}
+
+export function requestUpdateStatusProduct(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/shop/update-status-product`, {}, obj);
+}

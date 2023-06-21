@@ -135,7 +135,14 @@
   "product_name": "Product Name",
   "input": "Input",
   "stock": "Stock",
+  "sold_out": "Sold out",
+  "de_listed": "Delisted",
   "sku": "SKU",
+  "sales": "Sales",
+  "live": "Live",
+  "select_all": "Select All",
+  "no_products_found": "No products found",
+  "search_product_name": "Search product name",
   "shop_product": {
     "product_images": "Product Images",
     "product_description": "Product Description",
@@ -156,7 +163,13 @@
     "variation": "Variation {{number}}",
     "options": "Options",
     "variation_list": "Variation List",
-    "error_image_missing": "Image is missing, please make sure at least this product has one cover image."
+    "error_image_missing": "Image is missing, please make sure at least this product has one cover image.",
+    "my_products": "My Products",
+    "add_new_product": "Add a New Product",
+    "delete_product": "Delete Product",
+    "delete_product_description": "Are you sure you want to delete the following product?\nWarning: You cannot undo this action!",
+    "delist_selected_products": "Are you sure to delist {{number}} selected products ?",
+    "delist_selected_products_description": "Delisted products can not be seen and checked out by buyers."
   },
   "sideBar": {
     "shop": "Shop",

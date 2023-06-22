@@ -95,7 +95,7 @@ function BroadcastMessagesDetails() {
         borderRadius="4px"
         borderWidth="1px"
         position="relative"
-        borderColor="gray.400">
+        borderColor="border-5">
         {data &&
           data.map((item, index) => {
             const { title, value } = item;

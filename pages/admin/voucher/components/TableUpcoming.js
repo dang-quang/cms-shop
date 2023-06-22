@@ -167,8 +167,7 @@ export const TableUpcoming = () => {
         borderRadius="4px"
         overflow="auto"
         borderWidth="1px"
-        borderColor="gray.400"
-        pb="4">
+        borderColor="border-5">
         <Table variant="simple">
           <Thead h="52px" bg="primary.100">
             <Tr>

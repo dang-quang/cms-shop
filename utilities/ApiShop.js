@@ -17,3 +17,12 @@ export function requestGetListShopProduct(obj) {
 export function requestUpdateStatusProduct(obj) {
   return postWithCheckingToken(`${BASE_API_URL}/shop/update-status-product`, {}, obj);
 }
+
+export function requestGetListFlashSale(obj) {
+  console.log('get list flash sale params ========>', obj);
+  return postWithCheckingToken(`${BASE_API_URL}/flash-sale/shop-list-flash-sale`, {}, obj);
+}
+
+export function requestDeleteFlashSale(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/flash-sale/delete`, {}, obj);
+}

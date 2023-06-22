@@ -42,7 +42,7 @@ const initialValues = {
   flashSaleProducts: [],
 };
 
-const ProductFlashSale = () => {
+const CreateShopFlashSale = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -224,7 +224,7 @@ const ProductFlashSale = () => {
         );
 
         return (
-          <Box>
+          <Box maxW="7xl" mx="auto">
             <Text textStyle="h6-sb" color="text-basic" mt="6">
               Create New My Shop's Flash Sale
             </Text>
@@ -525,6 +525,4 @@ const ProductFlashSale = () => {
   );
 };
 
-ProductFlashSale.layout = Admin;
-
-export default WithAuthentication(ProductFlashSale);
+export default CreateShopFlashSale;

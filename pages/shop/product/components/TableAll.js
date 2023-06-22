@@ -166,10 +166,10 @@ export const TableAll = () => {
 
   const handleDeleteProducts = React.useCallback(async () => {
     try {
-      offShowModal();
+      onCloseDelete();
       dispatch(setShowLoader(true));
 
-      const ids = Array.from(products, (product) => product.id);
+      const ids = Array.from(selectedProducts, (product) => product.id);
 
       const res = await requestUpdateStatusProduct({ ids: ids, type: EAppKey.DELETE });
       if (res.code === EAppKey.MSG_SUCCESS) {
@@ -190,10 +190,10 @@ export const TableAll = () => {
 
   const handleDeListProducts = React.useCallback(async () => {
     try {
-      offShowModal();
+      onCloseDeList();
       dispatch(setShowLoader(true));
 
-      const ids = Array.from(products, (product) => product.id);
+      const ids = Array.from(selectedProducts, (product) => product.id);
 
       const res = await requestUpdateStatusProduct({ ids: ids, type: EAppKey.DELIST });
       if (res.code === EAppKey.MSG_SUCCESS) {

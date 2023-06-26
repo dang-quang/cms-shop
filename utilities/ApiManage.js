@@ -928,6 +928,14 @@ export function requestGetListVoucher(obj) {
   return postWithCheckingToken(`${BASE_API_URL}/voucher/list-program`, {}, obj);
 }
 
+export function requestGetListVoucherShop(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/voucher/shop-list-voucher`, {}, obj);
+}
+
+export function requestSaveVoucherShop(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/voucher/shop-save-voucher`, {}, obj);
+}
+
 export function requestCreateUpdateVoucher(obj) {
   console.log('create update voucher  parma==>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/voucher/save-program`, {}, obj);

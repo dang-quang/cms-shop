@@ -7,8 +7,9 @@ import { SingleDatepicker } from 'chakra-dayzed-datepicker';
 import Admin from 'layouts/Admin';
 import { RangeDatePickerItem, WithAuthentication } from 'components';
 import { formatCurrency } from 'utilities/utils';
+import Images from 'assets';
 
-function RegisterAd({ data, close }: { data: any; close: () => void }) {
+function RegisterAd({ data, close, typeAd }: { data: any; close: () => void; typeAd: any }) {
   const { t } = useTranslation();
   const router = useRouter();
   const [selectedDate, setSelectedDate] = React.useState([new Date(), new Date()]);
@@ -50,24 +51,27 @@ function RegisterAd({ data, close }: { data: any; close: () => void }) {
           </Box>
         </Box>
         <Box flex="3">
-          <Image src={data.image} style={{ width: 300, height: 280 }}></Image>
+          <Image src={Images.qc_shop} style={{ width: 300, height: 350 }}></Image>
         </Box>
       </Flex>
       <Flex mt={'20'} justifyContent={'flex-end'}>
-        <Button
-          maxW={'120px'}
-          colorScheme="teal"
-          variant="solid"
-          mr={'10'}
-          backgroundColor={'primary.100'}
-          _hover={{
-            backgroundColor: 'white',
-            borderColor: 'primary.100',
-            borderWidth: 1,
-            color: 'primary.100',
-          }}>
-          <Text>{'Đăng ký'}</Text>
-        </Button>
+        {typeAd != 3 ? (
+          <Button
+            maxW={'120px'}
+            colorScheme="teal"
+            variant="solid"
+            mr={'10'}
+            backgroundColor={'primary.100'}
+            _hover={{
+              backgroundColor: 'white',
+              borderColor: 'primary.100',
+              borderWidth: 1,
+              color: 'primary.100',
+            }}>
+            <Text>{'Đăng ký'}</Text>
+          </Button>
+        ) : null}
+
         <Button
           maxW={'120px'}
           onClick={close}

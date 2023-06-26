@@ -23,7 +23,9 @@ import { textStyles } from 'theme/components/text';
 import { globalStyles } from 'theme/styles';
 import theme from 'theme/theme';
 import { formatCurrency } from 'utilities/utils';
+import DetailsAd from '../details';
 import RegisterAd from '../register-ad';
+import { adType } from './TableAll';
 
 const fakeData = [
   {
@@ -130,24 +132,28 @@ const Header = () => {
       <Flex justifyContent="space-between" alignItems="center" flex={1}>
         <Text>Khoảng giá</Text>
         <Flex flex={1} alignItems={'center'}>
-          <NumberInput clampValueOnBlur={false} maxWidth={'100px'} marginLeft={'10px'}>
+          <NumberInput
+            variant={'outline'}
+            clampValueOnBlur={false}
+            maxWidth={'100px'}
+            marginLeft={'10px'}>
             <NumberInputField
               // ref={refInput}
               value={fromMoney.current}
-              style={{
-                borderColor: 'black',
-                textAlign: 'center',
-                paddingInline: '15px',
-              }}
+              // style={{
+              //   borderColor: 'black',
+              //   textAlign: 'center',
+              //   paddingInline: '15px',
+              // }}
               placeholder={'Từ'}
             />
           </NumberInput>
           <Box width={'30px'} height={'1px'} backgroundColor={'black'} marginX={'10px'}></Box>
-          <NumberInput clampValueOnBlur={false} maxWidth={'100px'}>
+          <NumberInput clampValueOnBlur={false} maxWidth={'100px'} variant={'outline'}>
             <NumberInputField
               ref={refInput}
               value={toMoney.current}
-              style={{ borderColor: 'black', textAlign: 'center', paddingInline: '15px' }}
+              // style={{ borderColor: 'black', textAlign: 'center', paddingInline: '15px' }}
               placeholder={'Đến'}
               onChange={(t) => console.log(t.currentTarget.value)}
             />
@@ -313,10 +319,14 @@ function QRShop(props: any) {
       <Modal isOpen={adChoosing} closeOnOverlayClick size="6xl" onClose={closeModal}>
         <ModalOverlay />
         <ModalContent p="2">
-          <ModalHeader color="text-basic">Register Advertisement</ModalHeader>
+          {/* <ModalHeader color="text-basic">Register Advertisement</ModalHeader> */}
           <ModalCloseButton _focus={{ boxShadow: 'none' }} onClick={closeModal} />
           <ModalBody>
-            <RegisterAd data={adChoosing} close={closeModal} />
+            {props.adType == adType.QCSHOP ? (
+              <RegisterAd data={adChoosing} close={closeModal} typeAd={props?.type} />
+            ) : (
+              <DetailsAd item={adChoosing} close={closeModal} typeAd={props?.type} />
+            )}
           </ModalBody>
         </ModalContent>
       </Modal>
@@ -340,17 +350,13 @@ const ItemAdLocate = ({
   const checkStatus = (status: number) => {
     if (status == 1) {
       return (
-        <Text style={textStyles.textStyles[20]} flex={0.6} alignSelf={'center'} color={'green'}>
+        <Text textStyle={'20'} flex={0.6} alignSelf={'center'} color={'green'}>
           Đã xử lý
         </Text>
       );
     } else {
       return (
-        <Text
-          style={textStyles.textStyles[20]}
-          flex={0.6}
-          alignSelf={'center'}
-          color={'primary.100'}>
+        <Text textStyle={'20'} flex={0.6} alignSelf={'center'} color={'primary.100'}>
           Chờ xác nhận
         </Text>
       );
@@ -361,12 +367,7 @@ const ItemAdLocate = ({
     <Flex
       key={`${idx + Math.random()}`}
       flex={1}
-      onClick={() => {
-        router.push({
-          pathname: '/shop/buy-ad-placement/details',
-          query: { ...item, typeAd: type },
-        });
-      }}
+      onClick={() => chooseReg()}
       borderBottomWidth={0.5}
       borderColor={'rgba(51, 51, 51, 1)'}
       paddingY={'40px'}>
@@ -391,14 +392,7 @@ const ItemAdLocate = ({
           <Button
             onClick={(e) => {
               e.stopPropagation();
-              if (type == 1) {
-                chooseReg();
-              } else {
-                router.push({
-                  pathname: '/shop/buy-ad-placement/details',
-                  query: { ...item, typeAd: type },
-                });
-              }
+              chooseReg();
             }}
             alignSelf={'center'}
             colorScheme="teal"
@@ -431,9 +425,9 @@ export const HorizontalText = ({
   mY?: string;
 }) => {
   return (
-    <Text textStyle="h4-m" marginY={mY ? mY : '2px'}>
+    <Text textStyle={'h4-m'} marginY={mY ? mY : '2px'}>
       {text1}:
-      <Text as={'span'} color={color2 ? color2 : 'black'} textStyle="h4-l">
+      <Text as={'span'} color={color2 ? color2 : 'black'} textStyle={'h4-l'}>
         {` ${text2}`}
       </Text>
     </Text>

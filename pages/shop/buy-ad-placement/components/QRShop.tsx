@@ -431,9 +431,9 @@ export const HorizontalText = ({
   mY?: string;
 }) => {
   return (
-    <Text style={textStyles.textStyles['h4-m']} marginY={mY ? mY : '2px'}>
+    <Text textStyle="h4-m" marginY={mY ? mY : '2px'}>
       {text1}:
-      <Text as={'span'} color={color2 ? color2 : 'black'} style={textStyles.textStyles['h4-l']}>
+      <Text as={'span'} color={color2 ? color2 : 'black'} textStyle="h4-l">
         {` ${text2}`}
       </Text>
     </Text>

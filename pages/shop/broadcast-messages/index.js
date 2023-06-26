@@ -138,8 +138,7 @@ function BroadcastMessages() {
         overflow="auto"
         borderWidth="1px"
         position="relative"
-        borderColor="gray.400"
-        pb="4">
+        borderColor="border-5">
         <Table variant="simple" minW="1200px">
           <Thead h="52px" bg="primary.100">
             <Tr>

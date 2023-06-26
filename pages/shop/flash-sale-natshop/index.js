@@ -33,9 +33,9 @@ function FlashSaleNatShopPage() {
                 borderBottomColor="transparent"
                 _focus={{ showBox: 'none' }}
                 _selected={{
-                  fontWeight: '500',
+                  fontWeight: '600',
                   color: 'primary.100',
-                  borderBottomWidth: '1px',
+                  borderBottomWidth: '3px',
                   borderBottomColor: 'primary.100',
                 }}
                 color="text-basic">

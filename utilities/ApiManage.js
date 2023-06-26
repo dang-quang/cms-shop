@@ -953,3 +953,7 @@ export function requestGetListVoucherApprove(obj) {
 export function requestApproveVoucherShopRegisterProgram(obj) {
   return postWithCheckingToken(`${BASE_API_URL}/voucher/approve-shop-register-program`, {}, obj);
 }
+
+export function requestGetListFlashSaleNatShop(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/flash-sale/shop-program`, {}, obj);
+}

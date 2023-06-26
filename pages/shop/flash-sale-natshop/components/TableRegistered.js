@@ -22,7 +22,7 @@ import {
 import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
 
-import { requestDeleteVoucher, requestGetListVoucher } from 'utilities/ApiManage';
+import { requestDeleteVoucher, requestGetListVoucher, requestGetListFlashSaleNatShop } from 'utilities/ApiManage';
 import { useDispatch } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
 import { EAppKey, EVoucherStatus } from 'constants/types';
@@ -38,17 +38,18 @@ import { formatCurrency } from 'utilities/utils';
 import dayjs from 'dayjs';
 
 export const TableRegistered = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const pageSize = 50;
 
-  const [vouchers, setVouchers] = React.useState([]);
+  const [flashSale, setFlashSale] = React.useState([]);
+  const [selectedVoucher, setSelectedVoucher] = React.useState(null);
+  const [isShowModal, { on: onShowModal, off: offShowModal }] = useBoolean(false);
   const [totalPage, setTotalPage] = React.useState(1);
   const [totalRecords, setTotalRecords] = React.useState(0);
   const [search, setSearch] = React.useState('');
   const [doSearch, { on: onSearch, off: offSearch }] = useBoolean(false);
-  const [selectedVoucher, setSelectedVoucher] = React.useState(null);
-  const [isShowModal, { on: onShowModal, off: offShowModal }] = useBoolean(false);
 
   const headers = [
     t('serial_number'),
@@ -75,10 +76,10 @@ export const TableRegistered = () => {
     (async () => {
       try {
         dispatch(setShowLoader(true));
-        const res = await requestGetListVoucher({ page: 1, type: EVoucherStatus.UPCOMING });
-
+        const res = await requestGetListFlashSaleNatShop({ page: 1, shopId: 143 });
+        console.log('requestGetListFlashSaleNatShop', res);
         if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
-          setVouchers(res.data.results);
+          setFlashSale(res.data.results);
           setTotalPage(res.data.totalPages);
           setTotalRecords(res.data.totalRecords);
         } else {
@@ -106,15 +107,14 @@ export const TableRegistered = () => {
           const res = await requestGetListVoucher({
             keyWord: key,
             page: currentPage,
-            type: EVoucherStatus.UPCOMING,
           });
 
           if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
-            setVouchers(res.data.results === null ? [] : res.data.results);
+            setFlashSale(res.data.results === null ? [] : res.data.results);
             setTotalPage(res.data.totalPages);
             setTotalRecords(res.data.totalRecords);
           } else {
-            setVouchers([]);
+            setFlashSale([]);
             setTotalPage(1);
             setTotalRecords(0);
             NotificationManager.error({
@@ -171,17 +171,17 @@ export const TableRegistered = () => {
         borderRadius="4px"
         overflow="auto"
         borderWidth="1px"
-        borderColor="gray.400"
-        pb="4">
+        borderColor="border-5">
         <Table variant="simple">
-          {isEmpty(vouchers) ? (
+          {isEmpty(flashSale) ? (
             <Box />
           ) : (
             // <Center minH="200px" alignSelf="center">
             //   <Image w="80px" h="80px" src={Images.no_data} />
             // </Center>
             <>
-              {vouchers.map((item, index) => {
+              {flashSale.map((itemFlashSale, index) => {
+                let item = itemFlashSale.flashSaleProgram;
                 if (!item) {
                   return;
                 }
@@ -196,23 +196,23 @@ export const TableRegistered = () => {
                   } else {
                     _image = BASE_API_URL + '/assets/' + item.banner;
                   }
+
                 }
+                console.log('flashSale banner', item);
 
                 return (
                   <Tr key={index}>
                     <Td borderColor="gray.1300">
-                      {item && item.discountValue && (
-                        <Flex>
-                          <AspectRatio
-                            w="180px"
-                            ratio={2 / 1}
-                            mr="2"
-                            borderRadius="8px"
-                            overflow="hidden">
-                            <Image w="100%" h="100%" objectFit="cover" src={_image} />
-                          </AspectRatio>
-                        </Flex>
-                      )}
+                      <Flex>
+                        <AspectRatio
+                          w="180px"
+                          ratio={2 / 1}
+                          mr="2"
+                          borderRadius="8px"
+                          overflow="hidden">
+                          <Image w="100%" h="100%" objectFit="cover" src={_image} />
+                        </AspectRatio>
+                      </Flex>
                     </Td>
                     <Td borderColor="gray.1300">
                       {item && (
@@ -226,8 +226,8 @@ export const TableRegistered = () => {
                                 item.status === EVoucherStatus.UPCOMING
                                   ? 'red.700'
                                   : item.status === EVoucherStatus.HAPPENING
-                                  ? 'green.200'
-                                  : 'gray.2000'
+                                    ? 'green.200'
+                                    : 'gray.2000'
                               }
                               alignItems="center"
                               borderRadius="full">
@@ -237,31 +237,30 @@ export const TableRegistered = () => {
                                   item.status === EVoucherStatus.UPCOMING
                                     ? 'red.600'
                                     : item.status === EVoucherStatus.HAPPENING
-                                    ? 'green.100'
-                                    : 'gray.100'
+                                      ? 'green.100'
+                                      : 'gray.100'
                                 }
                                 textTransform="capitalize">
                                 {item.status === EVoucherStatus.UPCOMING
                                   ? 'Upcoming'
                                   : item.status === EVoucherStatus.HAPPENING
-                                  ? 'Happening'
-                                  : 'Finished'}
+                                    ? 'Happening'
+                                    : 'Finished'}
                               </Text>
                             </Flex>
                             <Text textStyle="h5" color="text-basic" style={{ marginLeft: 10 }}>
-                              {/* {formatCurrency(item.discountValue ?? 0)} */}
-                              Ngành hang thời trang - siêu sale kịch sàn
+                              {formatCurrency(item.name)}
                             </Text>
                           </Flex>
                           <Flex flexDirection="row">
                             <Text textStyle="h3" color="text-basic">
                               Thời gian chương trình:
                             </Text>
-                            <Text textStyle="h3" color="text-basic">
+                            <Text mr='2' textStyle="h3" color="text-basic">
                               {dayjs(item.programStart).format('DD-MM-YYYY HH:MM')}
                             </Text>
                             <Text>-</Text>
-                            <Text textStyle="h3" color="text-basic">
+                            <Text ml='2' textStyle="h3" color="text-basic">
                               {dayjs(item.programEnd).format('DD-MM-YYYY HH:MM')}
                             </Text>
                           </Flex>
@@ -274,14 +273,13 @@ export const TableRegistered = () => {
                       )}
                     </Td>
                     <Td isNumeric borderColor="gray.1300">
-                      <Text color="#6ED71D">Đã đăng ký</Text>
-                    </Td>
-                    <Td isNumeric borderColor="gray.1300">
-                      <Button
+                      {/* <Button
                         variant="primary"
-                        children="Details"
-                        onClick={() => router.push('/admin/voucher/add')}
-                      />
+                        children="Register now"
+                        onClick={() =>
+                          router.push('/shop/flash-sale-natshop/product-approval-flashsale')
+                        }
+                      /> */}
                     </Td>
                   </Tr>
                 );
@@ -296,7 +294,7 @@ export const TableRegistered = () => {
           currentPage={currentPage}
           isDisabled={isDisabled}
           onPageChange={(page) => {
-            setVouchers([]);
+            setFlashSale([]);
             setCurrentPage(page);
           }}
           pages={pages}
@@ -306,7 +304,7 @@ export const TableRegistered = () => {
         <Text textStyle="h4-m">
           {t('results_page', {
             start: (currentPage - 1) * 50 + 1,
-            end: (currentPage - 1) * 50 + vouchers.length,
+            end: (currentPage - 1) * 50 + flashSale.length,
             total: totalRecords,
           })}
         </Text>
@@ -322,6 +320,7 @@ export const TableRegistered = () => {
     </Box>
   );
 };
+
 
 export default TableRegistered;
 // export default WithAuthentication(TableRegistered);

@@ -241,7 +241,6 @@ function addUpdatePrize({ closeDialog, prize, onUpdated, listLevels }) {
     }
   };
 
-  //Todo Validation Schema
   const addUpdatePrizeValidationSchema = yup.object().shape({
     giftType: yup.string().required(t('errorGiftTypeRequire')),
     code: yup.string().required(t('errorCodeRequire')),

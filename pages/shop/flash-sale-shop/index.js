@@ -20,53 +20,55 @@ function VoucherPage() {
     <Box>
       <Flex alignItems="center" justifyContent="space-between" mt="4">
         <Text textStyle="h6-sb" color="text-basic">
-          Flash Sale Shop
+          {t('flash_sale_shop.flash_sale_shop')}
         </Text>
         <Button
           leftIcon={<HiPlus />}
           variant="primary"
-          children="Add Flash Sale"
-          onClick={() => router.push('/shop/flash-sale-shop/product-flashsale')}
+          children={t('create')}
+          onClick={() => router.push('/shop/flash-sale-shop/create')}
         />
       </Flex>
-      <Tabs variant="soft-rounded" mt="8">
-        <TabList h="48px" w="full" borderBottomWidth="1px" borderBottomColor="border-5">
-          {tabs.map((name, index) => (
-            <Tab
-              key={index}
-              fontSize="14px"
-              fontWeight="400"
-              borderRadius="unset"
-              textTransform="capitalize"
-              borderBottomWidth="1px"
-              borderBottomColor="transparent"
-              _focus={{ showBox: 'none' }}
-              _selected={{
-                fontWeight: '500',
-                color: 'primary.100',
-                borderBottomWidth: '1px',
-                borderBottomColor: 'primary.100',
-              }}
-              color="text-basic">
-              {name}
-            </Tab>
-          ))}
-        </TabList>
-        <TabPanels mt="6">
-          <TabPanel p="0">
-            <TableAll />
-          </TabPanel>
-          <TabPanel p="0">
-            <TableHappening />
-          </TabPanel>
-          <TabPanel p="0">
-            <TableUpcoming />
-          </TabPanel>
-          <TabPanel p="0">
-            <TableFinished />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+      <Box mt="8" bg="bg-1" borderRadius="4px" px="6" py="4">
+        <Tabs variant="soft-rounded">
+          <TabList w="full" borderBottomWidth="1px" borderBottomColor="border-5">
+            {tabs.map((name, index) => (
+              <Tab
+                key={index}
+                fontSize="14px"
+                fontWeight="400"
+                borderRadius="unset"
+                textTransform="capitalize"
+                borderBottomWidth="1px"
+                borderBottomColor="transparent"
+                _focus={{ showBox: 'none' }}
+                _selected={{
+                  fontWeight: '600',
+                  color: 'primary.100',
+                  borderBottomWidth: '3px',
+                  borderBottomColor: 'primary.100',
+                }}
+                color="text-basic">
+                {name}
+              </Tab>
+            ))}
+          </TabList>
+          <TabPanels mt="6">
+            <TabPanel p="0">
+              <TableAll />
+            </TabPanel>
+            <TabPanel p="0">
+              <TableHappening />
+            </TabPanel>
+            <TabPanel p="0">
+              <TableUpcoming />
+            </TabPanel>
+            <TabPanel p="0">
+              <TableFinished />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </Box>
     </Box>
   );
 }

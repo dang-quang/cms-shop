@@ -143,6 +143,12 @@ export enum EVoucherStatus {
   FINISHED = 'FINISHED',
 }
 
+export enum EFlashSaleStatus {
+  HAPPENING = 'HAPPENING',
+  UPCOMING = 'UPCOMING',
+  FINISHED = 'FINISHED',
+}
+
 export enum EMode {
   ADD = 'add',
   UPDATE = 'update',

@@ -166,10 +166,10 @@ export const TableAll = () => {
 
   const handleDeleteProducts = React.useCallback(async () => {
     try {
-      offShowModal();
+      onCloseDelete();
       dispatch(setShowLoader(true));
 
-      const ids = Array.from(products, (product) => product.id);
+      const ids = Array.from(selectedProducts, (product) => product.id);
 
       const res = await requestUpdateStatusProduct({ ids: ids, type: EAppKey.DELETE });
       if (res.code === EAppKey.MSG_SUCCESS) {
@@ -190,10 +190,10 @@ export const TableAll = () => {
 
   const handleDeListProducts = React.useCallback(async () => {
     try {
-      offShowModal();
+      onCloseDeList();
       dispatch(setShowLoader(true));
 
-      const ids = Array.from(products, (product) => product.id);
+      const ids = Array.from(selectedProducts, (product) => product.id);
 
       const res = await requestUpdateStatusProduct({ ids: ids, type: EAppKey.DELIST });
       if (res.code === EAppKey.MSG_SUCCESS) {
@@ -283,7 +283,7 @@ export const TableAll = () => {
                   //     pathname: '/shop/product/update',
                   //     query: item,
                   //   });
-                  // }}
+                  // }
                 />
               );
             })
@@ -316,30 +316,43 @@ export const TableAll = () => {
             </Text>
           </Flex>
         )}
-        {!isEmpty(selectedProducts) && (
-          <Flex justifyContent="space-between" alignItems="center" px="6" py="4">
-            <HStack>
-              <Checkbox isChecked={selectAll} onChange={handleSelectAll} />
-              <Text color="text-basic" textStyle="h3">
-                {t('select_all')}
-              </Text>
-            </HStack>
-            <HStack gap="4">
-              <Button
-                variant="outline-control"
-                minW="120px"
-                children={t('delete')}
-                onClick={onOpenDelete}
-              />
-              <Button
-                variant="outline-control"
-                minW="120px"
-                children={t('de_listed')}
-                onClick={onOpenDeList}
-              />
-            </HStack>
-          </Flex>
-        )}
+        <Box bg="red" mt="">
+          {!isEmpty(selectedProducts) && (
+            <Flex
+              h="64px"
+              bg="bg-1"
+              justifyContent="space-between"
+              position="fixed"
+              left="290px"
+              right="35px"
+              bottom="0"
+              alignItems="center"
+              boxShadow="2xl"
+              px="6"
+              py="4">
+              <HStack>
+                <Checkbox isChecked={selectAll} onChange={handleSelectAll} />
+                <Text color="text-basic" textStyle="h3">
+                  {t('select_all')}
+                </Text>
+              </HStack>
+              <HStack gap="4">
+                <Button
+                  variant="outline-control"
+                  minW="120px"
+                  children={t('delete')}
+                  onClick={onOpenDelete}
+                />
+                <Button
+                  variant="outline-control"
+                  minW="120px"
+                  children={t('de_listed')}
+                  onClick={onOpenDeList}
+                />
+              </HStack>
+            </Flex>
+          )}
+        </Box>
       </Box>
       <ModalConfirm
         isOpen={isOpenDelete}

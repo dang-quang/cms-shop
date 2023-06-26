@@ -69,6 +69,7 @@ export interface IVoucher {
   typeDiscount?: EDiscountType;
   typeLimit?: EDiscountLimitType;
   updateAt?: number;
+  quantity?: number;
 }
 
 export interface IProduct {

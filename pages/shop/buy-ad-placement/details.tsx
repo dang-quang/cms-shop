@@ -9,8 +9,10 @@ import { formatCurrency } from 'utilities/utils';
 import { useDisplayImage } from 'hooks';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { IoIosCloudUpload } from 'react-icons/io';
+import Images from 'assets';
+import ViewChangeImage from 'components/ViewChangeImage';
 
-function DetailsAd() {
+function DetailsAd({ item, close, typeAd }: { item: any; close: () => void; typeAd: any }) {
   const { t } = useTranslation();
   const router = useRouter();
   const [image, setImage] = useState<any>();
@@ -29,14 +31,14 @@ function DetailsAd() {
   const inputRefBanner = React.useRef<any>();
   console.log('afgabdfghjkdfjkhdfhjk,dfg', router?.query);
 
-  const item = router?.query;
+  // const item = router?.query;
 
   return (
     <Box display={'flex'} flex={1} flexDirection={'column'} justifyContent={'center'}>
       <Text style={{ fontSize: 22, fontWeight: 'lighter' }}>Chi tiết QC</Text>
       <Flex flex={1} alignItems={'center'} justifyContent={'space-around'} mt={'70px'}>
         <Box display={'flex'} flex={1} alignItems={'center'} flexDirection={'column'}>
-          <Image src={item.image} style={{ width: 350, height: 150 }} />
+          <ViewChangeImage imageSrc={image} />
         </Box>
         <Flex flex={1}>
           <Box
@@ -64,7 +66,7 @@ function DetailsAd() {
             <Flex ml={'50px'} mb={'30px'} flexDirection={'column'}>
               <Button
                 onClick={() => {
-                  if (item?.typeAd != 3) {
+                  if (typeAd != 3) {
                     inputRefBanner?.current?.click();
                   }
                 }}
@@ -86,7 +88,7 @@ function DetailsAd() {
                   zIndex={1}
                   position="relative"
                   onClick={() => {
-                    if (item?.typeAd != 3) {
+                    if (typeAd != 3) {
                       inputRefBanner?.current?.click();
                     }
                   }}>
@@ -118,7 +120,7 @@ function DetailsAd() {
                       </Flex>
                     )}
                     {image &&
-                      (item?.typeAd != 3 ? (
+                      (typeAd != 3 ? (
                         <Icon
                           cursor="pointer"
                           as={AiOutlineCloseCircle}
@@ -151,7 +153,7 @@ function DetailsAd() {
         </Flex>
       </Flex>
       <Flex flex={1} alignItems={'center'} justifyContent={'center'} mt={'50px'}>
-        {item?.typeAd != 3 ? (
+        {typeAd != 3 ? (
           <Button
             flex={1}
             onClick={() => inputRefBanner?.current?.click()}
@@ -199,6 +201,6 @@ function DetailsAd() {
   );
 }
 
-DetailsAd.layout = Admin;
+// DetailsAd.layout = Admin;
 
-export default WithAuthentication(DetailsAd);
+export default DetailsAd;

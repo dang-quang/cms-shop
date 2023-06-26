@@ -2,6 +2,11 @@ import React from 'react';
 import { Box, Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import QRShop from './QRShop';
 
+export const adType = {
+  QCSHOP: 'QCShop',
+  QCBANNER: 'QCBanner',
+};
+
 function TableAll(props: any) {
   const tabs = ['QC Shop', 'QC Banner'];
   if (props.type == 1) {
@@ -35,10 +40,10 @@ function TableAll(props: any) {
           </Flex>
           <TabPanels>
             <TabPanel>
-              <QRShop type={props?.type} />
+              <QRShop type={props?.type} adType={adType.QCSHOP} />
             </TabPanel>
             <TabPanel>
-              <p>fdfdsfds</p>
+              <QRShop type={props?.type} adType={adType.QCBANNER} />
             </TabPanel>
           </TabPanels>
         </Tabs>

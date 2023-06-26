@@ -26,7 +26,8 @@ import { useRouter } from 'next/router';
 import { ModalConfirm, PaginationPanel, RangeDatePickerItem, VoucherShopItem } from 'components';
 import { isEmpty } from 'lodash';
 import Images from 'assets';
-import { EVoucherStatus } from 'constants/types';
+import { EAppKey, EVoucherStatus } from 'constants/types';
+import { requestGetListVoucherShop } from 'utilities/ApiManage';
 
 const data_all = [
   {
@@ -247,20 +248,19 @@ const TableAllMyShop = () => {
     (async () => {
       try {
         dispatch(setShowLoader(true));
-        setVouchers(data_all);
 
-        // const res = await requestGetListVoucher({ page: 1 });
+        const res = await requestGetListVoucherShop({ page: 1, shopId: 143 });
 
-        // if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
-        //   setVouchers(res.data.results);
-        //   setTotalPage(res.data.totalPages);
-        //   setTotalRecords(res.data.totalRecords);
-        // } else {
-        //   NotificationManager.error({
-        //     title: t('error'),
-        //     message: `No data exists`,
-        //   });
-        // }
+        if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
+          setVouchers(res.data.results);
+          setTotalPage(res.data.totalPages);
+          setTotalRecords(res.data.totalRecords);
+        } else {
+          NotificationManager.error({
+            title: t('error'),
+            message: `No data exists`,
+          });
+        }
       } finally {
         dispatch(setShowLoader(false));
       }

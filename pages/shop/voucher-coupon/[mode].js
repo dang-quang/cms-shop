@@ -40,6 +40,7 @@ import { EDiscountType, EDiscountLimitType, EShopLimitType, EAppKey } from 'cons
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { IoIosCloudUpload } from 'react-icons/io';
 import { FormGroup } from 'components';
+import { requestSaveVoucherShop } from './../../../utilities/ApiManage';
 
 const formatDate = 'YYYY-MM-DDTHH:mm';
 
@@ -82,11 +83,19 @@ const AddUpdateVoucherCoupon = () => {
         discountValue,
         typeLimit,
         discountLimit,
+        maxPerUser,
+        description,
+        banner,
       },
       { setFieldError }
     ) => {
       try {
         dispatch(setShowLoader(true));
+        let _banner = null;
+
+        if (banner) {
+          _banner = banner.replace(/^data:image\/(png|jpg|jpeg);base64,/, '');
+        }
         if (voucher) {
           // const res = await requestCreateUpdateVoucher({
           //   id,
@@ -122,37 +131,43 @@ const AddUpdateVoucherCoupon = () => {
           //   });
           // }
         } else {
-          // const res = await requestCreateUpdateVoucher({
-          //   name: name,
-          //   registerStart: dayjs(registerStart).unix(),
-          //   registerEnd: dayjs(registerEnd).unix(),
-          //   programStart: dayjs(programStart).unix(),
-          //   programEnd: dayjs(programEnd).unix(),
-          //   maxShopRegister: typeShopLimit === EShopLimitType.SHOP_LIMIT ? maxShopRegister : 0,
-          //   registerPrice: registerPrice,
-          //   minOrderPrice: minOrderPrice,
-          //   quantityVoucher,
-          //   discountLimit,
-          //   typeDiscount,
-          //   discountValue,
-          //   banner: _banner,
-          //   description,
-          //   typeLimit,
-          // });
-          // if (res.code === EAppKey.MSG_SUCCESS) {
-          //   NotificationManager.success({
-          //     title: t('success'),
-          //     message: 'Create Voucher Success',
-          //   });
-          //   setTimeout(() => {
-          //     router.push('/admin/voucher');
-          //   }, 1000);
-          // } else {
-          //   NotificationManager.error({
-          //     title: t('error'),
-          //     message: res.message ? res.message.text : 'Error',
-          //   });
-          // }
+          const res = await requestSaveVoucherShop({
+            programName: name,
+            voucherCode: code,
+            type: 'VOUCHER SHOP',
+            shopId: 143,
+            startAt: dayjs(startDate).unix(),
+            endAt: dayjs(endDate).unix(),
+            // programStart: dayjs(programStart).unix(),
+            // programEnd: dayjs(programEnd).unix(),
+            // maxDiscount: typeDiscount == EDiscountType.PERCENT ? typeLimit == EDiscountLimitType.AMOUNT ? discountLimit : ,
+            // maxShopRegister: typeShopLimit === EShopLimitType.SHOP_LIMIT ? maxShopRegister : 0,
+            // registerPrice: registerPrice,
+            minOrderValue: minOrderPrice,
+            quantityVoucher,
+            maxDiscount: discountLimit,
+            typeDiscount,
+            discountValue,
+            description,
+            maxUsage: maxPerUser,
+            image: _banner,
+
+            // typeLimit,
+          });
+          if (res.code === EAppKey.MSG_SUCCESS) {
+            NotificationManager.success({
+              title: t('success'),
+              message: 'Create Voucher Success',
+            });
+            setTimeout(() => {
+              router.push('/admin/voucher');
+            }, 1000);
+          } else {
+            NotificationManager.error({
+              title: t('error'),
+              message: res.message ? res.message.text : 'Error',
+            });
+          }
         }
       } finally {
         dispatch(setShowLoader(false));
@@ -173,7 +188,7 @@ const AddUpdateVoucherCoupon = () => {
     endDate: yup
       .date()
       .min(
-        yup.ref('registerStart'),
+        yup.ref('endDate'),
         'The end time must be greater than the start time by at least 1 hour.'
       ),
     discountLimit: yup.string().when('typeDiscount', {
@@ -208,6 +223,56 @@ const AddUpdateVoucherCoupon = () => {
       initialValues={voucher ? voucher : initialValues}
       onSubmit={handleSubmitVoucher}>
       {({ handleChange, handleSubmit, setFieldValue, values, errors }) => {
+        React.useEffect(() => {
+          if (voucher && voucher.banner) {
+            const str = BASE_API_URL + '/assets/' + voucher.banner;
+
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.src = str;
+            img.onload = async () => {
+              const canvas = document.createElement('canvas');
+              canvas.width = img.width;
+              canvas.height = img.height;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0);
+              const dataURL = canvas.toDataURL('image/png');
+
+              setFieldValue('banner', dataURL);
+            };
+          }
+
+          if (voucher) {
+            setFieldValue(
+              'registerStart',
+              dayjs(parseFloat(voucher.registerStart)).format(formatDate)
+            );
+            setFieldValue('registerEnd', dayjs(parseFloat(voucher.registerEnd)).format(formatDate));
+            setFieldValue(
+              'programStart',
+              dayjs(parseFloat(voucher.programStart)).format(formatDate)
+            );
+            setFieldValue('programEnd', dayjs(parseFloat(voucher.programEnd)).format(formatDate));
+            if (voucher.maxShopRegister === 0) {
+              setFieldValue('typeShopLimit', EShopLimitType.NO_LIMIT);
+            } else {
+              setFieldValue('typeShopLimit', EShopLimitType.SHOP_LIMIT);
+            }
+          }
+        }, [voucher]);
+
+        const { onUploader: onUploaderBanner } = useDisplayImage((image) => {
+          try {
+            if (image) {
+              setFieldValue('banner', image);
+            }
+            if (inputRefBanner && inputRefBanner.current) {
+              inputRefBanner.current.value = '';
+            }
+          } catch (error) {
+            console.log('error upload banner', error);
+          }
+        });
         return (
           <Form>
             <Text textStyle="h6-sb" color="text-basic" mt="4">
@@ -377,6 +442,85 @@ const AddUpdateVoucherCoupon = () => {
                   />
                   <FormErrorMessage>{errors.quantityVoucher}</FormErrorMessage>
                 </FormControl>
+              </FormGroup>
+              <FormGroup title="Max usage per user" mt="6">
+                <FormControl>
+                  <Input
+                    placeholder="Input"
+                    autoComplete="off"
+                    value={values.maxPerUser}
+                    type="number"
+                    onChange={handleChange('maxPerUser')}
+                  />
+                  <FormErrorMessage>{errors.quantityVoucher}</FormErrorMessage>
+                </FormControl>
+              </FormGroup>
+              <FormGroup title="Banner voucher" mt="6">
+                <Box maxW={{ base: 'unset', '2xl': '60%' }}>
+                  <Box
+                    zIndex={1}
+                    position="relative"
+                    onClick={() => inputRefBanner.current.click()}>
+                    <Flex
+                      justifyContent="center"
+                      alignItems="center"
+                      cursor="pointer"
+                      zIndex={1}
+                      h="140px"
+                      borderWidth="1px"
+                      borderRadius="4px"
+                      overflow="hidden"
+                      borderColor={values.banner ? 'transparent' : 'border-5'}
+                      _hover={{ borderColor: 'border-3' }}
+                      position="relative">
+                      {values.banner ? (
+                        <img
+                          src={values.banner}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      ) : (
+                        <Flex flexDirection="column" alignItems="center" justifyContent="center">
+                          <Icon as={IoIosCloudUpload} width="32px" height="32px" color="gray.100" />
+                          <Text mt="1">Upload an image of banner voucher</Text>
+                        </Flex>
+                      )}
+                      {values.banner && (
+                        <Icon
+                          cursor="pointer"
+                          as={AiOutlineCloseCircle}
+                          width="24px"
+                          height="24px"
+                          color="blue.200"
+                          position="absolute"
+                          right="4px"
+                          top="4px"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setFieldValue('banner', '');
+                          }}
+                        />
+                      )}
+                    </Flex>
+                    <input
+                      ref={inputRefBanner}
+                      accept="image/*"
+                      id="icon-button-file"
+                      type="file"
+                      multiple
+                      style={{ display: 'none', cursor: 'pointer' }}
+                      onChange={onUploaderBanner}
+                    />
+                  </Box>
+                </Box>
+              </FormGroup>
+              <FormGroup title="Program details" mt="6">
+                <Textarea
+                  rows={6}
+                  placeholder="Description"
+                  autoComplete="off"
+                  value={values.description}
+                  onChange={handleChange('description')}
+                />
               </FormGroup>
               <HStack justifyContent="flex-end" gap="6" mt="6">
                 <Button variant="control" onClick={() => router.back()} w="150px">

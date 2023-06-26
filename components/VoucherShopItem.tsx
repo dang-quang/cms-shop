@@ -25,6 +25,7 @@ const VoucherShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpdate
     programStart,
     programEnd,
     status,
+    quantity,
   } = item;
 
   const _image = useImageHandler(banner);
@@ -53,7 +54,7 @@ const VoucherShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpdate
       </Td>
       <Td isNumeric borderColor="gray.1300">
         <Text textStyle="h3" color="text-basic">
-          {quantityVoucher}
+          {quantity}
         </Text>
       </Td>
       <Td borderColor="gray.1300">

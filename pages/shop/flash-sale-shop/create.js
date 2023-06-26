@@ -31,36 +31,48 @@ import * as yup from 'yup';
 import { HiPlus } from 'react-icons/hi';
 import { setModalSelectProducts, setSelectedProducts } from 'redux/actions/product';
 import { setShowLoader } from 'redux/actions/app';
+import { requestCreateShopFlashSale } from 'utilities/ApiShop';
 
 const formatDate = 'YYYY-MM-DDTHH:mm';
 
 const initialValues = {
   name: '',
-  programStart: dayjs().add(10, 'minutes').format(formatDate),
-  programEnd: dayjs().add(1, 'hours').add(10, 'minutes').format(formatDate),
+  startAt: dayjs().add(10, 'minutes').format(formatDate),
+  endAt: dayjs().add(1, 'hours').add(10, 'minutes').format(formatDate),
   products: [],
   flashSaleProducts: [],
 };
 
 const CreateShopFlashSale = () => {
+  const shopId = 143;
   const router = useRouter();
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const selectedProducts = useSelector((state) => state.product.selectedProducts);
+
+  const headers = [
+    '',
+    t('flash_sale_shop.product_name'),
+    t('flash_sale_shop.original_price'),
+    t('flash_sale_shop.discounted_price'),
+    t('discount'),
+    t('flash_sale_shop.campaign_stock'),
+    t('stock'),
+    t('action'),
+  ];
 
   const [product, setProduct] = React.useState(null);
 
   const [selectAll, { toggle: toggleSelectAll, off: offSelectAll, on: onSelectAll }] =
     useBoolean(false);
   const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
-  //const { isOpen: isOpenConfirm, onOpen: onOpenConfirm, onClose: onCloseConfirm } = useDisclosure();
 
   React.useEffect(() => {
     const handleRouteChange = () => {
       if (isEmpty(selectedProducts)) {
         return;
       }
-      const confirmLeave = window.confirm('The information will not be saved. Sure to leave?');
+      const confirmLeave = window.confirm(t('sure_to_leave'));
       if (!confirmLeave) {
         router.events.emit('routeChangeError');
         throw 'routeChange aborted.';
@@ -85,28 +97,57 @@ const CreateShopFlashSale = () => {
   }, [selectedProducts]);
 
   const handleSubmitVoucher = React.useCallback(
-    async ({ name, programStart, programEnd, products, flashSaleProducts }) => {
-      console.log('flashSaleProducts', flashSaleProducts);
-      try {
-        dispatch(setShowLoader(true));
-      } finally {
-        dispatch(setShowLoader(false));
-      }
+    async ({ name, startAt, endAt, flashSaleProducts }) => {
+      // try {
+      //   dispatch(setShowLoader(true));
+      //   //TODO If you add flash sale in the program, then transmit the programId
+      //   //programId
+      //   let _details = [];
+      //   let params = {
+      //     name: name,
+      //     startAt: dayjs(startAt).unix(),
+      //     endAt: dayjs(endAt).unix(),
+      //     shopId: shopId,
+      //   };
+      //   for (let i = 0; i < flashSaleProducts.length; i++) {
+      //     const product = flashSaleProducts[i];
+      //     _details.push({
+      //       productId: product.id,
+      //       reduceValue: parseFloat(product.discounted_price),
+      //       productQuantity: parseFloat(product.campaign_stock),
+      //     });
+      //   }
+      //   params.details = _details;
+      //   const res = await requestCreateShopFlashSale(params);
+      //   if (res.code === EAppKey.MSG_SUCCESS) {
+      //     NotificationManager.success({
+      //       title: t('success'),
+      //       message: 'Create Flash Sale Success',
+      //     });
+      //     setTimeout(() => {
+      //       router.push('/shop/flash-sale-shop');
+      //     }, 1000);
+      //   } else {
+      //     NotificationManager.error({
+      //       title: t('error'),
+      //       message: res.message ? res.message.text : 'Error',
+      //     });
+      //   }
+      // } finally {
+      //   dispatch(setShowLoader(false));
+      // }
     },
     []
   );
 
   const validationSchema = yup.object().shape({
     name: yup.string().required(t('error_field_empty')),
-    programStart: yup
+    startAt: yup
       .date()
       .min(dayjs().toDate(), 'Please enter a start time that is later than the current time.'),
-    programEnd: yup
+    endAt: yup
       .date()
-      .min(
-        yup.ref('programStart'),
-        'Please enter a start time that is later than the current time.'
-      ),
+      .min(yup.ref('startAt'), 'Please enter a start time that is later than the current time.'),
     products: yup.array().of(
       yup.object().shape({
         discounted_price: yup
@@ -117,7 +158,7 @@ const CreateShopFlashSale = () => {
             'discounted-price',
             'Promotion price must less than original price',
             function (value) {
-              return value <= this.parent.price;
+              return value < this.parent.price;
             }
           ),
         campaign_stock: yup
@@ -226,16 +267,16 @@ const CreateShopFlashSale = () => {
         return (
           <Box maxW="7xl" mx="auto">
             <Text textStyle="h6-sb" color="text-basic" mt="6">
-              Create New My Shop's Flash Sale
+              {t('flash_sale_shop.create_shop_flash_sale')}
             </Text>
             <Box mt="6" bg="bg-1" shadow="md" borderRadius="4px" p="6">
               <Text textStyle="h5-b" color="text-basic" mb="6">
-                Basic information
+                {t('basicInformation')}
               </Text>
-              <FormGroup title="Flash sale name">
+              <FormGroup title={t('flash_sale_shop.flash_sale_name')}>
                 <FormControl isInvalid={!!errors.name}>
                   <Input
-                    placeholder="Input"
+                    placeholder={t('input')}
                     autoComplete="off"
                     value={values.name}
                     onChange={handleChange('name')}
@@ -243,28 +284,26 @@ const CreateShopFlashSale = () => {
                   <FormErrorMessage>{errors.name}</FormErrorMessage>
                 </FormControl>
               </FormGroup>
-              <FormGroup title="Program time" mt="6">
+              <FormGroup title={t('flash_sale_shop.program_time')} mt="6">
                 <SimpleGrid columns={{ base: 1, xl: 2 }} gap="5" pr={{ base: 'unset', xl: '20%' }}>
-                  <FormControl isInvalid={!!errors.programStart}>
+                  <FormControl isInvalid={!!errors.startAt}>
                     <Input
                       type="datetime-local"
-                      placeholder="Select Date and Time"
-                      value={values.programStart}
-                      onChange={handleChange('programStart')}
+                      value={values.startAt}
+                      onChange={handleChange('startAt')}
                       min={dayjs().format(formatDate)}
                     />
-                    <FormErrorMessage>{errors.programStart}</FormErrorMessage>
+                    <FormErrorMessage>{errors.startAt}</FormErrorMessage>
                   </FormControl>
-                  <FormControl isInvalid={!!errors.programEnd}>
+                  <FormControl isInvalid={!!errors.endAt}>
                     <Input
                       type="datetime-local"
-                      placeholder="Select Date and Time"
-                      value={values.programEnd}
-                      onChange={handleChange('programEnd')}
-                      min={dayjs().format(formatDate)}
-                      max={dayjs().add(4, 'months').format(formatDate)}
+                      value={values.endAt}
+                      onChange={handleChange('endAt')}
+                      min={dayjs(values.startAt).format(formatDate)}
+                      max={dayjs(values.startAt).endOf('day').format(formatDate)}
                     />
-                    <FormErrorMessage>{errors.programEnd}</FormErrorMessage>
+                    <FormErrorMessage>{errors.endAt}</FormErrorMessage>
                   </FormControl>
                 </SimpleGrid>
               </FormGroup>
@@ -273,17 +312,17 @@ const CreateShopFlashSale = () => {
               <Flex alignItems="center" justifyContent="space-between">
                 <Box>
                   <Text textStyle="h5-b" color="text-basic">
-                    Shop's Flash Sale Products
+                    {t('flash_sale_shop.shop_flash_sale_products')}
                   </Text>
                   <Text textStyle="body" color="text-body" mt="2">
-                    Please review the product criteria before adding items to your promotion.
+                    {t('flash_sale_shop.please_review_the_product')}
                   </Text>
                 </Box>
                 <Button
                   display={!isEmpty(selectedProducts) ? 'block' : 'none'}
                   leftIcon={<HiPlus />}
                   variant="outline"
-                  children="Add Products"
+                  children={t('flash_sale_shop.add_products')}
                   onClick={() => dispatch(setModalSelectProducts(true))}
                 />
               </Flex>
@@ -292,7 +331,7 @@ const CreateShopFlashSale = () => {
                 mt="2"
                 leftIcon={<HiPlus />}
                 variant="outline"
-                children="Add Products"
+                children={t('flash_sale_shop.add_products')}
                 onClick={() => dispatch(setModalSelectProducts(true))}
               />
               {values.products && values.products.length > 0 && (
@@ -310,62 +349,22 @@ const CreateShopFlashSale = () => {
                         <Table variant="simple" minW="5xl">
                           <Thead h="52px" bg="bg-2">
                             <Tr>
-                              <Th
-                                borderBottomWidth="0px"
-                                color="text-note"
-                                textStyle="b-md"
-                                textTransform="capitalize">
-                                <Checkbox isChecked={selectAll} onChange={handleSelectAll} />
-                              </Th>
-                              <Th
-                                borderBottomWidth="0px"
-                                color="text-note"
-                                textStyle="b-md"
-                                textTransform="capitalize">
-                                Product Name
-                              </Th>
-                              <Th
-                                borderBottomWidth="0px"
-                                color="text-note"
-                                textStyle="b-md"
-                                textTransform="capitalize">
-                                Original Price
-                              </Th>
-                              <Th
-                                borderBottomWidth="0px"
-                                color="text-note"
-                                textStyle="b-md"
-                                textTransform="capitalize">
-                                Discounted Price
-                              </Th>
-                              <Th
-                                borderBottomWidth="0px"
-                                color="text-note"
-                                textStyle="b-md"
-                                textTransform="capitalize">
-                                Discount
-                              </Th>
-                              <Th
-                                borderBottomWidth="0px"
-                                color="text-note"
-                                textStyle="b-md"
-                                textTransform="capitalize">
-                                Campaign Stock
-                              </Th>
-                              <Th
-                                borderBottomWidth="0px"
-                                color="text-note"
-                                textStyle="b-md"
-                                textTransform="capitalize">
-                                Stock
-                              </Th>
-                              <Th
-                                borderBottomWidth="0px"
-                                color="text-note"
-                                textStyle="b-md"
-                                textTransform="capitalize">
-                                Action
-                              </Th>
+                              {headers.map((item, index) => {
+                                return (
+                                  <Th
+                                    key={index}
+                                    borderBottomWidth="0px"
+                                    color="text-note"
+                                    textStyle="b-md"
+                                    textTransform="capitalize">
+                                    {index === 0 ? (
+                                      <Checkbox isChecked={selectAll} onChange={handleSelectAll} />
+                                    ) : (
+                                      item
+                                    )}
+                                  </Th>
+                                );
+                              })}
                             </Tr>
                           </Thead>
                           {values.products &&
@@ -492,11 +491,11 @@ const CreateShopFlashSale = () => {
                         <ModalConfirm
                           isOpen={isOpenDelete}
                           onClose={onCloseDelete}
-                          title="Confirm Deletion"
-                          description={t('deleteConfirm')}
+                          title={t('delete')}
+                          description={t('flash_sale_shop.description_delete_product')}
                           buttonLeft={{ title: t('cancel'), onClick: onCloseDelete }}
                           buttonRight={{
-                            title: t('confirm'),
+                            title: t('delete'),
                             onClick: () => handleDeleteProduct(remove),
                           }}
                         />
@@ -525,4 +524,6 @@ const CreateShopFlashSale = () => {
   );
 };
 
-export default CreateShopFlashSale;
+CreateShopFlashSale.layout = Admin;
+
+export default WithAuthentication(CreateShopFlashSale);

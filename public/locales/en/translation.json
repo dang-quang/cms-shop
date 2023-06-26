@@ -151,6 +151,7 @@
   "no_data_exists": "No data exists",
   "disable": "Disable",
   "products": "Products",
+  "sure_to_leave": "The information will not be saved. Sure to leave?",
   "shop_product": {
     "product_images": "Product Images",
     "product_description": "Product Description",
@@ -187,7 +188,18 @@
     "description_disable_flash_sale": "Disabling this Flash Sale will disable all items in this session. If you wish to enable this Flash Sale again, please note to enable all items as well.",
     "title_enable_flash_sale": "Flash Sale enabled in your shop",
     "description_enable_flash_sale": "Please enable items for them to be displayed in your shop's Flash Sale section.",
-    "enable_items": "Enable Items"
+    "enable_items": "Enable Items",
+    "create_shop_flash_sale": "Create New My Shop's Flash Sale",
+    "flash_sale_name": "Flash sale name",
+    "program_time": "Program time",
+    "shop_flash_sale_products": "Shop's Flash Sale Products",
+    "please_review_the_product": "Please review the product criteria before adding items to your promotion.",
+    "add_products": "Add products",
+    "product_name": "Product Name",
+    "original_price": "Original Price",
+    "discounted_price": "Discounted Price",
+    "campaign_stock": "Campaign Stock",
+    "description_delete_product": "Are you sure you want to delete this product?"
   },
   "sideBar": {
     "shop": "Shop",

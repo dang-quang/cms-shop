@@ -31,7 +31,7 @@ function ShopProducts() {
           onClick={() => router.push('/shop/product/add')}
         />
       </Flex>
-      <Tabs variant="soft-rounded" mt="8" bg="bg-1" borderRadius="4px">
+      <Tabs variant="soft-rounded" mt="8" bg="bg-1" borderRadius="4px" position="relative">
         <TabList w="full" borderBottomWidth="1px" borderBottomColor="border-5" px="6" pt="4">
           {tabs.map((name, index) => (
             <Tab

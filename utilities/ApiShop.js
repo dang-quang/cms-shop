@@ -6,7 +6,7 @@ export function requestGetListCategory(payload) {
 }
 
 export function requestCreateUpdateProduct(payload) {
-  console.log('create update product parma==>', payload);
+  console.log('create update product params ========>', payload);
   return postWithCheckingToken(`${BASE_API_URL}/shop/add-product`, {}, payload);
 }
 
@@ -25,4 +25,9 @@ export function requestGetListFlashSale(obj) {
 
 export function requestDeleteFlashSale(obj) {
   return postWithCheckingToken(`${BASE_API_URL}/flash-sale/delete`, {}, obj);
+}
+
+export function requestCreateShopFlashSale(payload) {
+  console.log('create shop flash sale params ========>', payload);
+  return postWithCheckingToken(`${BASE_API_URL}/flash-sale/shop-save-flash-sale`, {}, payload);
 }

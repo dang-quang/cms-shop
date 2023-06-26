@@ -23,7 +23,7 @@ const FlashSaleShopItem: React.FC<FlashSaleShopItemProps> = ({
 }) => {
   const formatTime = 'HH:MM DD-MM-YYYY';
   const { t } = useTranslation();
-  const { endAt, name, startAt, status } = item.flashSaleInfo;
+  const { endAt, name, startAt, status } = item;
 
   const borderColor = isLast ? 'transparent' : 'border-5';
 

@@ -107,6 +107,7 @@ export interface IShopProduct {
   soldQuantity?: number;
   status?: string;
   stock?: number;
+  isShow?: EShowProductType;
 }
 
 export enum EAppKey {
@@ -117,8 +118,6 @@ export enum EAppKey {
   REJECT = 'REJECT',
   LANGUAGE = 'LANGUAGE',
   CHANNEL = 'CHANNEL',
-  DELETE = 'DELETE',
-  DELIST = 'DELIST',
 }
 
 export enum EDiscountType {
@@ -164,10 +163,22 @@ export enum ActionTypes {
   MODAL_SELECT_PRODUCTS = 'MODAL_SELECT_PRODUCTS',
   SELECTED_PRODUCTS = 'SELECTED_PRODUCTS',
   SELECTED_CATEGORY = 'SELECTED_CATEGORY',
+  SEARCH_PRODUCT_NAME = 'SEARCH_PRODUCT_NAME',
+  SEARCH_PRODUCT_STOCK_MIN = 'SEARCH_PRODUCT_STOCK_MIN',
+  SEARCH_PRODUCT_STOCK_MAX = 'SEARCH_PRODUCT_STOCK_MAX',
+  DO_SEARCH_PRODUCT = 'DO_SEARCH_PRODUCT',
 }
 
 export enum EProductType {
   STOCK = 'STOCK',
   SOLD_OUT = 'SOLD_OUT',
   DELIST = 'DELIST',
+  PUBLISH = 'PUBLISH',
+  DELETE = 'DELETE',
+}
+
+export enum EShowProductType {
+  DELISTED = 'DELISTED',
+  PENDING = 'PENDING',
+  ACTIVE = 'ACTIVE',
 }

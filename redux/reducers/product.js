@@ -22,6 +22,26 @@ export default function product(state = {}, action) {
         ...state,
         selectedCategory: action.selectedCategory,
       };
+    case ActionTypes.SEARCH_PRODUCT_NAME:
+      return {
+        ...state,
+        searchProductName: action.searchProductName,
+      };
+    case ActionTypes.SEARCH_PRODUCT_STOCK_MIN:
+      return {
+        ...state,
+        searchProductStockMin: action.searchProductStockMin,
+      };
+    case ActionTypes.SEARCH_PRODUCT_STOCK_MAX:
+      return {
+        ...state,
+        searchProductStockMax: action.searchProductStockMax,
+      };
+    case ActionTypes.DO_SEARCH_PRODUCT:
+      return {
+        ...state,
+        doSearchProduct: action.doSearchProduct,
+      };
     default:
       return state;
   }

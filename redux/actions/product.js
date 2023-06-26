@@ -33,6 +33,34 @@ export function setSelectedCategory(selectedCategory) {
   };
 }
 
+export function setSearchProductName(searchProductName) {
+  return {
+    type: ActionTypes.SEARCH_PRODUCT_NAME,
+    searchProductName,
+  };
+}
+
+export function setSearchProductStockMin(searchProductStockMin) {
+  return {
+    type: ActionTypes.SEARCH_PRODUCT_STOCK_MIN,
+    searchProductStockMin,
+  };
+}
+
+export function setSearchProductStockMax(searchProductStockMax) {
+  return {
+    type: ActionTypes.SEARCH_PRODUCT_STOCK_MAX,
+    searchProductStockMax,
+  };
+}
+
+export function setDoSearchProduct(doSearchProduct) {
+  return {
+    type: ActionTypes.DO_SEARCH_PRODUCT,
+    doSearchProduct,
+  };
+}
+
 export const approveProducts = () => {
   return async (dispatch, getState) => {
     try {
@@ -97,5 +125,14 @@ export const rejectProducts = () => {
     } finally {
       dispatch(setShowLoader(false));
     }
+  };
+};
+
+export const resetSearchProduct = () => {
+  return async (dispatch) => {
+    dispatch(setSearchProductName(''));
+    dispatch(setSearchProductStockMin(''));
+    dispatch(setSearchProductStockMax(''));
+    dispatch(setDoSearchProduct(true));
   };
 };

@@ -11,11 +11,12 @@ import {
   Text,
   Tr,
 } from '@chakra-ui/react';
-import { IShopProduct } from 'constants/types';
+import { EShowProductType, IShopProduct } from 'constants/types';
 import { useImageHandler } from 'hooks';
 import { formatCurrency } from 'utilities/utils';
 import { AiFillEdit, AiOutlineHeart } from 'react-icons/ai';
 import { IoEyeOutline } from 'react-icons/io5';
+import { useTranslation } from 'react-i18next';
 
 interface SelectProductItemProps {
   item: IShopProduct;
@@ -34,7 +35,8 @@ const ShopProductItem: React.FC<SelectProductItemProps> = ({
   onClick,
   onUpdate,
 }) => {
-  const { id, image, name, price, stock, countLike, countView, soldQuantity, productDetail } = item;
+  const { t } = useTranslation();
+  const { image, name, price, stock, countLike, countView, soldQuantity, isShow } = item;
 
   const _image = useImageHandler(image);
 
@@ -51,16 +53,28 @@ const ShopProductItem: React.FC<SelectProductItemProps> = ({
             onChange={onClick}
             mr="3"
           />
-          <Flex alignItems="center">
-            <AspectRatio w="60px" ratio={1} mr="2" borderRadius="4px" overflow="hidden">
+          <Flex>
+            <AspectRatio w="80px" ratio={1} mr="2" borderRadius="4px" overflow="hidden">
               <Image w="100%" h="100%" objectFit="cover" src={_image} />
             </AspectRatio>
             <Flex flexDirection="column">
+              {isShow !== EShowProductType.ACTIVE && (
+                <Flex
+                  p="1"
+                  w="fit-content"
+                  bg={isShow === EShowProductType.PENDING ? 'warning.200' : 'gray.2000'}
+                  alignItems="center"
+                  borderRadius="4px">
+                  <Text
+                    textStyle="h2-m"
+                    color={isShow === EShowProductType.PENDING ? 'warning.100' : 'gray.100'}
+                    textTransform="capitalize">
+                    {isShow === EShowProductType.PENDING ? t('waiting') : t('de_listed')}
+                  </Text>
+                </Flex>
+              )}
               <Text textStyle="h3-m" color="text-basic">
                 {name}
-              </Text>
-              <Text color="text-body" textStyle="b-xs">
-                ID: {id}
               </Text>
               <HStack mt="1" gap="1">
                 <Flex alignItems="center" gap="1">
@@ -80,11 +94,11 @@ const ShopProductItem: React.FC<SelectProductItemProps> = ({
           </Flex>
         </Flex>
       </Td>
-      <Td borderColor={borderColor}>
+      {/* <Td borderColor={borderColor}>
         <Text textStyle="h3" color="text-basic">
           Variations
         </Text>
-      </Td>
+      </Td> */}
       <Td borderColor={borderColor}>
         <Text textStyle="h3" color="text-basic">
           {formatCurrency(price)}

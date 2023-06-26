@@ -20,7 +20,6 @@ import { useTranslation } from 'react-i18next';
 
 import { useDispatch } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
-import { NotificationManager } from 'react-light-notifications';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { useRouter } from 'next/router';
 import { ModalConfirm, PaginationPanel, RangeDatePickerItem, VoucherShopItem } from 'components';

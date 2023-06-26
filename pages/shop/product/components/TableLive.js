@@ -5,11 +5,7 @@ import {
   Thead,
   Tr,
   Th,
-  Input,
-  Icon,
   Flex,
-  InputGroup,
-  InputRightElement,
   useBoolean,
   Text,
   Image,
@@ -25,15 +21,17 @@ import { useTranslation } from 'react-i18next';
 import Images from 'assets';
 import { isEmpty } from 'lodash';
 import { requestGetListShopProduct, requestUpdateStatusProduct } from 'utilities/ApiShop';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
 import { EAppKey, EProductType } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
-import { AiOutlineSearch } from 'react-icons/ai';
 import { useRouter } from 'next/router';
 import { ModalConfirm, PaginationPanel, ShopProductItem } from 'components';
+import { setDoSearchProduct } from 'redux/actions/product';
 
 const TableLive = () => {
+  //TODO add shop Id - need update authentication flow
+  const shopID = 143;
   const router = useRouter();
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -47,12 +45,12 @@ const TableLive = () => {
   const { isOpen: isOpenDeList, onOpen: onOpenDeList, onClose: onCloseDeList } = useDisclosure();
   const [totalPage, setTotalPage] = React.useState(1);
   const [totalRecords, setTotalRecords] = React.useState(0);
-  const [search, setSearch] = React.useState('');
-  const [doSearch, { on: onSearch, off: offSearch }] = useBoolean(false);
+  const { doSearchProduct, searchProductName, searchProductStockMin, searchProductStockMax } =
+    useSelector((state) => state.product);
 
   const headers = [
     t('product_name'),
-    t('shop_product.variations'),
+    //t('shop_product.variations'),
     t('price'),
     t('stock'),
     t('sales'),
@@ -77,15 +75,15 @@ const TableLive = () => {
       try {
         dispatch(setShowLoader(true));
         const res = await requestGetListShopProduct({
-          id: 143,
+          id: shopID,
           page: 1,
           type: EProductType.STOCK,
         });
 
-        if (res && res.code === EAppKey.MSG_SUCCESS && res.dataProduct) {
+        if (res && res.code === EAppKey.MSG_SUCCESS && !isEmpty(res.dataProduct)) {
           setProducts(res.dataProduct);
           setTotalPage(res.totalPages);
-          setTotalRecords(res.totalRecords);
+          setTotalRecords(res.totalProduct);
         } else {
           NotificationManager.error({
             title: t('error'),
@@ -103,23 +101,29 @@ const TableLive = () => {
   React.useEffect(() => {
     (async () => {
       try {
-        let key;
-        if (doSearch) {
+        let params = { id: shopID, page: currentPage, type: EProductType.STOCK };
+
+        if (doSearchProduct) {
           dispatch(setShowLoader(true));
-          if (doSearch) {
-            key = search;
+          if (doSearchProduct) {
+            if (searchProductName) {
+              params.keyWord = searchProductName;
+            }
+
+            if (searchProductStockMin) {
+              params.minStock = searchProductStockMin;
+            }
+            if (searchProductStockMax) {
+              params.maxStock = searchProductStockMax;
+            }
           }
 
-          const res = await requestGetListShopProduct({
-            keyWord: key,
-            page: currentPage,
-            type: EProductType.STOCK,
-          });
+          const res = await requestGetListShopProduct(params);
 
-          if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
-            setProducts(res.data.results === null ? [] : res.data.results);
-            setTotalPage(res.data.totalPages);
-            setTotalRecords(res.data.totalRecords);
+          if (res.code === EAppKey.MSG_SUCCESS && !isEmpty(res.dataProduct)) {
+            setProducts(res.dataProduct);
+            setTotalPage(res.totalPages);
+            setTotalRecords(res.totalProduct);
           } else {
             setProducts([]);
             setTotalPage(1);
@@ -131,11 +135,17 @@ const TableLive = () => {
           }
         }
       } finally {
+        dispatch(setDoSearchProduct(false));
         dispatch(setShowLoader(false));
-        offSearch();
       }
     })();
-  }, [doSearch, currentPage, search]);
+  }, [
+    doSearchProduct,
+    currentPage,
+    searchProductName,
+    searchProductStockMin,
+    searchProductStockMax,
+  ]);
 
   const handleSelectAll = React.useCallback(() => {
     if (isEmpty(products)) {
@@ -179,14 +189,14 @@ const TableLive = () => {
 
       const ids = Array.from(selectedProducts, (product) => product.id);
 
-      const res = await requestUpdateStatusProduct({ ids: ids, type: EAppKey.DELETE });
+      const res = await requestUpdateStatusProduct({ ids: ids, type: EProductType.DELETE });
       if (res.code === EAppKey.MSG_SUCCESS) {
         setSelectedProducts([]);
-        router.push('/admin/product');
+        router.push('/shop/product');
       } else {
         NotificationManager.error({
           title: t('error'),
-          message: res.message ? res.message.text : 'Error',
+          message: res.message ? res.message.text : t('error'),
         });
       }
     } catch (error) {
@@ -203,14 +213,14 @@ const TableLive = () => {
 
       const ids = Array.from(selectedProducts, (product) => product.id);
 
-      const res = await requestUpdateStatusProduct({ ids: ids, type: EAppKey.DELIST });
+      const res = await requestUpdateStatusProduct({ ids: ids, type: EProductType.DELIST });
       if (res.code === EAppKey.MSG_SUCCESS) {
         setSelectedProducts([]);
-        router.push('/admin/product');
+        router.push('/shop/product');
       } else {
         NotificationManager.error({
           title: t('error'),
-          message: res.message ? res.message.text : 'Error',
+          message: res.message ? res.message.text : t('error'),
         });
       }
     } catch (error) {
@@ -222,20 +232,7 @@ const TableLive = () => {
 
   return (
     <Box>
-      <InputGroup maxW="570px" borderRadius="4px" overflow="hidden">
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder={t('search_product_name')}
-        />
-        <InputRightElement borderRadius="4px" cursor="pointer" h="full" bg="primary.100" w="100px">
-          <Center onClick={onSearch}>
-            <Icon as={AiOutlineSearch} w="24px" h="24px" color="white" />
-          </Center>
-        </InputRightElement>
-      </InputGroup>
       <Box
-        mt="8"
         overflow="auto"
         position="relative"
         minH={isEmpty(products) ? '300px' : 'unset'}
@@ -290,6 +287,12 @@ const TableLive = () => {
                   isChecked={isChecked}
                   isLast={index === products.length - 1}
                   onClick={() => handleSelectItem(item)}
+                  onUpdate={() => {
+                    router.push({
+                      pathname: '/shop/product/update',
+                      query: item,
+                    });
+                  }}
                 />
               );
             })
@@ -323,24 +326,40 @@ const TableLive = () => {
           </Flex>
         )}
         {!isEmpty(selectedProducts) && (
-          <Flex justifyContent="space-between" alignItems="center" px="6" py="4">
+          <Flex
+            h="64px"
+            bg="bg-1"
+            justifyContent="space-between"
+            position="fixed"
+            left="290px"
+            right="35px"
+            bottom="0"
+            alignItems="center"
+            boxShadow="2xl"
+            px="12"
+            py="4">
             <HStack>
               <Checkbox isChecked={selectAll} onChange={handleSelectAll} />
               <Text color="text-basic" textStyle="h3">
                 {t('select_all')}
               </Text>
             </HStack>
-            <HStack gap="4">
+            <HStack gap="2">
+              <Text color="text-basic" textStyle="h4">
+                {t('products_selected', { number: selectedProducts.length })}
+              </Text>
               <Button
                 variant="outline-control"
-                minW="120px"
+                minW="80px"
+                size="sm"
                 children={t('delete')}
                 onClick={onOpenDelete}
               />
               <Button
                 variant="outline-control"
-                minW="120px"
-                children={t('de_listed')}
+                minW="80px"
+                size="sm"
+                children={t('delist')}
                 onClick={onOpenDeList}
               />
             </HStack>
@@ -360,7 +379,7 @@ const TableLive = () => {
         onClose={onCloseDeList}
         title={t('shop_product.delist_selected_products', { number: selectedProducts.length })}
         description={t('shop_product.delist_selected_products_description')}
-        buttonLeft={{ title: t('cancel'), onClick: onCloseDelete }}
+        buttonLeft={{ title: t('cancel'), onClick: onCloseDeList }}
         buttonRight={{ title: t('confirm'), onClick: handleDeListProducts }}
       />
     </Box>

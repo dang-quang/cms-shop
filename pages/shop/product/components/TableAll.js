@@ -241,7 +241,7 @@ const TableAll = () => {
 
       const ids = Array.from(list, (product) => product.id);
 
-      const res = await requestUpdateStatusProduct({ ids: ids, type: EProductType.PUBLISH });
+      const res = await requestUpdateStatusProduct({ ids: ids, type: EProductType.ACTIVE });
       if (res.code === EAppKey.MSG_SUCCESS) {
         setSelectedProducts([]);
         router.push('/shop/product');

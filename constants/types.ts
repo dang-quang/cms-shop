@@ -174,9 +174,9 @@ export enum EProductType {
   STOCK = 'STOCK',
   SOLD_OUT = 'SOLD_OUT',
   DELIST = 'DELIST',
-  PUBLISH = 'PUBLISH',
   DELETE = 'DELETE',
   PENDING = 'PENDING',
+  ACTIVE = 'ACTIVE',
 }
 
 export enum EShowProductType {

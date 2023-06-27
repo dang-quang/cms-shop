@@ -176,6 +176,7 @@ export enum EProductType {
   DELIST = 'DELIST',
   PUBLISH = 'PUBLISH',
   DELETE = 'DELETE',
+  PENDING = 'PENDING',
 }
 
 export enum EShowProductType {

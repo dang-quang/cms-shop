@@ -19,17 +19,17 @@ import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
 
 import Images from 'assets';
-import _, { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import { requestGetListShopProduct, requestUpdateStatusProduct } from 'utilities/ApiShop';
 import { useDispatch, useSelector } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
-import { EAppKey, EProductType, EShowProductType } from 'constants/types';
+import { EAppKey, EProductType } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
 import { useRouter } from 'next/router';
 import { ModalConfirm, PaginationPanel, ShopProductItem } from 'components';
 import { setDoSearchProduct } from 'redux/actions/product';
 
-const TableAll = () => {
+const TableReviewing = () => {
   //TODO add shop Id - need update authentication flow
   const shopID = 143;
   const router = useRouter();
@@ -43,12 +43,6 @@ const TableAll = () => {
     useBoolean(false);
   const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
   const { isOpen: isOpenDeList, onOpen: onOpenDeList, onClose: onCloseDeList } = useDisclosure();
-  const {
-    isOpen: isOpenPublishAll,
-    onOpen: onOpenPublishAll,
-    onClose: onClosePublishAll,
-  } = useDisclosure();
-  const { isOpen: isOpenPublish, onOpen: onOpenPublish, onClose: onClosePublish } = useDisclosure();
   const [totalPage, setTotalPage] = React.useState(1);
   const [totalRecords, setTotalRecords] = React.useState(0);
   const { doSearchProduct, searchProductName, searchProductStockMin, searchProductStockMax } =
@@ -80,7 +74,11 @@ const TableAll = () => {
     (async () => {
       try {
         dispatch(setShowLoader(true));
-        const res = await requestGetListShopProduct({ id: shopID, page: 1 });
+        const res = await requestGetListShopProduct({
+          id: shopID,
+          page: 1,
+          type: EProductType.PENDING,
+        });
 
         if (res && res.code === EAppKey.MSG_SUCCESS && !isEmpty(res.dataProduct)) {
           setProducts(res.dataProduct);
@@ -103,7 +101,7 @@ const TableAll = () => {
   React.useEffect(() => {
     (async () => {
       try {
-        let params = { id: shopID, page: currentPage };
+        let params = { id: shopID, page: currentPage, type: EProductType.PENDING };
 
         if (doSearchProduct) {
           dispatch(setShowLoader(true));
@@ -227,32 +225,6 @@ const TableAll = () => {
       }
     } catch (error) {
       console.log('delist product error');
-    } finally {
-      dispatch(setShowLoader(false));
-    }
-  }, [selectedProducts]);
-
-  const handlePublishProducts = React.useCallback(async () => {
-    try {
-      onClosePublish();
-      dispatch(setShowLoader(true));
-
-      let list = _.filter(selectedProducts, { isShow: EShowProductType.DELISTED });
-
-      const ids = Array.from(list, (product) => product.id);
-
-      const res = await requestUpdateStatusProduct({ ids: ids, type: EProductType.PUBLISH });
-      if (res.code === EAppKey.MSG_SUCCESS) {
-        setSelectedProducts([]);
-        router.push('/shop/product');
-      } else {
-        NotificationManager.error({
-          title: t('error'),
-          message: res.message ? res.message.text : t('error'),
-        });
-      }
-    } catch (error) {
-      console.log('publish product error');
     } finally {
       dispatch(setShowLoader(false));
     }
@@ -390,24 +362,6 @@ const TableAll = () => {
                 children={t('delist')}
                 onClick={onOpenDeList}
               />
-              {_.filter(selectedProducts, { isShow: EShowProductType.DELISTED }).length > 0 && (
-                <Button
-                  variant="primary"
-                  minW="80px"
-                  size="sm"
-                  children={t('publish')}
-                  onClick={() => {
-                    const allDelisted = _.every(selectedProducts, {
-                      isShow: EShowProductType.DELISTED,
-                    });
-                    if (allDelisted) {
-                      onOpenPublishAll();
-                    } else {
-                      onOpenPublish();
-                    }
-                  }}
-                />
-              )}
             </HStack>
           </Flex>
         )}
@@ -428,27 +382,8 @@ const TableAll = () => {
         buttonLeft={{ title: t('cancel'), onClick: onCloseDeList }}
         buttonRight={{ title: t('confirm'), onClick: handleDeListProducts }}
       />
-      <ModalConfirm
-        isOpen={isOpenPublish}
-        onClose={onClosePublish}
-        title={t('shop_product.can_not_be_published')}
-        description={t('shop_product.description_publish_product', {
-          number: selectedProducts.length,
-          number_publish: _.filter(selectedProducts, { isShow: EShowProductType.DELISTED }).length,
-        })}
-        buttonLeft={{ title: t('cancel'), onClick: onClosePublish }}
-        buttonRight={{ title: t('confirm'), onClick: handlePublishProducts }}
-      />
-      <ModalConfirm
-        isOpen={isOpenPublishAll}
-        onClose={onClosePublishAll}
-        title={t('shop_product.title_publish_all_products', { number: selectedProducts.length })}
-        description={t('shop_product.description_publish_all_products')}
-        buttonLeft={{ title: t('cancel'), onClick: onClosePublishAll }}
-        buttonRight={{ title: t('confirm'), onClick: handlePublishProducts }}
-      />
     </Box>
   );
 };
 
-export default TableAll;
+export default TableReviewing;

@@ -33,13 +33,14 @@ import {
   setSearchProductStockMax,
   setSearchProductStockMin,
 } from 'redux/actions/product';
+import TableReviewing from './components/TableReviewing';
 
 function ShopProducts() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { t } = useTranslation();
 
-  const tabs = [t('all'), t('live'), t('sold_out'), t('de_listed')];
+  const tabs = [t('all'), t('live'), t('sold_out'), t('reviewing'), t('de_listed')];
 
   const inputName = React.useRef();
   const inputStockMin = React.useRef();
@@ -136,6 +137,9 @@ function ShopProducts() {
           </TabPanel>
           <TabPanel p="0">
             <TableSoldOut />
+          </TabPanel>
+          <TabPanel p="0">
+            <TableReviewing />
           </TabPanel>
           <TabPanel p="0">
             <TableDelist />

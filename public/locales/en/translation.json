@@ -156,6 +156,7 @@
   "delist": "Delist",
   "products_selected": "{{number}} products selected",
   "waiting": "Waiting",
+  "reviewing": "Reviewing",
   "shop_product": {
     "product_images": "Product Images",
     "product_description": "Product Description",

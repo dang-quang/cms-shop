@@ -275,7 +275,7 @@ const TableAll = () => {
                   <Th
                     key={index}
                     borderBottomWidth="0px"
-                    w={index === 0 ? '35%' : 'unset'}
+                    w={index === 0 ? '40%' : '15%'}
                     color="text-note"
                     textStyle="b-md"
                     textTransform="capitalize"

@@ -17,6 +17,7 @@ import ModalSelectCategory from './ModalSelectCategory';
 import ShopProductItem from './ShopProductItem';
 import EmptyListItem from './EmptyListItem';
 import FlashSaleShopItem from './FlashSaleShopItem';
+import ViewChangeImage from './ViewChangeImage';
 
 export {
   RangeDatePickerItem,
@@ -38,4 +39,5 @@ export {
   ShopProductItem,
   EmptyListItem,
   FlashSaleShopItem,
+  ViewChangeImage,
 };

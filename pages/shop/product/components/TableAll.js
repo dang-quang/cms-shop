@@ -19,7 +19,7 @@ import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
 
 import Images from 'assets';
-import { isEmpty } from 'lodash';
+import _, { isEmpty } from 'lodash';
 import { requestGetListShopProduct, requestUpdateStatusProduct } from 'utilities/ApiShop';
 import { useDispatch, useSelector } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';

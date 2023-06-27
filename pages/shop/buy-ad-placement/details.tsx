@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, Flex, Icon, Image, Text } from '@chakra-ui/react';
-import Admin from 'layouts/Admin';
-import { WithAuthentication } from 'components';
+import { ViewChangeImage } from 'components';
 import { useRouter } from 'next/router';
 import { HorizontalText } from './components/QRShop';
 import { useTranslation } from 'react-i18next';
@@ -9,12 +8,11 @@ import { formatCurrency } from 'utilities/utils';
 import { useDisplayImage } from 'hooks';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { IoIosCloudUpload } from 'react-icons/io';
-import Images from 'assets';
-import ViewChangeImage from 'components/ViewChangeImage';
 
 function DetailsAd({ item, close, typeAd }: { item: any; close: () => void; typeAd: any }) {
-  const { t } = useTranslation();
   const router = useRouter();
+  const { t } = useTranslation();
+  const inputRefBanner = React.useRef<any>();
   const [image, setImage] = useState<any>();
   const { onUploader: onUploaderBanner } = useDisplayImage((image) => {
     try {
@@ -28,10 +26,6 @@ function DetailsAd({ item, close, typeAd }: { item: any; close: () => void; type
       console.log('error upload banner', error);
     }
   });
-  const inputRefBanner = React.useRef<any>();
-  console.log('afgabdfghjkdfjkhdfhjk,dfg', router?.query);
-
-  // const item = router?.query;
 
   return (
     <Box display={'flex'} flex={1} flexDirection={'column'} justifyContent={'center'}>
@@ -49,16 +43,20 @@ function DetailsAd({ item, close, typeAd }: { item: any; close: () => void; type
             pl={'50px'}>
             <Text style={{ fontSize: 20, fontWeight: 'lighter' }}>Thông tin chi tiết</Text>
             <Box display={'flex'} flexDirection={'column'} ml={'50px'}>
-              <HorizontalText text1={t('description')} text2={item.des} mY={'10px'} />
-              <HorizontalText text1={t('time')} text2={item.time} mY={'10px'} />
-              <HorizontalText text1={t('location')} text2={item.locate} mY={'10px'} />
-              <HorizontalText text1={t('type')} text2={'QC Banner'} mY={'10px'} />
-              <HorizontalText
-                text1={t('price')}
-                text2={` ${formatCurrency(item.price)}`}
-                color2={'red'}
-                mY={'10px'}
-              />
+              {item && (
+                <>
+                  <HorizontalText text1={t('description')} text2={item.des} mY={'10px'} />
+                  <HorizontalText text1={t('time')} text2={item.time} mY={'10px'} />
+                  <HorizontalText text1={t('location')} text2={item.locate} mY={'10px'} />
+                  <HorizontalText text1={t('type')} text2={'QC Banner'} mY={'10px'} />
+                  <HorizontalText
+                    text1={t('price')}
+                    text2={` ${formatCurrency(item.price)}`}
+                    color2={'red'}
+                    mY={'10px'}
+                  />
+                </>
+              )}
             </Box>
             <Text style={{ fontSize: 20, fontWeight: 'lighter' }} mt={'30px'}>
               Tải Banner
@@ -107,10 +105,7 @@ function DetailsAd({ item, close, typeAd }: { item: any; close: () => void; type
                     borderColor={image ? 'transparent' : 'gray.700'}
                     position="relative">
                     {image ? (
-                      <img
-                        src={image}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      />
+                      <Image src={image} w="100%" h="100%" objectFit="cover" />
                     ) : (
                       <Flex flexDirection="column" alignItems="center" justifyContent="center">
                         <Icon as={IoIosCloudUpload} width="32px" height="32px" color="gray.100" />
@@ -200,7 +195,5 @@ function DetailsAd({ item, close, typeAd }: { item: any; close: () => void; type
     </Box>
   );
 }
-
-// DetailsAd.layout = Admin;
 
 export default DetailsAd;

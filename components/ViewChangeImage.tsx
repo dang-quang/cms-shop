@@ -1,16 +1,8 @@
-import { Box, Flex, Icon, Text, Image } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import {
-  IoMdArrowBack,
-  IoMdSearch,
-  IoMdCart,
-  IoMdStar,
-  IoMdLocate,
-  IoIosLocate,
-} from 'react-icons/io';
+import { Box, Flex, Icon, Text, Image } from '@chakra-ui/react';
+import { IoMdArrowBack, IoMdSearch, IoMdCart, IoMdStar } from 'react-icons/io';
 
 import { MdOutlineFmdGood } from 'react-icons/md';
-import theme from 'theme/theme';
 
 const fake = [
   {

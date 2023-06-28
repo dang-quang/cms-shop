@@ -35,7 +35,7 @@ import {
   Thead,
   Tr,
   Th,
-  Table
+  Table,
 } from '@chakra-ui/react';
 import { formatCurrency, formatNumber } from 'utilities/utils';
 import { requestApproveProduct, requestGetListProductApprove } from 'utilities/ApiManage';
@@ -54,7 +54,6 @@ import * as yup from 'yup';
 import { ModalConfirm, ProductFlashSaleItem, WithAuthentication } from 'components';
 import { useRouter } from 'next/router';
 
-
 const formatDate = 'YYYY-MM-DDTHH:mm';
 
 const initialValues = {
@@ -64,7 +63,6 @@ const initialValues = {
   products: [],
   flashSaleProducts: [],
 };
-
 
 const ProductApproval = () => {
   const { t } = useTranslation();
@@ -111,7 +109,6 @@ const ProductApproval = () => {
 
   const flashSale = router.query;
   console.log('ProductApproval', flashSale);
-
 
   const validationSchema = yup.object().shape({
     name: yup.string().required(t('error_field_empty')),
@@ -263,7 +260,10 @@ const ProductApproval = () => {
             <CardBody className={classes.cardBody}>
               <Box>
                 <Text textStyle="h5" color="text-basic" marginBottom={'10px'}>
-                  {flashSale.name} {`[${dayjs(Number(flashSale.programStart)).format('HH:MM DD-MM-YYYY ')} - ${dayjs(Number(flashSale.programEnd)).format('HH:MM DD-MM-YYYY')} ]`}
+                  {flashSale.name}{' '}
+                  {`[${dayjs(Number(flashSale.programStart)).format('HH:MM DD-MM-YYYY ')} - ${dayjs(
+                    Number(flashSale.programEnd)
+                  ).format('HH:MM DD-MM-YYYY')} ]`}
                 </Text>
               </Box>
               <Box
@@ -292,7 +292,8 @@ const ProductApproval = () => {
                         Thời gian đăng ký
                       </Text>
                       <Text textStyle="h2" color="text-basic">
-                        {dayjs(Number(flashSale.registerStart)).format('HH:MM DD-MM-YYYY ')} - {dayjs(Number(flashSale.registerEnd)).format('HH:MM DD-MM-YYYY ')}
+                        {dayjs(Number(flashSale.registerStart)).format('HH:MM DD-MM-YYYY ')} -{' '}
+                        {dayjs(Number(flashSale.registerEnd)).format('HH:MM DD-MM-YYYY ')}
                       </Text>
                       <Text textStyle="h2" color="text-basic">
                         {/* Hiện tại bạn có thể đăng ký 7 Khung giờ */}
@@ -309,7 +310,8 @@ const ProductApproval = () => {
                         Thời gian diễn ra
                       </Text>
                       <Text textStyle="h2" color="text-basic">
-                        {dayjs(Number(flashSale.programStart)).format('HH:MM DD-MM-YYYY ')} - {dayjs(Number(flashSale.programEnd)).format('HH:MM DD-MM-YYYY ')}
+                        {dayjs(Number(flashSale.programStart)).format('HH:MM DD-MM-YYYY ')} -{' '}
+                        {dayjs(Number(flashSale.programEnd)).format('HH:MM DD-MM-YYYY ')}
                       </Text>
                       <Text textStyle="h2" color="text-basic">
                         {/* 0 Khung giờ bạn đã đăng ký đang diễn ra */}
@@ -342,20 +344,23 @@ const ProductApproval = () => {
                 <TabPanels>
                   <TabPanel p="0">
                     <Box w={'50%'}>
-                      <Text>
-                        {flashSale.description ?? ""}
-                      </Text>
+                      <Text>{flashSale.description ?? ''}</Text>
                     </Box>
                   </TabPanel>
                   <TabPanel p="0">
                     <Box w={'50%'}>
                       <Flex flexDirection={'column'}>
                         <Text>Điều Kiện Shop:</Text>
-                        <Text>-Số sản phẩm tối đa mỗi Shop được đăng ký: {flashSale.maxProductRegister}</Text>
+                        <Text>
+                          -Số sản phẩm tối đa mỗi Shop được đăng ký: {flashSale.maxProductRegister}
+                        </Text>
                       </Flex>
                       <Flex flexDirection={'column'}>
                         <Text>Điều Kiện Sản Phẩm:</Text>
-                        <Text>-Điều Kiện Giảm Giá: {flashSale.minDiscount} ~ {flashSale.maxDiscount} {flashSale.minDiscount !== "PERCENT" ? "%" : "HTG"}</Text>
+                        <Text>
+                          -Điều Kiện Giảm Giá: {flashSale.minDiscount} ~ {flashSale.maxDiscount}{' '}
+                          {flashSale.minDiscount !== 'PERCENT' ? '%' : 'HTG'}
+                        </Text>
                       </Flex>
                     </Box>
                   </TabPanel>
@@ -515,7 +520,7 @@ const ProductApproval = () => {
                                       const roundedValue = Math.floor(
                                         ((values.products[idx].price - parseFloat(e.target.value)) /
                                           values.products[idx].price) *
-                                        100
+                                          100
                                       );
 
                                       if (roundedValue < 0) {
@@ -627,12 +632,18 @@ const ProductApproval = () => {
                 />
               )}
               <Flex mt="6" alignItems="center" justifyContent="flex-end">
-                <Button variant="outline-control" minW="150px" mr="4" onClick={() => router.back()}>
+                <Button
+                  variant="outline-control"
+                  minW="80px"
+                  size="sm"
+                  mr="4"
+                  onClick={() => router.back()}>
                   {t('cancel')}
                 </Button>
                 <Button
                   variant="primary"
-                  minW="150px"
+                  minW="80px"
+                  size="sm"
                   isDisabled={isEmpty(values.flashSaleProducts)}
                   onClick={() => handleSubmit()}>
                   {t('confirm')}
@@ -640,14 +651,13 @@ const ProductApproval = () => {
               </Flex>
             </Box>
 
-
             <NotificationContainer />
           </Card>
-        )
+        );
       }}
     </Formik>
   );
-}
+};
 
 ProductApproval.layout = Admin;
 

@@ -12,7 +12,7 @@ const EmptyListItem: React.FC<EmptyListItemProps> = ({ ...rest }) => {
       <Center h="220px" position="absolute" insetX="0" flexDirection="column" alignSelf="center">
         <Image w="150px" h="100px" src={Images.no_data} />
         <Text textStyle="body" textAlign="center" color="primary.100" mt="1">
-          {t('no_products_found')}
+          {t('no_data_found')}
         </Text>
       </Center>
     </Box>

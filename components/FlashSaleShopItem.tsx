@@ -80,7 +80,13 @@ const FlashSaleShopItem: React.FC<FlashSaleShopItemProps> = ({
         </Flex>
       </Td>
       <Td borderColor={borderColor}>
-        <Switch checked={true} onChange={onChange} name="promotion" variant="success" />
+        <Switch
+          disabled={status === EFlashSaleStatus.FINISHED}
+          checked={true}
+          onChange={onChange}
+          name="promotion"
+          variant="success"
+        />
       </Td>
       <Td isNumeric borderColor={borderColor}>
         <Flex justifyContent="flex-end">
@@ -88,9 +94,11 @@ const FlashSaleShopItem: React.FC<FlashSaleShopItemProps> = ({
             <Center boxSize="40px" cursor="pointer" onClick={onUpdate}>
               <Icon as={AiFillEdit} w="18px" h="18px" color="text-basic" cursor="pointer" />
             </Center>
-            <Center boxSize="40px" cursor="pointer" onClick={onDelete}>
-              <Icon as={FiTrash2} w="18px" h="18px" color="text-basic" cursor="pointer" />
-            </Center>
+            {status !== EFlashSaleStatus.FINISHED && (
+              <Center boxSize="40px" cursor="pointer" onClick={onDelete}>
+                <Icon as={FiTrash2} w="18px" h="18px" color="text-basic" cursor="pointer" />
+              </Center>
+            )}
           </HStack>
         </Flex>
       </Td>

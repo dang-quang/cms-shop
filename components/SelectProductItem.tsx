@@ -1,11 +1,12 @@
 import React from 'react';
 import { AspectRatio, Checkbox, Flex, Image, Td, Text, Tr } from '@chakra-ui/react';
-import { IProduct } from 'constants/types';
+import { IShopProduct } from 'constants/types';
 import { useImageHandler } from 'hooks';
 import { formatCurrency } from 'utilities/utils';
+import { useTranslation } from 'react-i18next';
 
 interface SelectProductItemProps {
-  item: IProduct;
+  item: IShopProduct;
   onClick?(): void;
   isChecked: boolean;
   isLast?: boolean;
@@ -19,7 +20,8 @@ const SelectProductItem: React.FC<SelectProductItemProps> = ({
   isDisable,
   isLast,
 }) => {
-  const { id, image, name, sales, price, stock } = item;
+  const { t } = useTranslation();
+  const { id, image, name, soldQuantity, price, stock } = item;
 
   const _image = useImageHandler(image);
 
@@ -45,7 +47,7 @@ const SelectProductItem: React.FC<SelectProductItemProps> = ({
                 {name}
               </Text>
               <Text mt="1" color="text-body" textStyle="b-xs">
-                ID: {id}
+                {t('id', { number: id })}
               </Text>
             </Flex>
           </Flex>
@@ -53,7 +55,7 @@ const SelectProductItem: React.FC<SelectProductItemProps> = ({
       </Td>
       <Td borderColor={borderColor}>
         <Text textStyle="h3" color="text-basic">
-          {sales}
+          {soldQuantity}
         </Text>
       </Td>
       <Td borderColor={borderColor}>

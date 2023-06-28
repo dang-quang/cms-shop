@@ -1,6 +1,5 @@
 import React from 'react';
 import Admin from 'layouts/Admin.js';
-import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Flex, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
@@ -9,18 +8,19 @@ import TableHappening from './components/TableHappening';
 import TableUpcoming from './components/TableUpcoming';
 import TableFinished from './components/TableFinished';
 import { HiPlus } from 'react-icons/hi';
+import { WithAuthentication } from 'components';
 
 function VoucherPage() {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const tabs = ['All', 'Happening', 'Upcoming', 'Finished'];
+  const tabs = [t('all'), t('happening'), t('upcoming'), t('finished')];
 
   return (
     <Box>
       <Flex alignItems="center" justifyContent="space-between" mt="4">
         <Text textStyle="h6-sb" color="text-basic">
-          {t('flash_sale_shop.flash_sale_shop')}
+          {t('flash_sale_shop.shop_flash_sale')}
         </Text>
         <Button
           leftIcon={<HiPlus />}

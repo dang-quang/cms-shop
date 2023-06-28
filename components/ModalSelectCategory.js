@@ -136,10 +136,11 @@ const ModalSelectCategory = ({ isOpen, onClose, data }) => {
               )}
             </Box>
           </Flex>
-          <HStack gap="4">
+          <HStack gap="2">
             <Button
               variant="outline-control"
-              minW="150px"
+              size="sm"
+              minW="80px"
               onClick={() => {
                 if (!isEmpty(selectedCategory)) {
                   setCategories([{ list: data }]);
@@ -154,7 +155,8 @@ const ModalSelectCategory = ({ isOpen, onClose, data }) => {
             <Button
               variant="primary"
               disabled={isEmpty(categories) || !categories[categories.length - 1].selectedCategory}
-              minW="150px"
+              size="sm"
+              minW="80px"
               onClick={() => {
                 dispatch(setSelectedCategory(categories));
                 onClose();

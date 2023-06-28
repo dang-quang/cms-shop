@@ -147,6 +147,7 @@
   "live": "Live",
   "select_all": "Select All",
   "no_products_found": "No products found",
+  "no_data_found": "No data found",
   "search_product_name": "Search product name",
   "no_data_exists": "No data exists",
   "disable": "Disable",
@@ -157,6 +158,14 @@
   "products_selected": "{{number}} products selected",
   "waiting": "Waiting",
   "reviewing": "Reviewing",
+  "out_of_stock": "Out of stock",
+  "id": "ID: {{number}}",
+  "products_found": "Products found {{number}}",
+  "select_products": "Select Products",
+  "notice": "Notice",
+  "no_product_is_enabled": "No product is enabled. Would you like to enable all products?",
+  "sure_and_leave": "Sure & Leave",
+  "enable_all": "Enable All",
   "shop_product": {
     "product_images": "Product Images",
     "product_description": "Product Description",
@@ -190,7 +199,7 @@
     "description_publish_product": "{{number_publish}} out of {{number}} products are already live. Click confirm to continue publishing the remaining {{number_publish}} products."
   },
   "flash_sale_shop": {
-    "flash_sale_shop": "Flash Sale Shop",
+    "shop_flash_sale": "Shop Flash Sale",
     "delete_shop_flash_sale": "Delete Shop Flash Sale",
     "delete_shop_flash_sale_description": "Are you sure to delete this Shop Flash Sale?",
     "title_disable_flash_sale": "Are you sure to disable this Flash Sale in your shop?",
@@ -269,6 +278,7 @@
     "edit_shop": "Edit shop"
   },
   "category": {
+    "category": "Category",
     "createCategory": "Create category",
     "code": "Code",
     "parent": "Parent",

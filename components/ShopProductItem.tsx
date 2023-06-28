@@ -105,8 +105,8 @@ const ShopProductItem: React.FC<SelectProductItemProps> = ({
         </Text>
       </Td>
       <Td borderColor={borderColor}>
-        <Text textStyle="h3" color="text-basic">
-          {stock}
+        <Text textStyle="h3" color={stock === 0 ? 'red' : 'text-basic'}>
+          {stock === 0 ? t('sold_out') : stock}
         </Text>
       </Td>
       <Td borderColor={borderColor}>

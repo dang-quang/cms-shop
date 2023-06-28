@@ -2,15 +2,11 @@ import React from 'react';
 import {
   Box,
   Button,
-  Center,
   Checkbox,
   Flex,
   HStack,
   Icon,
-  Image,
   Input,
-  InputGroup,
-  InputRightElement,
   Menu,
   MenuButton,
   MenuItem,
@@ -31,33 +27,36 @@ import {
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
-import { AiOutlineSearch } from 'react-icons/ai';
 import _, { isEmpty } from 'lodash';
 import SelectProductItem from './SelectProductItem';
 import { useDispatch, useSelector } from 'react-redux';
 import { setModalSelectProducts, setSelectedProducts } from 'redux/actions/product';
-import Images from 'assets';
+import { setShowLoader } from 'redux/actions/app';
+import { EAppKey, EProductType } from 'constants/types';
+import { NotificationManager } from 'react-light-notifications';
+import { requestGetListShopProduct } from 'utilities/ApiShop';
+import EmptyListItem from './EmptyListItem';
 
-const data = [
-  {
-    id: 23744991650,
-    name: 'Polo',
-    image:
-      'https://user-images.githubusercontent.com/42206067/244660279-c5cfa99d-67dc-45de-82f1-e7c660b06d74.png',
-    sales: 0,
-    price: 200000,
-    stock: 423,
-  },
-  {
-    id: 23744991651,
-    name: 'Mangto',
-    image:
-      'https://user-images.githubusercontent.com/42206067/244660267-bfb9dba1-1bc6-4792-a1e8-139eb3bf35bd.png',
-    sales: 0,
-    price: 1000000,
-    stock: 1120,
-  },
-];
+// const data = [
+//   {
+//     id: 23744991650,
+//     name: 'Polo',
+//     image:
+//       'https://user-images.githubusercontent.com/42206067/244660279-c5cfa99d-67dc-45de-82f1-e7c660b06d74.png',
+//     sales: 0,
+//     price: 200000,
+//     stock: 423,
+//   },
+//   {
+//     id: 23744991651,
+//     name: 'Mangto',
+//     image:
+//       'https://user-images.githubusercontent.com/42206067/244660267-bfb9dba1-1bc6-4792-a1e8-139eb3bf35bd.png',
+//     sales: 0,
+//     price: 1000000,
+//     stock: 1120,
+//   },
+// ];
 
 const categories_data = [
   { id: '0', name: 'All Categories' },
@@ -65,6 +64,7 @@ const categories_data = [
 ];
 
 const ModalSelectProducts = () => {
+  const shopId = 143;
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const refInput = React.useRef(null);
@@ -81,12 +81,69 @@ const ModalSelectProducts = () => {
 
   const [selectedItems, setSelectedItems] = React.useState([]);
 
+  const headers = [t('products'), t('sales'), t('price'), t('stock')];
+
   React.useEffect(() => {
     (async () => {
-      setProducts(data);
       setCategories(categories_data);
     })();
-  }, [data, categories_data]);
+  }, [categories_data]);
+
+  React.useEffect(() => {
+    (async () => {
+      try {
+        dispatch(setShowLoader(true));
+        const res = await requestGetListShopProduct({
+          id: shopId,
+          page: 1,
+          type: EProductType.STOCK,
+        });
+
+        if (res && res.code === EAppKey.MSG_SUCCESS && !isEmpty(res.dataProduct)) {
+          setProducts(res.dataProduct);
+        } else {
+          NotificationManager.error({
+            title: t('error'),
+            message: t('no_data_exists'),
+          });
+        }
+      } catch (e) {
+        console.log('get products error', e);
+      } finally {
+        dispatch(setShowLoader(false));
+      }
+    })();
+  }, []);
+
+  React.useEffect(() => {
+    (async () => {
+      try {
+        let params = { id: shopId, page: 1, type: EProductType.STOCK };
+
+        if (doSearch) {
+          dispatch(setShowLoader(true));
+          if (refInput.current.value) {
+            params.keyWord = refInput.current.value;
+          }
+
+          const res = await requestGetListShopProduct(params);
+
+          if (res.code === EAppKey.MSG_SUCCESS && !isEmpty(res.dataProduct)) {
+            setProducts(res.dataProduct);
+          } else {
+            setProducts([]);
+            NotificationManager.error({
+              title: t('no_results_found'),
+              message: t('no_results_found_for_your_search'),
+            });
+          }
+        }
+      } finally {
+        offSearch();
+        dispatch(setShowLoader(false));
+      }
+    })();
+  }, [doSearch]);
 
   React.useEffect(() => {
     if (!isEmpty(selectedProducts) && isOpen) {
@@ -125,7 +182,7 @@ const ModalSelectProducts = () => {
 
   const handleSelectItem = React.useCallback(
     (item) => {
-      const exist = selectedItems.find((i) => i.id === item.id);
+      const exist = selectedItems && selectedItems.find((i) => i.id === item.id);
       if (exist) {
         const updatedProducts = selectedItems.filter((i) => i.id !== item.id);
         setSelectedItems(updatedProducts);
@@ -158,133 +215,114 @@ const ModalSelectProducts = () => {
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick size="6xl">
+    <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick size="5xl">
       <ModalOverlay />
       <ModalContent p="2">
-        <ModalHeader color="text-basic">Select Products</ModalHeader>
+        <ModalHeader color="text-basic">{t('select_products')}</ModalHeader>
         <ModalCloseButton _focus={{ boxShadow: 'none' }} onClick={onClose} />
         <ModalBody>
-          <Flex
+          <HStack
+            gap="8"
             flexDirection={{ base: 'column', lg: 'row' }}
             alignItems={{ base: 'unset', lg: 'center' }}
             justifyContent="space-between">
-            <Menu onClose={offFocus}>
-              <MenuButton
-                bg="bg-1"
-                w="200px"
-                h="40px"
-                borderWidth="1px"
-                borderRadius="4px"
-                borderColor="border-5"
-                _hover={{ borderColor: 'border-3' }}
-                _active={{ bg: 'bg-1' }}
-                onClick={onFocus}>
-                <Flex flex="1" justifyContent="space-between" px="2" alignItems="center">
-                  <Text noOfLines={1}>{category.name}</Text>
-                  <Icon
-                    color="text-basic"
-                    as={focus ? ChevronUpIcon : ChevronDownIcon}
-                    w="16px"
-                    h="16px"
-                  />
-                </Flex>
-              </MenuButton>
-              <MenuList>
-                {categories &&
-                  categories.map((item, index) => {
-                    return (
-                      <MenuItem key={index} minH="48px" onClick={() => setCategory(item)}>
-                        <span>{item.name}</span>
-                      </MenuItem>
-                    );
-                  })}
-              </MenuList>
-            </Menu>
-            <HStack
-              mt={{ base: '6', lg: 'unset' }}
-              flex="1"
-              gap="4"
-              justifyContent={{ base: 'unset', lg: 'flex-end' }}>
-              <InputGroup maxW="570px" borderRadius="4px" overflow="hidden">
-                <Input ref={refInput} placeholder="Search product name, id" />
-                <InputRightElement
+            <HStack gap="2">
+              <Text textStyle="h3" color="text-basic">
+                {t('category.category')}
+              </Text>
+              <Menu onClose={offFocus}>
+                <MenuButton
+                  bg="bg-1"
+                  w="200px"
+                  h="40px"
+                  borderWidth="1px"
                   borderRadius="4px"
-                  cursor="pointer"
-                  h="full"
-                  bg="primary.100"
-                  w="100px">
-                  <Center onClick={onSearch}>
-                    <Icon as={AiOutlineSearch} w="24px" h="24px" color="white" />
-                  </Center>
-                </InputRightElement>
-              </InputGroup>
-              <Button
-                w="100px"
-                variant="outline-control"
-                children="Reset"
-                onClick={() => {
-                  refInput.current.value = '';
-                  onSearch();
-                }}
-              />
+                  borderColor="border-5"
+                  _hover={{ borderColor: 'border-3' }}
+                  _active={{ bg: 'bg-1' }}
+                  onClick={onFocus}>
+                  <Flex flex="1" justifyContent="space-between" px="2" alignItems="center">
+                    <Text noOfLines={1}>{category.name}</Text>
+                    <Icon
+                      color="text-basic"
+                      as={focus ? ChevronUpIcon : ChevronDownIcon}
+                      w="16px"
+                      h="16px"
+                    />
+                  </Flex>
+                </MenuButton>
+                <MenuList>
+                  {categories &&
+                    categories.map((item, index) => {
+                      return (
+                        <MenuItem key={index} minH="48px" onClick={() => setCategory(item)}>
+                          <span>{item.name}</span>
+                        </MenuItem>
+                      );
+                    })}
+                </MenuList>
+              </Menu>
             </HStack>
-          </Flex>
+            <HStack gap="2" flex="1">
+              <Text textStyle="h3" color="text-basic">
+                {t('search')}
+              </Text>
+              <Input ref={refInput} placeholder={t('input')} />
+            </HStack>
+          </HStack>
+          <HStack mt="5" flex="1" gap="2">
+            <Button
+              w="80px"
+              variant="primary"
+              children={t('search')}
+              size="sm"
+              onClick={onSearch}
+            />
+            <Button
+              w="80px"
+              size="sm"
+              variant="outline-control"
+              children={t('reset')}
+              onClick={() => {
+                refInput.current.value = '';
+                onSearch();
+              }}
+            />
+          </HStack>
+          <Text mt="4" color="text-basic" textStyle="h2">
+            {t('products_found', { number: products.length })}
+          </Text>
           <Box
-            mt="8"
+            mt="4"
             overflow="auto"
             position="relative"
             minH={isEmpty(products) ? '300px' : 'unset'}
             borderWidth="1px"
             borderRadius="4"
             borderColor="border-5">
-            <Table variant="simple" minW="5xl">
+            <Table variant="simple" minW="4xl">
               <Thead h="52px" bg="bg-2">
                 <Tr>
-                  <Th
-                    borderBottomWidth="0px"
-                    color="text-note"
-                    textStyle="b-md"
-                    textTransform="capitalize">
-                    <Checkbox isChecked={selectAll} onChange={handleSelectAll} mr="2" />
-                    Products
-                  </Th>
-                  <Th
-                    borderBottomWidth="0px"
-                    color="text-note"
-                    textStyle="b-md"
-                    textTransform="capitalize">
-                    Sales
-                  </Th>
-                  <Th
-                    borderBottomWidth="0px"
-                    color="text-note"
-                    textStyle="b-md"
-                    textTransform="capitalize">
-                    Price
-                  </Th>
-                  <Th
-                    borderBottomWidth="0px"
-                    color="text-note"
-                    textStyle="b-md"
-                    textTransform="capitalize">
-                    Stock
-                  </Th>
+                  {headers.map((item, index) => {
+                    return (
+                      <Th
+                        key={index}
+                        borderBottomWidth="0px"
+                        color="text-note"
+                        textStyle="b-md"
+                        w={index === 0 ? '40%' : '20%'}
+                        textTransform="capitalize">
+                        {index === 0 && (
+                          <Checkbox isChecked={selectAll} onChange={handleSelectAll} mr="2" />
+                        )}
+                        {item}
+                      </Th>
+                    );
+                  })}
                 </Tr>
               </Thead>
               {isEmpty(products) ? (
-                <Box minH="220px" position="absolute" insetX="0">
-                  <Center
-                    h="220px"
-                    position="absolute"
-                    insetX="0"
-                    flexDirection="column"
-                    alignSelf="center">
-                    <Image w="150px" h="100px" src={Images.no_data} />
-                    <Text textStyle="body" textAlign="center" color="primary.100" mt="1">
-                      No products found
-                    </Text>
-                  </Center>
-                </Box>
+                <EmptyListItem />
               ) : (
                 products.map((item, index) => {
                   const isChecked = selectedItems && !!selectedItems.find((i) => i.id === item.id);
@@ -318,13 +356,14 @@ const ModalSelectProducts = () => {
               )
             </Text>
           )}
-          <Button variant="outline-control" minW="150px" mr="4" onClick={onClose}>
+          <Button variant="outline-control" minW="80px" size="sm" mr="4" onClick={onClose}>
             {t('cancel')}
           </Button>
           <Button
             variant="primary"
             disabled={isEmpty(selectedItems)}
-            minW="150px"
+            minW="80px"
+            size="sm"
             onClick={() => {
               dispatch(setSelectedProducts(selectedItems));
               dispatch(setModalSelectProducts(false));

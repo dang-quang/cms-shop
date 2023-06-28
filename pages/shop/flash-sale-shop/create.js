@@ -32,6 +32,7 @@ import { HiPlus } from 'react-icons/hi';
 import { setModalSelectProducts, setSelectedProducts } from 'redux/actions/product';
 import { setShowLoader } from 'redux/actions/app';
 import { requestCreateShopFlashSale } from 'utilities/ApiShop';
+import { EAppKey } from 'constants/types';
 
 const formatDate = 'YYYY-MM-DDTHH:mm';
 
@@ -58,6 +59,7 @@ const CreateShopFlashSale = () => {
     t('discount'),
     t('flash_sale_shop.campaign_stock'),
     t('stock'),
+    t('enable_disable'),
     t('action'),
   ];
 
@@ -66,76 +68,50 @@ const CreateShopFlashSale = () => {
   const [selectAll, { toggle: toggleSelectAll, off: offSelectAll, on: onSelectAll }] =
     useBoolean(false);
   const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
-
-  React.useEffect(() => {
-    const handleRouteChange = () => {
-      if (isEmpty(selectedProducts)) {
-        return;
-      }
-      const confirmLeave = window.confirm(t('sure_to_leave'));
-      if (!confirmLeave) {
-        router.events.emit('routeChangeError');
-        throw 'routeChange aborted.';
-      } else {
-        dispatch(setSelectedProducts([]));
-      }
-    };
-
-    const handleBeforeUnload = (event) => {
-      event.preventDefault();
-      event.returnValue = '';
-    };
-
-    window.onbeforeunload = handleBeforeUnload;
-
-    router.events.on('routeChangeStart', handleRouteChange);
-
-    return () => {
-      window.onbeforeunload = null;
-      router.events.off('routeChangeStart', handleRouteChange);
-    };
-  }, [selectedProducts]);
+  const { isOpen: isOpenNotice, onOpen: onOpenNotice, onClose: onCloseNotice } = useDisclosure();
 
   const handleSubmitVoucher = React.useCallback(
-    async ({ name, startAt, endAt, flashSaleProducts }) => {
-      // try {
-      //   dispatch(setShowLoader(true));
-      //   //TODO If you add flash sale in the program, then transmit the programId
-      //   //programId
-      //   let _details = [];
-      //   let params = {
-      //     name: name,
-      //     startAt: dayjs(startAt).unix(),
-      //     endAt: dayjs(endAt).unix(),
-      //     shopId: shopId,
-      //   };
-      //   for (let i = 0; i < flashSaleProducts.length; i++) {
-      //     const product = flashSaleProducts[i];
-      //     _details.push({
-      //       productId: product.id,
-      //       reduceValue: parseFloat(product.discounted_price),
-      //       productQuantity: parseFloat(product.campaign_stock),
-      //     });
-      //   }
-      //   params.details = _details;
-      //   const res = await requestCreateShopFlashSale(params);
-      //   if (res.code === EAppKey.MSG_SUCCESS) {
-      //     NotificationManager.success({
-      //       title: t('success'),
-      //       message: 'Create Flash Sale Success',
-      //     });
-      //     setTimeout(() => {
-      //       router.push('/shop/flash-sale-shop');
-      //     }, 1000);
-      //   } else {
-      //     NotificationManager.error({
-      //       title: t('error'),
-      //       message: res.message ? res.message.text : 'Error',
-      //     });
-      //   }
-      // } finally {
-      //   dispatch(setShowLoader(false));
-      // }
+    async ({ name, startAt, endAt, products }, { setFieldValue }) => {
+      try {
+        dispatch(setShowLoader(true));
+        //TODO If you add flash sale in the program, then transmit the programId
+        //programId
+        let _details = [];
+        let params = {
+          name: name,
+          startAt: dayjs(startAt).unix(),
+          endAt: dayjs(endAt).unix(),
+          shopId: shopId,
+        };
+        for (let i = 0; i < products.length; i++) {
+          const product = products[i];
+          _details.push({
+            productId: product.id,
+            reduceValue: parseFloat(product.discounted_price),
+            productQuantity: parseFloat(product.campaign_stock),
+          });
+        }
+        params.details = _details;
+        const res = await requestCreateShopFlashSale(params);
+        if (res && res.code === EAppKey.MSG_SUCCESS) {
+          setFieldValue('products', []);
+          dispatch(setSelectedProducts([]));
+          NotificationManager.success({
+            title: t('success'),
+            message: 'Create Flash Sale Success',
+          });
+          setTimeout(() => {
+            router.push('/shop/flash-sale-shop');
+          }, 1000);
+        } else {
+          NotificationManager.error({
+            title: t('error'),
+            message: res.message ? res.message.text : t('error'),
+          });
+        }
+      } finally {
+        dispatch(setShowLoader(false));
+      }
     },
     []
   );
@@ -147,7 +123,14 @@ const CreateShopFlashSale = () => {
       .min(dayjs().toDate(), 'Please enter a start time that is later than the current time.'),
     endAt: yup
       .date()
-      .min(yup.ref('startAt'), 'Please enter a start time that is later than the current time.'),
+      .min(yup.ref('startAt'), 'End time must be later than the start time.')
+      .test('check-seconds', 'End time must be later than the start time.', function (value) {
+        const startAt = this.resolve(yup.ref('startAt'));
+        if (!startAt || !value) {
+          return true;
+        }
+        return startAt.getTime() < value.getTime();
+      }),
     products: yup.array().of(
       yup.object().shape({
         discounted_price: yup
@@ -184,7 +167,7 @@ const CreateShopFlashSale = () => {
       enableReinitialize={true}
       initialValues={initialValues}
       onSubmit={handleSubmitVoucher}>
-      {({ handleChange, handleSubmit, setFieldValue, values, errors }) => {
+      {({ handleChange, handleSubmit, setFieldValue, setFieldError, values, errors }) => {
         React.useEffect(() => {
           if (isEmpty(selectedProducts)) {
             return;
@@ -198,10 +181,41 @@ const CreateShopFlashSale = () => {
               discounted_price: selectedProducts[i].price,
               discount_percent: 0,
               campaign_stock: selectedProducts[i].stock,
+              isEnable: false,
             });
           }
           setFieldValue('products', list);
         }, [selectedProducts]);
+
+        React.useEffect(() => {
+          const handleRouteChange = () => {
+            if (isEmpty(values.products)) {
+              return;
+            }
+            const confirmLeave = window.confirm(t('sure_to_leave'));
+            if (!confirmLeave) {
+              router.events.emit('routeChangeError');
+              throw 'routeChange aborted.';
+            } else {
+              dispatch(setSelectedProducts([]));
+              setFieldValue('products', []);
+            }
+          };
+
+          const handleBeforeUnload = (event) => {
+            event.preventDefault();
+            event.returnValue = '';
+          };
+
+          window.onbeforeunload = handleBeforeUnload;
+
+          router.events.on('routeChangeStart', handleRouteChange);
+
+          return () => {
+            window.onbeforeunload = null;
+            router.events.off('routeChangeStart', handleRouteChange);
+          };
+        }, [values.products]);
 
         const handleSelectAll = React.useCallback(() => {
           if (isEmpty(values.products)) {
@@ -264,8 +278,67 @@ const CreateShopFlashSale = () => {
           [values.flashSaleProducts, values.products]
         );
 
+        const onSwitch = React.useCallback(
+          (isEnable, index) => {
+            if (isEnable) {
+              const product = values.products[index];
+
+              if (!product.discounted_price || product.discounted_price < 0) {
+                setFieldError(
+                  `products.${index}.discounted_price`,
+                  product.discounted_price
+                    ? 'Promotion price must be greater than or equal to 0.'
+                    : t('error_field_empty')
+                );
+              } else if (product.discounted_price >= product.price) {
+                setFieldError(
+                  `products.${index}.discounted_price`,
+                  'Promotion price must be less than the original price'
+                );
+              } else {
+                setFieldError(`products.${index}.discounted_price`, '');
+              }
+
+              if (
+                !product.campaign_stock ||
+                product.campaign_stock < 1 ||
+                product.campaign_stock > product.stock
+              ) {
+                setFieldError(
+                  `products.${index}.campaign_stock`,
+                  product.campaign_stock
+                    ? 'Stock should be more than 1 and less than stock'
+                    : 'Campaign stock is required.'
+                );
+              } else {
+                setFieldError(`products.${index}.campaign_stock`, '');
+              }
+
+              if (
+                product.discounted_price &&
+                product.campaign_stock &&
+                product.discounted_price >= 0 &&
+                product.discounted_price < product.price &&
+                product.campaign_stock >= 1 &&
+                product.campaign_stock <= product.stock
+              ) {
+                setFieldValue(`products.${index}.isEnable`, true);
+              }
+            } else {
+              setFieldValue(`products.${index}.isEnable`, false);
+            }
+          },
+          [values.products]
+        );
+
+        const handleEnableAll = React.useCallback(() => {
+          values.products.forEach((product, index) => {
+            onSwitch(true, index);
+          });
+        }, [values.products]);
+
         return (
-          <Box maxW="7xl" mx="auto">
+          <Box>
             <Text textStyle="h6-sb" color="text-basic" mt="6">
               {t('flash_sale_shop.create_shop_flash_sale')}
             </Text>
@@ -382,6 +455,7 @@ const CreateShopFlashSale = () => {
                                     setProduct(item);
                                     onOpenDelete();
                                   }}
+                                  onSwitch={() => onSwitch(!values.products[idx].isEnable, idx)}
                                   isLast={idx === values.products.length - 1}
                                   onClick={() => handleSelectItem(item)}
                                   discountedPrice={{
@@ -506,17 +580,50 @@ const CreateShopFlashSale = () => {
               )}
             </Box>
             <Flex mt="6" alignItems="center" justifyContent="flex-end">
-              <Button variant="outline-control" minW="150px" mr="4" onClick={() => router.back()}>
+              <Button
+                variant="outline-control"
+                minW="80px"
+                size="sm"
+                mr="4"
+                onClick={() => router.back()}>
                 {t('cancel')}
               </Button>
               <Button
                 variant="primary"
-                minW="150px"
-                isDisabled={isEmpty(values.flashSaleProducts)}
-                onClick={() => handleSubmit()}>
+                minW="80px"
+                size="sm"
+                isDisabled={isEmpty(values.products)}
+                onClick={() => {
+                  const flashSaleEnable = values.products.filter((i) => i.isEnable === true);
+                  if (!isEmpty(flashSaleEnable)) {
+                    handleSubmit();
+                  } else {
+                    onOpenNotice();
+                  }
+                }}>
                 {t('confirm')}
               </Button>
             </Flex>
+            <ModalConfirm
+              isOpen={isOpenNotice}
+              onClose={onCloseNotice}
+              title={t('notice')}
+              description={t('no_product_is_enabled')}
+              buttonLeft={{
+                title: t('sure_and_leave'),
+                onClick: () => {
+                  onCloseNotice();
+                  handleSubmit();
+                },
+              }}
+              buttonRight={{
+                title: t('enable_all'),
+                onClick: () => {
+                  onCloseNotice();
+                  handleEnableAll();
+                },
+              }}
+            />
           </Box>
         );
       }}

@@ -72,15 +72,6 @@ export interface IVoucher {
   quantity?: number;
 }
 
-export interface IProduct {
-  id: number;
-  name: string;
-  image: string;
-  sales: number;
-  price: number;
-  stock: number;
-}
-
 export interface IShopProduct {
   categoryId?: number;
   categoryName?: string;

@@ -12,6 +12,7 @@ import {
   InputGroup,
   InputLeftElement,
   InputRightElement,
+  Switch,
   Td,
   Text,
   Tr,
@@ -19,6 +20,7 @@ import {
 import { useImageHandler } from 'hooks';
 import { formatCurrency } from 'utilities/utils';
 import { FiTrash2 } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 interface ProductFlashSaleItemProps {
   item: any;
@@ -37,6 +39,7 @@ interface ProductFlashSaleItemProps {
     errors: string;
   };
   onClick?(): void;
+  onSwitch?(): void;
   onDelete?(): void;
 }
 
@@ -48,10 +51,21 @@ const ProductFlashSaleItem: React.FC<ProductFlashSaleItemProps> = ({
   discount,
   campaignStock,
   onClick,
+  onSwitch,
   onDelete,
 }) => {
-  const { id, image, name, price, stock, discounted_price, discount_percent, campaign_stock } =
-    item;
+  const { t } = useTranslation();
+  const {
+    id,
+    image,
+    name,
+    price,
+    stock,
+    discounted_price,
+    isEnable,
+    discount_percent,
+    campaign_stock,
+  } = item;
 
   const _image = useImageHandler(image);
 
@@ -71,7 +85,7 @@ const ProductFlashSaleItem: React.FC<ProductFlashSaleItemProps> = ({
               {name}
             </Text>
             <Text mt="1" color="text-body" textStyle="b-xs">
-              ID: {id}
+              {t('id', { number: id })}
             </Text>
           </Flex>
         </Flex>
@@ -88,6 +102,7 @@ const ProductFlashSaleItem: React.FC<ProductFlashSaleItemProps> = ({
               size="xs"
               placeholder=" "
               w="fit-content"
+              disabled={isEnable}
               textAlign="center"
               value={discounted_price}
               type="number"
@@ -115,6 +130,7 @@ const ProductFlashSaleItem: React.FC<ProductFlashSaleItemProps> = ({
           <Input
             size="xs"
             placeholder=" "
+            disabled={isEnable}
             w="fit-content"
             textAlign="center"
             type="number"
@@ -132,12 +148,13 @@ const ProductFlashSaleItem: React.FC<ProductFlashSaleItemProps> = ({
         </InputGroup>
       </Td>
       <Td borderColor={borderColor}>
-        <FormControl isInvalid={!!campaignStock.errors} w="fit-content" maxW="140px">
+        <FormControl isInvalid={!!campaignStock.errors} w="fit-content">
           <Input
             size="xs"
+            w="140px"
             placeholder=" "
-            w="fit-content"
             textAlign="center"
+            disabled={isEnable}
             value={campaign_stock}
             type="number"
             onChange={campaignStock.onChange}
@@ -149,6 +166,9 @@ const ProductFlashSaleItem: React.FC<ProductFlashSaleItemProps> = ({
         <Text textStyle="h3" color="text-basic">
           {stock}
         </Text>
+      </Td>
+      <Td borderColor={borderColor}>
+        <Switch isChecked={isEnable} onChange={onSwitch} name="promotion" variant="success" />
       </Td>
       <Td borderColor={borderColor}>
         <Center boxSize="40px" cursor="pointer" onClick={onDelete}>

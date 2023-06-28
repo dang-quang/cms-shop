@@ -885,12 +885,18 @@ function CreateProduct() {
               )}
             </Box>
             <Flex mt="6" alignItems="center" justifyContent="flex-end">
-              <Button variant="outline-control" minW="150px" mr="4" onClick={() => router.back()}>
+              <Button
+                variant="outline-control"
+                minW="80px"
+                size="sm"
+                mr="4"
+                onClick={() => router.back()}>
                 {t('cancel')}
               </Button>
               <Button
                 variant="primary"
-                minW="150px"
+                minW="80px"
+                size="sm"
                 disabled={isEmpty(selectedCategory)}
                 onClick={() => handleSubmit()}>
                 {t('confirm')}

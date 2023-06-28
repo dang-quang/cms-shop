@@ -30,6 +30,8 @@ import { BASE_API_URL } from 'utilities/const';
 import _ from 'lodash';
 import { EAppKey } from 'constants/types';
 import { setApproveProducts } from 'redux/actions/product';
+import { useImageHandler } from 'hooks';
+import imageHandler from 'utilities/imageHandler';
 
 function ProductApproval() {
   const { t } = useTranslation();
@@ -239,16 +241,6 @@ function ProductApproval() {
     (item, index) => {
       const { categoryName, createAt, createBy, image, name, price, shopCode, productCode } = item;
 
-      let _image = '';
-
-      var firstChar = image.substring(0, 4);
-
-      if (firstChar === 'http' || firstChar === 'https') {
-        _image = image;
-      } else {
-        _image = BASE_API_URL + '/assets/' + image;
-      }
-
       const isItemChecked = (() => {
         for (let i = 0; i < approveProducts[currentPage - 1]?.products?.length; i++) {
           if (approveProducts[currentPage - 1]?.products[i].id === item.id) {
@@ -285,7 +277,7 @@ function ProductApproval() {
                   ratio={1 / 1}
                   shadow="sm"
                   borderRadius="6px">
-                  <Image src={_image} w="100%" h="100%" objectFit="contain" />
+                  <Image src={imageHandler(image)} w="100%" h="100%" objectFit="contain" />
                 </AspectRatio>
                 <Flex flexDirection="column" ml="3" flex="1">
                   <Text textStyle="h4" color="text-basic" noOfLines={2}>

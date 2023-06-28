@@ -166,6 +166,7 @@
   "no_product_is_enabled": "No product is enabled. Would you like to enable all products?",
   "sure_and_leave": "Sure & Leave",
   "enable_all": "Enable All",
+  "select_category": "Select Category",
   "shop_product": {
     "product_images": "Product Images",
     "product_description": "Product Description",

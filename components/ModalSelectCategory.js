@@ -21,15 +21,19 @@ import _, { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { CategoryItem } from 'components';
-import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedCategory } from 'redux/actions/product';
 
-const ModalSelectCategory = ({ isOpen, onClose, data }) => {
-  const dispatch = useDispatch();
+const ModalSelectCategory = ({
+  title,
+  isOpen,
+  onClose,
+  data,
+  selectedItem,
+  onCloseSelected,
+  onConfirm,
+}) => {
   const { t } = useTranslation();
   const [search, setSearch] = React.useState('');
   const [categories, setCategories] = React.useState([]);
-  const selectedCategory = useSelector((state) => state.product.selectedCategory);
 
   React.useEffect(() => {
     if (isEmpty(data)) {
@@ -42,7 +46,7 @@ const ModalSelectCategory = ({ isOpen, onClose, data }) => {
     <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick size="5xl" isCentered>
       <ModalOverlay />
       <ModalContent p="2">
-        <ModalHeader color="text-basic">{t('shop_product.edit_category')}</ModalHeader>
+        <ModalHeader color="text-basic">{title}</ModalHeader>
         <ModalCloseButton _focus={{ boxShadow: 'none' }} onClick={onClose} />
         <Box mx="4" bg="bg-2" borderRadius="4px" p="4">
           <InputGroup maxW="270px" borderRadius="4px" overflow="hidden">
@@ -142,9 +146,9 @@ const ModalSelectCategory = ({ isOpen, onClose, data }) => {
               size="sm"
               minW="80px"
               onClick={() => {
-                if (!isEmpty(selectedCategory)) {
+                if (!isEmpty(selectedItem)) {
                   setCategories([{ list: data }]);
-                  dispatch(setSelectedCategory(selectedCategory));
+                  onCloseSelected(categories);
                 } else {
                   setCategories([{ list: data }]);
                 }
@@ -158,7 +162,7 @@ const ModalSelectCategory = ({ isOpen, onClose, data }) => {
               size="sm"
               minW="80px"
               onClick={() => {
-                dispatch(setSelectedCategory(categories));
+                onConfirm(categories);
                 onClose();
               }}>
               {t('confirm')}

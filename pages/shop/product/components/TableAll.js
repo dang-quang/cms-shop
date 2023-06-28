@@ -51,8 +51,13 @@ const TableAll = () => {
   const { isOpen: isOpenPublish, onOpen: onOpenPublish, onClose: onClosePublish } = useDisclosure();
   const [totalPage, setTotalPage] = React.useState(1);
   const [totalRecords, setTotalRecords] = React.useState(0);
-  const { doSearchProduct, searchProductName, searchProductStockMin, searchProductStockMax } =
-    useSelector((state) => state.product);
+  const {
+    doSearchProduct,
+    searchProductName,
+    searchProductStockMin,
+    searchProductStockMax,
+    searchProductCategory,
+  } = useSelector((state) => state.product);
 
   const headers = [
     t('product_name'),
@@ -118,6 +123,9 @@ const TableAll = () => {
             if (searchProductStockMax) {
               params.maxStock = searchProductStockMax;
             }
+            if (searchProductCategory) {
+              params.categoryId = searchProductCategory;
+            }
           }
 
           const res = await requestGetListShopProduct(params);
@@ -147,6 +155,7 @@ const TableAll = () => {
     searchProductName,
     searchProductStockMin,
     searchProductStockMax,
+    searchProductCategory,
   ]);
 
   const handleSelectAll = React.useCallback(() => {

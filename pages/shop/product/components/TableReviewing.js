@@ -45,8 +45,13 @@ const TableReviewing = () => {
   const { isOpen: isOpenDeList, onOpen: onOpenDeList, onClose: onCloseDeList } = useDisclosure();
   const [totalPage, setTotalPage] = React.useState(1);
   const [totalRecords, setTotalRecords] = React.useState(0);
-  const { doSearchProduct, searchProductName, searchProductStockMin, searchProductStockMax } =
-    useSelector((state) => state.product);
+  const {
+    doSearchProduct,
+    searchProductName,
+    searchProductStockMin,
+    searchProductStockMax,
+    searchProductCategory,
+  } = useSelector((state) => state.product);
 
   const headers = [
     t('product_name'),
@@ -116,6 +121,9 @@ const TableReviewing = () => {
             if (searchProductStockMax) {
               params.maxStock = searchProductStockMax;
             }
+            if (searchProductCategory) {
+              params.categoryId = searchProductCategory;
+            }
           }
 
           const res = await requestGetListShopProduct(params);
@@ -142,6 +150,7 @@ const TableReviewing = () => {
   }, [
     doSearchProduct,
     currentPage,
+    searchProductCategory,
     searchProductName,
     searchProductStockMin,
     searchProductStockMax,

@@ -2,21 +2,25 @@ import React from 'react';
 import Admin from 'layouts/Admin.js';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
-import { WithAuthentication } from 'components';
+import { WithAuthentication, ModalSelectCategory } from 'components';
 import {
   Box,
   Button,
+  Center,
   Flex,
   HStack,
+  Icon,
   Input,
   NumberInput,
   NumberInputField,
+  SimpleGrid,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 
 import TableAll from './components/TableAll';
@@ -25,17 +29,24 @@ import TableSoldOut from './components/TableSoldOut';
 import TableDelist from './components/TableDelist';
 
 import { HiPlus } from 'react-icons/hi';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   resetSearchProduct,
   setDoSearchProduct,
+  setSearchProductCategory,
   setSearchProductName,
   setSearchProductStockMax,
   setSearchProductStockMin,
+  setSelectedCategorySearch,
 } from 'redux/actions/product';
 import TableReviewing from './components/TableReviewing';
+import { requestGetListCategoryShop } from 'utilities/ApiShop';
+import { EAppKey } from 'constants/types';
+import { IconEdit } from 'components/Icons/Icons';
+import { isEmpty } from 'lodash';
 
 function ShopProducts() {
+  const shopId = 143;
   const dispatch = useDispatch();
   const router = useRouter();
   const { t } = useTranslation();
@@ -45,6 +56,35 @@ function ShopProducts() {
   const inputName = React.useRef();
   const inputStockMin = React.useRef();
   const inputStockMax = React.useRef();
+  const selectedCategorySearch = useSelector((state) => state.product.selectedCategorySearch);
+
+  const [categories, setCategories] = React.useState([]);
+  const {
+    isOpen: isOpenCategory,
+    onOpen: onOpenCategory,
+    onClose: onCloseCategory,
+  } = useDisclosure();
+
+  React.useEffect(() => {
+    (async () => {
+      const res = await requestGetListCategoryShop({ id: shopId });
+      if (res && res.code === EAppKey.MSG_SUCCESS) {
+        setCategories(res.categoryList);
+      }
+    })();
+  }, []);
+
+  React.useEffect(() => {
+    const handleRouteChange = () => {
+      dispatch(setSelectedCategorySearch([]));
+    };
+
+    router.events.on('routeChangeComplete', handleRouteChange);
+
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, []);
 
   return (
     <Box>
@@ -60,50 +100,117 @@ function ShopProducts() {
         />
       </Flex>
       <Box bg="bg-1" p="6" borderRadius="4px" mt="6">
-        <Input ref={inputName} placeholder={t('search_product_name')} w="50%" />
-        <HStack gap="1" w="50%" borderRadius="4px" mt="5" alignItems="center">
-          <Text textStyle="h3" color="text-basic" mr="4">
-            {t('stock')}
-          </Text>
-          <NumberInput flex="1">
-            <NumberInputField ref={inputStockMin} placeholder="Min" />
-          </NumberInput>
-          <Box h="1px" w="1" bg="border-3" />
-          <NumberInput flex="1">
-            <NumberInputField ref={inputStockMax} placeholder="Max" />
-          </NumberInput>
-        </HStack>
-        <HStack mt="5" gap="2">
-          <Button
-            size="sm"
-            variant="primary"
-            children={t('search')}
-            w="80px"
-            onClick={() => {
-              dispatch(setSearchProductName(inputName.current.value));
+        <SimpleGrid gap="6" columns={{ base: 1, lg: 2 }}>
+          <HStack gap="2">
+            <Text textStyle="h3" color="text-basic" flex="1">
+              {t('product_name')}
+            </Text>
+            <Box flex="9">
+              <Input ref={inputName} placeholder="Please input at least 2 character" />
+            </Box>
+          </HStack>
+          <HStack gap="2">
+            <Text textStyle="h3" color="text-basic" flex="1">
+              {t('shop_product.category')}
+            </Text>
+            <Flex
+              flex="9"
+              borderWidth="1px"
+              borderColor="border-5"
+              cursor="pointer"
+              onClick={onOpenCategory}
+              borderRadius="4px"
+              h="40px"
+              _hover={{ borderColor: 'border-3' }}
+              alignItems="center">
+              <Box flex="1" px="4">
+                {selectedCategorySearch && selectedCategorySearch.length > 0 ? (
+                  selectedCategorySearch.map((item, index) => (
+                    <Text as="span" key={index}>
+                      <Text as="span" textStyle="h4" color="text-basic" key={index}>
+                        {item && item.selectedCategory ? `${item.selectedCategory.name} ` : ''}
+                        {index < selectedCategorySearch.length - 1 &&
+                        selectedCategorySearch[index + 1] &&
+                        selectedCategorySearch[index + 1].selectedCategory
+                          ? '> '
+                          : ''}
+                      </Text>
+                    </Text>
+                  ))
+                ) : (
+                  <Text textStyle="h4" color="text-placeholder">
+                    {t('shop_product.please_set_category')}
+                  </Text>
+                )}
+              </Box>
+              <Center w="40px">
+                <Icon as={IconEdit} w="20px" h="20px" color="text-body" />
+              </Center>
+            </Flex>
+          </HStack>
+        </SimpleGrid>
+        <SimpleGrid gap="6" columns={{ base: 1, lg: 2 }} mt="5">
+          <HStack gap="2" flex="1">
+            <Text textStyle="h3" color="text-basic" flex="1">
+              {t('stock')}
+            </Text>
+            <Box flex="9">
+              <HStack gap="1" flex="1">
+                <NumberInput flex="1">
+                  <NumberInputField ref={inputStockMin} placeholder="Min" />
+                </NumberInput>
+                <Box h="1px" w="1" bg="border-3" />
+                <NumberInput flex="1">
+                  <NumberInputField ref={inputStockMax} placeholder="Max" />
+                </NumberInput>
+              </HStack>
+            </Box>
+          </HStack>
+        </SimpleGrid>
+        <SimpleGrid columns={{ base: 1, lg: 2 }} mt="5">
+          <HStack gap="2">
+            <Box flex="1" />
+            <Box flex="9">
+              <HStack gap="2">
+                <Button
+                  size="sm"
+                  variant="primary"
+                  children={t('search')}
+                  w="80px"
+                  onClick={() => {
+                    dispatch(setSearchProductName(inputName.current.value));
 
-              if (inputStockMin.current.value) {
-                dispatch(setSearchProductStockMin(inputStockMin.current.value));
-              }
-              if (inputStockMin.current.value) {
-                dispatch(setSearchProductStockMax(inputStockMax.current.value));
-              }
-              dispatch(setDoSearchProduct(true));
-            }}
-          />
-          <Button
-            size="sm"
-            variant="outline-control"
-            children={t('reset')}
-            w="80px"
-            onClick={() => {
-              inputName.current.value = '';
-              inputStockMin.current.value = '';
-              inputStockMax.current.value = '';
-              dispatch(resetSearchProduct());
-            }}
-          />
-        </HStack>
+                    if (inputStockMin.current.value) {
+                      dispatch(setSearchProductStockMin(inputStockMin.current.value));
+                    }
+                    if (inputStockMin.current.value) {
+                      dispatch(setSearchProductStockMax(inputStockMax.current.value));
+                    }
+                    if (!isEmpty(selectedCategorySearch)) {
+                      let id =
+                        selectedCategorySearch[selectedCategorySearch.length - 1].selectedCategory
+                          .id;
+                      dispatch(setSearchProductCategory(id));
+                    }
+                    dispatch(setDoSearchProduct(true));
+                  }}
+                />
+                <Button
+                  size="sm"
+                  variant="outline-control"
+                  children={t('reset')}
+                  w="80px"
+                  onClick={() => {
+                    inputName.current.value = '';
+                    inputStockMin.current.value = '';
+                    inputStockMax.current.value = '';
+                    dispatch(resetSearchProduct());
+                  }}
+                />
+              </HStack>
+            </Box>
+          </HStack>
+        </SimpleGrid>
       </Box>
       <Tabs variant="soft-rounded" mt="8" bg="bg-1" pb="4" borderRadius="4px" position="relative">
         <TabList w="full" borderBottomWidth="1px" borderBottomColor="border-5" px="6" pt="4">
@@ -146,6 +253,15 @@ function ShopProducts() {
           </TabPanel>
         </TabPanels>
       </Tabs>
+      <ModalSelectCategory
+        title={t('select_category')}
+        data={categories}
+        isOpen={isOpenCategory}
+        selectedItem={selectedCategorySearch}
+        onClose={onCloseCategory}
+        onCloseSelected={(e) => dispatch(setSelectedCategorySearch(e))}
+        onConfirm={(e) => dispatch(setSelectedCategorySearch(e))}
+      />
     </Box>
   );
 }

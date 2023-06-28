@@ -31,3 +31,7 @@ export function requestCreateShopFlashSale(payload) {
   console.log('create shop flash sale params ========>', payload);
   return postWithCheckingToken(`${BASE_API_URL}/flash-sale/shop-save-flash-sale`, {}, payload);
 }
+
+export function requestGetListCategoryShop(payload) {
+  return postWithCheckingToken(`${BASE_API_URL}/shop/list-category-in-shop`, {}, payload);
+}

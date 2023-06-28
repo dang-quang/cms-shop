@@ -33,6 +33,13 @@ export function setSelectedCategory(selectedCategory) {
   };
 }
 
+export function setSelectedCategorySearch(selectedCategorySearch) {
+  return {
+    type: ActionTypes.SELECTED_CATEGORY_SEARCH,
+    selectedCategorySearch,
+  };
+}
+
 export function setSearchProductName(searchProductName) {
   return {
     type: ActionTypes.SEARCH_PRODUCT_NAME,
@@ -51,6 +58,13 @@ export function setSearchProductStockMax(searchProductStockMax) {
   return {
     type: ActionTypes.SEARCH_PRODUCT_STOCK_MAX,
     searchProductStockMax,
+  };
+}
+
+export function setSearchProductCategory(searchProductCategory) {
+  return {
+    type: ActionTypes.SEARCH_PRODUCT_CATEGORY,
+    searchProductCategory,
   };
 }
 
@@ -133,6 +147,8 @@ export const resetSearchProduct = () => {
     dispatch(setSearchProductName(''));
     dispatch(setSearchProductStockMin(''));
     dispatch(setSearchProductStockMax(''));
+    dispatch(setSelectedCategorySearch([]));
+    dispatch(setSearchProductCategory(''));
     dispatch(setDoSearchProduct(true));
   };
 };

@@ -959,8 +959,12 @@ function CreateProduct() {
             </Flex>
             <ModalSelectCategory
               data={values.categories}
+              title={t('shop_product.edit_category')}
               isOpen={isOpenCategory}
+              selectedItem={selectedCategory}
               onClose={onCloseCategory}
+              onCloseSelected={(e) => dispatch(setSelectedCategory(e))}
+              onConfirm={(e) => dispatch(setSelectedCategory(e))}
             />
           </Form>
         );

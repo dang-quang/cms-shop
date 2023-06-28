@@ -24,7 +24,8 @@ const VariationItem = ({ item, index }) => {
   const { t } = useTranslation();
   const { name, options, isShow } = item;
 
-  const { values, setFieldValue, errors } = useFormikContext();
+  const { values, setFieldValue, handleChange, setFieldTouched, validateField, errors } =
+    useFormikContext();
 
   return (
     <Flex gap="4" flexDirection="column" bg="bg-2" borderRadius="4px" p="4" position="relative">
@@ -56,7 +57,9 @@ const VariationItem = ({ item, index }) => {
                       size="sm"
                       onChange={(e) => {
                         const { value } = e.target;
-                        setFieldValue(`variations.${index}.name`, e.target.value);
+                        setFieldValue(`variations.${index}.name`, value);
+                        setFieldTouched(`variations.${index}.name`, true, false);
+                        //validateField(`variations.${index}`);
 
                         if (index === 0) {
                           for (let i = 0; i < values.list_variation.length; i++) {
@@ -125,6 +128,8 @@ const VariationItem = ({ item, index }) => {
                       value={option}
                       onChange={(e) => {
                         const { value } = e.target;
+                        setFieldTouched(`variations.${index}.options`, true, false);
+                        validateField(`variations.${index}.options`);
 
                         if (index === 0) {
                           if (!!values.list_variation?.[idx]?.variations) {

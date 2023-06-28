@@ -28,7 +28,7 @@ const VariationTableItem = ({ item, index, isLast }) => {
   const { t } = useTranslation();
   const refImage = React.useRef(null);
 
-  const { setFieldValue, errors, values } = useFormikContext();
+  const { setFieldValue, errors, values, validateField, setFieldTouched } = useFormikContext();
 
   const borderColor = isLast ? 'transparent' : 'border-5';
 
@@ -129,17 +129,27 @@ const VariationTableItem = ({ item, index, isLast }) => {
                   isInvalid={!!errors?.list_variation?.[index]?.variations[idx]?.price}>
                   <InputGroup flex="1">
                     <Box w="full">
-                      <NumberInput
+                      <Input
+                        type="number"
+                        placeholder={t('input')}
+                        pl="54px"
+                        id={`list_variation.${index}.variations.${idx}.price`}
+                        name={`list_variation.${index}.variations.${idx}.price`}
                         size="sm"
                         value={i.price}
-                        onChange={(e) =>
+                        onChange={(e) => {
                           setFieldValue(
                             `list_variation.${index}.variations.${idx}.price`,
-                            parseNumber(e)
-                          )
-                        }>
-                        <NumberInputField pl="54px" placeholder={t('input')} />
-                      </NumberInput>
+                            e.target.value
+                          );
+                          setFieldTouched(
+                            `list_variation.${index}.variations.${idx}.price`,
+                            true,
+                            false
+                          );
+                          validateField(`list_variation.${index}.variations.${idx}.price`);
+                        }}
+                      />
                     </Box>
                     <InputLeftElement
                       pointerEvents="none"

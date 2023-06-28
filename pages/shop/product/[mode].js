@@ -227,9 +227,11 @@ function CreateProduct() {
             .required(t('error_field_empty'))
             .test('unique-name', t('shop_product.name_variations_exist'), function (value) {
               const { variations } = this.options.context;
-              const existingVariation = variations.find(
-                (variation) => variation.name === value && variation !== this.parent
-              );
+              const existingVariation =
+                variations &&
+                variations.find(
+                  (variation) => variation.name === value && variation !== this.parent
+                );
               return !existingVariation;
             }),
           otherwise: yup.string(),
@@ -265,6 +267,7 @@ function CreateProduct() {
             yup.object().shape({
               price: yup
                 .number()
+                .typeError(t('error_price_minimum'))
                 .min(1000, t('error_price_minimum'))
                 .required(t('error_field_empty')),
             })
@@ -290,7 +293,16 @@ function CreateProduct() {
       enableReinitialize={true}
       initialValues={initialValues}
       onSubmit={handleSubmitProduct}>
-      {({ handleChange, handleSubmit, setFieldValue, setFieldError, values, errors }) => {
+      {({
+        handleChange,
+        handleSubmit,
+        setFieldValue,
+        setFieldError,
+        validateField,
+        setFieldTouched,
+        values,
+        errors,
+      }) => {
         // React.useEffect(() => {
         //   if (voucher && voucher.banner) {
         //     const str = BASE_API_URL + '/assets/' + voucher.banner;
@@ -355,6 +367,7 @@ function CreateProduct() {
 
             updatedImages = [...updatedImages, ...imagesToAdd];
             setFieldValue('images', updatedImages);
+            validateField('images');
           } catch (error) {
             console.log('error upload image', error);
           }
@@ -465,10 +478,16 @@ function CreateProduct() {
                 <FormControl isInvalid={!!errors.name}>
                   <InputGroup>
                     <Input
+                      id="name"
+                      name="name"
                       placeholder={t('input')}
                       autoComplete="off"
                       value={values.name}
-                      onChange={handleChange('name')}
+                      onChange={(e) => {
+                        handleChange(e);
+                        setFieldTouched('name', true, false);
+                        validateField('name');
+                      }}
                       pr="100px"
                       maxLength={120}
                     />
@@ -580,12 +599,18 @@ function CreateProduct() {
                   <InputGroup>
                     <Box w="full">
                       <Textarea
+                        id="description"
+                        name="description"
                         maxLength={3000}
                         rows={6}
                         placeholder=" "
                         autoComplete="off"
                         value={values.description}
-                        onChange={handleChange('description')}
+                        onChange={(e) => {
+                          handleChange(e);
+                          setFieldTouched('description', true, false);
+                          validateField('description');
+                        }}
                       />
                     </Box>
                   </InputGroup>
@@ -603,107 +628,123 @@ function CreateProduct() {
               </FormGroup>
             </Box>
             <Box mt="6" bg="bg-1" shadow="md" borderRadius="4px" p="6">
-              <Text textStyle="h5-b" color="text-basic" mb="6">
+              <Text
+                textStyle="h5-b"
+                color="text-basic"
+                mb="6"
+                opacity={isEmpty(selectedCategory) ? 0.6 : 1}>
                 {t('shop_product.sales_information')}
               </Text>
-              <FormGroup title={t('shop_product.variations')} mt="6" isCentered={false}>
-                <FieldArray
-                  name="variations"
-                  render={() => {
-                    return (
-                      <Box spacing="4">
-                        {isEmpty(values.variations) ? (
-                          <Button
-                            leftIcon={<HiPlus />}
-                            variant="outline-primary"
-                            children={t('shop_product.enable_variations')}
-                            onClick={() => {
-                              setFieldValue('variations', [
-                                { name: '', options: [''], isShow: true },
-                                { name: '', options: [''], isShow: false },
-                              ]);
-                              setFieldValue('list_variation', [
-                                {
-                                  variations: [
+              {isEmpty(selectedCategory) ? (
+                <Text opacity={0.6} color="text-basic" textStyle="h4">
+                  {t('shop_product.available_after_select_category')}
+                </Text>
+              ) : (
+                <>
+                  <FormGroup title={t('shop_product.variations')} mt="6" isCentered={false}>
+                    <FieldArray
+                      name="variations"
+                      render={() => {
+                        return (
+                          <Box spacing="4">
+                            {isEmpty(values.variations) ? (
+                              <Button
+                                leftIcon={<HiPlus />}
+                                variant="outline-primary"
+                                children={t('shop_product.enable_variations')}
+                                onClick={() => {
+                                  setFieldValue('variations', [
+                                    { name: '', options: [''], isShow: true },
+                                    { name: '', options: [''], isShow: false },
+                                  ]);
+                                  setFieldValue('list_variation', [
                                     {
-                                      parentVariationTitle: '',
-                                      childVariationTitle: '',
-                                      childVariationValue: '',
-                                      parentVariationValue: '',
-                                      imgUri: '',
-                                      price: '',
-                                      stock: 0,
-                                      //sku: '',
+                                      variations: [
+                                        {
+                                          parentVariationTitle: '',
+                                          childVariationTitle: '',
+                                          childVariationValue: '',
+                                          parentVariationValue: '',
+                                          imgUri: '',
+                                          price: '',
+                                          stock: 0,
+                                          //sku: '',
+                                        },
+                                      ],
                                     },
-                                  ],
-                                },
-                              ]);
-                            }}
-                          />
-                        ) : (
-                          <Flex flexDirection="column" gap="6">
-                            {values.variations.map((variation, index) => {
-                              return <VariationItem item={variation} index={index} key={index} />;
-                            })}
-                          </Flex>
-                        )}
-                      </Box>
-                    );
-                  }}
-                />
-              </FormGroup>
-              {!isEmpty(values.list_variation) && (
-                <FormGroup title={t('shop_product.variation_list')} isCentered={false} mt="6">
-                  <Flex flex="1">
-                    <SimpleGrid columns={2} flex="1">
-                      <FormControl isInvalid={!!errors?.set_variation?.price}>
-                        <InputGroup>
-                          <Box w="full">
-                            <NumberInput
-                              mr="-1px"
-                              _hover={{ zIndex: 1 }}
-                              zIndex={!!errors?.set_variation?.price ? 1 : 'unset'}
-                              value={values.set_variation.price}
-                              onChange={(e) =>
-                                setFieldValue('set_variation.price', parseNumber(e))
-                              }>
-                              <NumberInputField
-                                pl="54px"
-                                borderTopRightRadius="0px"
-                                borderBottomRightRadius="0px"
-                                placeholder={t('price')}
+                                  ]);
+                                }}
                               />
-                            </NumberInput>
+                            ) : (
+                              <Flex flexDirection="column" gap="6">
+                                {values.variations.map((variation, index) => {
+                                  return (
+                                    <VariationItem item={variation} index={index} key={index} />
+                                  );
+                                })}
+                              </Flex>
+                            )}
                           </Box>
-                          <InputLeftElement
-                            pointerEvents="none"
-                            h="full"
-                            w="50px"
-                            borderRightWidth="1px"
-                            borderColor="border-5">
-                            <Text textStyle="h2" color="text-body">
-                              HTG
-                            </Text>
-                          </InputLeftElement>
-                        </InputGroup>
-                        <FormErrorMessage>{errors?.set_variation?.price}</FormErrorMessage>
-                      </FormControl>
-                      <FormControl isInvalid={!!errors?.set_variation?.stock}>
-                        <InputGroup>
-                          <Box w="full">
-                            <NumberInput
-                              _hover={{ zIndex: 1 }}
-                              value={values.set_variation.stock}
-                              onChange={(e) =>
-                                setFieldValue('set_variation.stock', parseNumber(e))
-                              }>
-                              <NumberInputField borderRadius="0px" placeholder={t('stock')} />
-                            </NumberInput>
-                          </Box>
-                        </InputGroup>
-                        <FormErrorMessage>{errors?.set_variation?.stock}</FormErrorMessage>
-                      </FormControl>
-                      {/* <FormControl isInvalid={!!errors?.set_variation?.sku}>
+                        );
+                      }}
+                    />
+                  </FormGroup>
+                  {!isEmpty(values.list_variation) && (
+                    <FormGroup title={t('shop_product.variation_list')} isCentered={false} mt="6">
+                      <Flex flex="1">
+                        <SimpleGrid columns={2} flex="1">
+                          <FormControl isInvalid={!!errors?.set_variation?.price}>
+                            <InputGroup>
+                              <Box w="full">
+                                <NumberInput
+                                  id="set_variation.price"
+                                  name="set_variation.price"
+                                  mr="-1px"
+                                  _hover={{ zIndex: 1 }}
+                                  zIndex={!!errors?.set_variation?.price ? 1 : 'unset'}
+                                  value={values.set_variation.price}
+                                  onChange={(e) => {
+                                    setFieldValue('set_variation.price', parseNumber(e));
+                                    setFieldTouched('set_variation.price', true, false);
+                                    validateField('set_variation.price');
+                                  }}>
+                                  <NumberInputField
+                                    pl="54px"
+                                    borderTopRightRadius="0px"
+                                    borderBottomRightRadius="0px"
+                                    placeholder={t('price')}
+                                  />
+                                </NumberInput>
+                              </Box>
+                              <InputLeftElement
+                                pointerEvents="none"
+                                h="full"
+                                w="50px"
+                                borderRightWidth="1px"
+                                borderColor="border-5">
+                                <Text textStyle="h2" color="text-body">
+                                  HTG
+                                </Text>
+                              </InputLeftElement>
+                            </InputGroup>
+                            <FormErrorMessage>{errors?.set_variation?.price}</FormErrorMessage>
+                          </FormControl>
+                          <FormControl isInvalid={!!errors?.set_variation?.stock}>
+                            <InputGroup>
+                              <Box w="full">
+                                <NumberInput
+                                  _hover={{ zIndex: 1 }}
+                                  value={values.set_variation.stock}
+                                  onChange={(e) => {
+                                    setFieldValue('set_variation.stock', parseNumber(e));
+                                  }}>
+                                  <NumberInputField borderRadius="0px" placeholder={t('stock')} />
+                                </NumberInput>
+                              </Box>
+                            </InputGroup>
+                            <FormErrorMessage>{errors?.set_variation?.stock}</FormErrorMessage>
+                          </FormControl>
+                          {/* <FormControl isInvalid={!!errors?.set_variation?.sku}>
                         <InputGroup>
                           <Box w="full">
                             <Input
@@ -719,168 +760,182 @@ function CreateProduct() {
                         </InputGroup>
                         <FormErrorMessage>{errors?.set_variation?.sku}</FormErrorMessage>
                       </FormControl> */}
-                    </SimpleGrid>
-                    <Button
-                      variant="primary"
-                      children="Apply To All"
-                      w="140px"
-                      ml="4"
-                      disabled={
-                        values.set_variation.price === '' && values.set_variation.stock === ''
-                        // && values.set_variation.sku === ''
-                      }
-                      onClick={() => {
-                        const { price, stock } = values.set_variation;
+                        </SimpleGrid>
+                        <Button
+                          variant="primary"
+                          children="Apply To All"
+                          w="140px"
+                          ml="4"
+                          disabled={
+                            values.set_variation.price === '' && values.set_variation.stock === ''
+                            // && values.set_variation.sku === ''
+                          }
+                          onClick={() => {
+                            const { price, stock } = values.set_variation;
 
-                        if (!!price && price < 1000) {
-                          setFieldError('set_variation.price', t('error_price_minimum'));
-                          return;
-                        }
+                            if (!!price && price < 1000) {
+                              setFieldError('set_variation.price', t('error_price_minimum'));
+                              return;
+                            }
 
-                        if (!!errors?.set_variation?.price) {
-                          setFieldError('set_variation.price', '');
-                        }
+                            if (!!errors?.set_variation?.price) {
+                              setFieldError('set_variation.price', '');
+                            }
 
-                        const _list_variation = values.list_variation.map((variation) => ({
-                          ...variation,
-                          variations: variation.variations.map((item) => ({
-                            ...item,
-                            price,
-                            stock,
-                            //sku,
-                          })),
-                        }));
+                            const _list_variation = values.list_variation.map((variation) => ({
+                              ...variation,
+                              variations: variation.variations.map((item) => ({
+                                ...item,
+                                price,
+                                stock,
+                                //sku,
+                              })),
+                            }));
 
-                        setFieldValue('list_variation', _list_variation);
-                      }}
-                    />
-                  </Flex>
-                  <Box borderRadius="4px" mt="6">
-                    <Table
-                      variant="simple"
-                      borderRadius="4px"
-                      borderWidth="1px"
-                      borderColor="border-5">
-                      <Thead
-                        h="52px"
-                        bg="bg-2"
-                        borderWidth="1px"
-                        borderColor="border-5"
-                        borderRadius="4px">
-                        <Tr>
-                          <Th
-                            w="15%"
-                            borderBottomWidth="0px"
-                            color="text-note"
-                            borderRightWidth="1px"
-                            borderWidth="1px"
-                            textStyle="b-md"
-                            borderColor="border-5"
-                            textTransform="none">
-                            <Center>
-                              {values.variations[0].name
-                                ? values.variations[0].name
-                                : 'Variation 1'}
-                            </Center>
-                          </Th>
-                          {values.variations[1].isShow && (
-                            <Th
-                              w="15%"
-                              borderBottomWidth="0px"
-                              color="text-note"
-                              borderRightWidth="1px"
-                              textStyle="b-md"
-                              borderColor="border-5"
-                              textTransform="none">
-                              <Center>
-                                {values.variations[1].name
-                                  ? values.variations[1].name
-                                  : 'Variation 2'}
-                              </Center>
-                            </Th>
-                          )}
-                          <Th
-                            w="35%"
-                            borderBottomWidth="0px"
-                            color="text-note"
-                            borderRightWidth="1px"
-                            textStyle="b-md"
-                            borderColor="border-5"
-                            textTransform="capitalize">
-                            <Center>{t('price')}</Center>
-                          </Th>
-                          <Th
-                            w="35%"
-                            borderBottomWidth="0px"
-                            color="text-note"
-                            borderRightWidth="1px"
-                            textStyle="b-md"
-                            borderColor="border-5"
-                            textTransform="capitalize">
-                            <Center>{t('stock')}</Center>
-                          </Th>
-                          {false && (
-                            <Th
-                              w="25%"
-                              borderBottomWidth="0px"
-                              color="text-note"
-                              borderRightWidth="1px"
-                              textStyle="b-md"
-                              borderColor="border-5"
-                              textTransform="capitalize">
-                              <Center>{t('sku')}</Center>
-                            </Th>
-                          )}
-                        </Tr>
-                      </Thead>
-                      {values.list_variation.map((item, index) => {
-                        return <VariationTableItem item={item} key={index} index={index} />;
-                      })}
-                    </Table>
-                  </Box>
-                </FormGroup>
-              )}
-              {isEmpty(values.list_variation) && (
-                <>
-                  <FormGroup title={t('price')} isRequire mt="6">
-                    <FormControl isInvalid={!!errors?.price}>
-                      <InputGroup>
-                        <Box w="full">
-                          <NumberInput
-                            w="50%"
-                            value={values.price}
-                            onChange={(e) => setFieldValue('price', parseNumber(e))}>
-                            <NumberInputField pl="54px" placeholder={t('input')} />
-                          </NumberInput>
-                        </Box>
-                        <InputLeftElement
-                          pointerEvents="none"
-                          h="full"
-                          w="50px"
-                          borderRightWidth="1px"
+                            setFieldValue('list_variation', _list_variation);
+                          }}
+                        />
+                      </Flex>
+                      <Box borderRadius="4px" mt="6">
+                        <Table
+                          variant="simple"
+                          borderRadius="4px"
+                          borderWidth="1px"
                           borderColor="border-5">
-                          <Text textStyle="h2" color="text-body">
-                            HTG
-                          </Text>
-                        </InputLeftElement>
-                      </InputGroup>
-                      <FormErrorMessage>{errors?.price}</FormErrorMessage>
-                    </FormControl>
-                  </FormGroup>
-                  <FormGroup title={t('stock')} isRequire mt="6">
-                    <FormControl isInvalid={!!errors?.stock}>
-                      <InputGroup>
-                        <NumberInput
-                          w="50%"
-                          autoComplete="off"
-                          value={values.stock}
-                          onChange={(e) => setFieldValue('stock', parseNumber(e))}>
-                          <NumberInputField placeholder={t('input')} />
-                        </NumberInput>
-                      </InputGroup>
-                      <FormErrorMessage>{errors?.stock}</FormErrorMessage>
-                    </FormControl>
-                  </FormGroup>
+                          <Thead
+                            h="52px"
+                            bg="bg-2"
+                            borderWidth="1px"
+                            borderColor="border-5"
+                            borderRadius="4px">
+                            <Tr>
+                              <Th
+                                w="15%"
+                                borderBottomWidth="0px"
+                                color="text-note"
+                                borderRightWidth="1px"
+                                borderWidth="1px"
+                                textStyle="b-md"
+                                borderColor="border-5"
+                                textTransform="none">
+                                <Center>
+                                  {values.variations[0].name
+                                    ? values.variations[0].name
+                                    : 'Variation 1'}
+                                </Center>
+                              </Th>
+                              {values.variations[1].isShow && (
+                                <Th
+                                  w="15%"
+                                  borderBottomWidth="0px"
+                                  color="text-note"
+                                  borderRightWidth="1px"
+                                  textStyle="b-md"
+                                  borderColor="border-5"
+                                  textTransform="none">
+                                  <Center>
+                                    {values.variations[1].name
+                                      ? values.variations[1].name
+                                      : 'Variation 2'}
+                                  </Center>
+                                </Th>
+                              )}
+                              <Th
+                                w="35%"
+                                borderBottomWidth="0px"
+                                color="text-note"
+                                borderRightWidth="1px"
+                                textStyle="b-md"
+                                borderColor="border-5"
+                                textTransform="capitalize">
+                                <Center>{t('price')}</Center>
+                              </Th>
+                              <Th
+                                w="35%"
+                                borderBottomWidth="0px"
+                                color="text-note"
+                                borderRightWidth="1px"
+                                textStyle="b-md"
+                                borderColor="border-5"
+                                textTransform="capitalize">
+                                <Center>{t('stock')}</Center>
+                              </Th>
+                              {false && (
+                                <Th
+                                  w="25%"
+                                  borderBottomWidth="0px"
+                                  color="text-note"
+                                  borderRightWidth="1px"
+                                  textStyle="b-md"
+                                  borderColor="border-5"
+                                  textTransform="capitalize">
+                                  <Center>{t('sku')}</Center>
+                                </Th>
+                              )}
+                            </Tr>
+                          </Thead>
+                          {values.list_variation.map((item, index) => {
+                            return <VariationTableItem item={item} key={index} index={index} />;
+                          })}
+                        </Table>
+                      </Box>
+                    </FormGroup>
+                  )}
+                  {isEmpty(values.list_variation) && (
+                    <>
+                      <FormGroup title={t('price')} isRequire mt="6">
+                        <FormControl isInvalid={!!errors?.price}>
+                          <InputGroup>
+                            <Box w="full">
+                              <NumberInput
+                                id="price"
+                                name="price"
+                                w="50%"
+                                value={values.price}
+                                onChange={(e) => {
+                                  setFieldValue('price', parseNumber(e));
+                                  setFieldTouched('price', true, false);
+                                  validateField('price');
+                                }}>
+                                <NumberInputField pl="54px" placeholder={t('input')} />
+                              </NumberInput>
+                            </Box>
+                            <InputLeftElement
+                              pointerEvents="none"
+                              h="full"
+                              w="50px"
+                              borderRightWidth="1px"
+                              borderColor="border-5">
+                              <Text textStyle="h2" color="text-body">
+                                HTG
+                              </Text>
+                            </InputLeftElement>
+                          </InputGroup>
+                          <FormErrorMessage>{errors?.price}</FormErrorMessage>
+                        </FormControl>
+                      </FormGroup>
+                      <FormGroup title={t('stock')} isRequire mt="6">
+                        <FormControl isInvalid={!!errors?.stock}>
+                          <InputGroup>
+                            <NumberInput
+                              id="stock"
+                              name="stock"
+                              w="50%"
+                              autoComplete="off"
+                              value={values.stock}
+                              onChange={(e) => {
+                                setFieldValue('stock', parseNumber(e));
+                                setFieldTouched('stock', true, false);
+                                validateField('stock');
+                              }}>
+                              <NumberInputField placeholder={t('input')} />
+                            </NumberInput>
+                          </InputGroup>
+                          <FormErrorMessage>{errors?.stock}</FormErrorMessage>
+                        </FormControl>
+                      </FormGroup>
+                    </>
+                  )}
                 </>
               )}
             </Box>

@@ -196,7 +196,8 @@
     "title_publish_all_products": "You will publish {{number}} products",
     "description_publish_all_products": "Products can be seen and checked out by buyers after publishing.",
     "can_not_be_published": "Can not be published",
-    "description_publish_product": "{{number_publish}} out of {{number}} products are already live. Click confirm to continue publishing the remaining {{number_publish}} products."
+    "description_publish_product": "{{number_publish}} out of {{number}} products are already live. Click confirm to continue publishing the remaining {{number_publish}} products.",
+    "available_after_select_category": "Available only after you select a product category"
   },
   "flash_sale_shop": {
     "shop_flash_sale": "Shop Flash Sale",

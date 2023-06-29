@@ -3,7 +3,7 @@ import { Center, Flex, HStack, Icon, Switch, Td, Text, Tr } from '@chakra-ui/rea
 import dayjs from 'dayjs';
 import { AiFillEdit } from 'react-icons/ai';
 import { FiTrash2 } from 'react-icons/fi';
-import { EFlashSaleStatus } from 'constants/types';
+import { EFlashSaleStatus, EShowFlashSaleType } from 'constants/types';
 import { useTranslation } from 'react-i18next';
 
 interface FlashSaleShopItemProps {
@@ -23,7 +23,7 @@ const FlashSaleShopItem: React.FC<FlashSaleShopItemProps> = ({
 }) => {
   const formatTime = 'HH:MM DD-MM-YYYY';
   const { t } = useTranslation();
-  const { endAt, name, startAt, status } = item;
+  const { endAt, name, startAt, status, isShow } = item;
 
   const borderColor = isLast ? 'transparent' : 'border-5';
 
@@ -82,25 +82,25 @@ const FlashSaleShopItem: React.FC<FlashSaleShopItemProps> = ({
       <Td borderColor={borderColor}>
         <Switch
           disabled={status === EFlashSaleStatus.FINISHED}
-          checked={true}
+          isChecked={isShow === EShowFlashSaleType.TURN_ON}
           onChange={onChange}
           name="promotion"
           variant="success"
         />
       </Td>
       <Td isNumeric borderColor={borderColor}>
-        <Flex justifyContent="flex-end">
-          <HStack>
-            <Center boxSize="40px" cursor="pointer" onClick={onUpdate}>
-              <Icon as={AiFillEdit} w="18px" h="18px" color="text-basic" cursor="pointer" />
-            </Center>
-            {status !== EFlashSaleStatus.FINISHED && (
+        {status !== EFlashSaleStatus.FINISHED && (
+          <Flex justifyContent="flex-end">
+            <HStack>
+              <Center boxSize="40px" cursor="pointer" onClick={onUpdate}>
+                <Icon as={AiFillEdit} w="18px" h="18px" color="text-basic" cursor="pointer" />
+              </Center>
               <Center boxSize="40px" cursor="pointer" onClick={onDelete}>
                 <Icon as={FiTrash2} w="18px" h="18px" color="text-basic" cursor="pointer" />
               </Center>
-            )}
-          </HStack>
-        </Flex>
+            </HStack>
+          </Flex>
+        )}
       </Td>
     </Tr>
   );

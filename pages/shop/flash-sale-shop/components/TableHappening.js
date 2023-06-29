@@ -4,9 +4,9 @@ import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
 
 import dayjs from 'dayjs';
-import { useDispatch } from 'react-redux';
-import { setShowLoader } from 'redux/actions/app';
-import { EAppKey, EFlashSaleStatus } from 'constants/types';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoading, setSelectedFlashSaleTabIndex, setShowLoader } from 'redux/actions/app';
+import { EAppKey, EFlashSaleStatus, EShowFlashSaleType } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
 import { useRouter } from 'next/router';
 import {
@@ -15,11 +15,16 @@ import {
   ModalConfirm,
   PaginationPanel,
   RangeDatePickerItem,
+  LoadingFlashSaleItem,
 } from 'components';
 import { isEmpty } from 'lodash';
-import { requestGetListFlashSale, requestDeleteFlashSale } from 'utilities/ApiShop';
+import {
+  requestGetListFlashSale,
+  requestDeleteFlashSale,
+  requestUpdateStatusFlashSaleShop,
+} from 'utilities/ApiShop';
 
-export const TableHappening = () => {
+const TableHappening = () => {
   //TODO add shop Id - need update authentication flow
   const shopId = 143;
   const formatDate = 'YYYY-MM-DD';
@@ -27,6 +32,9 @@ export const TableHappening = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const pageSize = 50;
+
+  const { loading, showLoader } = useSelector((state) => state.app);
+  const isLoading = loading || showLoader;
 
   const [flashSales, setFlashSales] = React.useState([]);
   const [selectedFlashSale, setSelectedFlashSale] = React.useState(null);
@@ -61,7 +69,7 @@ export const TableHappening = () => {
         const res = await requestGetListFlashSale({
           page: 1,
           shopId: shopId,
-          status: EFlashSaleStatus.HAPPENING,
+          type: EFlashSaleStatus.HAPPENING,
         });
 
         if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
@@ -88,7 +96,7 @@ export const TableHappening = () => {
       const res = await requestGetListFlashSale({
         page: 1,
         shopId: shopId,
-        status: EFlashSaleStatus.HAPPENING,
+        type: EFlashSaleStatus.HAPPENING,
       });
 
       if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
@@ -117,9 +125,9 @@ export const TableHappening = () => {
         const res = await requestGetListFlashSale({
           page: 1,
           shopId: shopId,
+          type: EFlashSaleStatus.HAPPENING,
           fromDate: dayjs(selectedDates[0]).format(formatDate),
           toDate: dayjs(selectedDates[1]).format(formatDate),
-          status: EFlashSaleStatus.HAPPENING,
         });
 
         if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
@@ -138,14 +146,37 @@ export const TableHappening = () => {
     })();
   }, [selectedDates]);
 
+  const handleReload = React.useCallback(async () => {
+    let params = { page: 1, shopId: shopId, type: EFlashSaleStatus.HAPPENING };
+
+    if (selectedDates.length === 2) {
+      params.fromDate = dayjs(selectedDates[0]).format(formatDate);
+      params.toDate = dayjs(selectedDates[1]).format(formatDate);
+    }
+
+    const res = await requestGetListFlashSale(params);
+
+    if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
+      setFlashSales(res.data.results);
+      setTotalPage(res.data.totalPages);
+      setTotalRecords(res.data.totalRecords);
+      router.push('/shop/flash-sale-shop');
+      dispatch(setSelectedFlashSaleTabIndex(1));
+    } else {
+      NotificationManager.error({
+        title: t('error'),
+        message: t('no_data_exists'),
+      });
+    }
+  }, [selectedDates]);
+
   const handleDeleteFlashSale = React.useCallback(async () => {
     try {
-      offShowModal();
       dispatch(setShowLoader(true));
       const res = await requestDeleteFlashSale({ id: selectedFlashSale.id });
       if (res.code === EAppKey.MSG_SUCCESS) {
         setSelectedFlashSale(null);
-        router.push('/shop/flash-sale-shop');
+        handleReload();
       } else {
         NotificationManager.error({
           title: t('error'),
@@ -155,28 +186,63 @@ export const TableHappening = () => {
     } catch (error) {
       console.log('delete flash sale error');
     } finally {
+      offShowModal();
       dispatch(setShowLoader(false));
     }
   }, [selectedFlashSale]);
 
   const handleDisableFlashSale = React.useCallback(async () => {
     try {
-      offShowDisableModal();
+      if (!selectedFlashSale) {
+        return;
+      }
+
       dispatch(setShowLoader(true));
+      const res = await requestUpdateStatusFlashSaleShop({
+        ids: [selectedFlashSale.id],
+        type: EShowFlashSaleType.TURN_OFF,
+      });
+      if (res.code === EAppKey.MSG_SUCCESS) {
+        setSelectedFlashSale(null);
+        handleReload();
+      } else {
+        NotificationManager.error({
+          title: t('error'),
+          message: res.message ? res.message.text : t('error'),
+        });
+      }
     } catch (error) {
       console.log('disable flash sale error');
     } finally {
+      offShowDisableModal();
       dispatch(setShowLoader(false));
     }
   }, [selectedFlashSale]);
 
   const handleEnableFlashSale = React.useCallback(async () => {
     try {
-      offShowDisableModal();
+      if (!selectedFlashSale) {
+        return;
+      }
+
       dispatch(setShowLoader(true));
+      const res = await requestUpdateStatusFlashSaleShop({
+        ids: [selectedFlashSale.id],
+        type: EShowFlashSaleType.TURN_ON,
+      });
+      if (res.code === EAppKey.MSG_SUCCESS) {
+        setSelectedFlashSale(null);
+        handleReload();
+      } else {
+        NotificationManager.error({
+          title: t('error'),
+          message: res.message ? res.message.text : t('error'),
+        });
+      }
     } catch (error) {
       console.log('disable flash sale error');
     } finally {
+      offShowEnableModal();
       dispatch(setShowLoader(false));
     }
   }, [selectedFlashSale]);
@@ -191,12 +257,12 @@ export const TableHappening = () => {
       <Box
         mt="6"
         bg="white"
-        minH={isEmpty(flashSales) ? '300px' : 'unset'}
+        minH={isEmpty(flashSales) || isLoading ? '300px' : 'unset'}
         borderRadius="4px"
         overflow="auto"
         borderWidth="1px"
         borderColor="border-5"
-        display={{ base: 'none', xl: 'block' }}>
+        position="relative">
         <Table variant="simple">
           <Thead h="52px" bg="primary.100">
             <Tr>
@@ -215,8 +281,10 @@ export const TableHappening = () => {
               })}
             </Tr>
           </Thead>
-          {isEmpty(flashSales) ? (
-            <EmptyListItem />
+          {isLoading ? (
+            <LoadingFlashSaleItem />
+          ) : isEmpty(flashSales) ? (
+            <EmptyListItem title={t('no_shop_flash_sales_found')} />
           ) : (
             <>
               {flashSales.map((item, index) => {
@@ -224,6 +292,7 @@ export const TableHappening = () => {
                   <FlashSaleShopItem
                     item={item}
                     key={index}
+                    isLast={index === flashSales.length - 1}
                     onUpdate={() => {
                       router.push({
                         pathname: '/shop/flash-sale-shop/update',
@@ -236,8 +305,7 @@ export const TableHappening = () => {
                     }}
                     onChange={() => {
                       setSelectedFlashSale(item);
-                      //TODO update active flash sale
-                      if (false) {
+                      if (item.isShow === EShowFlashSaleType.TURN_ON) {
                         onShowDisableModal();
                       } else {
                         onShowEnableModal();

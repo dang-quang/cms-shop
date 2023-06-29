@@ -18,6 +18,7 @@ import ShopProductItem from './ShopProductItem';
 import EmptyListItem from './EmptyListItem';
 import FlashSaleShopItem from './FlashSaleShopItem';
 import ViewChangeImage from './ViewChangeImage';
+import LoadingFlashSaleItem from './LoadingFlashSaleItem';
 
 export {
   RangeDatePickerItem,
@@ -40,4 +41,5 @@ export {
   EmptyListItem,
   FlashSaleShopItem,
   ViewChangeImage,
+  LoadingFlashSaleItem,
 };

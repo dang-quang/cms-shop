@@ -177,3 +177,8 @@ export enum EShowProductType {
   PENDING = 'PENDING',
   ACTIVE = 'ACTIVE',
 }
+
+export enum EShowFlashSaleType {
+  TURN_ON = 'TURN_ON',
+  TURN_OFF = 'TURN_OFF',
+}

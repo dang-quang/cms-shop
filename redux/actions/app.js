@@ -6,6 +6,8 @@ export const SHOW_SIDEBAR = 'SHOW_SIDEBAR';
 export const SET_SIDEBAR = 'SET_SIDEBAR';
 export const SHOW_LOADER = 'SHOW_LOADER';
 export const GAME_TAB = 'GAME_TAB';
+export const SHOP_FLASH_SALE_TAB = 'SHOP_FLASH_SALE_TAB';
+export const LOADING = 'LOADING';
 
 export function setShowLoader(showLoader) {
   return {
@@ -18,5 +20,19 @@ export function setSelectedGameTab(selectedGameTab) {
   return {
     type: GAME_TAB,
     selectedGameTab,
+  };
+}
+
+export function setSelectedFlashSaleTabIndex(selectedFlashSaleTabIndex) {
+  return {
+    type: SHOP_FLASH_SALE_TAB,
+    selectedFlashSaleTabIndex,
+  };
+}
+
+export function setLoading(loading) {
+  return {
+    type: LOADING,
+    loading,
   };
 }

@@ -9,12 +9,18 @@ import TableUpcoming from './components/TableUpcoming';
 import TableFinished from './components/TableFinished';
 import { HiPlus } from 'react-icons/hi';
 import { WithAuthentication } from 'components';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoading, setSelectedFlashSaleTabIndex } from 'redux/actions/app';
+import { EFlashSaleStatus } from 'constants/types';
 
 function VoucherPage() {
+  const dispatch = useDispatch();
   const router = useRouter();
   const { t } = useTranslation();
 
   const tabs = [t('all'), t('happening'), t('upcoming'), t('finished')];
+
+  const index = useSelector((state) => state.app.selectedFlashSaleTabIndex);
 
   return (
     <Box>
@@ -30,7 +36,17 @@ function VoucherPage() {
         />
       </Flex>
       <Box mt="8" bg="bg-1" borderRadius="4px" px="6" py="4">
-        <Tabs variant="soft-rounded">
+        <Tabs
+          isLazy
+          variant="soft-rounded"
+          index={index}
+          onChange={(e) => {
+            dispatch(setLoading(true));
+            dispatch(setSelectedFlashSaleTabIndex(e));
+            setTimeout(() => {
+              dispatch(setLoading(false));
+            }, 2000);
+          }}>
           <TabList w="full" borderBottomWidth="1px" borderBottomColor="border-5">
             {tabs.map((name, index) => (
               <Tab
@@ -53,17 +69,17 @@ function VoucherPage() {
               </Tab>
             ))}
           </TabList>
-          <TabPanels mt="6">
+          <TabPanels mt="6" key="ALL">
             <TabPanel p="0">
               <TableAll />
             </TabPanel>
-            <TabPanel p="0">
+            <TabPanel p="0" key={EFlashSaleStatus.HAPPENING}>
               <TableHappening />
             </TabPanel>
-            <TabPanel p="0">
+            <TabPanel p="0" key={EFlashSaleStatus.UPCOMING}>
               <TableUpcoming />
             </TabPanel>
-            <TabPanel p="0">
+            <TabPanel p="0" key={EFlashSaleStatus.FINISHED}>
               <TableFinished />
             </TabPanel>
           </TabPanels>

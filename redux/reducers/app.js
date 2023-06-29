@@ -9,9 +9,15 @@ import {
   SET_SIDEBAR,
   SHOW_LOADER,
   GAME_TAB,
+  SHOP_FLASH_SALE_TAB,
+  LOADING,
 } from '../actions/app';
 
-export default function app(state = {}, action) {
+const initialState = {
+  loading: true,
+};
+
+export default function app(state = initialState, action) {
   switch (action.type) {
     case LOAD_BOOTSTRAP_SUCCESS:
       return {
@@ -49,6 +55,16 @@ export default function app(state = {}, action) {
       return {
         ...state,
         selectedGameTab: action.selectedGameTab,
+      };
+    case SHOP_FLASH_SALE_TAB:
+      return {
+        ...state,
+        selectedFlashSaleTabIndex: action.selectedFlashSaleTabIndex,
+      };
+    case LOADING:
+      return {
+        ...state,
+        loading: action.loading,
       };
     default:
       return state;

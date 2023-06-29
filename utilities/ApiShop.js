@@ -35,3 +35,7 @@ export function requestCreateShopFlashSale(payload) {
 export function requestGetListCategoryShop(payload) {
   return postWithCheckingToken(`${BASE_API_URL}/shop/list-category-in-shop`, {}, payload);
 }
+
+export function requestUpdateStatusFlashSaleShop(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/flash-sale/shop-update-status`, {}, obj);
+}

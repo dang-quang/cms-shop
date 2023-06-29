@@ -15,6 +15,7 @@ import { checkBoxStyles } from './components/checkBox';
 import { formError } from './components/form-error';
 import { radioStyles } from './components/radio';
 import { menuStyles } from './components/menu';
+import { skeletonStyles } from './components/skeleton';
 
 export default extendTheme(
   globalStyles,
@@ -32,7 +33,8 @@ export default extendTheme(
   checkBoxStyles, // checkbox styles
   formError, // form error styles
   radioStyles, // radio styles
-  menuStyles // menu item styles
+  menuStyles, // menu item styles
+  skeletonStyles // skeleton item styles
 );
 
 export interface CustomCardProps extends HTMLChakraProps<'div'>, ThemingProps {}

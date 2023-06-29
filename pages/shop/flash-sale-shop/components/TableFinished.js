@@ -1,10 +1,10 @@
 import React from 'react';
-import { Box, Table, Thead, Tr, Th, Flex, useBoolean, Text } from '@chakra-ui/react';
+import { Box, Table, Thead, Tr, Th, Flex, Text } from '@chakra-ui/react';
 import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
 
 import dayjs from 'dayjs';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
 import { EAppKey, EFlashSaleStatus } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
@@ -12,14 +12,14 @@ import { useRouter } from 'next/router';
 import {
   EmptyListItem,
   FlashSaleShopItem,
-  ModalConfirm,
+  LoadingFlashSaleItem,
   PaginationPanel,
   RangeDatePickerItem,
 } from 'components';
 import { isEmpty } from 'lodash';
-import { requestGetListFlashSale, requestDeleteFlashSale } from 'utilities/ApiShop';
+import { requestGetListFlashSale } from 'utilities/ApiShop';
 
-export const TableFinished = () => {
+const TableFinished = () => {
   //TODO add shop Id - need update authentication flow
   const shopId = 143;
   const formatDate = 'YYYY-MM-DD';
@@ -28,12 +28,10 @@ export const TableFinished = () => {
   const { t } = useTranslation();
   const pageSize = 50;
 
+  const { loading, showLoader } = useSelector((state) => state.app);
+  const isLoading = loading || showLoader;
+
   const [flashSales, setFlashSales] = React.useState([]);
-  const [selectedFlashSale, setSelectedFlashSale] = React.useState(null);
-  const [isShowModal, { on: onShowModal, off: offShowModal }] = useBoolean(false);
-  const [isShowEnableModal, { on: onShowEnableModal, off: offShowEnableModal }] = useBoolean(false);
-  const [isShowDisableModal, { on: onShowDisableModal, off: offShowDisableModal }] =
-    useBoolean(false);
   const [totalPage, setTotalPage] = React.useState(1);
   const [totalRecords, setTotalRecords] = React.useState(0);
   const [selectedDates, setSelectedDates] = React.useState([]);
@@ -61,7 +59,7 @@ export const TableFinished = () => {
         const res = await requestGetListFlashSale({
           page: 1,
           shopId: shopId,
-          status: EFlashSaleStatus.FINISHED,
+          type: EFlashSaleStatus.FINISHED,
         });
 
         if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
@@ -80,32 +78,6 @@ export const TableFinished = () => {
     })();
   }, []);
 
-  const handleClearSearch = React.useCallback(async () => {
-    try {
-      setSelectedDates([]);
-      dispatch(setShowLoader(true));
-
-      const res = await requestGetListFlashSale({
-        page: 1,
-        shopId: shopId,
-        status: EFlashSaleStatus.FINISHED,
-      });
-
-      if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
-        setFlashSales(res.data.results);
-        setTotalPage(res.data.totalPages);
-        setTotalRecords(res.data.totalRecords);
-      } else {
-        NotificationManager.error({
-          title: t('error'),
-          message: t('no_data_exists'),
-        });
-      }
-    } finally {
-      dispatch(setShowLoader(false));
-    }
-  }, []);
-
   React.useEffect(() => {
     (async () => {
       try {
@@ -117,9 +89,9 @@ export const TableFinished = () => {
         const res = await requestGetListFlashSale({
           page: 1,
           shopId: shopId,
+          type: EFlashSaleStatus.FINISHED,
           fromDate: dayjs(selectedDates[0]).format(formatDate),
           toDate: dayjs(selectedDates[1]).format(formatDate),
-          status: EFlashSaleStatus.FINISHED,
         });
 
         if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
@@ -138,48 +110,31 @@ export const TableFinished = () => {
     })();
   }, [selectedDates]);
 
-  const handleDeleteFlashSale = React.useCallback(async () => {
+  const handleClearSearch = React.useCallback(async () => {
     try {
-      offShowModal();
+      setSelectedDates([]);
       dispatch(setShowLoader(true));
-      const res = await requestDeleteFlashSale({ id: selectedFlashSale.id });
-      if (res.code === EAppKey.MSG_SUCCESS) {
-        setSelectedFlashSale(null);
-        router.push('/shop/flash-sale-shop');
+
+      const res = await requestGetListFlashSale({
+        page: 1,
+        shopId: shopId,
+        type: EFlashSaleStatus.FINISHED,
+      });
+
+      if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
+        setFlashSales(res.data.results);
+        setTotalPage(res.data.totalPages);
+        setTotalRecords(res.data.totalRecords);
       } else {
         NotificationManager.error({
           title: t('error'),
-          message: res.message ? res.message.text : t('error'),
+          message: t('no_data_exists'),
         });
       }
-    } catch (error) {
-      console.log('delete flash sale error');
     } finally {
       dispatch(setShowLoader(false));
     }
-  }, [selectedFlashSale]);
-
-  const handleDisableFlashSale = React.useCallback(async () => {
-    try {
-      offShowDisableModal();
-      dispatch(setShowLoader(true));
-    } catch (error) {
-      console.log('disable flash sale error');
-    } finally {
-      dispatch(setShowLoader(false));
-    }
-  }, [selectedFlashSale]);
-
-  const handleEnableFlashSale = React.useCallback(async () => {
-    try {
-      offShowDisableModal();
-      dispatch(setShowLoader(true));
-    } catch (error) {
-      console.log('disable flash sale error');
-    } finally {
-      dispatch(setShowLoader(false));
-    }
-  }, [selectedFlashSale]);
+  }, []);
 
   return (
     <Box>
@@ -191,12 +146,12 @@ export const TableFinished = () => {
       <Box
         mt="6"
         bg="white"
-        minH={isEmpty(flashSales) ? '300px' : 'unset'}
+        minH={isEmpty(flashSales) || isLoading ? '300px' : 'unset'}
         borderRadius="4px"
         overflow="auto"
         borderWidth="1px"
         borderColor="border-5"
-        display={{ base: 'none', xl: 'block' }}>
+        position="relative">
         <Table variant="simple">
           <Thead h="52px" bg="primary.100">
             <Tr>
@@ -215,8 +170,10 @@ export const TableFinished = () => {
               })}
             </Tr>
           </Thead>
-          {isEmpty(flashSales) ? (
-            <EmptyListItem />
+          {isLoading ? (
+            <LoadingFlashSaleItem />
+          ) : isEmpty(flashSales) ? (
+            <EmptyListItem title={t('no_shop_flash_sales_found')} />
           ) : (
             <>
               {flashSales.map((item, index) => {
@@ -224,25 +181,7 @@ export const TableFinished = () => {
                   <FlashSaleShopItem
                     item={item}
                     key={index}
-                    onUpdate={() => {
-                      router.push({
-                        pathname: '/shop/flash-sale-shop/update',
-                        query: item,
-                      });
-                    }}
-                    onDelete={() => {
-                      setSelectedFlashSale(item);
-                      onShowModal();
-                    }}
-                    onChange={() => {
-                      setSelectedFlashSale(item);
-                      //TODO update active flash sale
-                      if (false) {
-                        onShowDisableModal();
-                      } else {
-                        onShowEnableModal();
-                      }
-                    }}
+                    isLast={index === flashSales.length - 1}
                   />
                 );
               })}
@@ -271,30 +210,6 @@ export const TableFinished = () => {
           })}
         </Text>
       </Flex>
-      <ModalConfirm
-        isOpen={isShowModal}
-        onClose={offShowModal}
-        title={t('flash_sale_shop.delete_shop_flash_sale')}
-        description={t('flash_sale_shop.delete_shop_flash_sale_description')}
-        buttonLeft={{ title: t('cancel'), onClick: offShowModal }}
-        buttonRight={{ title: t('delete'), onClick: handleDeleteFlashSale }}
-      />
-      <ModalConfirm
-        isOpen={isShowDisableModal}
-        onClose={offShowDisableModal}
-        title={t('flash_sale_shop.title_disable_flash_sale')}
-        description={t('flash_sale_shop.description_disable_flash_sale')}
-        buttonLeft={{ title: t('cancel'), onClick: offShowDisableModal }}
-        buttonRight={{ title: t('disable'), onClick: handleDisableFlashSale }}
-      />
-      <ModalConfirm
-        isOpen={isShowEnableModal}
-        onClose={offShowEnableModal}
-        title={t('flash_sale_shop.title_enable_flash_sale')}
-        description={t('flash_sale_shop.description_enable_flash_sale')}
-        buttonLeft={{ title: t('cancel'), onClick: offShowEnableModal }}
-        buttonRight={{ title: t('flash_sale_shop.enable_items'), onClick: handleEnableFlashSale }}
-      />
     </Box>
   );
 };

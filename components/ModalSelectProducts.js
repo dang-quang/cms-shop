@@ -19,6 +19,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Table,
+  Tbody,
   Text,
   Th,
   Thead,
@@ -34,37 +35,14 @@ import { setModalSelectProducts, setSelectedProducts } from 'redux/actions/produ
 import { setShowLoader } from 'redux/actions/app';
 import { EAppKey, EProductType } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
-import { requestGetListShopProduct } from 'utilities/ApiShop';
+import { requestGetListCategoryShop, requestGetListShopProduct } from 'utilities/ApiShop';
 import EmptyListItem from './EmptyListItem';
-
-// const data = [
-//   {
-//     id: 23744991650,
-//     name: 'Polo',
-//     image:
-//       'https://user-images.githubusercontent.com/42206067/244660279-c5cfa99d-67dc-45de-82f1-e7c660b06d74.png',
-//     sales: 0,
-//     price: 200000,
-//     stock: 423,
-//   },
-//   {
-//     id: 23744991651,
-//     name: 'Mangto',
-//     image:
-//       'https://user-images.githubusercontent.com/42206067/244660267-bfb9dba1-1bc6-4792-a1e8-139eb3bf35bd.png',
-//     sales: 0,
-//     price: 1000000,
-//     stock: 1120,
-//   },
-// ];
-
-const categories_data = [
-  { id: '0', name: 'All Categories' },
-  { id: 1, name: 'Men Shoes' },
-];
+import { usePagination } from '@ajna/pagination';
+import { PaginationPanel } from 'components';
 
 const ModalSelectProducts = () => {
   const shopId = 143;
+  const pageSize = 10;
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const refInput = React.useRef(null);
@@ -73,8 +51,9 @@ const ModalSelectProducts = () => {
 
   const [doSearch, { on: onSearch, off: offSearch }] = useBoolean(false);
   const [products, setProducts] = React.useState([]);
+  const [totalRecords, setTotalRecords] = React.useState(0);
   const [categories, setCategories] = React.useState([]);
-  const [category, setCategory] = React.useState(categories_data[0]);
+  const [category, setCategory] = React.useState();
   const [selectAll, { toggle: toggleSelectAll, off: offSelectAll, on: onSelectAll }] =
     useBoolean(false);
   const [focus, { on: onFocus, off: offFocus }] = useBoolean(false);
@@ -83,11 +62,29 @@ const ModalSelectProducts = () => {
 
   const headers = [t('products'), t('sales'), t('price'), t('stock')];
 
+  const { pages, pagesCount, currentPage, setCurrentPage, isDisabled } = usePagination({
+    total: totalRecords,
+    limits: {
+      outer: 1,
+      inner: 2,
+    },
+    initialState: {
+      pageSize: pageSize,
+      isDisabled: false,
+      currentPage: 1,
+    },
+  });
+
   React.useEffect(() => {
     (async () => {
-      setCategories(categories_data);
+      const res = await requestGetListCategoryShop({ id: shopId, type: EProductType.STOCK });
+
+      if (res && res.code === EAppKey.MSG_SUCCESS) {
+        setCategories(res.categoryList);
+        console.log('quang debug rres', res.categoryList);
+      }
     })();
-  }, [categories_data]);
+  }, []);
 
   React.useEffect(() => {
     (async () => {
@@ -101,6 +98,7 @@ const ModalSelectProducts = () => {
 
         if (res && res.code === EAppKey.MSG_SUCCESS && !isEmpty(res.dataProduct)) {
           setProducts(res.dataProduct);
+          setTotalRecords(res.totalProduct);
         } else {
           NotificationManager.error({
             title: t('error'),
@@ -118,7 +116,7 @@ const ModalSelectProducts = () => {
   React.useEffect(() => {
     (async () => {
       try {
-        let params = { id: shopId, page: 1, type: EProductType.STOCK };
+        let params = { id: shopId, page: currentPage, type: EProductType.STOCK, pagesize: 20 };
 
         if (doSearch) {
           dispatch(setShowLoader(true));
@@ -130,6 +128,7 @@ const ModalSelectProducts = () => {
 
           if (res.code === EAppKey.MSG_SUCCESS && !isEmpty(res.dataProduct)) {
             setProducts(res.dataProduct);
+            setTotalRecords(res.totalProduct);
           } else {
             setProducts([]);
             NotificationManager.error({
@@ -143,7 +142,7 @@ const ModalSelectProducts = () => {
         dispatch(setShowLoader(false));
       }
     })();
-  }, [doSearch]);
+  }, [doSearch, currentPage]);
 
   React.useEffect(() => {
     if (!isEmpty(selectedProducts) && isOpen) {
@@ -166,58 +165,68 @@ const ModalSelectProducts = () => {
     setSelectedItems([]);
     offSelectAll();
   }, []);
-  2;
+
   const handleSelectAll = React.useCallback(() => {
     if (isEmpty(products)) {
       return;
     }
 
     toggleSelectAll();
-    if (selectAll) {
-      setSelectedItems(selectedProducts);
+
+    if (!selectAll) {
+      // If "Select All" is enabled
+      const selectedCount = selectedItems.length;
+
+      if (selectedCount >= 10) {
+        return;
+      }
+
+      const updatedItems = [...selectedItems];
+
+      products.forEach((item) => {
+        const exist = updatedItems.some((i) => i.id === item.id);
+
+        if (!exist && updatedItems.length < 10) {
+          updatedItems.push(item);
+        }
+      });
+
+      setSelectedItems(updatedItems);
     } else {
-      setSelectedItems(products);
+      // If "Select All" is disabled
+      setSelectedItems([]);
     }
-  }, [selectAll, products, selectedProducts]);
+  }, [selectAll, products, selectedItems]);
 
   const handleSelectItem = React.useCallback(
     (item) => {
-      const exist = selectedItems && selectedItems.find((i) => i.id === item.id);
-      if (exist) {
-        const updatedProducts = selectedItems.filter((i) => i.id !== item.id);
-        setSelectedItems(updatedProducts);
+      const isSelected = selectedItems.some((i) => i.id === item.id);
 
-        const isEqual = _.isEqual(updatedProducts, products);
-        if (isEqual && !selectAll) {
-          return;
-        }
+      if (isSelected) {
+        const updatedItems = selectedItems.filter((i) => i.id !== item.id);
+        setSelectedItems(updatedItems);
         offSelectAll();
       } else {
-        // If item is not selected, add it to the array
-        if (!isEmpty(selectedItems)) {
-          let _selectedItems = [...selectedItems, item];
+        if (selectedItems.length >= 10) {
+          return;
+        }
 
-          setSelectedItems(_selectedItems);
+        const updatedItems = [...selectedItems, item];
+        setSelectedItems(updatedItems);
 
-          const areArraysEqual = _.isEqualWith(_selectedItems, products, (obj1, obj2) => {
-            return obj1.id === obj2.id;
-          });
-          if (!areArraysEqual) {
-            return;
-          }
+        const areAllItemsSelected = updatedItems.length === products.length;
+        if (areAllItemsSelected) {
           onSelectAll();
-        } else {
-          setSelectedItems([item]);
         }
       }
     },
-    [selectedItems, products, selectAll]
+    [selectedItems, products, onSelectAll]
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick size="5xl">
+    <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick size="6xl">
       <ModalOverlay />
-      <ModalContent p="2">
+      <ModalContent p="2" h="4xl">
         <ModalHeader color="text-basic">{t('select_products')}</ModalHeader>
         <ModalCloseButton _focus={{ boxShadow: 'none' }} onClick={onClose} />
         <ModalBody>
@@ -226,7 +235,7 @@ const ModalSelectProducts = () => {
             flexDirection={{ base: 'column', lg: 'row' }}
             alignItems={{ base: 'unset', lg: 'center' }}
             justifyContent="space-between">
-            <HStack gap="2">
+            <HStack gap="2" flex="3">
               <Text textStyle="h3" color="text-basic">
                 {t('category.category')}
               </Text>
@@ -242,7 +251,7 @@ const ModalSelectProducts = () => {
                   _active={{ bg: 'bg-1' }}
                   onClick={onFocus}>
                   <Flex flex="1" justifyContent="space-between" px="2" alignItems="center">
-                    <Text noOfLines={1}>{category.name}</Text>
+                    <Text noOfLines={1}>{category ? category.name : 'All Categories'}</Text>
                     <Icon
                       color="text-basic"
                       as={focus ? ChevronUpIcon : ChevronDownIcon}
@@ -263,7 +272,7 @@ const ModalSelectProducts = () => {
                 </MenuList>
               </Menu>
             </HStack>
-            <HStack gap="2" flex="1">
+            <HStack gap="2" flex="7">
               <Text textStyle="h3" color="text-basic">
                 {t('search')}
               </Text>
@@ -289,9 +298,6 @@ const ModalSelectProducts = () => {
               }}
             />
           </HStack>
-          <Text mt="4" color="text-basic" textStyle="h2">
-            {t('products_found', { number: products.length })}
-          </Text>
           <Box
             mt="4"
             overflow="auto"
@@ -299,8 +305,9 @@ const ModalSelectProducts = () => {
             minH={isEmpty(products) ? '300px' : 'unset'}
             borderWidth="1px"
             borderRadius="4"
-            borderColor="border-5">
-            <Table variant="simple" minW="4xl">
+            borderColor="border-5"
+            maxH="600px">
+            <Table variant="simple" minW="4xl" maxH="4xl" overflow="auto">
               <Thead h="52px" bg="bg-2">
                 <Tr>
                   {headers.map((item, index) => {
@@ -321,26 +328,42 @@ const ModalSelectProducts = () => {
                   })}
                 </Tr>
               </Thead>
-              {isEmpty(products) ? (
-                <EmptyListItem />
-              ) : (
-                products.map((item, index) => {
-                  const isChecked = selectedItems && !!selectedItems.find((i) => i.id === item.id);
-                  const isDisable =
-                    selectedProducts && !!selectedProducts.find((i) => i.id === item.id);
-                  return (
-                    <SelectProductItem
-                      item={item}
-                      key={index}
-                      isChecked={isChecked}
-                      isLast={index === products.length - 1}
-                      isDisable={isDisable}
-                      onClick={() => handleSelectItem(item)}
-                    />
-                  );
-                })
-              )}
+              <Tbody overflow="auto" maxH="4xl">
+                {isEmpty(products) ? (
+                  <EmptyListItem />
+                ) : (
+                  products.map((item, index) => {
+                    const isChecked =
+                      selectedItems && !!selectedItems.find((i) => i.id === item.id);
+                    const isDisable =
+                      selectedProducts && !!selectedProducts.find((i) => i.id === item.id);
+                    return (
+                      <SelectProductItem
+                        item={item}
+                        key={index}
+                        isChecked={isChecked}
+                        //isLast={index === products.length - 1}
+                        isDisable={isDisable}
+                        onClick={() => handleSelectItem(item)}
+                      />
+                    );
+                  })
+                )}
+              </Tbody>
             </Table>
+            <Flex justifyContent="flex-end" mt="24px" mb="8px">
+              <PaginationPanel
+                alignSelf="flex-end"
+                pagesCount={pagesCount}
+                currentPage={currentPage}
+                isDisabled={isDisabled}
+                onPageChange={(page) => {
+                  setMessages([]);
+                  setCurrentPage(page);
+                }}
+                pages={pages}
+              />
+            </Flex>
           </Box>
         </ModalBody>
         <ModalFooter>

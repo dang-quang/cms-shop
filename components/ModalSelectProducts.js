@@ -81,7 +81,6 @@ const ModalSelectProducts = () => {
 
       if (res && res.code === EAppKey.MSG_SUCCESS) {
         setCategories(res.categoryList);
-        console.log('quang debug rres', res.categoryList);
       }
     })();
   }, []);

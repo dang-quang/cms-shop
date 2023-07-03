@@ -58,8 +58,13 @@ import { HiPlus } from 'react-icons/hi';
 
 import { EAppKey } from 'constants/types';
 import { parseNumber } from 'utilities/parseNumber';
-import { requestCreateUpdateProduct, requestGetListCategory } from 'utilities/ApiShop';
+import {
+  requestCreateUpdateProduct,
+  requestGetListCategory,
+  requestGetProductInfo,
+} from 'utilities/ApiShop';
 import { setSelectedCategory } from 'redux/actions/product';
+import { BASE_API_URL } from 'utilities/const';
 
 const initialValues = {
   id: '',
@@ -303,44 +308,6 @@ function CreateProduct() {
         values,
         errors,
       }) => {
-        // React.useEffect(() => {
-        //   if (voucher && voucher.banner) {
-        //     const str = BASE_API_URL + '/assets/' + voucher.banner;
-
-        //     const img = new Image();
-        //     img.crossOrigin = 'anonymous';
-        //     img.src = str;
-        //     img.onload = async () => {
-        //       const canvas = document.createElement('canvas');
-        //       canvas.width = img.width;
-        //       canvas.height = img.height;
-        //       const ctx = canvas.getContext('2d');
-        //       ctx.drawImage(img, 0, 0);
-        //       const dataURL = canvas.toDataURL('image/png');
-
-        //       setFieldValue('banner', dataURL);
-        //     };
-        //   }
-
-        //   if (voucher) {
-        //     setFieldValue(
-        //       'registerStart',
-        //       dayjs(parseFloat(voucher.registerStart)).format(formatDate)
-        //     );
-        //     setFieldValue('registerEnd', dayjs(parseFloat(voucher.registerEnd)).format(formatDate));
-        //     setFieldValue(
-        //       'programStart',
-        //       dayjs(parseFloat(voucher.programStart)).format(formatDate)
-        //     );
-        //     setFieldValue('programEnd', dayjs(parseFloat(voucher.programEnd)).format(formatDate));
-        //     if (voucher.maxShopRegister === 0) {
-        //       setFieldValue('typeShopLimit', EShopLimitType.NO_LIMIT);
-        //     } else {
-        //       setFieldValue('typeShopLimit', EShopLimitType.SHOP_LIMIT);
-        //     }
-        //   }
-        // }, [voucher]);
-
         React.useEffect(() => {
           (async () => {
             const res = await requestGetListCategory({});
@@ -349,6 +316,62 @@ function CreateProduct() {
             }
           })();
         }, []);
+
+        React.useEffect(() => {
+          (async () => {
+            if (product) {
+              const res = await requestGetProductInfo({ productId: parseFloat(product.id) });
+
+              if (res && res.code === EAppKey.MSG_SUCCESS) {
+                let _product = res.product;
+                if (_product && !isEmpty(_product.listImage)) {
+                  let _images = [];
+                  let imagePromises = [];
+
+                  for (let i = 0; i < _product.listImage.length; i++) {
+                    imagePromises.push(
+                      new Promise((resolve) => {
+                        const str = BASE_API_URL + '/assets/' + _product.listImage[i];
+                        const img = new Image();
+                        img.crossOrigin = 'anonymous';
+                        img.src = str;
+                        img.onload = async () => {
+                          const canvas = document.createElement('canvas');
+                          canvas.width = img.width;
+                          canvas.height = img.height;
+                          const ctx = canvas.getContext('2d');
+                          ctx.drawImage(img, 0, 0);
+
+                          const dataURL = canvas.toDataURL('image/png');
+                          _images.push(dataURL);
+                          resolve();
+                        };
+                      })
+                    );
+                  }
+
+                  Promise.all(imagePromises).then(() => {
+                    setFieldValue('images', _images);
+                  });
+                }
+
+                setFieldValue('name', _product.name);
+                setFieldValue('description', _product.description);
+                if (!_product.productDetail || isEmpty(_product.productDetail)) {
+                  setFieldValue('price', _product.price);
+                  setFieldValue('stock', _product.stock);
+                }
+
+                // const _selectedCategory = filterCategoryList([{ list: values.categories }], _product.categoryId);
+              }
+
+              // variations: [],
+              // list_variation: [],
+              // productDetailInfo
+              // categoryId: 122;
+            }
+          })();
+        }, [product, values.categories]);
 
         const { onUploader } = useMultiImageUpload((images) => {
           try {

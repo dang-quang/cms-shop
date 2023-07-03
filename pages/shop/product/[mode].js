@@ -325,6 +325,7 @@ function CreateProduct() {
 
               if (res && res.code === EAppKey.MSG_SUCCESS) {
                 let _product = res.product;
+                const _variations = res.variationInfo;
                 if (_product && !isEmpty(_product.listImage)) {
                   let _images = [];
                   let imagePromises = [];
@@ -363,6 +364,19 @@ function CreateProduct() {
                   setFieldValue('price', _product.price);
                   setFieldValue('stock', _product.stock);
                 }
+
+                let _list_variation = [];
+
+                // for (const index in _variations) {
+                //   const _options = Array.from(
+                //     _list_variation[index].details,
+                //     (details) => details.name
+                //   );
+
+                //   _list_variation.push({ name: _list_variation[index].name, options: _options });
+                // }
+
+                // setFieldValue('variations', _list_variation);
 
                 // const _selectedCategory = filterCategoryList([{ list: values.categories }], _product.categoryId);
               }

@@ -16,6 +16,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
+  useBoolean,
 } from '@chakra-ui/react';
 import _, { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +25,7 @@ import { CategoryItem } from 'components';
 import { filterParentCategories } from 'utilities/filterParentCategories';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedCategory } from 'redux/actions/product';
+import { listSearch } from 'utilities/listSearch';
 
 const ModalSelectCategory = ({
   title,
@@ -39,11 +41,13 @@ const ModalSelectCategory = ({
   const { t } = useTranslation();
   const [search, setSearch] = React.useState('');
   const [categories, setCategories] = React.useState([]);
+  const [isConfirmed, { on: onConfirmed, off: offConfirmed }] = useBoolean(false);
 
   React.useEffect(() => {
     if (isEmpty(data)) {
       return;
     }
+
     if (categoryId) {
       const parentCategories = filterParentCategories(data, categoryId);
 
@@ -69,9 +73,9 @@ const ModalSelectCategory = ({
       setCategories(_selectedCategory);
       dispatch(setSelectedCategory(_selectedCategory));
     } else {
-      setCategories([{ list: data }]);
+      setCategories([{ list: listSearch(data, search) }]);
     }
-  }, [data, categoryId]);
+  }, [data, categoryId, search]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick size="5xl" isCentered>
@@ -123,6 +127,7 @@ const ModalSelectCategory = ({
                             key={idx}
                             isSelected={item.selectedCategory === i}
                             onClick={() => {
+                              offConfirmed();
                               let updatedCategories = [...categories];
 
                               // Remove additional levels
@@ -151,7 +156,46 @@ const ModalSelectCategory = ({
             <Text color="text-note" textStyle="h3" as="span" mr="2">
               The currently selected :
             </Text>
-            <Box>
+            {isConfirmed ? (
+              <Box>
+                {isEmpty(selectedItem) || !selectedItem[0].selectedCategory ? (
+                  <Text as="span" textStyle="h3" color="text-body">
+                    No category has been chosen
+                  </Text>
+                ) : (
+                  selectedItem.map((item, index) => (
+                    <Text as="span" key={index}>
+                      <Text as="span" textStyle="h3-b" color="text-basic" key={index}>
+                        {item.selectedCategory ? `${item.selectedCategory.name} ` : ''}
+                        {index < selectedItem.length - 1 && selectedItem[index + 1].selectedCategory
+                          ? '> '
+                          : ''}
+                      </Text>
+                    </Text>
+                  ))
+                )}
+              </Box>
+            ) : (
+              <Box>
+                {isEmpty(categories) || !categories[0].selectedCategory ? (
+                  <Text as="span" textStyle="h3" color="text-body">
+                    No category has been chosen
+                  </Text>
+                ) : (
+                  categories.map((item, index) => (
+                    <Text as="span" key={index}>
+                      <Text as="span" textStyle="h3-b" color="text-basic" key={index}>
+                        {item.selectedCategory ? `${item.selectedCategory.name} ` : ''}
+                        {index < categories.length - 1 && categories[index + 1].selectedCategory
+                          ? '> '
+                          : ''}
+                      </Text>
+                    </Text>
+                  ))
+                )}
+              </Box>
+            )}
+            {/* <Box>
               {isEmpty(categories) || !categories[0].selectedCategory ? (
                 <Text as="span" textStyle="h3" color="text-body">
                   No category has been chosen
@@ -168,7 +212,7 @@ const ModalSelectCategory = ({
                   </Text>
                 ))
               )}
-            </Box>
+            </Box> */}
           </Flex>
           <HStack gap="2">
             <Button
@@ -183,6 +227,7 @@ const ModalSelectCategory = ({
                   setCategories([{ list: data }]);
                 }
                 onClose();
+                onConfirmed();
               }}>
               {t('cancel')}
             </Button>
@@ -194,6 +239,7 @@ const ModalSelectCategory = ({
               onClick={() => {
                 onConfirm(categories);
                 onClose();
+                onConfirmed();
               }}>
               {t('confirm')}
             </Button>

@@ -21,16 +21,21 @@ import _, { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { CategoryItem } from 'components';
+import { filterParentCategories } from 'utilities/filterParentCategories';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedCategory } from 'redux/actions/product';
 
 const ModalSelectCategory = ({
   title,
   isOpen,
   onClose,
   data,
+  categoryId,
   selectedItem,
   onCloseSelected,
   onConfirm,
 }) => {
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   const [search, setSearch] = React.useState('');
   const [categories, setCategories] = React.useState([]);
@@ -39,8 +44,34 @@ const ModalSelectCategory = ({
     if (isEmpty(data)) {
       return;
     }
-    setCategories([{ list: data }]);
-  }, [data]);
+    if (categoryId) {
+      const parentCategories = filterParentCategories(data, categoryId);
+
+      if (isEmpty(parentCategories)) {
+        return;
+      }
+
+      let _selectedCategory = [];
+
+      for (let i = 0; i < parentCategories.length; i++) {
+        if (i === 0) {
+          _selectedCategory.push({
+            list: data,
+            selectedCategory: parentCategories[i],
+          });
+        } else {
+          _selectedCategory.push({
+            list: parentCategories[i - 1].listChild,
+            selectedCategory: parentCategories[i],
+          });
+        }
+      }
+      setCategories(_selectedCategory);
+      dispatch(setSelectedCategory(_selectedCategory));
+    } else {
+      setCategories([{ list: data }]);
+    }
+  }, [data, categoryId]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick size="5xl" isCentered>
@@ -74,7 +105,6 @@ const ModalSelectCategory = ({
                 const { list } = item;
                 return (
                   <Box
-                    bg="1"
                     key={index}
                     w="270px"
                     minW="270px"
@@ -147,8 +177,8 @@ const ModalSelectCategory = ({
               minW="80px"
               onClick={() => {
                 if (!isEmpty(selectedItem)) {
-                  setCategories([{ list: data }]);
-                  onCloseSelected(categories);
+                  setCategories(selectedItem);
+                  onCloseSelected(selectedItem);
                 } else {
                   setCategories([{ list: data }]);
                 }

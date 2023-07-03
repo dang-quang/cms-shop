@@ -68,6 +68,7 @@ import { BASE_API_URL } from 'utilities/const';
 
 const initialValues = {
   id: '',
+  category_id: '',
   images: [],
   name: '',
   categories: [],
@@ -357,6 +358,7 @@ function CreateProduct() {
 
                 setFieldValue('name', _product.name);
                 setFieldValue('description', _product.description);
+                setFieldValue('category_id', _product.categoryId);
                 if (!_product.productDetail || isEmpty(_product.productDetail)) {
                   setFieldValue('price', _product.price);
                   setFieldValue('stock', _product.stock);
@@ -948,8 +950,6 @@ function CreateProduct() {
                               value={values.stock}
                               onChange={(e) => {
                                 setFieldValue('stock', parseNumber(e));
-                                setFieldTouched('stock', true, false);
-                                validateField('stock');
                               }}>
                               <NumberInputField placeholder={t('input')} />
                             </NumberInput>
@@ -983,6 +983,7 @@ function CreateProduct() {
             <ModalSelectCategory
               data={values.categories}
               title={t('shop_product.edit_category')}
+              categoryId={values.category_id}
               isOpen={isOpenCategory}
               selectedItem={selectedCategory}
               onClose={onCloseCategory}

@@ -117,7 +117,7 @@ const RangeDatePickerItem: React.FC<RangeDatePickerItemProps> = ({
           onClick={(e) => {
             onClear && onClear();
           }}>
-          <Icon as={AiOutlineCloseCircle} w="16px" h="16px" color="white" fill="border-1" />
+          <Icon as={AiOutlineCloseCircle} w="16px" h="16px" color="white" fill="border-3" />
         </Center>
       )}
     </HStack>

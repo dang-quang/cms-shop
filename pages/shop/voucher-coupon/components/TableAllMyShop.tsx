@@ -26,7 +26,7 @@ import { ModalConfirm, PaginationPanel, RangeDatePickerItem, VoucherShopItem } f
 import { isEmpty } from 'lodash';
 import Images from 'assets';
 import { EAppKey } from 'constants/types';
-import { requestGetListVoucherShop } from 'utilities/ApiManage';
+import { requestGetListVoucherShop } from 'utilities/ApiShop';
 //@ts-ignore
 import { NotificationManager } from 'react-light-notifications';
 

@@ -182,3 +182,8 @@ export enum EShowFlashSaleType {
   TURN_ON = 'TURN_ON',
   TURN_OFF = 'TURN_OFF',
 }
+
+export enum EVoucherType {
+  VOUCHER_SHOP = 'VOUCHER SHOP',
+  VOUCHER_PRODUCT = 'VOUCHER PRODUCT',
+}

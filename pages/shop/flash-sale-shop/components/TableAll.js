@@ -20,7 +20,7 @@ import {
 import { isEmpty } from 'lodash';
 import {
   requestGetListFlashSale,
-  requestDeleteFlashSale,
+  requestShopDeleteFlashSale,
   requestUpdateStatusFlashSaleShop,
 } from 'utilities/ApiShop';
 
@@ -168,8 +168,12 @@ export const TableAll = () => {
 
   const handleDeleteFlashSale = React.useCallback(async () => {
     try {
+      if (!selectedFlashSale) {
+        return;
+      }
+
       dispatch(setShowLoader(true));
-      const res = await requestDeleteFlashSale({ id: selectedFlashSale.id });
+      const res = await requestShopDeleteFlashSale({ id: selectedFlashSale.id });
       if (res.code === EAppKey.MSG_SUCCESS) {
         setSelectedFlashSale(null);
         handleReload();

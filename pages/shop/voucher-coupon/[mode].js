@@ -1,6 +1,5 @@
 import React from 'react';
 import { NotificationManager } from 'react-light-notifications';
-import 'react-light-notifications/lib/main.css';
 import Admin from 'layouts/Admin.js';
 import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
 import { useRouter } from 'next/router';
@@ -19,11 +18,12 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  NumberInput,
+  NumberInputField,
   Radio,
   RadioGroup,
   Select,
   SimpleGrid,
-  Stack,
   Text,
   Textarea,
 } from '@chakra-ui/react';
@@ -35,12 +35,18 @@ import { useDispatch } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
 import _ from 'lodash';
 import { BASE_API_URL } from 'utilities/const';
-import { requestCreateUpdateVoucher } from 'utilities/ApiManage';
-import { EDiscountType, EDiscountLimitType, EShopLimitType, EAppKey } from 'constants/types';
+import {
+  EDiscountType,
+  EDiscountLimitType,
+  EShopLimitType,
+  EAppKey,
+  EVoucherType,
+} from 'constants/types';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { IoIosCloudUpload } from 'react-icons/io';
 import { FormGroup } from 'components';
-import { requestSaveVoucherShop } from './../../../utilities/ApiManage';
+import { requestCreateUpdateVoucherShop } from 'utilities/ApiShop';
+import { parseNumber } from 'utilities/parseNumber';
 
 const formatDate = 'YYYY-MM-DDTHH:mm';
 
@@ -52,15 +58,15 @@ const initialValues = {
   endDate: dayjs().add(1, 'hours').add(10, 'minutes').format(formatDate),
   typeDiscount: EDiscountType.CASH,
   typeLimit: EDiscountLimitType.AMOUNT,
-  discountLimit: '',
-  minOrderPrice: '',
+  maxDiscount: '',
+  minOrderValue: '',
   quantityVoucher: '',
   minDiscount: '',
-  maxDiscount: '',
   discountValue: '',
 };
 
 const AddUpdateVoucherCoupon = () => {
+  const shopId = 143;
   const router = useRouter();
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -78,12 +84,11 @@ const AddUpdateVoucherCoupon = () => {
         startDate,
         endDate,
         quantityVoucher,
-        minOrderPrice,
+        minOrderValue,
         typeDiscount,
         discountValue,
-        typeLimit,
-        discountLimit,
-        maxPerUser,
+        maxDiscount,
+        maxUsage,
         description,
         banner,
       },
@@ -97,75 +102,68 @@ const AddUpdateVoucherCoupon = () => {
           _banner = banner.replace(/^data:image\/(png|jpg|jpeg);base64,/, '');
         }
         if (voucher) {
-          // const res = await requestCreateUpdateVoucher({
-          //   id,
-          //   name: name,
-          //   registerStart: dayjs(registerStart).unix(),
-          //   registerEnd: dayjs(registerEnd).unix(),
-          //   programStart: dayjs(programStart).unix(),
-          //   programEnd: dayjs(programEnd).unix(),
-          //   maxShopRegister: typeShopLimit === EShopLimitType.SHOP_LIMIT ? maxShopRegister : 0,
-          //   registerPrice: registerPrice,
-          //   minOrderPrice: minOrderPrice,
-          //   quantityVoucher,
-          //   discountLimit,
-          //   typeDiscount,
-          //   discountValue,
-          //   banner: _banner,
-          //   description,
-          //   typeLimit,
-          // });
-          // if (res.code === EAppKey.MSG_SUCCESS) {
-          //   NotificationManager.success({
-          //     title: t('success'),
-          //     message: 'Update Voucher Success',
-          //     //message: t('category_update_success'),
-          //   });
-          //   setTimeout(() => {
-          //     router.push('/admin/voucher');
-          //   }, 1000);
-          // } else {
-          //   NotificationManager.error({
-          //     title: t('error'),
-          //     message: res.message ? res.message.text : 'Error',
-          //   });
-          // }
-        } else {
-          const res = await requestSaveVoucherShop({
+          const res = await requestCreateUpdateVoucherShop({
+            id,
+            //TODO shop id
+            shopId: shopId,
+            type: EVoucherType.VOUCHER_PRODUCT,
             programName: name,
             voucherCode: code,
-            type: 'VOUCHER SHOP',
-            shopId: 143,
-            startAt: dayjs(startDate).unix(),
-            endAt: dayjs(endDate).unix(),
-            // programStart: dayjs(programStart).unix(),
-            // programEnd: dayjs(programEnd).unix(),
-            // maxDiscount: typeDiscount == EDiscountType.PERCENT ? typeLimit == EDiscountLimitType.AMOUNT ? discountLimit : ,
-            // maxShopRegister: typeShopLimit === EShopLimitType.SHOP_LIMIT ? maxShopRegister : 0,
-            // registerPrice: registerPrice,
-            minOrderValue: minOrderPrice,
-            quantityVoucher,
-            maxDiscount: discountLimit,
-            typeDiscount,
-            discountValue,
-            description,
-            maxUsage: maxPerUser,
+            startDate: dayjs(startDate).unix(),
+            endDate: dayjs(endDate).unix(),
+            typeDiscount: typeDiscount,
+            discountValue: discountValue,
+            maxDiscount: maxDiscount,
+            minOrderValue: minOrderValue,
+            quantityVoucher: quantityVoucher,
+            maxUsage: maxUsage,
             image: _banner,
-
-            // typeLimit,
+            description: description,
           });
           if (res.code === EAppKey.MSG_SUCCESS) {
             NotificationManager.success({
               title: t('success'),
-              message: 'Create Voucher Success',
+              message: t('voucher.update_voucher_success'),
             });
             setTimeout(() => {
-              router.push('/admin/voucher');
+              router.push('/shop/voucher-coupon');
             }, 1000);
           } else {
             NotificationManager.error({
               title: t('error'),
-              message: res.message ? res.message.text : 'Error',
+              message: res.message ? res.message.text : t('error'),
+            });
+          }
+        } else {
+          const res = await requestCreateUpdateVoucherShop({
+            //TODO shop id
+            shopId: shopId,
+            type: EVoucherType.VOUCHER_PRODUCT,
+            programName: name,
+            voucherCode: code,
+            startDate: dayjs(startDate).unix(),
+            endDate: dayjs(endDate).unix(),
+            typeDiscount: typeDiscount,
+            discountValue: discountValue,
+            maxDiscount: maxDiscount,
+            minOrderValue: minOrderValue,
+            quantityVoucher: quantityVoucher,
+            maxUsage: maxUsage,
+            image: _banner,
+            description: description,
+          });
+          if (res.code === EAppKey.MSG_SUCCESS) {
+            NotificationManager.success({
+              title: t('success'),
+              message: t('voucher.create_voucher_success'),
+            });
+            setTimeout(() => {
+              router.push('/shop/voucher-coupon');
+            }, 1000);
+          } else {
+            NotificationManager.error({
+              title: t('error'),
+              message: res.message ? res.message.text : t('error'),
             });
           }
         }
@@ -176,22 +174,18 @@ const AddUpdateVoucherCoupon = () => {
     [voucher]
   );
 
-  const addUpdateValidationSchema = yup.object().shape({
+  const validationSchema = yup.object().shape({
     name: yup.string().required(t('error_field_empty')),
     code: yup
       .string()
       .required(t('error_field_empty'))
       .matches(/^[A-Z0-9]{1,5}$/, t('error_code_format')),
-    startDate: yup
-      .date()
-      .min(dayjs().toDate(), 'Please enter a start time that is later than the current time.'),
+    startDate: yup.date().min(dayjs().toDate(), t('error_start_time')),
     endDate: yup
       .date()
-      .min(
-        yup.ref('endDate'),
-        'The end time must be greater than the start time by at least 1 hour.'
-      ),
-    discountLimit: yup.string().when('typeDiscount', {
+      .min(yup.ref('startDate').min(dayjs().subtract(1, 'hour').toDate()), t('error_end_time'))
+      .required(),
+    maxDiscount: yup.string().when('typeDiscount', {
       is: EDiscountType.PERCENT,
       then: yup.string().required(t('error_field_empty')),
     }),
@@ -211,14 +205,14 @@ const AddUpdateVoucherCoupon = () => {
         is: EDiscountType.CASH,
         then: yup.string().required(t('error_field_empty')),
       }),
-    minOrderPrice: yup.string().required(t('error_field_empty')),
+    minOrderValue: yup.string().required(t('error_field_empty')),
     quantityVoucher: yup.string().required(t('error_field_empty')),
   });
 
   return (
     <Formik
       validateOnChange={false}
-      validationSchema={addUpdateValidationSchema}
+      validationSchema={validationSchema}
       enableReinitialize={true}
       initialValues={voucher ? voucher : initialValues}
       onSubmit={handleSubmitVoucher}>
@@ -243,21 +237,22 @@ const AddUpdateVoucherCoupon = () => {
           }
 
           if (voucher) {
-            setFieldValue(
-              'registerStart',
-              dayjs(parseFloat(voucher.registerStart)).format(formatDate)
-            );
-            setFieldValue('registerEnd', dayjs(parseFloat(voucher.registerEnd)).format(formatDate));
-            setFieldValue(
-              'programStart',
-              dayjs(parseFloat(voucher.programStart)).format(formatDate)
-            );
-            setFieldValue('programEnd', dayjs(parseFloat(voucher.programEnd)).format(formatDate));
-            if (voucher.maxShopRegister === 0) {
-              setFieldValue('typeShopLimit', EShopLimitType.NO_LIMIT);
-            } else {
-              setFieldValue('typeShopLimit', EShopLimitType.SHOP_LIMIT);
-            }
+            console.log('quang debug update voucher =====>', voucher);
+            // setFieldValue(
+            //   'registerStart',
+            //   dayjs(parseFloat(voucher.registerStart)).format(formatDate)
+            // );
+            // setFieldValue('registerEnd', dayjs(parseFloat(voucher.registerEnd)).format(formatDate));
+            // setFieldValue(
+            //   'programStart',
+            //   dayjs(parseFloat(voucher.programStart)).format(formatDate)
+            // );
+            // setFieldValue('programEnd', dayjs(parseFloat(voucher.programEnd)).format(formatDate));
+            // if (voucher.maxShopRegister === 0) {
+            //   setFieldValue('typeShopLimit', EShopLimitType.NO_LIMIT);
+            // } else {
+            //   setFieldValue('typeShopLimit', EShopLimitType.SHOP_LIMIT);
+            // }
           }
         }, [voucher]);
 
@@ -276,7 +271,9 @@ const AddUpdateVoucherCoupon = () => {
         return (
           <Form>
             <Text textStyle="h6-sb" color="text-basic" mt="4">
-              {voucher ? 'Update Voucher Coupon' : 'Create New Voucher Coupon'}
+              {voucher
+                ? t('voucher.update_voucher_coupon')
+                : t('voucher.create_new_voucher_coupon')}
             </Text>
             <Box
               mt="4"
@@ -286,12 +283,14 @@ const AddUpdateVoucherCoupon = () => {
               pl={{ base: '6', xl: '8' }}
               pr={{ base: '10', xl: '100px' }}>
               <Text textStyle="h5-b" color="primary.100" mb="6">
-                Basic information
+                {t('basic_information')}
               </Text>
-              <FormGroup title="Promotion name">
+              <FormGroup title={t('voucher.promotionName')}>
                 <FormControl isInvalid={!!errors.name}>
                   <Input
-                    placeholder="Input"
+                    id="name"
+                    name="name"
+                    placeholder={t('input')}
                     autoComplete="off"
                     value={values.name}
                     onChange={handleChange('name')}
@@ -299,10 +298,10 @@ const AddUpdateVoucherCoupon = () => {
                   <FormErrorMessage>{errors.name}</FormErrorMessage>
                 </FormControl>
               </FormGroup>
-              <FormGroup title="Voucher code" mt="6">
+              <FormGroup title={t('voucher.voucherCode')} mt="6">
                 <FormControl isInvalid={!!errors.code}>
                   <Input
-                    placeholder="Input"
+                    placeholder={t('input')}
                     autoComplete="off"
                     value={values.code}
                     onChange={handleChange('code')}
@@ -310,12 +309,12 @@ const AddUpdateVoucherCoupon = () => {
                   <FormErrorMessage>{errors.code}</FormErrorMessage>
                 </FormControl>
               </FormGroup>
-              <FormGroup title="Usage time" mt="6">
+              <FormGroup title={t('voucher.usage_time')} mt="6">
                 <SimpleGrid columns={{ base: 1, xl: 2 }} gap="5" pr={{ base: 'unset', xl: '20%' }}>
                   <FormControl isInvalid={!!errors.startDate}>
                     <Input
                       type="datetime-local"
-                      placeholder="Select Date and Time"
+                      placeholder={t('select_date_and_time')}
                       value={values.startDate}
                       onChange={handleChange('startDate')}
                       min={dayjs().format(formatDate)}
@@ -325,7 +324,7 @@ const AddUpdateVoucherCoupon = () => {
                   <FormControl isInvalid={!!errors.endDate}>
                     <Input
                       type="datetime-local"
-                      placeholder="Select Date and Time"
+                      placeholder={t('select_date_and_time')}
                       value={values.endDate}
                       onChange={handleChange('endDate')}
                       min={dayjs().format(formatDate)}
@@ -338,27 +337,30 @@ const AddUpdateVoucherCoupon = () => {
               <Text textStyle="h5-b" color="primary.100" mt="6">
                 {t('voucher.setUpVoucher')}
               </Text>
-              <FormGroup title="Discount Type | Amount" mt="6">
+              <FormGroup title={t('voucher.discount_type_amount')} mt="6">
                 <Grid templateColumns="repeat(10,1fr)" gap="5">
                   <GridItem colSpan={3}>
                     <Select
                       defaultValue={EDiscountType.CASH}
                       value={values.typeDiscount}
                       onChange={handleChange('typeDiscount')}>
-                      <option value={EDiscountType.CASH}>Fix Amount</option>
-                      <option value={EDiscountType.PERCENT}>By Percentage</option>
+                      <option value={EDiscountType.CASH}>{t('fix_amount')}</option>
+                      <option value={EDiscountType.PERCENT}>{t('by_percentage')}</option>
                     </Select>
                   </GridItem>
                   <GridItem colSpan={7}>
                     <InputGroup>
                       <FormControl isInvalid={!!errors.discountValue}>
-                        <Input
-                          placeholder="Input"
-                          autoComplete="off"
+                        <NumberInput
+                          flex="1"
+                          id="discountValue"
+                          name="discountValue"
                           value={values.discountValue}
-                          type="number"
-                          onChange={handleChange('discountValue')}
-                        />
+                          onChange={(e) => {
+                            setFieldValue('discountValue', parseNumber(e));
+                          }}>
+                          <NumberInputField placeholder={t('input')} />
+                        </NumberInput>
                         <FormErrorMessage>{errors.discountValue}</FormErrorMessage>
                       </FormControl>
                       <InputRightElement pointerEvents="none" w="100px" borderLeftWidth="1px">
@@ -373,7 +375,7 @@ const AddUpdateVoucherCoupon = () => {
                 </Grid>
               </FormGroup>
               {values.typeDiscount === EDiscountType.PERCENT && (
-                <FormGroup title="Maximum Discount Price" mt="6">
+                <FormGroup title={t('voucher.maximum_discount_price')} mt="6">
                   <RadioGroup
                     value={values.typeLimit}
                     onChange={handleChange('typeLimit')}
@@ -381,10 +383,10 @@ const AddUpdateVoucherCoupon = () => {
                     pr="20%">
                     <HStack spacing={5} direction="row">
                       <Radio value={EDiscountLimitType.AMOUNT} flex="1">
-                        Limited
+                        {t('limited')}
                       </Radio>
                       <Radio value={EDiscountLimitType.NO_LIMIT} flex="1">
-                        No Limited
+                        {t('no_limited')}
                       </Radio>
                     </HStack>
                   </RadioGroup>
@@ -393,69 +395,79 @@ const AddUpdateVoucherCoupon = () => {
               {values.typeDiscount === EDiscountType.PERCENT &&
                 values.typeLimit === EDiscountLimitType.AMOUNT && (
                   <FormGroup mt="6">
-                    <FormControl isInvalid={!!errors.discountLimit}>
+                    <FormControl isInvalid={!!errors.maxDiscount}>
                       <InputGroup>
-                        <Input
-                          placeholder="Input"
-                          autoComplete="off"
-                          value={values.discountLimit}
-                          type="number"
-                          onChange={handleChange('discountLimit')}
-                        />
+                        <NumberInput
+                          flex="1"
+                          id="maxDiscount"
+                          name="maxDiscount"
+                          value={values.maxDiscount}
+                          onChange={(e) => {
+                            setFieldValue('maxDiscount', parseNumber(e));
+                          }}>
+                          <NumberInputField placeholder={t('input')} />
+                        </NumberInput>
                         <InputRightElement w="100px" borderLeftWidth="1px">
                           <Center h="full">
                             <Text textStyle="h4">HTG</Text>
                           </Center>
                         </InputRightElement>
                       </InputGroup>
-                      <FormErrorMessage>{errors.discountLimit}</FormErrorMessage>
+                      <FormErrorMessage>{errors.maxDiscount}</FormErrorMessage>
                     </FormControl>
                   </FormGroup>
                 )}
-              <FormGroup title="Minimum Basket Price" mt="6">
-                <FormControl isInvalid={!!errors.minOrderPrice}>
+              <FormGroup title={t('voucher.minimum_basket_price')} mt="6">
+                <FormControl isInvalid={!!errors.minOrderValue}>
                   <InputGroup>
-                    <Input
-                      placeholder="Input"
-                      autoComplete="off"
-                      value={values.minOrderPrice}
-                      type="number"
-                      onChange={handleChange('minOrderPrice')}
-                    />
+                    <NumberInput
+                      flex="1"
+                      id="minOrderValue"
+                      name="minOrderValue"
+                      value={values.minOrderValue}
+                      onChange={(e) => {
+                        setFieldValue('minOrderValue', parseNumber(e));
+                      }}>
+                      <NumberInputField placeholder={t('input')} />
+                    </NumberInput>
                     <InputRightElement w="100px" borderLeftWidth="1px">
                       <Center h="full">
                         <Text textStyle="h4">HTG</Text>
                       </Center>
                     </InputRightElement>
                   </InputGroup>
-                  <FormErrorMessage>{errors.minOrderPrice}</FormErrorMessage>
+                  <FormErrorMessage>{errors.minOrderValue}</FormErrorMessage>
                 </FormControl>
               </FormGroup>
-              <FormGroup title="Usage Quantity" mt="6">
+              <FormGroup title={t('voucher.usage_quantity')} mt="6">
                 <FormControl isInvalid={!!errors.quantityVoucher}>
-                  <Input
-                    placeholder="Input"
-                    autoComplete="off"
+                  <NumberInput
+                    id="quantityVoucher"
+                    name="quantityVoucher"
                     value={values.quantityVoucher}
-                    type="number"
-                    onChange={handleChange('quantityVoucher')}
-                  />
+                    onChange={(e) => {
+                      setFieldValue('quantityVoucher', parseNumber(e));
+                    }}>
+                    <NumberInputField placeholder={t('input')} />
+                  </NumberInput>
                   <FormErrorMessage>{errors.quantityVoucher}</FormErrorMessage>
                 </FormControl>
               </FormGroup>
-              <FormGroup title="Max usage per user" mt="6">
+              <FormGroup title={t('max_usage_per_user')} mt="6">
                 <FormControl>
-                  <Input
-                    placeholder="Input"
-                    autoComplete="off"
-                    value={values.maxPerUser}
-                    type="number"
-                    onChange={handleChange('maxPerUser')}
-                  />
+                  <NumberInput
+                    id="maxUsage"
+                    name="maxUsage"
+                    value={values.maxUsage}
+                    onChange={(e) => {
+                      setFieldValue('maxUsage', parseNumber(e));
+                    }}>
+                    <NumberInputField placeholder={t('input')} />
+                  </NumberInput>
                   <FormErrorMessage>{errors.quantityVoucher}</FormErrorMessage>
                 </FormControl>
               </FormGroup>
-              <FormGroup title="Banner voucher" mt="6">
+              <FormGroup title={t('voucher.banner_voucher')} mt="6">
                 <Box maxW={{ base: 'unset', '2xl': '60%' }}>
                   <Box
                     zIndex={1}
@@ -481,7 +493,7 @@ const AddUpdateVoucherCoupon = () => {
                       ) : (
                         <Flex flexDirection="column" alignItems="center" justifyContent="center">
                           <Icon as={IoIosCloudUpload} width="32px" height="32px" color="gray.100" />
-                          <Text mt="1">Upload an image of banner voucher</Text>
+                          <Text mt="1">{t('voucher.upload_an_image_of_banner_voucher')}</Text>
                         </Flex>
                       )}
                       {values.banner && (
@@ -513,10 +525,12 @@ const AddUpdateVoucherCoupon = () => {
                   </Box>
                 </Box>
               </FormGroup>
-              <FormGroup title="Program details" mt="6">
+              <FormGroup title={t('voucher.program_details')} mt="6">
                 <Textarea
+                  id="description"
+                  name="description"
                   rows={6}
-                  placeholder="Description"
+                  placeholder={t('description')}
                   autoComplete="off"
                   value={values.description}
                   onChange={handleChange('description')}

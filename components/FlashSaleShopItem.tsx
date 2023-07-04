@@ -30,7 +30,7 @@ const FlashSaleShopItem: React.FC<FlashSaleShopItemProps> = ({
   return (
     <Tr>
       <Td borderColor={borderColor}>
-        <HStack mt="2">
+        <HStack mt="2" w="300px">
           <Text textStyle="h3" color="text-basic">
             {dayjs(startAt).format(formatTime)}
           </Text>
@@ -41,8 +41,8 @@ const FlashSaleShopItem: React.FC<FlashSaleShopItemProps> = ({
         </HStack>
       </Td>
       <Td borderColor={borderColor}>
-        <Flex>
-          <Text textStyle="h3-m" color="text-basic">
+        <Flex w="300px" flex="1">
+          <Text textStyle="h3-m" noOfLines={1} color="text-basic">
             {name}
           </Text>
         </Flex>

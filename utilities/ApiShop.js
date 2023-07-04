@@ -23,8 +23,8 @@ export function requestGetListFlashSale(obj) {
   return postWithCheckingToken(`${BASE_API_URL}/flash-sale/shop-list-flash-sale`, {}, obj);
 }
 
-export function requestDeleteFlashSale(obj) {
-  return postWithCheckingToken(`${BASE_API_URL}/flash-sale/delete`, {}, obj);
+export function requestShopDeleteFlashSale(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/flash-sale/shop-delete-flash-sale`, {}, obj);
 }
 
 export function requestCreateShopFlashSale(payload) {
@@ -42,4 +42,12 @@ export function requestUpdateStatusFlashSaleShop(obj) {
 
 export function requestGetProductInfo(obj) {
   return postWithCheckingToken(`${BASE_API_URL}/product/product-info`, {}, obj);
+}
+
+export function requestGetListVoucherShop(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/voucher/shop-list-voucher`, {}, obj);
+}
+
+export function requestCreateUpdateVoucherShop(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/voucher/shop-save-voucher`, {}, obj);
 }

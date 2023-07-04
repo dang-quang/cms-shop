@@ -325,7 +325,9 @@ function CreateProduct() {
 
               if (res && res.code === EAppKey.MSG_SUCCESS) {
                 let _product = res.product;
-                const _variations = res.variationInfo;
+                let _variations = res.variationInfo;
+                let _list_variation = res.productDetailInfo;
+
                 if (_product && !isEmpty(_product.listImage)) {
                   let _images = [];
                   let imagePromises = [];
@@ -365,26 +367,23 @@ function CreateProduct() {
                   setFieldValue('stock', _product.stock);
                 }
 
-                let _list_variation = [];
+                let variations = [];
 
-                // for (const index in _variations) {
-                //   const _options = Array.from(
-                //     _list_variation[index].details,
-                //     (details) => details.name
-                //   );
+                if (!!_variations) {
+                  for (const i in _variations) {
+                    const _options = Array.from(_variations[i].details, (details) => details.name);
 
-                //   _list_variation.push({ name: _list_variation[index].name, options: _options });
-                // }
+                    variations.push({
+                      name: _variations[i].name,
+                      options: _options,
+                      isShow: true,
+                    });
+                  }
 
-                // setFieldValue('variations', _list_variation);
-
-                // const _selectedCategory = filterCategoryList([{ list: values.categories }], _product.categoryId);
+                  setFieldValue('variations', variations);
+                  // list_variation: [],
+                }
               }
-
-              // variations: [],
-              // list_variation: [],
-              // productDetailInfo
-              // categoryId: 122;
             }
           })();
         }, [product, values.categories]);

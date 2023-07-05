@@ -7,6 +7,7 @@ export const SET_SIDEBAR = 'SET_SIDEBAR';
 export const SHOW_LOADER = 'SHOW_LOADER';
 export const GAME_TAB = 'GAME_TAB';
 export const SHOP_FLASH_SALE_TAB = 'SHOP_FLASH_SALE_TAB';
+export const SHOP_PRODUCT_TAB = 'SHOP_PRODUCT_TAB';
 export const LOADING = 'LOADING';
 
 export function setShowLoader(showLoader) {
@@ -23,10 +24,17 @@ export function setSelectedGameTab(selectedGameTab) {
   };
 }
 
-export function setSelectedFlashSaleTabIndex(selectedFlashSaleTabIndex) {
+export function setShopPlashSaleTabIndex(selectedFlashSaleTabIndex) {
   return {
     type: SHOP_FLASH_SALE_TAB,
     selectedFlashSaleTabIndex,
+  };
+}
+
+export function setShopProductTabIndex(shopProductTabIndex) {
+  return {
+    type: SHOP_PRODUCT_TAB,
+    shopProductTabIndex,
   };
 }
 

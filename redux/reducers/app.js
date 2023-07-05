@@ -11,6 +11,7 @@ import {
   GAME_TAB,
   SHOP_FLASH_SALE_TAB,
   LOADING,
+  SHOP_PRODUCT_TAB,
 } from '../actions/app';
 
 const initialState = {
@@ -60,6 +61,11 @@ export default function app(state = initialState, action) {
       return {
         ...state,
         selectedFlashSaleTabIndex: action.selectedFlashSaleTabIndex,
+      };
+    case SHOP_PRODUCT_TAB:
+      return {
+        ...state,
+        shopProductTabIndex: action.shopProductTabIndex,
       };
     case LOADING:
       return {

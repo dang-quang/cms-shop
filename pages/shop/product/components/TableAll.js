@@ -8,8 +8,6 @@ import {
   Flex,
   useBoolean,
   Text,
-  Image,
-  Center,
   HStack,
   Button,
   useDisclosure,
@@ -18,15 +16,20 @@ import {
 import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
 
-import Images from 'assets';
 import _, { isEmpty } from 'lodash';
 import { requestGetListShopProduct, requestUpdateStatusProduct } from 'utilities/ApiShop';
 import { useDispatch, useSelector } from 'react-redux';
-import { setShowLoader } from 'redux/actions/app';
+import { setLoading, setShopProductTabIndex, setShowLoader } from 'redux/actions/app';
 import { EAppKey, EProductType, EShowProductType } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
 import { useRouter } from 'next/router';
-import { ModalConfirm, PaginationPanel, ShopProductItem } from 'components';
+import {
+  EmptyListItem,
+  LoadingShopProductItem,
+  ModalConfirm,
+  PaginationPanel,
+  ShopProductItem,
+} from 'components';
 import { setDoSearchProduct } from 'redux/actions/product';
 
 const TableAll = () => {
@@ -36,6 +39,8 @@ const TableAll = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const pageSize = 50;
+  const { loading, showLoader } = useSelector((state) => state.app);
+  const isLoading = loading || showLoader;
 
   const [products, setProducts] = React.useState([]);
   const [selectedProducts, setSelectedProducts] = React.useState([]);
@@ -94,7 +99,7 @@ const TableAll = () => {
         } else {
           NotificationManager.error({
             title: t('error'),
-            message: `No data exists`,
+            message: t('no_data_exists'),
           });
         }
       } catch (e) {
@@ -112,6 +117,7 @@ const TableAll = () => {
 
         if (doSearchProduct) {
           dispatch(setShowLoader(true));
+          dispatch(setLoading(true));
           if (doSearchProduct) {
             if (searchProductName) {
               params.keyWord = searchProductName;
@@ -147,9 +153,13 @@ const TableAll = () => {
       } finally {
         dispatch(setDoSearchProduct(false));
         dispatch(setShowLoader(false));
+        setTimeout(() => {
+          dispatch(setLoading(false));
+        }, 2000);
       }
     })();
   }, [
+    shopID,
     doSearchProduct,
     currentPage,
     searchProductName,
@@ -193,6 +203,45 @@ const TableAll = () => {
     [selectedProducts, products, selectAll]
   );
 
+  const handleReload = React.useCallback(async () => {
+    let params = { id: shopID, page: 1 };
+
+    if (searchProductName) {
+      params.keyWord = searchProductName;
+    }
+
+    if (searchProductStockMin) {
+      params.minStock = searchProductStockMin;
+    }
+    if (searchProductStockMax) {
+      params.maxStock = searchProductStockMax;
+    }
+    if (searchProductCategory) {
+      params.categoryId = searchProductCategory;
+    }
+
+    const res = await requestGetListShopProduct(params);
+
+    if (res.code === EAppKey.MSG_SUCCESS && !isEmpty(res.dataProduct)) {
+      setProducts(res.dataProduct);
+      setTotalPage(res.totalPages);
+      setTotalRecords(res.totalProduct);
+      dispatch(setShopProductTabIndex(0));
+    } else {
+      NotificationManager.error({
+        title: t('error'),
+        message: t('no_data_exists'),
+      });
+    }
+  }, [
+    shopID,
+    currentPage,
+    searchProductName,
+    searchProductStockMin,
+    searchProductStockMax,
+    searchProductCategory,
+  ]);
+
   const handleDeleteProducts = React.useCallback(async () => {
     try {
       onCloseDelete();
@@ -203,7 +252,7 @@ const TableAll = () => {
       const res = await requestUpdateStatusProduct({ ids: ids, type: EProductType.DELETE });
       if (res.code === EAppKey.MSG_SUCCESS) {
         setSelectedProducts([]);
-        router.push('/shop/product');
+        handleReload();
       } else {
         NotificationManager.error({
           title: t('error'),
@@ -227,7 +276,7 @@ const TableAll = () => {
       const res = await requestUpdateStatusProduct({ ids: ids, type: EProductType.DELIST });
       if (res.code === EAppKey.MSG_SUCCESS) {
         setSelectedProducts([]);
-        router.push('/shop/product');
+        handleReload();
       } else {
         NotificationManager.error({
           title: t('error'),
@@ -253,7 +302,7 @@ const TableAll = () => {
       const res = await requestUpdateStatusProduct({ ids: ids, type: EProductType.ACTIVE });
       if (res.code === EAppKey.MSG_SUCCESS) {
         setSelectedProducts([]);
-        router.push('/shop/product');
+        handleReload();
       } else {
         NotificationManager.error({
           title: t('error'),
@@ -272,7 +321,7 @@ const TableAll = () => {
       <Box
         overflow="auto"
         position="relative"
-        minH={isEmpty(products) ? '300px' : 'unset'}
+        minH={isEmpty(products) || isLoading ? '300px' : 'unset'}
         borderWidth="1px"
         borderRadius="4"
         borderColor="border-5">
@@ -298,20 +347,10 @@ const TableAll = () => {
               })}
             </Tr>
           </Thead>
-          {isEmpty(products) ? (
-            <Box h="220px" position="absolute" insetX="0">
-              <Center
-                h="220px"
-                position="absolute"
-                insetX="0"
-                flexDirection="column"
-                alignSelf="center">
-                <Image w="150px" h="100px" src={Images.no_data} />
-                <Text textStyle="body" textAlign="center" color="primary.100" mt="1">
-                  {t('no_products_found')}
-                </Text>
-              </Center>
-            </Box>
+          {isLoading ? (
+            <LoadingShopProductItem />
+          ) : isEmpty(products) ? (
+            <EmptyListItem title={t('no_products_found')} />
           ) : (
             products.map((item, index) => {
               const isChecked =
@@ -335,7 +374,7 @@ const TableAll = () => {
             })
           )}
         </Table>
-        {!isEmpty(products) && (
+        {!isEmpty(products) && !isLoading && (
           <Flex
             justifyContent="space-between"
             alignItems="center"

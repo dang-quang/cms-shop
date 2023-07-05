@@ -89,7 +89,7 @@ function VoucherProgramApproval() {
         } else {
           NotificationManager.error({
             title: t('error'),
-            message: `No data exists`,
+            message: t('no_data_exists'),
           });
         }
       } finally {

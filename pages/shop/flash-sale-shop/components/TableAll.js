@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
-import { setLoading, setShowLoader } from 'redux/actions/app';
+import { setLoading, setShopPlashSaleTabIndex, setShowLoader } from 'redux/actions/app';
 import { EAppKey, EShowFlashSaleType } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
 import { useRouter } from 'next/router';
@@ -96,6 +96,9 @@ export const TableAll = () => {
         setTotalPage(res.data.totalPages);
         setTotalRecords(res.data.totalRecords);
       } else {
+        setFlashSales([]);
+        setTotalPage(1);
+        setTotalRecords(0);
         NotificationManager.error({
           title: t('error'),
           message: t('no_data_exists'),
@@ -130,6 +133,9 @@ export const TableAll = () => {
           setTotalPage(res.data.totalPages);
           setTotalRecords(res.data.totalRecords);
         } else {
+          setFlashSales([]);
+          setTotalPage(1);
+          setTotalRecords(0);
           NotificationManager.error({
             title: t('error'),
             message: t('no_data_exists'),
@@ -158,6 +164,7 @@ export const TableAll = () => {
       setFlashSales(res.data.results);
       setTotalPage(res.data.totalPages);
       setTotalRecords(res.data.totalRecords);
+      dispatch(setShopPlashSaleTabIndex(0));
     } else {
       NotificationManager.error({
         title: t('error'),

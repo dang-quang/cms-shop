@@ -22,7 +22,11 @@ import {
 import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
 
-import { requestDeleteVoucher, requestGetListVoucher, requestGetListFlashSaleNatShop } from 'utilities/ApiManage';
+import {
+  requestDeleteVoucher,
+  requestGetListVoucher,
+  requestGetListFlashSaleNatShop,
+} from 'utilities/ApiManage';
 // import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
 import { useDispatch } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
@@ -86,7 +90,7 @@ export const TableWait = () => {
         } else {
           NotificationManager.error({
             title: t('error'),
-            message: `No data exists`,
+            message: t('no_data_exists'),
           });
         }
       } finally {
@@ -197,7 +201,6 @@ export const TableWait = () => {
                   } else {
                     _image = BASE_API_URL + '/assets/' + item.banner;
                   }
-
                 }
                 return (
                   <Tr key={index}>
@@ -225,8 +228,8 @@ export const TableWait = () => {
                                 item.status === EVoucherStatus.UPCOMING
                                   ? 'red.700'
                                   : item.status === EVoucherStatus.HAPPENING
-                                    ? 'green.200'
-                                    : 'gray.2000'
+                                  ? 'green.200'
+                                  : 'gray.2000'
                               }
                               alignItems="center"
                               borderRadius="full">
@@ -236,15 +239,15 @@ export const TableWait = () => {
                                   item.status === EVoucherStatus.UPCOMING
                                     ? 'red.600'
                                     : item.status === EVoucherStatus.HAPPENING
-                                      ? 'green.100'
-                                      : 'gray.100'
+                                    ? 'green.100'
+                                    : 'gray.100'
                                 }
                                 textTransform="capitalize">
                                 {item.status === EVoucherStatus.UPCOMING
                                   ? 'Upcoming'
                                   : item.status === EVoucherStatus.HAPPENING
-                                    ? 'Happening'
-                                    : 'Finished'}
+                                  ? 'Happening'
+                                  : 'Finished'}
                               </Text>
                             </Flex>
                             <Text textStyle="h5" color="text-basic" style={{ marginLeft: 10 }}>
@@ -255,11 +258,11 @@ export const TableWait = () => {
                             <Text textStyle="h3" color="text-basic">
                               Thời gian chương trình:
                             </Text>
-                            <Text mr='2' textStyle="h3" color="text-basic">
+                            <Text mr="2" textStyle="h3" color="text-basic">
                               {dayjs(item.programStart).format('DD-MM-YYYY HH:MM')}
                             </Text>
                             <Text>-</Text>
-                            <Text ml='2' textStyle="h3" color="text-basic">
+                            <Text ml="2" textStyle="h3" color="text-basic">
                               {dayjs(item.programEnd).format('DD-MM-YYYY HH:MM')}
                             </Text>
                           </Flex>

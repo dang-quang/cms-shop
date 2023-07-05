@@ -35,13 +35,7 @@ import { useDispatch } from 'react-redux';
 import { setShowLoader } from 'redux/actions/app';
 import _ from 'lodash';
 import { BASE_API_URL } from 'utilities/const';
-import {
-  EDiscountType,
-  EDiscountLimitType,
-  EShopLimitType,
-  EAppKey,
-  EVoucherType,
-} from 'constants/types';
+import { EDiscountType, EDiscountLimitType, EAppKey, EVoucherType } from 'constants/types';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { IoIosCloudUpload } from 'react-icons/io';
 import { FormGroup } from 'components';
@@ -53,7 +47,7 @@ const formatDate = 'YYYY-MM-DDTHH:mm';
 const initialValues = {
   id: '',
   name: '',
-  code: '',
+  voucherCode: '',
   startDate: dayjs().add(10, 'minutes').format(formatDate),
   endDate: dayjs().add(1, 'hours').add(10, 'minutes').format(formatDate),
   typeDiscount: EDiscountType.CASH,
@@ -76,24 +70,21 @@ const AddUpdateVoucherCoupon = () => {
     !_.isEmpty(router.query) && router.query.mode === 'update' ? router.query : undefined;
 
   const handleSubmitVoucher = React.useCallback(
-    async (
-      {
-        id,
-        name,
-        code,
-        startDate,
-        endDate,
-        quantityVoucher,
-        minOrderValue,
-        typeDiscount,
-        discountValue,
-        maxDiscount,
-        maxUsage,
-        description,
-        banner,
-      },
-      { setFieldError }
-    ) => {
+    async ({
+      id,
+      name,
+      voucherCode,
+      startDate,
+      endDate,
+      quantityVoucher,
+      minOrderValue,
+      typeDiscount,
+      discountValue,
+      maxDiscount,
+      maxUsage,
+      description,
+      banner,
+    }) => {
       try {
         dispatch(setShowLoader(true));
         let _banner = null;
@@ -103,12 +94,12 @@ const AddUpdateVoucherCoupon = () => {
         }
         if (voucher) {
           const res = await requestCreateUpdateVoucherShop({
-            id,
+            id: parseFloat(id),
             //TODO shop id
             shopId: shopId,
-            type: EVoucherType.VOUCHER_PRODUCT,
+            type: EVoucherType.VOUCHER_SHOP,
             programName: name,
-            voucherCode: code,
+            voucherCode: voucherCode,
             startDate: dayjs(startDate).unix(),
             endDate: dayjs(endDate).unix(),
             typeDiscount: typeDiscount,
@@ -138,9 +129,9 @@ const AddUpdateVoucherCoupon = () => {
           const res = await requestCreateUpdateVoucherShop({
             //TODO shop id
             shopId: shopId,
-            type: EVoucherType.VOUCHER_PRODUCT,
+            type: EVoucherType.VOUCHER_SHOP,
             programName: name,
-            voucherCode: code,
+            voucherCode: voucherCode,
             startDate: dayjs(startDate).unix(),
             endDate: dayjs(endDate).unix(),
             typeDiscount: typeDiscount,
@@ -176,15 +167,17 @@ const AddUpdateVoucherCoupon = () => {
 
   const validationSchema = yup.object().shape({
     name: yup.string().required(t('error_field_empty')),
-    code: yup
+    voucherCode: yup
       .string()
       .required(t('error_field_empty'))
       .matches(/^[A-Z0-9]{1,5}$/, t('error_code_format')),
     startDate: yup.date().min(dayjs().toDate(), t('error_start_time')),
-    endDate: yup
-      .date()
-      .min(yup.ref('startDate').min(dayjs().subtract(1, 'hour').toDate()), t('error_end_time'))
-      .required(),
+    endDate: yup.date().test('is-greater', t('error_end_time'), function (value) {
+      const startDate = this.resolve(yup.ref('startDate'));
+      const endDate = dayjs(value).toDate();
+      const minEndDate = dayjs(startDate).add(1, 'hour').toDate();
+      return endDate >= minEndDate;
+    }),
     maxDiscount: yup.string().when('typeDiscount', {
       is: EDiscountType.PERCENT,
       then: yup.string().required(t('error_field_empty')),
@@ -218,41 +211,38 @@ const AddUpdateVoucherCoupon = () => {
       onSubmit={handleSubmitVoucher}>
       {({ handleChange, handleSubmit, setFieldValue, values, errors }) => {
         React.useEffect(() => {
-          if (voucher && voucher.banner) {
-            const str = BASE_API_URL + '/assets/' + voucher.banner;
-
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.src = str;
-            img.onload = async () => {
-              const canvas = document.createElement('canvas');
-              canvas.width = img.width;
-              canvas.height = img.height;
-              const ctx = canvas.getContext('2d');
-              ctx.drawImage(img, 0, 0);
-              const dataURL = canvas.toDataURL('image/png');
-
-              setFieldValue('banner', dataURL);
-            };
-          }
-
           if (voucher) {
-            console.log('quang debug update voucher =====>', voucher);
-            // setFieldValue(
-            //   'registerStart',
-            //   dayjs(parseFloat(voucher.registerStart)).format(formatDate)
-            // );
-            // setFieldValue('registerEnd', dayjs(parseFloat(voucher.registerEnd)).format(formatDate));
-            // setFieldValue(
-            //   'programStart',
-            //   dayjs(parseFloat(voucher.programStart)).format(formatDate)
-            // );
-            // setFieldValue('programEnd', dayjs(parseFloat(voucher.programEnd)).format(formatDate));
-            // if (voucher.maxShopRegister === 0) {
-            //   setFieldValue('typeShopLimit', EShopLimitType.NO_LIMIT);
-            // } else {
-            //   setFieldValue('typeShopLimit', EShopLimitType.SHOP_LIMIT);
-            // }
+            if (voucher.image) {
+              const str = BASE_API_URL + '/assets/' + voucher.image;
+
+              const img = new Image();
+              img.crossOrigin = 'anonymous';
+              img.src = str;
+              img.onload = async () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                const dataURL = canvas.toDataURL('image/png');
+
+                setFieldValue('banner', dataURL);
+              };
+            }
+
+            if (voucher.maxDiscount && parseFloat(voucher.maxDiscount) > 0) {
+              setFieldValue('typeLimit', EDiscountLimitType.AMOUNT);
+            } else {
+              setFieldValue('typeLimit', EDiscountLimitType.NO_LIMIT);
+            }
+
+            setFieldValue('quantityVoucher', parseFloat(voucher.quantity));
+
+            const _startDate = new Date(parseInt(voucher.startDate) * 1000).toISOString();
+            const _endDate = new Date(parseInt(voucher.endDate) * 1000).toISOString();
+
+            setFieldValue('startDate', dayjs(_startDate).format(formatDate));
+            setFieldValue('endDate', dayjs(_endDate).format(formatDate));
           }
         }, [voucher]);
 
@@ -299,14 +289,14 @@ const AddUpdateVoucherCoupon = () => {
                 </FormControl>
               </FormGroup>
               <FormGroup title={t('voucher.voucherCode')} mt="6">
-                <FormControl isInvalid={!!errors.code}>
+                <FormControl isInvalid={!!errors.voucherCode}>
                   <Input
                     placeholder={t('input')}
                     autoComplete="off"
-                    value={values.code}
-                    onChange={handleChange('code')}
+                    value={values.voucherCode}
+                    onChange={handleChange('voucherCode')}
                   />
-                  <FormErrorMessage>{errors.code}</FormErrorMessage>
+                  <FormErrorMessage>{errors.voucherCode}</FormErrorMessage>
                 </FormControl>
               </FormGroup>
               <FormGroup title={t('voucher.usage_time')} mt="6">

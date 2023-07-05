@@ -13,7 +13,7 @@ function VoucherCoupon() {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const tabs = ['My Shop', 'NatShop'];
+  const tabs = [t('my_shop'), t('nat_shop')];
 
   return (
     <Box>
@@ -23,9 +23,9 @@ function VoucherCoupon() {
         mt="4"
         onClick={() => router.push('/shop/voucher-coupon/add')}>
         <Text textStyle="h6-sb" color="text-basic">
-          Vouchers
+          {t('vouchers')}
         </Text>
-        <Button leftIcon={<HiPlus />} variant="primary" children="Add Voucher" />
+        <Button leftIcon={<HiPlus />} variant="primary" children={t('voucher.add_voucher')} />
       </Flex>
       <Tabs variant="soft-rounded" mt="4">
         <TabList h="48px" w="full" borderBottomWidth="1px" borderBottomColor="border-5">

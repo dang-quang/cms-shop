@@ -1,12 +1,23 @@
 import React from 'react';
-import { Tr, Icon, Flex, Text, Image, Center, Td, AspectRatio, HStack } from '@chakra-ui/react';
+import {
+  Tr,
+  Icon,
+  Flex,
+  Text,
+  Image,
+  Center,
+  Td,
+  HStack,
+  Box,
+  AspectRatio,
+} from '@chakra-ui/react';
 import { EVoucherStatus, IVoucher } from 'constants/types';
-import { BASE_API_URL } from 'utilities/const';
 import { formatCurrency } from 'utilities/utils';
 import dayjs from 'dayjs';
 import { AiFillEdit } from 'react-icons/ai';
 import { FiTrash2 } from 'react-icons/fi';
 import { useImageHandler } from 'hooks';
+import Images from 'assets';
 
 interface VoucherShopItemProps {
   index: number;
@@ -16,19 +27,17 @@ interface VoucherShopItemProps {
 }
 
 const VoucherShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpdate, onDelete }) => {
-  const {
-    banner,
-    name,
-    discountValue,
-    quantityVoucher,
-    shopRegister,
-    programStart,
-    programEnd,
-    status,
-    quantity,
-  } = item;
+  const { image, name, discountValue, startDate, endDate, shopRegister, status, quantity } = item;
 
-  const _image = useImageHandler(banner);
+  const _image = useImageHandler(image);
+
+  let _startDate;
+  let _endDate;
+
+  if (startDate && endDate) {
+    _startDate = new Date(startDate * 1000).toISOString();
+    _endDate = new Date(endDate * 1000).toISOString();
+  }
 
   return (
     <Tr key={index}>
@@ -39,12 +48,19 @@ const VoucherShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpdate
       </Td>
       <Td borderColor="gray.1300">
         <Flex>
-          <AspectRatio w="180px" ratio={2 / 1} mr="2" borderRadius="8px" overflow="hidden">
-            <Image w="100%" h="100%" objectFit="cover" src={_image} />
+          <AspectRatio ratio={1} boxSize="56px" mr="2" overflow="hidden">
+            <Image
+              w="100%"
+              h="100%"
+              objectFit="cover"
+              src={_image ? _image : Images.default_voucher}
+            />
           </AspectRatio>
-          <Text textStyle="h3-m" color="text-basic">
-            {name}
-          </Text>
+          <Box flex="1">
+            <Text textStyle="h3-m" color="text-basic">
+              {name}
+            </Text>
+          </Box>
         </Flex>
       </Td>
       <Td isNumeric borderColor="gray.1300">
@@ -97,11 +113,11 @@ const VoucherShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpdate
           </Flex>
           <HStack mt="2">
             <Text textStyle="h3" color="text-basic">
-              {dayjs(programStart).format('DD-MM-YYYY HH:MM')}
+              {dayjs(_startDate).format('DD-MM-YYYY HH:MM')}
             </Text>
             <Text>-</Text>
             <Text textStyle="h3" color="text-basic">
-              {dayjs(programEnd).format('DD-MM-YYYY HH:MM')}
+              {dayjs(_endDate).format('DD-MM-YYYY HH:MM')}
             </Text>
           </HStack>
         </Center>
@@ -113,7 +129,7 @@ const VoucherShopItem: React.FC<VoucherShopItemProps> = ({ item, index, onUpdate
               <Icon as={AiFillEdit} w="18px" h="18px" color="text-basic" cursor="pointer" />
             </Center>
             <Center boxSize="40px" cursor="pointer" onClick={onDelete}>
-              <Icon as={FiTrash2} w="18px" h="18px" color="red.600" cursor="pointer" />
+              <Icon as={FiTrash2} w="18px" h="18px" color="text-basic" cursor="pointer" />
             </Center>
           </HStack>
         </Flex>

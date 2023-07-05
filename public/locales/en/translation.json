@@ -71,7 +71,7 @@
   "error_code_format": "Please enter only alphabetic characters (A-Z), numbers (0-9); maximum 5 characters. Full voucher code is:SHOP",
   "error_price_minimum": "The value should be at least 1.000",
   "error_start_time": "Please enter a start time that is later than the current time.",
-  "error_end_time": "'The end time must be greater than the start time by at least 1 hour.'",
+  "error_end_time": "The end time must be greater than the start time by at least 1 hour.",
   "amount": "Amount",
   "price": "Price",
   "happening": "Happening",
@@ -176,6 +176,11 @@
   "limited": "Limited",
   "no_limited": "No Limited",
   "max_usage_per_user": "Max usage per user",
+  "my_shop": "My Shop",
+  "nat_shop": "NatShop",
+  "vouchers": "Vouchers",
+  "min": "Min",
+  "max": "Max",
   "shop_product": {
     "product_images": "Product Images",
     "product_description": "Product Description",
@@ -380,7 +385,8 @@
     "discount_type_amount": "Discount Type | Amount",
     "maximum_discount_price": "Maximum Discount Price",
     "create_voucher_success": "Create Voucher Success",
-    "update_voucher_success": "Update Voucher Success"
+    "update_voucher_success": "Update Voucher Success",
+    "add_voucher": "Add Voucher"
   },
   "game": {
     "luckyDraw": "Lucky Draw",

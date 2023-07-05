@@ -12,7 +12,7 @@ const NatShop = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const tabs = ['All', 'Happening', 'Upcoming', 'Finished'];
+  const tabs = [t('all'), t('happening'), t('upcoming'), t('finished')];
 
   return (
     <Box>

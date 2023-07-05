@@ -44,6 +44,8 @@ import { requestGetListCategoryShop } from 'utilities/ApiShop';
 import { EAppKey } from 'constants/types';
 import { IconEdit } from 'components/Icons/Icons';
 import { isEmpty } from 'lodash';
+import { setLoading, setShopProductTabIndex } from 'redux/actions/app';
+import { parseNumber } from 'utilities/parseNumber';
 
 function ShopProducts() {
   const shopId = 143;
@@ -54,9 +56,10 @@ function ShopProducts() {
   const tabs = [t('all'), t('live'), t('sold_out'), t('reviewing'), t('de_listed')];
 
   const inputName = React.useRef();
-  const inputStockMin = React.useRef();
-  const inputStockMax = React.useRef();
+  const [stockMin, setStockMin] = React.useState();
+  const [stockMax, setStockMax] = React.useState();
   const selectedCategorySearch = useSelector((state) => state.product.selectedCategorySearch);
+  const index = useSelector((state) => state.app.selectedProductTabIndex);
 
   const [categories, setCategories] = React.useState([]);
   const {
@@ -156,12 +159,18 @@ function ShopProducts() {
             </Text>
             <Box flex="9">
               <HStack gap="1" flex="1">
-                <NumberInput flex="1">
-                  <NumberInputField ref={inputStockMin} placeholder="Min" />
+                <NumberInput
+                  flex="1"
+                  value={stockMin}
+                  onChange={(e) => setStockMin(parseNumber(e))}>
+                  <NumberInputField placeholder={t('min')} />
                 </NumberInput>
                 <Box h="1px" w="1" bg="border-3" />
-                <NumberInput flex="1">
-                  <NumberInputField ref={inputStockMax} placeholder="Max" />
+                <NumberInput
+                  flex="1"
+                  value={stockMax}
+                  onChange={(e) => setStockMax(parseNumber(e))}>
+                  <NumberInputField placeholder={t('max')} />
                 </NumberInput>
               </HStack>
             </Box>
@@ -180,11 +189,11 @@ function ShopProducts() {
                   onClick={() => {
                     dispatch(setSearchProductName(inputName.current.value));
 
-                    if (inputStockMin.current.value) {
-                      dispatch(setSearchProductStockMin(inputStockMin.current.value));
+                    if (stockMin) {
+                      dispatch(setSearchProductStockMin(stockMin));
                     }
-                    if (inputStockMin.current.value) {
-                      dispatch(setSearchProductStockMax(inputStockMax.current.value));
+                    if (stockMax) {
+                      dispatch(setSearchProductStockMax(stockMax));
                     }
                     if (!isEmpty(selectedCategorySearch)) {
                       let id =
@@ -202,8 +211,8 @@ function ShopProducts() {
                   w="80px"
                   onClick={() => {
                     inputName.current.value = '';
-                    inputStockMin.current.value = '';
-                    inputStockMax.current.value = '';
+                    setStockMin('');
+                    setStockMax('');
                     dispatch(resetSearchProduct());
                   }}
                 />
@@ -212,7 +221,22 @@ function ShopProducts() {
           </HStack>
         </SimpleGrid>
       </Box>
-      <Tabs variant="soft-rounded" mt="8" bg="bg-1" pb="4" borderRadius="4px" position="relative">
+      <Tabs
+        variant="soft-rounded"
+        mt="8"
+        bg="bg-1"
+        pb="4"
+        borderRadius="4px"
+        position="relative"
+        isLazy
+        index={index}
+        onChange={(e) => {
+          dispatch(setLoading(true));
+          dispatch(setShopProductTabIndex(e));
+          setTimeout(() => {
+            dispatch(setLoading(false));
+          }, 2000);
+        }}>
         <TabList w="full" borderBottomWidth="1px" borderBottomColor="border-5" px="6" pt="4">
           {tabs.map((name, index) => (
             <Tab

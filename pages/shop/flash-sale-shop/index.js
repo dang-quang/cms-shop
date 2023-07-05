@@ -10,7 +10,7 @@ import TableFinished from './components/TableFinished';
 import { HiPlus } from 'react-icons/hi';
 import { WithAuthentication } from 'components';
 import { useDispatch, useSelector } from 'react-redux';
-import { setLoading, setSelectedFlashSaleTabIndex } from 'redux/actions/app';
+import { setLoading, setShopPlashSaleTabIndex } from 'redux/actions/app';
 import { EFlashSaleStatus } from 'constants/types';
 
 function VoucherPage() {
@@ -42,7 +42,7 @@ function VoucherPage() {
           index={index}
           onChange={(e) => {
             dispatch(setLoading(true));
-            dispatch(setSelectedFlashSaleTabIndex(e));
+            dispatch(setShopPlashSaleTabIndex(e));
             setTimeout(() => {
               dispatch(setLoading(false));
             }, 2000);

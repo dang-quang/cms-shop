@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
-import { setLoading, setSelectedFlashSaleTabIndex, setShowLoader } from 'redux/actions/app';
+import { setShopPlashSaleTabIndex, setShowLoader } from 'redux/actions/app';
 import { EAppKey, EFlashSaleStatus, EShowFlashSaleType } from 'constants/types';
 import { NotificationManager } from 'react-light-notifications';
 import { useRouter } from 'next/router';
@@ -160,8 +160,7 @@ const TableHappening = () => {
       setFlashSales(res.data.results);
       setTotalPage(res.data.totalPages);
       setTotalRecords(res.data.totalRecords);
-      router.push('/shop/flash-sale-shop');
-      dispatch(setSelectedFlashSaleTabIndex(1));
+      dispatch(setShopPlashSaleTabIndex(1));
     } else {
       NotificationManager.error({
         title: t('error'),

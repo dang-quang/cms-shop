@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   AspectRatio,
+  Box,
   Center,
   Checkbox,
   Flex,
@@ -54,10 +55,10 @@ const ShopProductItem: React.FC<SelectProductItemProps> = ({
             mr="3"
           />
           <Flex>
-            <AspectRatio w="80px" ratio={1} mr="2" borderRadius="4px" overflow="hidden">
+            <AspectRatio w="65px" ratio={1} mr="2" borderRadius="4px" overflow="hidden">
               <Image w="100%" h="100%" objectFit="cover" src={_image} />
             </AspectRatio>
-            <Flex flexDirection="column">
+            <Flex flexDirection="column" flex="1">
               {isShow !== EShowProductType.ACTIVE && (
                 <Flex
                   p="1"
@@ -69,7 +70,7 @@ const ShopProductItem: React.FC<SelectProductItemProps> = ({
                     textStyle="h2-m"
                     color={isShow === EShowProductType.PENDING ? 'warning.100' : 'gray.100'}
                     textTransform="capitalize">
-                    {isShow === EShowProductType.PENDING ? t('waiting') : t('de_listed')}
+                    {isShow === EShowProductType.PENDING ? t('reviewing') : t('de_listed')}
                   </Text>
                 </Flex>
               )}

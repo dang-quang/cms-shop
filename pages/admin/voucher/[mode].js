@@ -187,15 +187,8 @@ function AddVoucherPage() {
       .string()
       .required(t('error_field_empty'))
       .matches(/^[0-9()\s]*$/, t('errorInvalidPhone')),
-    registerStart: yup
-      .date()
-      .min(dayjs().toDate(), 'Please enter a start time that is later than the current time.'),
-    registerEnd: yup
-      .date()
-      .min(
-        yup.ref('registerStart'),
-        'The end time must be greater than the start time by at least 1 hour.'
-      ),
+    registerStart: yup.date().min(dayjs().toDate(), t('error_start_time')),
+    registerEnd: yup.date().min(yup.ref('registerStart'), t('error_end_time')),
     programStart: yup
       .date()
       .min(dayjs().toDate(), 'Please enter a start time that is later than the current time.'),

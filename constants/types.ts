@@ -47,6 +47,7 @@ export interface ISMSMessage {
 
 export interface IVoucher {
   banner?: string;
+  image?: string;
   createAt?: number;
   description?: string;
   discountLimit?: number;
@@ -70,6 +71,8 @@ export interface IVoucher {
   typeLimit?: EDiscountLimitType;
   updateAt?: number;
   quantity?: number;
+  startDate?: number;
+  endDate?: number;
 }
 
 export interface IShopProduct {
@@ -184,6 +187,6 @@ export enum EShowFlashSaleType {
 }
 
 export enum EVoucherType {
-  VOUCHER_SHOP = 'VOUCHER SHOP',
-  VOUCHER_PRODUCT = 'VOUCHER PRODUCT',
+  VOUCHER_SHOP = 'VOUCHER_SHOP',
+  VOUCHER_PRODUCT = 'VOUCHER_PRODUCT',
 }

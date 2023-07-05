@@ -10,7 +10,7 @@ import TableFinishedMyShop from './TableFinishedMyShop';
 const MyShop = () => {
   const { t } = useTranslation();
 
-  const tabs = ['All', 'Happening', 'Upcoming', 'Finished'];
+  const tabs = [t('all'), t('happening'), t('upcoming'), t('finished')];
 
   return (
     <Box>

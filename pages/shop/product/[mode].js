@@ -187,6 +187,7 @@ function CreateProduct() {
             toast({
               position: 'top',
               title: t('error'),
+              description: 'Update Product Failed',
               status: 'error',
               duration: 2000,
               isClosable: true,
@@ -211,6 +212,7 @@ function CreateProduct() {
             toast({
               position: 'top',
               title: t('error'),
+              description: 'Create Product Failed',
               status: 'error',
               duration: 2000,
               isClosable: true,

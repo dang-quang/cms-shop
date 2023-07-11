@@ -41,7 +41,6 @@ import {
   useToast,
   Wrap,
 } from '@chakra-ui/react';
-import { NotificationManager } from 'react-light-notifications';
 //import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import {
   FormGroup,
@@ -135,10 +134,13 @@ function CreateProduct() {
           let listVariationVariations = list_variation.flatMap((item) => item.variations);
 
           for (let i = 0; i < listVariationVariations.length; i++) {
-            listVariationVariations[i].imgUri = listVariationVariations[i].imgUri.replace(
+            listVariationVariations[i].imgUri = listVariationVariations[i].image.replace(
               /^data:image\/(png|jpg|jpeg);base64,/,
               ''
             );
+            delete listVariationVariations[i].image;
+            listVariationVariations[i].stock = parseFloat(listVariationVariations[i].stock);
+            listVariationVariations[i].price = parseFloat(listVariationVariations[i].price);
           }
 
           _details = listVariationVariations;
@@ -165,39 +167,53 @@ function CreateProduct() {
         }
 
         if (product) {
-          _product.id = id;
+          _product.id = parseFloat(product.id);
 
           const res = await requestCreateUpdateProduct(_product);
           if (res.code === EAppKey.MSG_SUCCESS) {
-            NotificationManager.success({
+            toast({
+              position: 'top',
               title: t('success'),
-              message: 'Update Product Success',
+              description: 'Update Product Success',
+              status: 'success',
+              duration: 2000,
+              isClosable: true,
+              onCloseComplete: () => {
+                dispatch(setSelectedCategory([]));
+                router.push('/shop/product');
+              },
             });
-            setTimeout(() => {
-              router.push('/shop/product');
-            }, 1000);
-            dispatch(setSelectedCategory([]));
           } else {
-            NotificationManager.error({
+            toast({
+              position: 'top',
               title: t('error'),
-              message: res.message ? res.message.text : t('error'),
+              status: 'error',
+              duration: 2000,
+              isClosable: true,
             });
           }
         } else {
           const res = await requestCreateUpdateProduct(_product);
           if (res.code === EAppKey.MSG_SUCCESS) {
-            NotificationManager.success({
+            toast({
+              position: 'top',
               title: t('success'),
-              message: 'Create Product Success',
+              description: 'Create Product Success',
+              status: 'success',
+              duration: 2000,
+              isClosable: true,
+              onCloseComplete: () => {
+                dispatch(setSelectedCategory([]));
+                router.push('/shop/product');
+              },
             });
-            setTimeout(() => {
-              router.push('/shop/product');
-            }, 1000);
-            dispatch(setSelectedCategory([]));
           } else {
-            NotificationManager.error({
+            toast({
+              position: 'top',
               title: t('error'),
-              message: res.message ? res.message.text : t('error'),
+              status: 'error',
+              duration: 2000,
+              isClosable: true,
             });
           }
         }
@@ -325,8 +341,8 @@ function CreateProduct() {
 
               if (res && res.code === EAppKey.MSG_SUCCESS) {
                 let _product = res.product;
-                let _variations = res.variationInfo;
-                let _list_variation = res.productDetailInfo;
+                let variations = res.variationInfo;
+                let list_variation = res.productDetailInfo;
 
                 if (_product && !isEmpty(_product.listImage)) {
                   let _images = [];
@@ -367,21 +383,59 @@ function CreateProduct() {
                   setFieldValue('stock', _product.stock);
                 }
 
-                let variations = [];
+                let _variations = [];
 
-                if (!!_variations) {
-                  for (const i in _variations) {
-                    const _options = Array.from(_variations[i].details, (details) => details.name);
+                if (isEmpty(variations) || isEmpty(list_variation)) {
+                  return;
+                }
 
-                    variations.push({
-                      name: _variations[i].name,
-                      options: _options,
+                for (const i in variations) {
+                  const _options = Array.from(variations[i].details, (details) => details.name);
+                  const newName = variations[i].name;
+
+                  const existingIndex = _variations.findIndex((item) => item.name === newName);
+
+                  if (existingIndex === -1) {
+                    _variations.push({
+                      name: newName,
+                      options: Array.from(new Set(_options)),
                       isShow: true,
                     });
+                  } else {
+                    const uniqueOptions = new Set([
+                      ..._variations[existingIndex].options,
+                      ..._options,
+                    ]);
+                    _variations[existingIndex].options = Array.from(uniqueOptions);
                   }
+                }
 
-                  setFieldValue('variations', variations);
-                  // list_variation: [],
+                setFieldValue('variations', _variations);
+
+                if (!!list_variation && !isEmpty(list_variation)) {
+                  const list3 = _variations[0].options.map((parentVariation, index) => {
+                    const variations = list_variation
+                      .filter((product) => product.name.includes(parentVariation))
+                      .map((product) => {
+                        const childVariationIndex = _variations[1].options.indexOf(
+                          product.name.split(', ')[2]
+                        );
+
+                        return {
+                          parentVariationTitle: _variations[0].name,
+                          childVariationTitle: _variations[1].name,
+                          childVariationValue: _variations[1].options[childVariationIndex],
+                          parentVariationValue: parentVariation,
+                          image: product.image ?? '',
+                          price: product.price,
+                          stock: product.stock,
+                        };
+                      });
+
+                    return { variations };
+                  });
+
+                  setFieldValue('list_variation', list3);
                 }
               }
             }
@@ -703,7 +757,7 @@ function CreateProduct() {
                                           childVariationTitle: '',
                                           childVariationValue: '',
                                           parentVariationValue: '',
-                                          imgUri: '',
+                                          image: '',
                                           price: '',
                                           stock: 0,
                                           //sku: '',

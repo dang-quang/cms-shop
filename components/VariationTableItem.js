@@ -36,7 +36,7 @@ const VariationTableItem = ({ item, index, isLast }) => {
     try {
       if (image) {
         for (let i = 0; i < variations.length; i++) {
-          setFieldValue(`list_variation.${index}.variations.${i}.imgUri`, image);
+          setFieldValue(`list_variation.${index}.variations.${i}.image`, image);
         }
       }
       if (refImage && refImage.current) {
@@ -54,12 +54,12 @@ const VariationTableItem = ({ item, index, isLast }) => {
           <Text textStyle="h3" color="text-basic" mb="1" noOfLines={2}>
             {variations[0]?.parentVariationValue}
           </Text>
-          {variations[0]?.imgUri ? (
+          {variations[0]?.image ? (
             <ProductImage
-              image={variations[0].imgUri}
+              image={variations[0].image}
               onDelete={() => {
                 for (let i = 0; i < variations.length; i++) {
-                  setFieldValue(`list_variation.${index}.variations.${i}.imgUri`, '');
+                  setFieldValue(`list_variation.${index}.variations.${i}.image`, '');
                 }
               }}
             />

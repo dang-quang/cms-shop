@@ -24,8 +24,7 @@ const VariationItem = ({ item, index }) => {
   const { t } = useTranslation();
   const { name, options, isShow } = item;
 
-  const { values, setFieldValue, handleChange, setFieldTouched, validateField, errors } =
-    useFormikContext();
+  const { values, setFieldValue, setFieldTouched, validateField, errors } = useFormikContext();
 
   return (
     <Flex gap="4" flexDirection="column" bg="bg-2" borderRadius="4px" p="4" position="relative">
@@ -153,7 +152,7 @@ const VariationItem = ({ item, index }) => {
                                   childVariationTitle: values.variations[1].name ?? '',
                                   childVariationValue: values.variations[1].options[i],
                                   parentVariationValue: value,
-                                  imgUri: values.list_variation[idx]?.variations[0].imgUri ?? '',
+                                  image: values.list_variation[idx]?.variations[0].image ?? '',
                                   price: '',
                                   stock: 0,
                                   //sku: '',
@@ -165,7 +164,7 @@ const VariationItem = ({ item, index }) => {
                                 childVariationTitle: '',
                                 childVariationValue: '',
                                 parentVariationValue: value,
-                                imgUri: '',
+                                image: '',
                                 price: '',
                                 stock: 0,
                                 //sku: '',
@@ -196,7 +195,7 @@ const VariationItem = ({ item, index }) => {
                                   values.list_variation?.[i].variations?.[0]?.childVariationTitle ??
                                   '',
                                 childVariationValue: e.target.value,
-                                imgUri: values.list_variation?.[i].variations?.[0]?.imgUri ?? '',
+                                image: values.list_variation?.[i].variations?.[0]?.image ?? '',
                                 price: '',
                                 stock: 0,
                                 //sku: '',
@@ -334,7 +333,7 @@ const VariationItem = ({ item, index }) => {
                         childVariationTitle: '',
                         childVariationValue: '',
                         parentVariationValue: variation.variations[0]?.parentVariationValue ?? '',
-                        imgUri: variation.variations[0]?.imgUri ?? '',
+                        image: variation.variations[0]?.image ?? '',
                         price: '',
                         stock: 0,
                         //sku: '',

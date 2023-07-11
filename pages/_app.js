@@ -77,6 +77,7 @@ const MyApp = ({ Component, pageProps }) => {
             </React.Fragment>
           </ConnectedRouter>
         </Provider>
+        <NotificationContainer />
       </ChakraProvider>
     </StylesProvider>
   );

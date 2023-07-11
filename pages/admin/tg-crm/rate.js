@@ -762,7 +762,6 @@ function ShopReviewPage() {
 
   return (
     <Card>
-      <NotificationContainer />
       <CardHeader color="primary">
         <h4 className={classes.cardTitleWhite}>{text.title}</h4>
       </CardHeader>

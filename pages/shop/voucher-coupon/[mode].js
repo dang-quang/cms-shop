@@ -1,7 +1,5 @@
 import React from 'react';
-import { NotificationManager } from 'react-light-notifications';
 import Admin from 'layouts/Admin.js';
-import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import {
@@ -26,19 +24,20 @@ import {
   SimpleGrid,
   Text,
   Textarea,
+  useToast,
 } from '@chakra-ui/react';
 import { useDisplayImage } from 'hooks';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import dayjs from 'dayjs';
 import { useDispatch } from 'react-redux';
-import { setShowLoader } from 'redux/actions/app';
+import { setMyShopVoucherTabIndex, setShowLoader } from 'redux/actions/app';
 import _ from 'lodash';
 import { BASE_API_URL } from 'utilities/const';
-import { EDiscountType, EDiscountLimitType, EAppKey, EVoucherType } from 'constants/types';
+import { EDiscountType, EDiscountLimitType, EAppKey, EVoucherType, EMode } from 'constants/types';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { IoIosCloudUpload } from 'react-icons/io';
-import { FormGroup } from 'components';
+import { FormGroup, WithAuthentication } from 'components';
 import { requestCreateUpdateVoucherShop } from 'utilities/ApiShop';
 import { parseNumber } from 'utilities/parseNumber';
 
@@ -46,7 +45,8 @@ const formatDate = 'YYYY-MM-DDTHH:mm';
 
 const initialValues = {
   id: '',
-  name: '',
+  programId: '',
+  programName: '',
   voucherCode: '',
   startDate: dayjs().add(10, 'minutes').format(formatDate),
   endDate: dayjs().add(1, 'hours').add(10, 'minutes').format(formatDate),
@@ -55,24 +55,26 @@ const initialValues = {
   maxDiscount: '',
   minOrderValue: '',
   quantityVoucher: '',
-  minDiscount: '',
   discountValue: '',
 };
 
 const AddUpdateVoucherCoupon = () => {
   const shopId = 143;
+  const toast = useToast();
   const router = useRouter();
   const dispatch = useDispatch();
   const { t } = useTranslation();
+
   const inputRefBanner = React.useRef(null);
 
-  const voucher =
-    !_.isEmpty(router.query) && router.query.mode === 'update' ? router.query : undefined;
+  const mode = router.query.mode;
+  const voucher = router.query ? router.query : undefined;
 
   const handleSubmitVoucher = React.useCallback(
     async ({
       id,
-      name,
+      programId,
+      programName,
       voucherCode,
       startDate,
       endDate,
@@ -92,13 +94,13 @@ const AddUpdateVoucherCoupon = () => {
         if (banner) {
           _banner = banner.replace(/^data:image\/(png|jpg|jpeg);base64,/, '');
         }
-        if (voucher) {
+        if (mode === EMode.UPDATE) {
           const res = await requestCreateUpdateVoucherShop({
             id: parseFloat(id),
             //TODO shop id
             shopId: shopId,
             type: EVoucherType.VOUCHER_SHOP,
-            programName: name,
+            programName: programName,
             voucherCode: voucherCode,
             startDate: dayjs(startDate).unix(),
             endDate: dayjs(endDate).unix(),
@@ -111,26 +113,37 @@ const AddUpdateVoucherCoupon = () => {
             image: _banner,
             description: description,
           });
+
           if (res.code === EAppKey.MSG_SUCCESS) {
-            NotificationManager.success({
-              title: t('success'),
-              message: t('voucher.update_voucher_success'),
+            toast({
+              position: 'top',
+              title: t('voucher_updated'),
+              status: 'success',
+              duration: 2000,
+              isClosable: true,
+              onCloseComplete: () => {
+                dispatch(setMyShopVoucherTabIndex(0));
+                router.push('/shop/voucher-coupon');
+              },
             });
-            setTimeout(() => {
-              router.push('/shop/voucher-coupon');
-            }, 1000);
           } else {
-            NotificationManager.error({
-              title: t('error'),
-              message: res.message ? res.message.text : t('error'),
+            toast({
+              position: 'top',
+              title: t('voucher_update_failed'),
+              status: 'error',
+              duration: 2000,
+              isClosable: true,
+              onCloseComplete: () => {
+                dispatch(setMyShopVoucherTabIndex(0));
+                router.push('/shop/voucher-coupon');
+              },
             });
           }
         } else {
-          const res = await requestCreateUpdateVoucherShop({
-            //TODO shop id
+          let params = {
             shopId: shopId,
             type: EVoucherType.VOUCHER_SHOP,
-            programName: name,
+            programName: programName,
             voucherCode: voucherCode,
             startDate: dayjs(startDate).unix(),
             endDate: dayjs(endDate).unix(),
@@ -142,19 +155,37 @@ const AddUpdateVoucherCoupon = () => {
             maxUsage: maxUsage,
             image: _banner,
             description: description,
-          });
+          };
+
+          if (!!programId) {
+            params.programId = programId;
+          }
+
+          const res = await requestCreateUpdateVoucherShop(params);
+
           if (res.code === EAppKey.MSG_SUCCESS) {
-            NotificationManager.success({
-              title: t('success'),
-              message: t('voucher.create_voucher_success'),
+            toast({
+              position: 'top',
+              title: t('new_voucher_created'),
+              status: 'success',
+              duration: 2000,
+              isClosable: true,
+              onCloseComplete: () => {
+                dispatch(setMyShopVoucherTabIndex(0));
+                router.push('/shop/voucher-coupon');
+              },
             });
-            setTimeout(() => {
-              router.push('/shop/voucher-coupon');
-            }, 1000);
           } else {
-            NotificationManager.error({
-              title: t('error'),
-              message: res.message ? res.message.text : t('error'),
+            toast({
+              position: 'top',
+              title: t('voucher_create_failed'),
+              status: 'error',
+              duration: 2000,
+              isClosable: true,
+              onCloseComplete: () => {
+                dispatch(setMyShopVoucherTabIndex(0));
+                router.push('/shop/voucher-coupon');
+              },
             });
           }
         }
@@ -162,11 +193,11 @@ const AddUpdateVoucherCoupon = () => {
         dispatch(setShowLoader(false));
       }
     },
-    [voucher]
+    [mode]
   );
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required(t('error_field_empty')),
+    programName: yup.string().required(t('error_field_empty')),
     voucherCode: yup
       .string()
       .required(t('error_field_empty'))
@@ -207,11 +238,11 @@ const AddUpdateVoucherCoupon = () => {
       validateOnChange={false}
       validationSchema={validationSchema}
       enableReinitialize={true}
-      initialValues={voucher ? voucher : initialValues}
+      initialValues={mode === EMode.UPDATE && voucher ? voucher : initialValues}
       onSubmit={handleSubmitVoucher}>
       {({ handleChange, handleSubmit, setFieldValue, values, errors }) => {
         React.useEffect(() => {
-          if (voucher) {
+          if (mode === EMode.UPDATE && voucher) {
             if (voucher.image) {
               const str = BASE_API_URL + '/assets/' + voucher.image;
 
@@ -243,8 +274,21 @@ const AddUpdateVoucherCoupon = () => {
 
             setFieldValue('startDate', dayjs(_startDate).format(formatDate));
             setFieldValue('endDate', dayjs(_endDate).format(formatDate));
+          } else if (mode === EMode.ADD && !!voucher.id) {
+            setFieldValue('programId', parseFloat(voucher.id));
+            setFieldValue('typeDiscount', voucher.typeDiscount);
+            setFieldValue('discountValue', parseFloat(voucher.discountValue));
+            setFieldValue('minOrderValue', parseFloat(voucher.minOrderPrice || 0));
+            setFieldValue('startDate', dayjs(parseFloat(voucher.programStart)).format(formatDate));
+            setFieldValue('endDate', dayjs(parseFloat(voucher.programEnd)).format(formatDate));
+            if (!!voucher.maxDiscount && parseFloat(voucher.maxDiscount) > 0) {
+              setFieldValue('typeLimit', EDiscountLimitType.AMOUNT);
+              setFieldValue('maxDiscount', parseFloat(voucher.maxDiscount));
+            } else {
+              setFieldValue('typeLimit', EDiscountLimitType.NO_LIMIT);
+            }
           }
-        }, [voucher]);
+        }, [voucher, mode]);
 
         const { onUploader: onUploaderBanner } = useDisplayImage((image) => {
           try {
@@ -258,10 +302,11 @@ const AddUpdateVoucherCoupon = () => {
             console.log('error upload banner', error);
           }
         });
+
         return (
           <Form>
             <Text textStyle="h6-sb" color="text-basic" mt="4">
-              {voucher
+              {mode === EMode.UPDATE
                 ? t('voucher.update_voucher_coupon')
                 : t('voucher.create_new_voucher_coupon')}
             </Text>
@@ -276,26 +321,38 @@ const AddUpdateVoucherCoupon = () => {
                 {t('basic_information')}
               </Text>
               <FormGroup title={t('voucher.promotionName')}>
-                <FormControl isInvalid={!!errors.name}>
+                <FormControl isInvalid={!!errors.programName}>
                   <Input
-                    id="name"
-                    name="name"
+                    id="programName"
+                    name="programName"
                     placeholder={t('input')}
                     autoComplete="off"
-                    value={values.name}
-                    onChange={handleChange('name')}
+                    value={values.programName}
+                    onChange={handleChange('programName')}
                   />
-                  <FormErrorMessage>{errors.name}</FormErrorMessage>
+                  <FormErrorMessage>{errors.programName}</FormErrorMessage>
                 </FormControl>
               </FormGroup>
               <FormGroup title={t('voucher.voucherCode')} mt="6">
                 <FormControl isInvalid={!!errors.voucherCode}>
-                  <Input
-                    placeholder={t('input')}
-                    autoComplete="off"
-                    value={values.voucherCode}
-                    onChange={handleChange('voucherCode')}
-                  />
+                  <InputGroup>
+                    <Input
+                      placeholder={t('input')}
+                      autoComplete="off"
+                      maxLength={5}
+                      value={values.voucherCode}
+                      onChange={handleChange('voucherCode')}
+                    />
+                    <InputRightElement
+                      pointerEvents="none"
+                      w="100px"
+                      borderLeftColor="border-5"
+                      borderLeftWidth="1px">
+                      <Center h="full">
+                        <Text textStyle="h4">{values.voucherCode.length}/5</Text>
+                      </Center>
+                    </InputRightElement>
+                  </InputGroup>
                   <FormErrorMessage>{errors.voucherCode}</FormErrorMessage>
                 </FormControl>
               </FormGroup>
@@ -353,7 +410,11 @@ const AddUpdateVoucherCoupon = () => {
                         </NumberInput>
                         <FormErrorMessage>{errors.discountValue}</FormErrorMessage>
                       </FormControl>
-                      <InputRightElement pointerEvents="none" w="100px" borderLeftWidth="1px">
+                      <InputRightElement
+                        borderLeftColor="border-5"
+                        pointerEvents="none"
+                        w="100px"
+                        borderLeftWidth="1px">
                         <Center h="full">
                           <Text textStyle="h4">
                             {values.typeDiscount === EDiscountType.CASH ? 'HTG' : '%'}
@@ -397,7 +458,11 @@ const AddUpdateVoucherCoupon = () => {
                           }}>
                           <NumberInputField placeholder={t('input')} />
                         </NumberInput>
-                        <InputRightElement w="100px" borderLeftWidth="1px">
+                        <InputRightElement
+                          borderLeftColor="border-5"
+                          pointerEvents="none"
+                          w="100px"
+                          borderLeftWidth="1px">
                           <Center h="full">
                             <Text textStyle="h4">HTG</Text>
                           </Center>
@@ -420,7 +485,11 @@ const AddUpdateVoucherCoupon = () => {
                       }}>
                       <NumberInputField placeholder={t('input')} />
                     </NumberInput>
-                    <InputRightElement w="100px" borderLeftWidth="1px">
+                    <InputRightElement
+                      borderLeftColor="border-5"
+                      pointerEvents="none"
+                      w="100px"
+                      borderLeftWidth="1px">
                       <Center h="full">
                         <Text textStyle="h4">HTG</Text>
                       </Center>

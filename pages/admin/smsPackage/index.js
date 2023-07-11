@@ -304,7 +304,6 @@ function SMSPackage() {
 
   return (
     <Card>
-      <NotificationContainer />
       <CardHeader color="primary">
         <h4 className={classes.cardTitleWhite}>{t('sideBar.smsPackage')}</h4>
       </CardHeader>

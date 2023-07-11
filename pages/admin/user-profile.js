@@ -407,7 +407,6 @@ function UserProfile() {
           </Card>
         </GridItem>
       </GridContainer>
-      <NotificationContainer />
     </div>
   );
 }

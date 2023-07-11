@@ -73,6 +73,34 @@ export interface IVoucher {
   quantity?: number;
   startDate?: number;
   endDate?: number;
+  voucherCode?: string;
+  type?: EVoucherType;
+}
+
+export interface IProgramVoucher {
+  id?: number;
+  banner?: string;
+  description?: string;
+  discountLimit?: number;
+  discountValue?: number;
+  maxDiscount?: number;
+  maxOrderPrice?: number;
+  maxShopRegister?: number;
+  minDiscount?: number;
+  minOrderPrice?: number;
+  name?: string;
+  programEnd: number;
+  programStart: number;
+  quantityVoucher?: number;
+  registerEnd: number;
+  registerPrice: number;
+  registerStart: number;
+  shopRegister?: null;
+  status: EVoucherStatus;
+  statusRegister: number;
+  statusRegisterName: EVoucherRegisterStatus;
+  typeDiscount: EDiscountType;
+  typeLimit?: string;
 }
 
 export interface IShopProduct {
@@ -164,6 +192,11 @@ export enum ActionTypes {
   SEARCH_PRODUCT_STOCK_MAX = 'SEARCH_PRODUCT_STOCK_MAX',
   SEARCH_PRODUCT_CATEGORY = 'SEARCH_PRODUCT_CATEGORY',
   DO_SEARCH_PRODUCT = 'DO_SEARCH_PRODUCT',
+  SELECTED_VOUCHERS = 'SELECTED_VOUCHERS',
+  SEARCH_VOUCHER_NAME = 'SEARCH_VOUCHER_NAME',
+  SEARCH_PROGRAM_VOUCHER_NAME = 'SEARCH_PROGRAM_VOUCHER_NAME',
+  SEARCH_PROGRAM_VOUCHER_DATE = 'SEARCH_PROGRAM_VOUCHER_DATE',
+  DO_SEARCH_VOUCHER = 'DO_SEARCH_VOUCHER',
 }
 
 export enum EProductType {
@@ -189,4 +222,11 @@ export enum EShowFlashSaleType {
 export enum EVoucherType {
   VOUCHER_SHOP = 'VOUCHER_SHOP',
   VOUCHER_PRODUCT = 'VOUCHER_PRODUCT',
+}
+
+export enum EVoucherRegisterStatus {
+  APPROVED = 'APPROVED',
+  PENDING = 'PENDING',
+  UNREGISTERED = 'UNREGISTERED',
+  UNAPPROVED = 'UNAPPROVED',
 }

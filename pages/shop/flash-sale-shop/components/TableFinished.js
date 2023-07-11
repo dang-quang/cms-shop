@@ -189,27 +189,29 @@ const TableFinished = () => {
           )}
         </Table>
       </Box>
-      <Flex justifyContent="space-between" alignItems="center">
-        <PaginationPanel
-          pagesCount={pagesCount}
-          currentPage={currentPage}
-          isDisabled={isDisabled}
-          onPageChange={(page) => {
-            setFlashSales([]);
-            setCurrentPage(page);
-          }}
-          pages={pages}
-          mt="24px"
-          mb="8px"
-        />
-        <Text textStyle="h4-m">
-          {t('results_page', {
-            start: (currentPage - 1) * 50 + 1,
-            end: (currentPage - 1) * 50 + flashSales.length,
-            total: totalRecords,
-          })}
-        </Text>
-      </Flex>
+      {!isEmpty(flashSales) && !isLoading && (
+        <Flex justifyContent="space-between" alignItems="center">
+          <PaginationPanel
+            pagesCount={pagesCount}
+            currentPage={currentPage}
+            isDisabled={isDisabled}
+            onPageChange={(page) => {
+              setFlashSales([]);
+              setCurrentPage(page);
+            }}
+            pages={pages}
+            mt="24px"
+            mb="8px"
+          />
+          <Text textStyle="h4-m">
+            {t('results_page', {
+              start: (currentPage - 1) * 50 + 1,
+              end: (currentPage - 1) * 50 + flashSales.length,
+              total: totalRecords,
+            })}
+          </Text>
+        </Flex>
+      )}
     </Box>
   );
 };

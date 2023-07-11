@@ -419,7 +419,6 @@ function ProductApproval() {
           </div>
         </CardFooter>
       )}
-      <NotificationContainer />
     </Card>
   );
 }

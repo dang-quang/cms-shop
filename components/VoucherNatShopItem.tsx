@@ -1,132 +1,124 @@
 import React from 'react';
-import { Tr, Flex, Text, Image, Center, Td, AspectRatio, HStack, Button } from '@chakra-ui/react';
-import { EVoucherStatus, IVoucher } from 'constants/types';
-import { formatCurrency } from 'utilities/utils';
+import { Flex, Text, Image, Center, Box, Button } from '@chakra-ui/react';
+import { EVoucherRegisterStatus, EVoucherStatus, IProgramVoucher } from 'constants/types';
+import { useImageHandler, useRemainingRegistrationTime } from 'hooks';
+import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { useRouter } from 'next/router';
-import { useImageHandler } from 'hooks';
 
 interface VoucherShopItemProps {
-  index: number;
-  item: IVoucher;
-  onUpdate?(): void;
-  onDelete?(): void;
+  item: IProgramVoucher;
+  isLast?: boolean;
+  onClick?(): void;
 }
 
-const VoucherNatShopItem: React.FC<VoucherShopItemProps> = ({
-  item,
-  index,
-  onUpdate,
-  onDelete,
-}) => {
-  const router = useRouter();
+const VoucherNatShopItem: React.FC<VoucherShopItemProps> = ({ item, isLast, onClick }) => {
+  const formatDate = 'HH:MM DD-MM-YYYY';
   const {
     banner,
     name,
-    discountValue,
-    quantityVoucher,
-    shopRegister,
     programStart,
     programEnd,
     status,
+    statusRegisterName,
+    registerStart,
+    registerEnd,
   } = item;
+
+  const { t } = useTranslation();
 
   const _image = useImageHandler(banner);
 
+  const { days, hours } = useRemainingRegistrationTime({
+    registerStart: registerStart,
+    registerEnd: registerEnd,
+  });
+
   return (
-    <Tr key={index}>
-      <Td borderColor="gray.1300">
-        <Text textStyle="h3" color="text-basic">
-          {index + 1}
-        </Text>
-      </Td>
-      <Td borderColor="gray.1300">
-        <Flex>
-          <AspectRatio w="180px" ratio={2 / 1} mr="2" borderRadius="8px" overflow="hidden">
-            <Image w="100%" h="100%" objectFit="cover" src={_image} />
-          </AspectRatio>
-          <Text textStyle="h3-m" color="text-basic">
+    <Flex pt="2" pb="6" borderBottomWidth="1px" borderBottomColor="border-5">
+      <Box w="350px" h="110px" mr="6" overflow="hidden">
+        <Image w="100%" h="100%" objectFit="cover" src={_image} />
+      </Box>
+      <Box flex="7">
+        <Flex alignItems="center">
+          <Center flexDirection="column" alignItems="flex-start" mr="5">
+            <Flex
+              py="1"
+              px="2"
+              bg={
+                status === EVoucherStatus.UPCOMING
+                  ? 'red.700'
+                  : status === EVoucherStatus.HAPPENING
+                  ? 'green.200'
+                  : 'gray.2000'
+              }
+              alignItems="center"
+              borderRadius="4px">
+              <Text
+                textStyle="h2-m"
+                color={
+                  status === EVoucherStatus.UPCOMING
+                    ? 'red.600'
+                    : status === EVoucherStatus.HAPPENING
+                    ? 'green.100'
+                    : 'gray.100'
+                }
+                textTransform="capitalize">
+                {status === EVoucherStatus.UPCOMING
+                  ? 'Upcoming'
+                  : status === EVoucherStatus.HAPPENING
+                  ? 'Happening'
+                  : 'Finished'}
+              </Text>
+            </Flex>
+          </Center>
+          <Text textStyle="h5" color="text-basic">
             {name}
           </Text>
         </Flex>
-      </Td>
-      <Td isNumeric borderColor="gray.1300">
-        <Text textStyle="h3" color="text-basic">
-          {formatCurrency(discountValue ?? 0)}
+        <Text textStyle="h3" color="text-note" mt="3">
+          {t('voucher.program_time', {
+            start: dayjs(programStart).format(formatDate),
+            end: dayjs(programEnd).format(formatDate),
+          })}
         </Text>
-      </Td>
-      <Td isNumeric borderColor="gray.1300">
-        <Text textStyle="h3" color="text-basic">
-          {quantityVoucher}
+        <Text textStyle="h3" color="text-note" mt="1">
+          {t('voucher.register_end_time')}
+          {days > 0 && (
+            <Text as="span">
+              <Text color="red" as="span">
+                {` ${days}`}
+              </Text>{' '}
+              {days > 1 ? t('days') : t('day')}
+            </Text>
+          )}
+          {hours > 0 && (
+            <Text as="span">
+              <Text color="red" as="span">
+                {` ${hours}`}
+              </Text>{' '}
+              {hours > 1 ? t('hours') : t('hour')}
+            </Text>
+          )}
         </Text>
-      </Td>
-      <Td borderColor="gray.1300">
-        <Center>
-          <Text textStyle="h3" color="text-basic">
-            {shopRegister ?? 0}
-          </Text>
-        </Center>
-      </Td>
-      <Td borderColor="gray.1300">
-        <Center flexDirection="column" alignItems="flex-start">
-          <Flex
-            py="1"
-            px="2"
-            bg={
-              status === EVoucherStatus.UPCOMING
-                ? 'red.700'
-                : status === EVoucherStatus.HAPPENING
-                ? 'green.200'
-                : 'gray.2000'
-            }
-            alignItems="center"
-            borderRadius="full">
-            <Text
-              textStyle="h2-m"
-              color={
-                status === EVoucherStatus.UPCOMING
-                  ? 'red.600'
-                  : status === EVoucherStatus.HAPPENING
-                  ? 'green.100'
-                  : 'gray.100'
-              }
-              textTransform="capitalize">
-              {status === EVoucherStatus.UPCOMING
-                ? 'Upcoming'
-                : status === EVoucherStatus.HAPPENING
-                ? 'Happening'
-                : 'Finished'}
-            </Text>
-          </Flex>
-          <HStack mt="2">
-            <Text textStyle="h3" color="text-basic">
-              {dayjs(programStart).format('DD-MM-YYYY HH:MM')}
-            </Text>
-            <Text>-</Text>
-            <Text textStyle="h3" color="text-basic">
-              {dayjs(programEnd).format('DD-MM-YYYY HH:MM')}
-            </Text>
-          </HStack>
-        </Center>
-      </Td>
-      <Td isNumeric borderColor="gray.1300">
+      </Box>
+      <Center flex="3">
         <Button
-          variant="primary"
-          children="Register now"
-          onClick={() => router.push('/shop/flash-sale-natshop/product-approval-flashsale')}
+          size="sm"
+          w="150px"
+          variant={
+            statusRegisterName !== EVoucherRegisterStatus.UNREGISTERED
+              ? 'primary'
+              : 'outline-primary'
+          }
+          children={
+            statusRegisterName !== EVoucherRegisterStatus.UNREGISTERED
+              ? t('register')
+              : t('view_details')
+          }
+          onClick={onClick}
         />
-        {/* <Flex justifyContent="flex-end">
-          <HStack>
-            <Center boxSize="40px" cursor="pointer" onClick={onUpdate}>
-              <Icon as={AiFillEdit} w="18px" h="18px" color="text-basic" cursor="pointer" />
-            </Center>
-            <Center boxSize="40px" cursor="pointer" onClick={onDelete}>
-              <Icon as={FiTrash2} w="18px" h="18px" color="red.600" cursor="pointer" />
-            </Center>
-          </HStack>
-        </Flex> */}
-      </Td>
-    </Tr>
+      </Center>
+    </Flex>
   );
 };
 

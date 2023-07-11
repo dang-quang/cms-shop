@@ -250,7 +250,6 @@ function AddShop() {
 
         return (
           <Form style={{ height: height - 150 + 'px', overflowY: 'auto' }}>
-            <NotificationContainer />
             <Card>
               <CardHeader color="primary">
                 <Text textStyle="h5" color="text-white">

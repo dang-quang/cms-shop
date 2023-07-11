@@ -447,7 +447,6 @@ function VoucherProgramApproval() {
           </div>
         </CardFooter>
       )}
-      <NotificationContainer />
     </Card>
   );
 }

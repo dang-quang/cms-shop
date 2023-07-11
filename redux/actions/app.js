@@ -8,6 +8,9 @@ export const SHOW_LOADER = 'SHOW_LOADER';
 export const GAME_TAB = 'GAME_TAB';
 export const SHOP_FLASH_SALE_TAB = 'SHOP_FLASH_SALE_TAB';
 export const SHOP_PRODUCT_TAB = 'SHOP_PRODUCT_TAB';
+export const SHOP_VOUCHER_TAB = 'SHOP_VOUCHER_TAB';
+export const SHOP_MY_SHOP_TAB = 'SHOP_MY_SHOP_TAB';
+export const SHOP_NAT_SHOP_TAB = 'SHOP_NAT_SHOP_TAB';
 export const LOADING = 'LOADING';
 
 export function setShowLoader(showLoader) {
@@ -24,10 +27,10 @@ export function setSelectedGameTab(selectedGameTab) {
   };
 }
 
-export function setShopPlashSaleTabIndex(selectedFlashSaleTabIndex) {
+export function setShopPlashSaleTabIndex(shopFlashSaleTabIndex) {
   return {
     type: SHOP_FLASH_SALE_TAB,
-    selectedFlashSaleTabIndex,
+    shopFlashSaleTabIndex,
   };
 }
 
@@ -35,6 +38,27 @@ export function setShopProductTabIndex(shopProductTabIndex) {
   return {
     type: SHOP_PRODUCT_TAB,
     shopProductTabIndex,
+  };
+}
+
+export function setShopVoucherTabIndex(shopVoucherTabIndex) {
+  return {
+    type: SHOP_VOUCHER_TAB,
+    shopVoucherTabIndex,
+  };
+}
+
+export function setMyShopVoucherTabIndex(myShopVoucherTabIndex) {
+  return {
+    type: SHOP_MY_SHOP_TAB,
+    myShopVoucherTabIndex,
+  };
+}
+
+export function setNatShopVoucherTabIndex(natShopVoucherTabIndex) {
+  return {
+    type: SHOP_NAT_SHOP_TAB,
+    natShopVoucherTabIndex,
   };
 }
 

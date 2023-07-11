@@ -18,7 +18,6 @@ const Advertisement = () => {
 
   return (
     <Card>
-      <NotificationContainer />
       <CardHeader color="primary">
         <h4 className={classes.cardTitleWhite}>Advertisement</h4>
       </CardHeader>

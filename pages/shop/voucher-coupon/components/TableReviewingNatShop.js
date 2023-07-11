@@ -12,13 +12,13 @@ import {
   VoucherNatShopItem,
 } from 'components';
 import { isEmpty } from 'lodash';
-import { EAppKey } from 'constants/types';
+import { EAppKey, EVoucherRegisterStatus } from 'constants/types';
 import { requestGetShopListProgram } from 'utilities/ApiShop';
 import { setDoSearchVoucher } from 'redux/actions/voucher';
 import dayjs from 'dayjs';
 import { IconNoData } from 'components/Icons/Icons';
 
-const TableAllNatShop = () => {
+const TableReviewingNatShop = () => {
   const formatDate = 'YYYY/MM/DD';
   const shopId = 143;
   const router = useRouter();
@@ -59,6 +59,7 @@ const TableAllNatShop = () => {
         let params = {
           page: 1,
           shopId: shopId,
+          type: EVoucherRegisterStatus.PENDING,
         };
 
         const res = await requestGetShopListProgram(params);
@@ -95,48 +96,7 @@ const TableAllNatShop = () => {
   React.useEffect(() => {
     (async () => {
       try {
-        dispatch(setShowLoader(true));
-
-        let params = {
-          page: 1,
-          shopId: shopId,
-        };
-
-        const res = await requestGetShopListProgram(params);
-
-        if (res.code === EAppKey.MSG_SUCCESS) {
-          if (res.data && res.data.results) {
-            setVouchers(res.data.results);
-            setTotalPage(res.data.totalPages);
-            setTotalRecords(res.data.totalRecords);
-          } else {
-            setVouchers([]);
-            setTotalPage(1);
-            setTotalRecords(0);
-          }
-        } else {
-          setVouchers([]);
-          setTotalPage(1);
-          setTotalRecords(0);
-          toast({
-            position: 'top',
-            title: t('error'),
-            description: t('no_data_exists'),
-            status: 'error',
-            duration: 2000,
-            isClosable: true,
-          });
-        }
-      } finally {
-        dispatch(setShowLoader(false));
-      }
-    })();
-  }, []);
-
-  React.useEffect(() => {
-    (async () => {
-      try {
-        let params = { shopId: shopId, page: currentPage };
+        let params = { shopId: shopId, page: currentPage, type: EVoucherRegisterStatus.PENDING };
 
         if (doSearchVoucher) {
           dispatch(setShowLoader(true));
@@ -245,4 +205,4 @@ const TableAllNatShop = () => {
   );
 };
 
-export default TableAllNatShop;
+export default TableReviewingNatShop;

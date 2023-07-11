@@ -58,7 +58,6 @@ const InterfaceManagement = () => {
 
   return (
     <Box>
-      <NotificationContainer />
       <Flex alignItems="center">
         <Icon as={IconShop} w="36px" h="37px" color="text-basic" />
         <Text ml="5" textStyle="h6-t-h7" color="text-basic">

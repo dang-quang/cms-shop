@@ -385,7 +385,6 @@ function Game() {
 
   return (
     <Card>
-      <NotificationContainer />
       <CardHeader color="primary">
         <h4 className={classes.cardTitleWhite}>{t('sideBar.game')}</h4>
       </CardHeader>

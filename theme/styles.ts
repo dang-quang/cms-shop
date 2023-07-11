@@ -64,6 +64,7 @@ export const globalStyles = {
       1900: '#A0AEC0',
       2000: '#99999920',
       2100: '#F6F6F6',
+      2200: '#FAFAFA',
     },
   },
   styles: {

@@ -328,7 +328,6 @@ function ProductCategory() {
 
   return (
     <Card>
-      <NotificationContainer />
       <CardHeader color="primary">
         <Text textStyle="h5" color="text-white">
           {t('sideBar.category')}

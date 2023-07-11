@@ -13,14 +13,14 @@ import {
   VoucherShopItem,
 } from 'components';
 import { isEmpty } from 'lodash';
-import { EAppKey, EVoucherStatus } from 'constants/types';
+import { EAppKey } from 'constants/types';
 import { requestDeleteVoucherShop, requestGetListVoucherShop } from 'utilities/ApiShop';
 //@ts-ignore
 import { NotificationManager } from 'react-light-notifications';
 import { setDoSearchVoucher } from 'redux/actions/voucher';
 import { IconVoucher } from 'components/Icons/Icons';
 
-const TableUpcomingMyShop = () => {
+const TableAllMyShop = () => {
   const shopId = 143;
   const router = useRouter();
   const dispatch = useDispatch();
@@ -67,9 +67,8 @@ const TableUpcomingMyShop = () => {
         dispatch(setShowLoader(true));
 
         let params = {
-          shopId: shopId,
           page: 1,
-          type: EVoucherStatus.UPCOMING,
+          shopId: shopId,
         };
 
         if (!!searchVoucherName) {
@@ -97,12 +96,12 @@ const TableUpcomingMyShop = () => {
   React.useEffect(() => {
     (async () => {
       try {
-        let params = { id: shopId, page: currentPage, type: EVoucherStatus.UPCOMING };
+        let params = { shopId: shopId, page: currentPage };
 
         if (doSearchVoucher) {
           dispatch(setShowLoader(true));
           dispatch(setLoading(true));
-          if (searchVoucherName) {
+          if (!!searchVoucherName) {
             params.keyWord = searchVoucherName;
           }
 
@@ -133,7 +132,7 @@ const TableUpcomingMyShop = () => {
   }, [shopId, doSearchVoucher, currentPage, searchVoucherName]);
 
   const handleReload = React.useCallback(async () => {
-    let params = { id: shopId, page: 1, type: EVoucherStatus.UPCOMING };
+    let params = { shopId: shopId, page: 1 };
 
     if (searchVoucherName) {
       params.keyWord = searchVoucherName;
@@ -273,4 +272,4 @@ const TableUpcomingMyShop = () => {
   );
 };
 
-export default TableUpcomingMyShop;
+export default TableAllMyShop;

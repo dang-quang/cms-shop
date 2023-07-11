@@ -650,8 +650,6 @@ const ProductApproval = () => {
                 </Button>
               </Flex>
             </Box>
-
-            <NotificationContainer />
           </Card>
         );
       }}

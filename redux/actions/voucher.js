@@ -1,16 +1,42 @@
-import { EAppKey } from 'constants/types';
+import { ActionTypes, EAppKey } from 'constants/types';
 import _ from 'lodash';
 import Router from 'next/router';
 import { NotificationManager } from 'react-light-notifications';
 import { requestApproveVoucherShopRegisterProgram } from 'utilities/ApiManage';
 import { setShowLoader } from './app';
 
-export const SELECTED_VOUCHERS = 'SELECTED_VOUCHERS';
-
 export function setSelectedVouchers(selectedVouchers) {
   return {
-    type: SELECTED_VOUCHERS,
+    type: ActionTypes.SELECTED_VOUCHERS,
     selectedVouchers,
+  };
+}
+
+export function setSearchVoucherName(searchVoucherName) {
+  return {
+    type: ActionTypes.SEARCH_VOUCHER_NAME,
+    searchVoucherName,
+  };
+}
+
+export function setSearchProgramVoucherName(searchProgramVoucherName) {
+  return {
+    type: ActionTypes.SEARCH_PROGRAM_VOUCHER_NAME,
+    searchProgramVoucherName,
+  };
+}
+
+export function setSearchProgramVoucherDate(searchProgramVoucherDate) {
+  return {
+    type: ActionTypes.SEARCH_PROGRAM_VOUCHER_DATE,
+    searchProgramVoucherDate,
+  };
+}
+
+export function setDoSearchVoucher(doSearchVoucher) {
+  return {
+    type: ActionTypes.DO_SEARCH_VOUCHER,
+    doSearchVoucher,
   };
 }
 
@@ -84,5 +110,13 @@ export const rejectVouchers = () => {
     } finally {
       dispatch(setShowLoader(false));
     }
+  };
+};
+
+export const resetSearchProgramVoucher = () => {
+  return async (dispatch) => {
+    dispatch(setSearchProgramVoucherName(''));
+    dispatch(setSearchProgramVoucherDate([]));
+    dispatch(setDoSearchVoucher(true));
   };
 };

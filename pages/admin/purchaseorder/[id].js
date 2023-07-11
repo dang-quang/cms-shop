@@ -1,16 +1,13 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import Router from "next/router";
-import { setShowLoader } from "../../../redux/actions/app";
-import moment from "moment";
-import Link from "next/link";
-import {
-  NotificationContainer,
-  NotificationManager,
-} from "react-light-notifications";
-import "react-light-notifications/lib/main.css";
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import Router from 'next/router';
+import { setShowLoader } from '../../../redux/actions/app';
+import moment from 'moment';
+import Link from 'next/link';
+import { NotificationContainer, NotificationManager } from 'react-light-notifications';
+import 'react-light-notifications/lib/main.css';
 // @material-ui/core components
-import {} from "@material-ui/core/styles";
+import {} from '@material-ui/core/styles';
 import {
   primaryColor,
   whiteColor,
@@ -20,16 +17,16 @@ import {
   infoColor,
   orangeColor,
   grayColor,
-} from "assets/jss/natcash.js";
+} from 'assets/jss/natcash.js';
 // layout for this page
-import Admin from "layouts/Admin.js";
+import Admin from 'layouts/Admin.js';
 // core components
-import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardBody from "components/Card/CardBody.js";
-import GridItem from "components/Grid/GridItem.js";
-import CardFooter from "components/Card/CardFooter.js";
-import Button from "components/CustomButtons/Button.js";
+import Card from 'components/Card/Card.js';
+import CardHeader from 'components/Card/CardHeader.js';
+import CardBody from 'components/Card/CardBody.js';
+import GridItem from 'components/Grid/GridItem.js';
+import CardFooter from 'components/Card/CardFooter.js';
+import Button from 'components/CustomButtons/Button.js';
 import {
   Modal,
   Tab,
@@ -56,45 +53,42 @@ import {
   Checkbox,
   OutlinedInput,
   InputAdornment,
-} from "@material-ui/core";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import Pagination from "@material-ui/lab/Pagination";
-import Check from "@material-ui/icons/Check";
-import DateFnsUtils from "@date-io/date-fns";
-import Poppers from "@material-ui/core/Popper";
-import SwipeableViews from "react-swipeable-views";
-import WithAuthentication from "components/WithAuthentication/WithAuthentication";
-import GridContainer from "components/Grid/GridContainer.js";
-import TextField from "@material-ui/core/TextField";
-import adminStyles from "assets/jss/natcash/components/headerLinksStyle.js";
-import tableStyles from "assets/jss/natcash/components/tableStyle.js";
-import taskStyles from "assets/jss/natcash/components/tasksStyle.js";
-import shopStyle from "assets/jss/natcash/views/shoplist/shoplistStyle.js";
-import { Icon } from "@material-ui/core";
-import dashStyles from "assets/jss/natcash/views/dashboardStyle.js";
-import vi from "date-fns/locale/vi";
-import classNames from "classnames";
-import useWindowSize from "components/Hooks/useWindowSize.js";
-import CartTotalInfo from "components/CartTotalInfo/CartTotalInfo.js";
-import PropTypes from "prop-types";
-import CustomInput from "components/CustomInput/CustomInput.js";
-import Search from "@material-ui/icons/Search";
-import ModalCustom from "components/ModalCustom/ModalCustom.js";
+} from '@material-ui/core';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import Pagination from '@material-ui/lab/Pagination';
+import Check from '@material-ui/icons/Check';
+import DateFnsUtils from '@date-io/date-fns';
+import Poppers from '@material-ui/core/Popper';
+import SwipeableViews from 'react-swipeable-views';
+import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
+import GridContainer from 'components/Grid/GridContainer.js';
+import TextField from '@material-ui/core/TextField';
+import adminStyles from 'assets/jss/natcash/components/headerLinksStyle.js';
+import tableStyles from 'assets/jss/natcash/components/tableStyle.js';
+import taskStyles from 'assets/jss/natcash/components/tasksStyle.js';
+import shopStyle from 'assets/jss/natcash/views/shoplist/shoplistStyle.js';
+import { Icon } from '@material-ui/core';
+import dashStyles from 'assets/jss/natcash/views/dashboardStyle.js';
+import vi from 'date-fns/locale/vi';
+import classNames from 'classnames';
+import useWindowSize from 'components/Hooks/useWindowSize.js';
+import CartTotalInfo from 'components/CartTotalInfo/CartTotalInfo.js';
+import PropTypes from 'prop-types';
+import CustomInput from 'components/CustomInput/CustomInput.js';
+import Search from '@material-ui/icons/Search';
+import ModalCustom from 'components/ModalCustom/ModalCustom.js';
 import {
   getAllSupplier,
   getAllStock,
   getInventoryItemList,
   createNewPurchaseOrder,
   getAllPurchaseOrder,
-  updatePurchaseOrder
-} from "../../../utilities/ApiManage";
-import { formatCurrency, formatNumber } from "../../../utilities/utils";
+  updatePurchaseOrder,
+} from '../../../utilities/ApiManage';
+import { formatCurrency, formatNumber } from '../../../utilities/utils';
 
-import { useRouter } from "next/router";
-import styles from "assets/jss/natcash/views/purchaseorder/addPurchaseOrderStyle.js";
+import { useRouter } from 'next/router';
+import styles from 'assets/jss/natcash/views/purchaseorder/addPurchaseOrderStyle.js';
 
 function PurchaseOrderDetailPage() {
   const router = useRouter();
@@ -116,14 +110,14 @@ function PurchaseOrderDetailPage() {
   const language = useSelector((state) => state.app.language);
   // Modal select product
   const [isShowModal, setIsShowModal] = useState(false);
-  const [filterValue, setFilterValue] = useState("");
+  const [filterValue, setFilterValue] = useState('');
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [checked, setChecked] = useState([]);
   const [doFilter, setDoFilter] = useState(false);
   //
   const [suppliers, setSuppliers] = useState([]);
   const [stocks, setStocks] = useState([]);
-  const [POStatus, setPOStatus] = useState("")
+  const [POStatus, setPOStatus] = useState('');
   //Phân trang
   const [totalPage, setTotalPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -132,219 +126,215 @@ function PurchaseOrderDetailPage() {
   //
   const [currentStep, setCurrentStep] = useState(1);
   const [supplierInfo, setSupplierInfo] = useState({
-    name: "",
-    address: "",
-    contact_person: "",
-    email: "",
-    phone: "",
+    name: '',
+    address: '',
+    contact_person: '',
+    email: '',
+    phone: '',
   });
   const [stockInfo, setStockInfo] = useState({
-    name: "",
-    address: "",
-    contact_person: "",
-    email: "",
-    phone: "",
+    name: '',
+    address: '',
+    contact_person: '',
+    email: '',
+    phone: '',
   });
   const [values, setValues] = React.useState({
-    supplier_id: "",
-    po_type: "",
-    reference_id: "",
+    supplier_id: '',
+    po_type: '',
+    reference_id: '',
     order_date: moment().format(),
     create_date: moment().format(),
     delivery_date: moment().format(),
-    currency: "",
-    payment_methods: "",
-    stock_id: "",
+    currency: '',
+    payment_methods: '',
+    stock_id: '',
     list_products: [],
-    notes: "",
+    notes: '',
     total_amount_of_goods: 0,
     discount: 0,
     other_fee: 0,
     total_amount_excluding_tax: 0,
     tax: 0,
     total_amount_including_tax: 0,
-    status: "draft",
+    status: 'draft',
   });
 
   const CARD = [
     {
-      id: "en",
+      id: 'en',
       title: [
-        "Create purchase order",
-        "Supplier",
-        "General information",
-        "Import Stock",
-        "List product",
-        "Notes and purchase order fees",
+        'Create purchase order',
+        'Supplier',
+        'General information',
+        'Import Stock',
+        'List product',
+        'Notes and purchase order fees',
       ],
       subTitle: [
-        "No supplier yet? Choose create new now",
-        "No stock yet? Choose create new now",
-        "selected products",
+        'No supplier yet? Choose create new now',
+        'No stock yet? Choose create new now',
+        'selected products',
       ],
     },
     {
-      id: "vi",
+      id: 'vi',
       title: [
-        "Tạo phiếu nhập hàng",
-        "Nhà cung cấp",
-        "Thông tin chung",
-        "Chuyển đến kho",
-        "Danh sách sản phẩm",
-        "Ghi chú và phí đặt hàng",
+        'Tạo phiếu nhập hàng',
+        'Nhà cung cấp',
+        'Thông tin chung',
+        'Chuyển đến kho',
+        'Danh sách sản phẩm',
+        'Ghi chú và phí đặt hàng',
       ],
       subTitle: [
-        "Chưa có nhà cung cấp? Chọn tạo mới ngay",
-        "Chưa có kho hàng? Chọn tạo mới ngay",
-        "sản phẩm đã chọn",
+        'Chưa có nhà cung cấp? Chọn tạo mới ngay',
+        'Chưa có kho hàng? Chọn tạo mới ngay',
+        'sản phẩm đã chọn',
       ],
     },
   ];
 
   const STEP = [
     {
-      id: "en",
-      value: [
-        "General information",
-        "Select product",
-        "Preview and create new",
-      ],
+      id: 'en',
+      value: ['General information', 'Select product', 'Preview and create new'],
     },
     {
-      id: "vi",
-      value: ["Thông tin chung", "Chọn sản phẩm", "Xem trước và tạo mới"],
+      id: 'vi',
+      value: ['Thông tin chung', 'Chọn sản phẩm', 'Xem trước và tạo mới'],
     },
   ];
 
   const ACTIONS = [
     {
-      id: "en",
+      id: 'en',
       button: [
-        "Create New Supplier",
-        "Create New Stock",
-        "Reset",
-        "Save Draft",
-        "Continue",
-        "Confirm",
-        "Select product",
-        "Check price",
+        'Create New Supplier',
+        'Create New Stock',
+        'Reset',
+        'Save Draft',
+        'Continue',
+        'Confirm',
+        'Select product',
+        'Check price',
       ],
       select: [
-        "Supplier *",
-        "Address",
-        "Contact person",
-        "Email",
-        "Contact phone",
-        "PO type *",
-        "Reference ID",
-        "Order date *",
-        "Delivery date (desired) *",
-        "Currency *",
-        "Payment methods",
-        "Stock *",
-        "Notes",
-        "Total amount of goods (VND)",
-        "Discount (VND)",
-        "Other fee (VND)",
-        "Total amount (excluding tax) (VND)",
-        "Tax (%)",
-        "Total amount (including tax) (VND)",
+        'Supplier *',
+        'Address',
+        'Contact person',
+        'Email',
+        'Contact phone',
+        'PO type *',
+        'Reference ID',
+        'Order date *',
+        'Delivery date (desired) *',
+        'Currency *',
+        'Payment methods',
+        'Stock *',
+        'Notes',
+        'Total amount of goods (VND)',
+        'Discount (VND)',
+        'Other fee (VND)',
+        'Total amount (excluding tax) (VND)',
+        'Tax (%)',
+        'Total amount (including tax) (VND)',
       ],
     },
     {
-      id: "vi",
+      id: 'vi',
       button: [
-        "Tạo nhà cung cấp mới",
-        "Tạo kho hàng mới",
-        "Đặt lại",
-        "Lưu nháp",
-        "Tiếp tục",
-        "Xác nhận",
-        "Chọn sản phẩm",
-        "Kiểm tra giá",
+        'Tạo nhà cung cấp mới',
+        'Tạo kho hàng mới',
+        'Đặt lại',
+        'Lưu nháp',
+        'Tiếp tục',
+        'Xác nhận',
+        'Chọn sản phẩm',
+        'Kiểm tra giá',
       ],
       select: [
-        "Nhà cung cấp *",
-        "Địa chỉ",
-        "Người liên hệ",
-        "Email",
-        "Điện thoại liên hệ",
-        "Loại PO *",
-        "Mã tham chiếu",
-        "Ngày đặt hàng *",
-        "Ngày giao hàng (mong muốn) *",
-        "Loại tiền *",
-        "Phương thức thanh toán",
-        "Kho nhập *",
-        "Ghi chú",
-        "Tổng tiền hàng (đ)",
-        "Giảm giá (đ)",
-        "Phí khác (đ)",
-        "Tổng tiền (chưa thuế) (đ)",
-        "Thuế (%)",
-        "Tổng tiền (bao gồm thuế) (đ)",
+        'Nhà cung cấp *',
+        'Địa chỉ',
+        'Người liên hệ',
+        'Email',
+        'Điện thoại liên hệ',
+        'Loại PO *',
+        'Mã tham chiếu',
+        'Ngày đặt hàng *',
+        'Ngày giao hàng (mong muốn) *',
+        'Loại tiền *',
+        'Phương thức thanh toán',
+        'Kho nhập *',
+        'Ghi chú',
+        'Tổng tiền hàng (đ)',
+        'Giảm giá (đ)',
+        'Phí khác (đ)',
+        'Tổng tiền (chưa thuế) (đ)',
+        'Thuế (%)',
+        'Tổng tiền (bao gồm thuế) (đ)',
       ],
     },
   ];
 
   const POPUP = [
     {
-      id: "en",
-      title: "Add products",
-      button: ["Search", "Reset", "Confirm"],
-      select: ["By amount", "By percent"],
+      id: 'en',
+      title: 'Add products',
+      button: ['Search', 'Reset', 'Confirm'],
+      select: ['By amount', 'By percent'],
     },
     {
-      id: "vi",
-      title: "Thêm sản phẩm",
-      button: ["Tìm", "Nhập lại", "Xác nhận"],
-      select: ["Theo số tiền", "Theo phần trăm"],
+      id: 'vi',
+      title: 'Thêm sản phẩm',
+      button: ['Tìm', 'Nhập lại', 'Xác nhận'],
+      select: ['Theo số tiền', 'Theo phần trăm'],
     },
   ];
 
   const TABLE_HEAD_MODAL = [
     {
-      id: "en",
-      value: ["Product", "Quantity", "Unit", "Price"],
+      id: 'en',
+      value: ['Product', 'Quantity', 'Unit', 'Price'],
     },
     {
-      id: "vi",
-      value: ["Sản phẩm", "Số lượng", "ĐVT", "Đơn giá"],
+      id: 'vi',
+      value: ['Sản phẩm', 'Số lượng', 'ĐVT', 'Đơn giá'],
     },
   ];
 
   const TABLE_HEAD = [
     {
-      id: "en",
+      id: 'en',
       value: [
-        "Product",
-        "Quantity",
-        "Unit",
-        "Price",
-        "Qty | Inventory unit",
-        "Import unit price",
-        "Total money",
-        "Action",
+        'Product',
+        'Quantity',
+        'Unit',
+        'Price',
+        'Qty | Inventory unit',
+        'Import unit price',
+        'Total money',
+        'Action',
       ],
     },
     {
-      id: "vi",
+      id: 'vi',
       value: [
-        "Sản phẩm",
-        "Số lượng",
-        "ĐVT",
-        "Đơn giá",
-        "SL | ĐTV nhập kho",
-        "Đơn giá nhập kho",
-        "Thành tiền",
-        "Thao tác",
+        'Sản phẩm',
+        'Số lượng',
+        'ĐVT',
+        'Đơn giá',
+        'SL | ĐTV nhập kho',
+        'Đơn giá nhập kho',
+        'Thành tiền',
+        'Thao tác',
       ],
     },
   ];
 
   const listText = [
     {
-      id: "en",
+      id: 'en',
       card: CARD[0],
       step: STEP[0].value,
       actions: ACTIONS[0],
@@ -353,12 +343,12 @@ function PurchaseOrderDetailPage() {
       popup_select: POPUP[0].select,
       tableHead_modal: TABLE_HEAD_MODAL[0].value,
       tableHead: TABLE_HEAD[0].value,
-      placeholder: "Enter here",
-      createDate: "Create date",
-      errLog: "You need to enter required data",
+      placeholder: 'Enter here',
+      createDate: 'Create date',
+      errLog: 'You need to enter required data',
     },
     {
-      id: "vi",
+      id: 'vi',
       card: CARD[1],
       step: STEP[1].value,
       actions: ACTIONS[1],
@@ -367,9 +357,9 @@ function PurchaseOrderDetailPage() {
       popup_select: POPUP[1].select,
       tableHead_modal: TABLE_HEAD_MODAL[1].value,
       tableHead: TABLE_HEAD[1].value,
-      placeholder: "Nhập vào",
-      createDate: "Ngày tạo",
-      errLog: "Bạn cần nhập đủ dữ liệu bắt buộc",
+      placeholder: 'Nhập vào',
+      createDate: 'Ngày tạo',
+      errLog: 'Bạn cần nhập đủ dữ liệu bắt buộc',
     },
   ];
 
@@ -394,7 +384,7 @@ function PurchaseOrderDetailPage() {
     setValues(res.data.data[0]);
     setStocks(stock.data);
     setSuppliers(suppliers.data);
-    setPOStatus(res.data.data[0].status)
+    setPOStatus(res.data.data[0].status);
     suppliers.data.map((item, index) => {
       if (item._id == res.data.data[0].supplier_id) {
         setSupplierInfo(item);
@@ -434,15 +424,15 @@ function PurchaseOrderDetailPage() {
         product.item_name = item.item_name;
         product.item_sku = item.item_sku;
         product.quantity = 1;
-        product.unit = "piece";
+        product.unit = 'piece';
         product.price = 0;
         product.import_qty = 1;
-        product.import_unit = "Cái";
+        product.import_unit = 'Cái';
         product.price_importQty = 0;
         product.total_amount = 0;
         products.push(product);
       });
-      setData({ ...data, ["products"]: products });
+      setData({ ...data, ['products']: products });
       setCurrentPage(res.data.data_page.current_page);
       setTotalPage(res.data.data_page.total_page);
     }
@@ -457,26 +447,26 @@ function PurchaseOrderDetailPage() {
   const [data, setData] = useState({
     po_type: [
       {
-        name: "Outright",
-        value: "outright",
+        name: 'Outright',
+        value: 'outright',
       },
       {
-        name: "Consignment",
-        value: "consignment",
+        name: 'Consignment',
+        value: 'consignment',
       },
       {
-        name: "Hybrid Retail",
-        value: "hybrid_retail",
+        name: 'Hybrid Retail',
+        value: 'hybrid_retail',
       },
     ],
     currency: [
       {
-        name: "VND",
-        value: "vnd",
+        name: 'VND',
+        value: 'vnd',
       },
       {
-        name: "$",
-        value: "dollar",
+        name: '$',
+        value: 'dollar',
       },
     ],
     products: [],
@@ -490,15 +480,15 @@ function PurchaseOrderDetailPage() {
         { title: text.actions.select[6], value: values.reference_id },
         {
           title: text.createDate,
-          value: moment(values.create_date).format("DD-MM-yyyy hh:mm"),
+          value: moment(values.create_date).format('DD-MM-yyyy hh:mm'),
         },
         {
           title: text.actions.select[7],
-          value: moment(values.order_date).format("DD-MM-yyyy hh:mm"),
+          value: moment(values.order_date).format('DD-MM-yyyy hh:mm'),
         },
         {
           title: text.actions.select[8],
-          value: moment(values.delivery_date).format("DD-MM-yyyy hh:mm"),
+          value: moment(values.delivery_date).format('DD-MM-yyyy hh:mm'),
         },
         { title: text.actions.select[9], value: values.currency },
         { title: text.actions.select[10], value: values.payment_methods },
@@ -529,13 +519,13 @@ function PurchaseOrderDetailPage() {
   //change value input form
   const handleChangeValue = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
-    if (prop == "supplier_id") {
+    if (prop == 'supplier_id') {
       suppliers.map((item, index) => {
         if (item._id == event.target.value) {
           setSupplierInfo(item);
         }
       });
-    } else if (prop == "stock_id") {
+    } else if (prop == 'stock_id') {
       stocks.map((item, index) => {
         if (item._id == event.target.value) {
           setStockInfo(item);
@@ -555,21 +545,21 @@ function PurchaseOrderDetailPage() {
 
   const handelReset = () => {
     let resetData = {
-      name: "",
-      address: "",
-      contact_person: "",
-      email: "",
-      phone: "",
+      name: '',
+      address: '',
+      contact_person: '',
+      email: '',
+      phone: '',
     };
     setValues({
-      supplier_id: "",
-      po_type: "",
-      reference_id: "",
+      supplier_id: '',
+      po_type: '',
+      reference_id: '',
       order_date: moment().format(),
       delivery_date: moment().format(),
-      currency: "",
-      payment_methods: "",
-      stock_id: "",
+      currency: '',
+      payment_methods: '',
+      stock_id: '',
     });
     setSupplierInfo(resetData);
     setStockInfo(resetData);
@@ -613,7 +603,7 @@ function PurchaseOrderDetailPage() {
     const currentIndex = values.list_products.indexOf(item);
     const newChecked = [...values.list_products];
     newChecked.splice(currentIndex, 1);
-    setValues({ ...values, ["list_products"]: newChecked });
+    setValues({ ...values, ['list_products']: newChecked });
     setChecked(newChecked);
   };
 
@@ -623,16 +613,15 @@ function PurchaseOrderDetailPage() {
     let cloneData = [...data.list_products];
     let cloneItem = { ...cloneData[index] };
     cloneItem[props] = event.target.value;
-    if (props === "quantity") {
-      cloneItem["import_qty"] = event.target.value;
-    } else if (props === "unit") {
-      cloneItem["import_unit"] = event.target.value;
-    } else if (props === "price") {
-      cloneItem["price_importQty"] = event.target.value;
+    if (props === 'quantity') {
+      cloneItem['import_qty'] = event.target.value;
+    } else if (props === 'unit') {
+      cloneItem['import_unit'] = event.target.value;
+    } else if (props === 'price') {
+      cloneItem['price_importQty'] = event.target.value;
     }
-    cloneItem["total_amount"] =
-      parseInt(cloneItem["import_qty"]) *
-      parseInt(cloneItem["price_importQty"]);
+    cloneItem['total_amount'] =
+      parseInt(cloneItem['import_qty']) * parseInt(cloneItem['price_importQty']);
     cloneData[index] = cloneItem;
     data.list_products = cloneData;
     setValues({ ...data });
@@ -656,9 +645,7 @@ function PurchaseOrderDetailPage() {
       parseInt(cloneData.other_fee);
     cloneData.total_amount_including_tax =
       parseInt(cloneData.total_amount_excluding_tax) -
-      (parseInt(cloneData.total_amount_excluding_tax) *
-        parseInt(cloneData.tax)) /
-        100;
+      (parseInt(cloneData.total_amount_excluding_tax) * parseInt(cloneData.tax)) / 100;
     setValues(cloneData);
   };
 
@@ -673,7 +660,7 @@ function PurchaseOrderDetailPage() {
         !values.stock_id
       ) {
         NotificationManager.error({
-          title: "Error",
+          title: 'Error',
           message: text.errLog,
         });
       } else {
@@ -682,7 +669,7 @@ function PurchaseOrderDetailPage() {
     } else if (currentStep === 2) {
       if (values.list_products.length < 1) {
         NotificationManager.error({
-          title: "Error",
+          title: 'Error',
           message: text.errLog,
         });
       } else {
@@ -692,7 +679,7 @@ function PurchaseOrderDetailPage() {
   };
 
   const handleSubmit = async (type) => {
-    if (type === "finished") {
+    if (type === 'finished') {
       let obj = values;
       obj.status = type;
       setValues(obj);
@@ -701,11 +688,11 @@ function PurchaseOrderDetailPage() {
     let res = await updatePurchaseOrder(values);
     dispatch(setShowLoader(false));
     if (res.code === 200) {
-      Router.push("/admin/purchaseorder");
+      Router.push('/admin/purchaseorder');
     } else {
       NotificationManager.error({
-        title: "Error",
-        message: res.message ? res.message.text : "Error",
+        title: 'Error',
+        message: res.message ? res.message.text : 'Error',
       });
     }
   };
@@ -714,10 +701,7 @@ function PurchaseOrderDetailPage() {
   const stepContainer = () => {
     return (
       <CardHeader color="primary" className={classes.stepContainer}>
-        <div
-          className={classes.flex_center}
-          style={{ justifyContent: "space-between" }}
-        >
+        <div className={classes.flex_center} style={{ justifyContent: 'space-between' }}>
           <h4 className={classes.cardTitleWhite} style={{ fontSize: 18 }}>
             {text.card.title[0]}
           </h4>
@@ -725,21 +709,15 @@ function PurchaseOrderDetailPage() {
             <p
               className={
                 currentStep >= 1
-                  ? classes.activeStep +
-                    " " +
-                    classes.step +
-                    " " +
-                    classes.flex_center
-                  : classes.step + " " + classes.flex_center
-              }
-            >
+                  ? classes.activeStep + ' ' + classes.step + ' ' + classes.flex_center
+                  : classes.step + ' ' + classes.flex_center
+              }>
               <span
                 className={
                   currentStep >= 1
-                    ? classes.stepNumber + " " + classes.activeStepNumber
+                    ? classes.stepNumber + ' ' + classes.activeStepNumber
                     : classes.stepNumber
-                }
-              >
+                }>
                 1
               </span>
               {text.step[0]}
@@ -747,21 +725,15 @@ function PurchaseOrderDetailPage() {
             <p
               className={
                 currentStep >= 2
-                  ? classes.activeStep +
-                    " " +
-                    classes.step +
-                    " " +
-                    classes.flex_center
-                  : classes.step + " " + classes.flex_center
-              }
-            >
+                  ? classes.activeStep + ' ' + classes.step + ' ' + classes.flex_center
+                  : classes.step + ' ' + classes.flex_center
+              }>
               <span
                 className={
                   currentStep >= 2
-                    ? classes.stepNumber + " " + classes.activeStepNumber
+                    ? classes.stepNumber + ' ' + classes.activeStepNumber
                     : classes.stepNumber
-                }
-              >
+                }>
                 2
               </span>
               {text.step[1]}
@@ -769,21 +741,15 @@ function PurchaseOrderDetailPage() {
             <p
               className={
                 currentStep == 3
-                  ? classes.activeStep +
-                    " " +
-                    classes.step +
-                    " " +
-                    classes.flex_center
-                  : classes.step + " " + classes.flex_center
-              }
-            >
+                  ? classes.activeStep + ' ' + classes.step + ' ' + classes.flex_center
+                  : classes.step + ' ' + classes.flex_center
+              }>
               <span
                 className={
                   currentStep == 3
-                    ? classes.stepNumber + " " + classes.activeStepNumber
+                    ? classes.stepNumber + ' ' + classes.activeStepNumber
                     : classes.stepNumber
-                }
-              >
+                }>
                 3
               </span>
               {text.step[2]}
@@ -802,9 +768,9 @@ function PurchaseOrderDetailPage() {
             <h4 className={classes.cardTitleWhite}>{text.card.title[1]}</h4>
             <p className={classes.cardCategoryWhite}>{text.card.subTitle[0]}</p>
           </div>
-          {POStatus !== "finished" && (
+          {POStatus !== 'finished' && (
             <Button color="primary">
-              <Link href={"/admin/supplier/addsupplier?from=addpurchaseorder"}>
+              <Link href={'/admin/supplier/addsupplier?from=addpurchaseorder'}>
                 <span>{text.actions.button[0]}</span>
               </Link>
             </Button>
@@ -818,17 +784,15 @@ function PurchaseOrderDetailPage() {
                 variant="outlined"
                 size="small"
                 fullWidth
-                className={classes.custom_field}
-              >
+                className={classes.custom_field}>
                 <InputLabel id="demo-simple-select-outlined-label">
                   {text.actions.select[0]}
                 </InputLabel>
                 <Select
                   value={values.supplier_id}
-                  onChange={handleChangeValue("supplier_id")}
+                  onChange={handleChangeValue('supplier_id')}
                   label={text.actions.select[0]}
-                  disabled={POStatus === "finished"}
-                >
+                  disabled={POStatus === 'finished'}>
                   {suppliers.map((item, index) => {
                     return (
                       <MenuItem value={item._id} key={index}>
@@ -934,17 +898,15 @@ function PurchaseOrderDetailPage() {
                 variant="outlined"
                 size="small"
                 fullWidth
-                className={classes.custom_field}
-              >
+                className={classes.custom_field}>
                 <InputLabel id="demo-simple-select-outlined-label">
                   {text.actions.select[5]}
                 </InputLabel>
                 <Select
                   value={values.po_type}
-                  onChange={handleChangeValue("po_type")}
+                  onChange={handleChangeValue('po_type')}
                   label={text.actions.select[5]}
-                  disabled={POStatus === "finished"}
-                >
+                  disabled={POStatus === 'finished'}>
                   {data.po_type.map((item, index) => {
                     return (
                       <MenuItem value={item.value} key={index}>
@@ -966,11 +928,11 @@ function PurchaseOrderDetailPage() {
                 fullWidth
                 inputProps={{
                   value: values.reference_id,
-                  onChange: handleChangeValue("reference_id"),
+                  onChange: handleChangeValue('reference_id'),
                 }}
                 autoComplete="off"
                 className={classes.custom_field}
-                disabled={POStatus === "finished"}
+                disabled={POStatus === 'finished'}
               />
             </GridItem>
             <GridItem xs={false} sm={4} md={4}></GridItem>
@@ -986,13 +948,13 @@ function PurchaseOrderDetailPage() {
                   id="date-picker-inline"
                   label={text.actions.select[7]}
                   value={values.order_date}
-                  onChange={handleChangeDateValue("order_date")}
+                  onChange={handleChangeDateValue('order_date')}
                   KeyboardButtonProps={{
-                    "aria-label": "change date",
+                    'aria-label': 'change date',
                   }}
                   fullWidth
                   className={classes.custom_field}
-                  disabled={POStatus === "finished"}
+                  disabled={POStatus === 'finished'}
                 />
               </MuiPickersUtilsProvider>
             </GridItem>
@@ -1006,13 +968,13 @@ function PurchaseOrderDetailPage() {
                   id="date-picker-inline"
                   label={text.actions.select[8]}
                   value={values.delivery_date}
-                  onChange={handleChangeDateValue("delivery_date")}
+                  onChange={handleChangeDateValue('delivery_date')}
                   KeyboardButtonProps={{
-                    "aria-label": "change date",
+                    'aria-label': 'change date',
                   }}
                   fullWidth
                   className={classes.custom_field}
-                  disabled={POStatus === "finished"}
+                  disabled={POStatus === 'finished'}
                 />
               </MuiPickersUtilsProvider>
             </GridItem>
@@ -1021,17 +983,15 @@ function PurchaseOrderDetailPage() {
                 variant="outlined"
                 size="small"
                 fullWidth
-                className={classes.custom_field}
-              >
+                className={classes.custom_field}>
                 <InputLabel id="demo-simple-select-outlined-label">
                   {text.actions.select[9]}
                 </InputLabel>
                 <Select
                   value={values.currency}
-                  onChange={handleChangeValue("currency")}
+                  onChange={handleChangeValue('currency')}
                   label={text.actions.select[9]}
-                  disabled={POStatus === "finished"}
-                >
+                  disabled={POStatus === 'finished'}>
                   {data.currency.map((item, index) => {
                     return (
                       <MenuItem value={item.value} key={index}>
@@ -1055,11 +1015,11 @@ function PurchaseOrderDetailPage() {
                 fullWidth
                 inputProps={{
                   value: values.payment_methods,
-                  onChange: handleChangeValue("payment_methods"),
+                  onChange: handleChangeValue('payment_methods'),
                 }}
                 autoComplete="off"
                 className={classes.custom_field}
-                disabled={POStatus === "finished"}
+                disabled={POStatus === 'finished'}
               />
             </GridItem>
           </GridContainer>
@@ -1076,9 +1036,9 @@ function PurchaseOrderDetailPage() {
             <h4 className={classes.cardTitleWhite}>{text.card.title[3]}</h4>
             <p className={classes.cardCategoryWhite}>{text.card.subTitle[1]}</p>
           </div>
-          {POStatus !== "finished" && (
+          {POStatus !== 'finished' && (
             <Button color="primary">
-              <Link href={"/admin/stock/addstock?from=addpurchaseorder"}>
+              <Link href={'/admin/stock/addstock?from=addpurchaseorder'}>
                 <span>{text.actions.button[1]}</span>
               </Link>
             </Button>
@@ -1092,17 +1052,15 @@ function PurchaseOrderDetailPage() {
                 variant="outlined"
                 size="small"
                 fullWidth
-                className={classes.custom_field}
-              >
+                className={classes.custom_field}>
                 <InputLabel id="demo-simple-select-outlined-label">
                   {text.actions.select[11]}
                 </InputLabel>
                 <Select
                   value={values.stock_id}
-                  onChange={handleChangeValue("stock_id")}
+                  onChange={handleChangeValue('stock_id')}
                   label={text.actions.select[11]}
-                  disabled={POStatus === "finished"}
-                >
+                  disabled={POStatus === 'finished'}>
                   {stocks.map((item, index) => {
                     return (
                       <MenuItem value={item._id} key={index}>
@@ -1209,24 +1167,16 @@ function PurchaseOrderDetailPage() {
             }}
           />
         </TableCell>
-        <TableCell
-          className={tableClasses.tableCell + " " + tableClasses.cellWidth_400}
-        >
+        <TableCell className={tableClasses.tableCell + ' ' + tableClasses.cellWidth_400}>
           <div className={classes.cellInfo}>
             <img src={item.image} className={classes.tableImage} />
             <div className={classes.infoTextContainer}>
-              <p className={classes.text + " " + classes.infoTextPrimary}>
-                {item.item_name}
-              </p>
-              <p className={classes.text + " " + classes.infoTextSecondary}>
-                {item.item_sku}
-              </p>
+              <p className={classes.text + ' ' + classes.infoTextPrimary}>{item.item_name}</p>
+              <p className={classes.text + ' ' + classes.infoTextSecondary}>{item.item_sku}</p>
             </div>
           </div>
         </TableCell>
-        <TableCell className={tableClasses.tableCell}>
-          {item.quantity}
-        </TableCell>
+        <TableCell className={tableClasses.tableCell}>{item.quantity}</TableCell>
         <TableCell className={tableClasses.tableCell}>{item.unit}</TableCell>
         <TableCell className={tableClasses.tableCell}>{item.price}</TableCell>
       </TableRow>
@@ -1238,17 +1188,16 @@ function PurchaseOrderDetailPage() {
       <ModalCustom
         width={1000}
         title={text.popup_title}
-        subTitle={""}
+        subTitle={''}
         // isShow={true}
         isShow={isShowModal}
-        handleClose={() => setIsShowModal(false)}
-      >
+        handleClose={() => setIsShowModal(false)}>
         <div className={classes.flex_center}>
           <FormControl variant="outlined" size="small" style={{ flex: 1 }}>
             <TextField
               //   error={validateItemName ? false : true}
               id="input1"
-              label={""}
+              label={''}
               variant="outlined"
               size="small"
               fullWidth
@@ -1261,25 +1210,23 @@ function PurchaseOrderDetailPage() {
               style={{ flex: 1 }}
             />
           </FormControl>
-          <div style={{ marginLeft: "10px" }}>
+          <div style={{ marginLeft: '10px' }}>
             <Button color="primary" onClick={() => setDoFilter(!doFilter)}>
               {text.popup_button[0]}
             </Button>
           </div>
         </div>
-        <div className={classes.tableResponsive} style={{ marginTop: "0" }}>
+        <div className={classes.tableResponsive} style={{ marginTop: '0' }}>
           <Table className={tableClasses.table}>
             {data.products !== undefined ? (
-              <TableHead className={tableClasses["primary" + "TableHeader"]}>
+              <TableHead className={tableClasses['primary' + 'TableHeader']}>
                 <TableRow className={tableClasses.tableHeadRow}>
                   <TableCell className={tableClasses.tableCell}>
                     <Checkbox
                       checked={isCheckAll}
                       tabIndex={-1}
                       onClick={() => handleCheckAll()}
-                      checkedIcon={
-                        <Check className={taskClasses.checkedIcon} />
-                      }
+                      checkedIcon={<Check className={taskClasses.checkedIcon} />}
                       icon={<Check className={taskClasses.uncheckedIcon} />}
                       classes={{
                         checked: taskClasses.checked,
@@ -1290,13 +1237,8 @@ function PurchaseOrderDetailPage() {
                   {text.tableHead_modal.map((prop, key) => {
                     return (
                       <TableCell
-                        className={
-                          tableClasses.tableCell +
-                          " " +
-                          tableClasses.tableHeadCell
-                        }
-                        key={key}
-                      >
+                        className={tableClasses.tableCell + ' ' + tableClasses.tableHeadCell}
+                        key={key}>
                         {prop}
                       </TableCell>
                     );
@@ -1311,25 +1253,15 @@ function PurchaseOrderDetailPage() {
             </TableBody>
           </Table>
         </div>
-        <div
-          className={[
-            classes.flex_center_between,
-            classes.paginationContainer,
-          ].join(" ")}
-        >
-          <Pagination
-            count={totalPage}
-            page={currentPage}
-            onChange={handleSelectPage}
-          />
+        <div className={[classes.flex_center_between, classes.paginationContainer].join(' ')}>
+          <Pagination count={totalPage} page={currentPage} onChange={handleSelectPage} />
           <Button
             color="primary"
             onClick={() => {
-              setValues({ ...values, ["list_products"]: checked }),
+              setValues({ ...values, ['list_products']: checked }),
                 setIsShowModal(false),
                 setIsCheckAll(false);
-            }}
-          >
+            }}>
             {text.popup_button[2]}
           </Button>
         </div>
@@ -1340,26 +1272,18 @@ function PurchaseOrderDetailPage() {
   const TableData = () => {
     return (
       <div className={tableClasses.tableResponsive}>
-        <Table className={tableClasses.table + " " + tableClasses.tableCustom}>
+        <Table className={tableClasses.table + ' ' + tableClasses.tableCustom}>
           {values.list_products !== undefined ? (
             <TableHead
               className={
-                tableClasses["primary" + "TableHeader"] +
-                " " +
-                tableClasses.tableHeadCustom
-              }
-            >
+                tableClasses['primary' + 'TableHeader'] + ' ' + tableClasses.tableHeadCustom
+              }>
               <TableRow className={tableClasses.tableHeadRow}>
                 {text.tableHead.map((prop, key) => {
                   return (
                     <TableCell
-                      className={
-                        tableClasses.tableCell +
-                        " " +
-                        tableClasses.tableHeadCell
-                      }
-                      key={key}
-                    >
+                      className={tableClasses.tableCell + ' ' + tableClasses.tableHeadCell}
+                      key={key}>
                       {prop}
                     </TableCell>
                   );
@@ -1384,12 +1308,8 @@ function PurchaseOrderDetailPage() {
           <div className={classes.cellInfo}>
             <img src={item.image} className={classes.tableImage} />
             <div className={classes.infoTextContainer}>
-              <p className={classes.text + " " + classes.infoTextPrimary}>
-                {item.item_name}
-              </p>
-              <p className={classes.text + " " + classes.infoTextSecondary}>
-                {item.item_sku}
-              </p>
+              <p className={classes.text + ' ' + classes.infoTextPrimary}>{item.item_name}</p>
+              <p className={classes.text + ' ' + classes.infoTextSecondary}>{item.item_sku}</p>
             </div>
           </div>
         </TableCell>
@@ -1397,18 +1317,18 @@ function PurchaseOrderDetailPage() {
           <TextField
             //   error={validateItemName ? false : true}
             id="input1"
-            label={""}
+            label={''}
             variant="outlined"
             size="small"
             fullWidth
             inputProps={{
               value: item.quantity,
-              onChange: handelChangeProductValue(item, "quantity"),
+              onChange: handelChangeProductValue(item, 'quantity'),
             }}
             type="number"
             placeholder={text.placeholder}
             autoComplete="off"
-            disabled={currentStep == 3 || POStatus === "finished" ? true : false}
+            disabled={currentStep == 3 || POStatus === 'finished' ? true : false}
           />
         </TableCell>
         <TableCell className={tableClasses.tableCell}>
@@ -1417,9 +1337,8 @@ function PurchaseOrderDetailPage() {
               labelId="select-outlined-label-1"
               id="select-outlined"
               value={item.unit}
-              onChange={handelChangeProductValue(item, "unit")}
-              disabled={currentStep == 3 || POStatus === "finished" ? true : false}
-            >
+              onChange={handelChangeProductValue(item, 'unit')}
+              disabled={currentStep == 3 || POStatus === 'finished' ? true : false}>
               <MenuItem value={item.unit}>{item.unit}</MenuItem>
             </Select>
           </FormControl>
@@ -1429,26 +1348,26 @@ function PurchaseOrderDetailPage() {
             <OutlinedInput
               id="outlined-adornment-amount-5"
               value={item.price}
-              onChange={handelChangeProductValue(item, "price")}
+              onChange={handelChangeProductValue(item, 'price')}
               endAdornment={<InputAdornment position="end">₫</InputAdornment>}
               type="number"
               autoComplete="off"
-              disabled={currentStep == 3 || POStatus === "finished" ? true : false}
+              disabled={currentStep == 3 || POStatus === 'finished' ? true : false}
             />
           </FormControl>
         </TableCell>
         <TableCell className={tableClasses.tableCell}>
-          <p className={classes.text + " " + classes.infoTextPrimary}>
-            {item.import_qty + " | " + item.import_unit}
+          <p className={classes.text + ' ' + classes.infoTextPrimary}>
+            {item.import_qty + ' | ' + item.import_unit}
           </p>
         </TableCell>
         <TableCell className={tableClasses.tableCell}>
-          <p className={classes.text + " " + classes.infoTextPrimary}>
+          <p className={classes.text + ' ' + classes.infoTextPrimary}>
             {formatCurrency(item.price_importQty)}
           </p>
         </TableCell>
         <TableCell className={tableClasses.tableCell}>
-          <p className={classes.text + " " + classes.infoTextPrimary}>
+          <p className={classes.text + ' ' + classes.infoTextPrimary}>
             {formatCurrency(item.total_amount)}
           </p>
         </TableCell>
@@ -1457,8 +1376,7 @@ function PurchaseOrderDetailPage() {
             color="white"
             size="sm"
             onClick={() => deleteSelectedProduct(item)}
-            disabled={currentStep == 3 || POStatus === "finished" ? true : false}
-          >
+            disabled={currentStep == 3 || POStatus === 'finished' ? true : false}>
             <Icon className={classes.btnFilter} style={{ margin: 0 }}>
               delete
             </Icon>
@@ -1475,15 +1393,14 @@ function PurchaseOrderDetailPage() {
           <div className={classes.flex_column}>
             <h4 className={classes.cardTitleWhite}>{text.card.title[4]}</h4>
             <p className={classes.cardCategoryWhite}>
-              {values.list_products?.length + " " + text.card.subTitle[2]}
+              {values.list_products?.length + ' ' + text.card.subTitle[2]}
             </p>
           </div>
-          {POStatus !== "finished" && (
+          {POStatus !== 'finished' && (
             <Button
               color="primary"
               onClick={() => setIsShowModal(true)}
-              disabled={currentStep == 3 ? true : false}
-            >
+              disabled={currentStep == 3 ? true : false}>
               {text.actions.button[6]}
             </Button>
           )}
@@ -1512,13 +1429,13 @@ function PurchaseOrderDetailPage() {
                 fullWidth
                 inputProps={{
                   value: values.notes,
-                  onChange: handleChangeValue("notes"),
+                  onChange: handleChangeValue('notes'),
                 }}
                 multiline
                 rows={10}
                 autoComplete="off"
                 className={classes.custom_field}
-                disabled={currentStep == 3 || POStatus === "finished" ? true : false}
+                disabled={currentStep == 3 || POStatus === 'finished' ? true : false}
               />
             </GridItem>
             <GridItem sm={12} xs={4} md={4}>
@@ -1531,7 +1448,7 @@ function PurchaseOrderDetailPage() {
                 fullWidth
                 inputProps={{
                   value: values.total_amount_of_goods,
-                  onChange: handleChangeValue("total_amount_of_goods"),
+                  onChange: handleChangeValue('total_amount_of_goods'),
                 }}
                 autoComplete="off"
                 type="number"
@@ -1547,12 +1464,12 @@ function PurchaseOrderDetailPage() {
                 fullWidth
                 inputProps={{
                   value: values.discount,
-                  onChange: handleChangeValue("discount"),
+                  onChange: handleChangeValue('discount'),
                 }}
                 autoComplete="off"
                 type="number"
                 className={classes.custom_field}
-                disabled={currentStep == 3 || POStatus === "finished" ? true : false}
+                disabled={currentStep == 3 || POStatus === 'finished' ? true : false}
               />
               <TextField
                 //   error={validateItemName ? false : true}
@@ -1563,12 +1480,12 @@ function PurchaseOrderDetailPage() {
                 fullWidth
                 inputProps={{
                   value: values.other_fee,
-                  onChange: handleChangeValue("other_fee"),
+                  onChange: handleChangeValue('other_fee'),
                 }}
                 autoComplete="off"
                 type="number"
                 className={classes.custom_field}
-                disabled={currentStep == 3 || POStatus === "finished" ? true : false}
+                disabled={currentStep == 3 || POStatus === 'finished' ? true : false}
               />
               <TextField
                 //   error={validateItemName ? false : true}
@@ -1579,7 +1496,7 @@ function PurchaseOrderDetailPage() {
                 fullWidth
                 inputProps={{
                   value: values.total_amount_excluding_tax,
-                  onChange: handleChangeValue("total_amount_excluding_tax"),
+                  onChange: handleChangeValue('total_amount_excluding_tax'),
                 }}
                 autoComplete="off"
                 type="number"
@@ -1595,12 +1512,12 @@ function PurchaseOrderDetailPage() {
                 fullWidth
                 inputProps={{
                   value: values.tax,
-                  onChange: handleChangeValue("tax"),
+                  onChange: handleChangeValue('tax'),
                 }}
                 autoComplete="off"
                 type="number"
                 className={classes.custom_field}
-                disabled={currentStep == 3 || POStatus === "finished" ? true : false}
+                disabled={currentStep == 3 || POStatus === 'finished' ? true : false}
               />
               <TextField
                 //   error={validateItemName ? false : true}
@@ -1632,43 +1549,26 @@ function PurchaseOrderDetailPage() {
           return (
             <GridItem sm={4} xs={4} md={4} key={index}>
               <Card style={{ minHeight: 390 }}>
-                <CardHeader
-                  color="primary"
-                  className={classes.flex_center_between}
-                >
+                <CardHeader color="primary" className={classes.flex_center_between}>
                   <h4 className={classes.cardTitleWhite}>{item.title}</h4>
                 </CardHeader>
                 <CardBody className={classes.cardBody}>
                   {item.data.map((props, stt) => {
                     return (
                       <div
-                        className={
-                          classes.flex_center_between +
-                          " " +
-                          classes.previewField
-                        }
+                        className={classes.flex_center_between + ' ' + classes.previewField}
                         style={{
                           borderBottom:
-                            stt + 1 != item.data.length
-                              ? "1px solid " + grayColor[0]
-                              : null,
+                            stt + 1 != item.data.length ? '1px solid ' + grayColor[0] : null,
                         }}
-                        key={stt}
-                      >
-                        <p
-                          className={
-                            classes.text + " " + classes.infoTextSecondary
-                          }
-                        >
+                        key={stt}>
+                        <p className={classes.text + ' ' + classes.infoTextSecondary}>
                           {props.title}
                         </p>
                         <p
-                          className={
-                            classes.text + " " + classes.infoTextPrimary
-                          }
-                          style={{ color: infoColor[0], fontSize: 16 }}
-                        >
-                          {props.value ? props.value : "---"}
+                          className={classes.text + ' ' + classes.infoTextPrimary}
+                          style={{ color: infoColor[0], fontSize: 16 }}>
+                          {props.value ? props.value : '---'}
                         </p>
                       </div>
                     );
@@ -1684,9 +1584,7 @@ function PurchaseOrderDetailPage() {
 
   return (
     <>
-      {POStatus !== "finished" && (
-        stepContainer()
-      )}
+      {POStatus !== 'finished' && stepContainer()}
       {currentStep == 1 && (
         <>
           <div className={classes.card_custom}>{chooseSupplier()}</div>
@@ -1709,41 +1607,33 @@ function PurchaseOrderDetailPage() {
         </>
       )}
       <div className={classes.flex_end}>
-        {currentStep == 1 && POStatus !== "finished" && (
-          <Button onClick={() => handelReset()}>
-            {text.actions.button[2]}
-          </Button>
+        {currentStep == 1 && POStatus !== 'finished' && (
+          <Button onClick={() => handelReset()}>{text.actions.button[2]}</Button>
         )}
-        {POStatus !== "finished" && (
-          <Button onClick={() => handleSubmit("draft")}>
-            {text.actions.button[3]}
-          </Button>
+        {POStatus !== 'finished' && (
+          <Button onClick={() => handleSubmit('draft')}>{text.actions.button[3]}</Button>
         )}
-        {currentStep == 2 && POStatus !== "finished" && (
-          <Button onClick={() => setIsCheckPrice(!isCheckPrice)}>
-            {text.actions.button[7]}
-          </Button>
+        {currentStep == 2 && POStatus !== 'finished' && (
+          <Button onClick={() => setIsCheckPrice(!isCheckPrice)}>{text.actions.button[7]}</Button>
         )}
         {currentStep < 3 ? (
           <Button
             color="primary"
             onClick={() => {
               handelValidate(), setIsCheckPrice(!isCheckPrice);
-            }}
-          >
+            }}>
             {text.actions.button[4]}
           </Button>
         ) : (
           <React.Fragment>
-            {POStatus !== "finished" && (
-              <Button color="primary" onClick={() => handleSubmit("finished")}>
+            {POStatus !== 'finished' && (
+              <Button color="primary" onClick={() => handleSubmit('finished')}>
                 {text.actions.button[5]}
               </Button>
             )}
           </React.Fragment>
         )}
       </div>
-      <NotificationContainer />
     </>
   );
 }

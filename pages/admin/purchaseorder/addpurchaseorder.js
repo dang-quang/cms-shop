@@ -1559,7 +1559,6 @@ function AddPurchaseOrderPage() {
           </Button>
         )}
       </div>
-      <NotificationContainer />
     </>
   );
 }

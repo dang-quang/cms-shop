@@ -4,6 +4,7 @@ import useMobile from './useMobile';
 import useDisplayImage from './useDisplayImage';
 import useImageHandler from './useImageHandler';
 import useMultiImageUpload from './useMultiImageUpload';
+import useRemainingRegistrationTime from './useRemainingRegistrationTime';
 
 export {
   useLanguage,
@@ -12,4 +13,5 @@ export {
   useDisplayImage,
   useImageHandler,
   useMultiImageUpload,
+  useRemainingRegistrationTime,
 };

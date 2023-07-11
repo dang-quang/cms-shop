@@ -370,7 +370,11 @@ function AddVoucherPage() {
                       value={values.registerPrice}
                       onChange={handleChange('registerPrice')}
                     />
-                    <InputRightElement w="100px" borderLeftWidth="1px">
+                    <InputRightElement
+                      borderLeftColor="border-5"
+                      pointerEvents="none"
+                      w="100px"
+                      borderLeftWidth="1px">
                       <Center h="full">
                         <Text textStyle="h4">HTG</Text>
                       </Center>
@@ -436,7 +440,11 @@ function AddVoucherPage() {
                         />
                         <FormErrorMessage>{errors.discountValue}</FormErrorMessage>
                       </FormControl>
-                      <InputRightElement pointerEvents="none" w="100px" borderLeftWidth="1px">
+                      <InputRightElement
+                        borderLeftColor="border-5"
+                        pointerEvents="none"
+                        w="100px"
+                        borderLeftWidth="1px">
                         <Center h="full">
                           <Text textStyle="h4">
                             {values.typeDiscount === EDiscountType.CASH ? 'HTG' : '%'}
@@ -477,7 +485,11 @@ function AddVoucherPage() {
                           type="number"
                           onChange={handleChange('discountLimit')}
                         />
-                        <InputRightElement w="100px" borderLeftWidth="1px">
+                        <InputRightElement
+                          borderLeftColor="border-5"
+                          pointerEvents="none"
+                          w="100px"
+                          borderLeftWidth="1px">
                           <Center h="full">
                             <Text textStyle="h4">HTG</Text>
                           </Center>
@@ -497,7 +509,11 @@ function AddVoucherPage() {
                       type="number"
                       onChange={handleChange('minOrderPrice')}
                     />
-                    <InputRightElement w="100px" borderLeftWidth="1px">
+                    <InputRightElement
+                      borderLeftColor="border-5"
+                      pointerEvents="none"
+                      w="100px"
+                      borderLeftWidth="1px">
                       <Center h="full">
                         <Text textStyle="h4">HTG</Text>
                       </Center>

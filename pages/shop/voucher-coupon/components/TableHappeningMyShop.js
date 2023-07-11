@@ -1,133 +1,51 @@
 import React from 'react';
-import {
-  Box,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  Input,
-  Icon,
-  Flex,
-  InputGroup,
-  InputRightElement,
-  useBoolean,
-  Text,
-  Image,
-  Center,
-} from '@chakra-ui/react';
+import { Box, Table, Thead, Tr, Th, Flex, useBoolean, Text, Icon } from '@chakra-ui/react';
 import { usePagination } from '@ajna/pagination';
 import { useTranslation } from 'react-i18next';
-
-import { useDispatch } from 'react-redux';
-import { setShowLoader } from 'redux/actions/app';
-import { NotificationManager } from 'react-light-notifications';
-import { AiOutlineSearch } from 'react-icons/ai';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoading, setMyShopVoucherTabIndex, setShowLoader } from 'redux/actions/app';
 import { useRouter } from 'next/router';
-import { ModalConfirm, PaginationPanel, RangeDatePickerItem, VoucherShopItem } from 'components';
+import {
+  EmptyListItem,
+  LoadingShopVoucherItem,
+  ModalConfirm,
+  PaginationPanel,
+  VoucherShopItem,
+} from 'components';
 import { isEmpty } from 'lodash';
-import Images from 'assets';
-import { EVoucherStatus } from 'constants/types';
-
-const data = [
-  {
-    banner: 'natshop/voucher/20230603/voucher_1685772984515.jpg',
-    createAt: 1685772905000,
-    description: null,
-    discountLimit: null,
-    discountValue: 200000,
-    id: 24,
-    maxDiscount: null,
-    maxOrderPrice: null,
-    maxShopRegister: 0,
-    minDiscount: null,
-    minOrderPrice: 10000000,
-    name: 'Voucher 100k',
-    programEnd: 1685970000000,
-    programStart: 1685883600000,
-    quantityVoucher: 1000,
-    registerEnd: 1685970000000,
-    registerPrice: 100000,
-    registerStart: 1685859300000,
-    shopRegister: null,
-    status: EVoucherStatus.HAPPENING,
-    typeDiscount: 'CASH',
-    typeLimit: 'AMOUNT',
-    updateAt: 1685772984000,
-  },
-  {
-    banner: 'natshop/voucher/20230603/voucher_1685771075742.jpg',
-    createAt: 1685771075000,
-    description: 'Test',
-    discountLimit: null,
-    discountValue: 20000,
-    id: 7,
-    maxDiscount: null,
-    maxOrderPrice: null,
-    maxShopRegister: 0,
-    minDiscount: null,
-    minOrderPrice: 2000,
-    name: 'Voucher 50k',
-    programEnd: 1685775180000,
-    programStart: 1685771580000,
-    quantityVoucher: 1000,
-    registerEnd: 1685775180000,
-    registerPrice: 200000,
-    registerStart: 1685771580000,
-    shopRegister: null,
-    status: EVoucherStatus.HAPPENING,
-    typeDiscount: 'CASH',
-    typeLimit: 'AMOUNT',
-    updateAt: null,
-  },
-  {
-    banner: 'natshop/shop/20230601/voucher_1685593735779.jpg',
-    createAt: 1685593735000,
-    description: null,
-    discountLimit: null,
-    discountValue: 100000,
-    id: 22,
-    maxDiscount: null,
-    maxOrderPrice: null,
-    maxShopRegister: 10000,
-    minDiscount: null,
-    minOrderPrice: 10000,
-    name: 'name',
-    programEnd: 1685597880000,
-    programStart: 1685594280000,
-    quantityVoucher: 1000,
-    registerEnd: 1685597880000,
-    registerPrice: 10000,
-    registerStart: 1685594280000,
-    shopRegister: null,
-    status: EVoucherStatus.HAPPENING,
-    typeDiscount: 'CASH',
-    typeLimit: 'AMOUNT',
-    updateAt: null,
-  },
-];
+import { EAppKey, EVoucherStatus } from 'constants/types';
+import { requestDeleteVoucherShop, requestGetListVoucherShop } from 'utilities/ApiShop';
+//@ts-ignore
+import { NotificationManager } from 'react-light-notifications';
+import { setDoSearchVoucher } from 'redux/actions/voucher';
+import { IconVoucher } from 'components/Icons/Icons';
 
 const TableHappeningMyShop = () => {
+  const shopId = 143;
   const router = useRouter();
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const pageSize = 50;
-  const refInputSearch = React.useRef(null);
+  const { loading, showLoader } = useSelector((state) => state.app);
+  const isLoading = loading || showLoader;
+
   const [vouchers, setVouchers] = React.useState([]);
   const [selectedVoucher, setSelectedVoucher] = React.useState(null);
   const [isShowModal, { on: onShowModal, off: offShowModal }] = useBoolean(false);
   const [totalPage, setTotalPage] = React.useState(1);
   const [totalRecords, setTotalRecords] = React.useState(0);
-  const [doSearch, { on: onSearch, off: offSearch }] = useBoolean(false);
-  const [selectedDates, setSelectedDates] = React.useState([]);
+
+  const { doSearchVoucher, searchVoucherName } = useSelector((state) => state.voucher);
 
   const headers = [
-    t('serial_number'),
-    'Voucher Name',
-    'Discount Amount',
-    'Usage quantity',
-    'Usage',
-    'Status | Claiming Period',
-    'Actions',
+    //t('serial_number'),
+    t('voucher.voucher_name_code'),
+    t('voucher.voucher_type'),
+    t('voucher.discount_amount'),
+    t('voucher.usage_quantity'),
+    t('voucher.usage'),
+    t('voucher.status_claiming_period'),
+    t('voucher.actions'),
   ];
 
   const { pages, pagesCount, currentPage, setCurrentPage, isDisabled } = usePagination({
@@ -147,78 +65,115 @@ const TableHappeningMyShop = () => {
     (async () => {
       try {
         dispatch(setShowLoader(true));
-        setVouchers(data);
 
-        // const res = await requestGetListVoucher({ page: 1 });
+        let params = {
+          shopId: shopId,
+          page: 1,
+          type: EVoucherStatus.HAPPENING,
+        };
 
-        // if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
-        //   setVouchers(res.data.results);
-        //   setTotalPage(res.data.totalPages);
-        //   setTotalRecords(res.data.totalRecords);
-        // } else {
-        //   NotificationManager.error({
-        //     title: t('error'),
-        //     message: t('no_data_exists'),
-        //   });
-        // }
+        if (!!searchVoucherName) {
+          params.keyWord = searchVoucherName;
+        }
+
+        const res = await requestGetListVoucherShop(params);
+
+        if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
+          setVouchers(res.data.results);
+          setTotalPage(res.data.totalPages);
+          setTotalRecords(res.data.totalRecords);
+        } else {
+          NotificationManager.error({
+            title: t('error'),
+            message: t('no_data_exists'),
+          });
+        }
       } finally {
         dispatch(setShowLoader(false));
       }
     })();
-  }, [data]);
+  }, [searchVoucherName]);
 
   React.useEffect(() => {
     (async () => {
       try {
-        let key;
-        // if (doSearch) {
-        //   dispatch(setShowLoader(true));
-        //   if (doSearch) {
-        //     key = search;
-        //   }
+        let params = { shopId: shopId, page: currentPage, type: EVoucherStatus.HAPPENING };
 
-        //   const res = await requestGetListVoucher({
-        //     keyWord: key,
-        //     page: currentPage,
-        //   });
+        if (searchVoucherName) {
+          params.keyWord = searchVoucherName;
+        }
 
-        //   if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
-        //     setVouchers(res.data.results === null ? [] : res.data.results);
-        //     setTotalPage(res.data.totalPages);
-        //     setTotalRecords(res.data.totalRecords);
-        //   } else {
-        //     setVouchers([]);
-        //     setTotalPage(1);
-        //     setTotalRecords(0);
-        //     NotificationManager.error({
-        //       title: t('no_results_found'),
-        //       message: t('no_results_found_for_your_search'),
-        //     });
-        //   }
-        // }
+        if (doSearchVoucher) {
+          dispatch(setShowLoader(true));
+          dispatch(setLoading(true));
+
+          const res = await requestGetListVoucherShop(params);
+
+          if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
+            setVouchers(res.data.results);
+            setTotalPage(res.data.totalPages);
+            setTotalRecords(res.data.totalRecords);
+          } else {
+            setVouchers([]);
+            setTotalPage(1);
+            setTotalRecords(0);
+            NotificationManager.error({
+              title: t('no_results_found'),
+              message: t('no_results_found_for_your_search'),
+            });
+          }
+        }
       } finally {
+        dispatch(setDoSearchVoucher(false));
         dispatch(setShowLoader(false));
-        offSearch();
+        setTimeout(() => {
+          dispatch(setLoading(false));
+        }, 2000);
       }
     })();
-  }, [doSearch, currentPage, refInputSearch.current]);
+  }, [shopId, doSearchVoucher, currentPage, searchVoucherName]);
+
+  const handleReload = React.useCallback(async () => {
+    let params = { shopId: shopId, page: 1, type: EVoucherStatus.HAPPENING };
+
+    if (searchVoucherName) {
+      params.keyWord = searchVoucherName;
+    }
+
+    const res = await requestGetListVoucherShop(params);
+
+    if (res.code === EAppKey.MSG_SUCCESS && res.data && res.data.results) {
+      setVouchers(res.data.results);
+      setTotalPage(res.data.totalPages);
+      setTotalRecords(res.data.totalRecords);
+      dispatch(setMyShopVoucherTabIndex(0));
+    } else {
+      setVouchers([]);
+      setTotalPage(1);
+      setTotalRecords(0);
+      NotificationManager.error({
+        title: t('error'),
+        message: t('no_data_exists'),
+      });
+    }
+  }, [shopId, currentPage, searchVoucherName]);
 
   const handleDeleteVoucher = React.useCallback(async () => {
     try {
       offShowModal();
-      //       dispatch(setShowLoader(true));
-      //       const res = await requestDeleteVoucher({ id: selectedVoucher.id });
-      //       if (res.code === EAppKey.MSG_SUCCESS) {
-      //         setSelectedVoucher(null);
-      //         router.push('/admin/voucher');
-      //       } else {
-      //         NotificationManager.error({
-      //           title: t('error'),
-      //           message: res.message ? res.message.text : 'Error',
-      //         });
-      //       }
-    } catch (error) {
-      console.log('delete voucher error');
+      dispatch(setShowLoader(true));
+      const res = await requestDeleteVoucherShop({ id: selectedVoucher.id });
+      if (res.code === EAppKey.MSG_SUCCESS) {
+        setSelectedVoucher(null);
+        handleReload();
+      } else {
+        NotificationManager.error({
+          title: t('error'),
+          message: res.message ? res.message.text : t('error'),
+        });
+      }
+    } catch (e) {
+      console.log('delete voucher shop error', e);
     } finally {
       dispatch(setShowLoader(false));
     }
@@ -226,29 +181,11 @@ const TableHappeningMyShop = () => {
 
   return (
     <Box>
-      <Flex gap="6" flexDirection={{ base: 'column', xl: 'row' }}>
-        <InputGroup maxW="570px" borderRadius="4px" overflow="hidden">
-          <Input ref={refInputSearch} placeholder="Search voucher name, code" />
-          <InputRightElement
-            borderRadius="4px"
-            cursor="pointer"
-            h="full"
-            bg="primary.100"
-            w="100px">
-            <Center onClick={onSearch}>
-              <Icon as={AiOutlineSearch} w="24px" h="24px" color="white" />
-            </Center>
-          </InputRightElement>
-        </InputGroup>
-        <RangeDatePickerItem
-          selectedDates={selectedDates}
-          onDateChange={setSelectedDates}
-          onClear={() => setSelectedDates([])}
-        />
-      </Flex>
       <Box
         mt="6"
+        position="relative"
         bg="white"
+        minH={isEmpty(vouchers) || isLoading ? '300px' : 'unset'}
         borderRadius="4px"
         overflow="auto"
         borderWidth="1px"
@@ -271,20 +208,12 @@ const TableHappeningMyShop = () => {
               })}
             </Tr>
           </Thead>
-          {isEmpty(vouchers) ? (
-            <Box minH="220px">
-              <Center
-                h="220px"
-                position="absolute"
-                insetX="0"
-                flexDirection="column"
-                alignSelf="center">
-                <Image w="150px" h="100px" src={Images.no_data} />
-                <Text textStyle="body" textAlign="center" color="primary.100" mt="1">
-                  No Data Found
-                </Text>
-              </Center>
-            </Box>
+          {isLoading ? (
+            <LoadingShopVoucherItem />
+          ) : isEmpty(vouchers) ? (
+            <EmptyListItem title={t('no_voucher_found')}>
+              <Icon as={IconVoucher} w="92px" h="86px" />
+            </EmptyListItem>
           ) : (
             <>
               {vouchers.map((item, index) => {
@@ -310,34 +239,36 @@ const TableHappeningMyShop = () => {
           )}
         </Table>
       </Box>
-      <Flex justifyContent="space-between" alignItems="center">
-        <PaginationPanel
-          pagesCount={pagesCount}
-          currentPage={currentPage}
-          isDisabled={isDisabled}
-          onPageChange={(page) => {
-            setVouchers([]);
-            setCurrentPage(page);
-          }}
-          pages={pages}
-          mt="24px"
-          mb="8px"
-        />
-        <Text textStyle="h4-m">
-          {t('results_page', {
-            start: (currentPage - 1) * 50 + 1,
-            end: (currentPage - 1) * 50 + vouchers.length,
-            total: totalRecords,
-          })}
-        </Text>
-      </Flex>
+      {!isEmpty(vouchers) && !isLoading && (
+        <Flex justifyContent="space-between" alignItems="center">
+          <PaginationPanel
+            pagesCount={pagesCount}
+            currentPage={currentPage}
+            isDisabled={isDisabled}
+            onPageChange={(page) => {
+              setVouchers([]);
+              setCurrentPage(page);
+            }}
+            pages={pages}
+            mt="24px"
+            mb="8px"
+          />
+          <Text textStyle="h4-m">
+            {t('results_page', {
+              start: (currentPage - 1) * 50 + 1,
+              end: (currentPage - 1) * 50 + vouchers.length,
+              total: totalRecords,
+            })}
+          </Text>
+        </Flex>
+      )}
       <ModalConfirm
         isOpen={isShowModal}
         onClose={offShowModal}
-        title="Confirm Deletion"
-        description={t('deleteConfirm')}
+        title={t('voucher.delete_voucher')}
+        description={t('voucher.description_delete_voucher')}
         buttonLeft={{ title: t('cancel'), onClick: offShowModal }}
-        buttonRight={{ title: t('confirm'), onClick: handleDeleteVoucher }}
+        buttonRight={{ title: t('delete'), onClick: handleDeleteVoucher }}
       />
     </Box>
   );

@@ -12,7 +12,7 @@ import Form from 'components/Form/Form.js';
 import FormHeader from 'components/Form/FormHeader.js';
 import FormBody from 'components/Form/FormBody.js';
 import backgroundImage from 'assets/img/login-background-min.png';
-import { NotificationContainer, NotificationManager } from 'react-light-notifications';
+import { NotificationManager } from 'react-light-notifications';
 import PageLoader from 'components/PageLoader/PageLoader.js';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@chakra-ui/react';
@@ -93,7 +93,6 @@ function login(props) {
       style={{
         backgroundImage: `url(${backgroundImage})`,
       }}>
-      <NotificationContainer />
       {showLoader && <PageLoader />}
       <Form className={classes.loginContainer}>
         <FormHeader title={t('login.login')} />

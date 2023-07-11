@@ -12,10 +12,20 @@ import {
   SHOP_FLASH_SALE_TAB,
   LOADING,
   SHOP_PRODUCT_TAB,
+  SHOP_VOUCHER_TAB,
+  SHOP_MY_SHOP_TAB,
+  SHOP_NAT_SHOP_TAB,
 } from '../actions/app';
 
 const initialState = {
   loading: true,
+  showLoader: false,
+  loading: false,
+  shopFlashSaleTabIndex: 0,
+  shopProductTabIndex: 0,
+  shopVoucherTabIndex: 0,
+  myShopVoucherTabIndex: 0,
+  natShopVoucherTabIndex: 0,
 };
 
 export default function app(state = initialState, action) {
@@ -60,12 +70,27 @@ export default function app(state = initialState, action) {
     case SHOP_FLASH_SALE_TAB:
       return {
         ...state,
-        selectedFlashSaleTabIndex: action.selectedFlashSaleTabIndex,
+        shopFlashSaleTabIndex: action.shopFlashSaleTabIndex,
       };
     case SHOP_PRODUCT_TAB:
       return {
         ...state,
         shopProductTabIndex: action.shopProductTabIndex,
+      };
+    case SHOP_VOUCHER_TAB:
+      return {
+        ...state,
+        shopVoucherTabIndex: action.shopVoucherTabIndex,
+      };
+    case SHOP_MY_SHOP_TAB:
+      return {
+        ...state,
+        myShopVoucherTabIndex: action.myShopVoucherTabIndex,
+      };
+    case SHOP_NAT_SHOP_TAB:
+      return {
+        ...state,
+        natShopVoucherTabIndex: action.natShopVoucherTabIndex,
       };
     case LOADING:
       return {

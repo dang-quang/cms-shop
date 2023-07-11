@@ -20,6 +20,9 @@ import FlashSaleShopItem from './FlashSaleShopItem';
 import ViewChangeImage from './ViewChangeImage';
 import LoadingFlashSaleItem from './LoadingFlashSaleItem';
 import LoadingShopProductItem from './LoadingShopProductItem';
+import LoadingShopVoucherItem from './LoadingShopVoucherItem';
+import VoucherNatShopItem from './VoucherNatShopItem';
+import LoadingNatShopVoucherItem from './LoadingNatShopVoucherItem';
 
 export {
   RangeDatePickerItem,
@@ -44,4 +47,7 @@ export {
   ViewChangeImage,
   LoadingFlashSaleItem,
   LoadingShopProductItem,
+  LoadingShopVoucherItem,
+  LoadingNatShopVoucherItem,
+  VoucherNatShopItem,
 };

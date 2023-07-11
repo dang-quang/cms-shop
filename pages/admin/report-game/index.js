@@ -210,7 +210,6 @@ function GameReport() {
 
   return (
     <Card>
-      <NotificationContainer />
       <CardHeader color="primary">
         <h4 className={classes.cardTitleWhite}>Game Reward</h4>
       </CardHeader>

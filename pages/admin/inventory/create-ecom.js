@@ -1,33 +1,33 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from '@material-ui/core/styles';
 // layout for this page
-import Admin from "layouts/Admin.js";
+import Admin from 'layouts/Admin.js';
 // core components
-import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardBody from "components/Card/CardBody.js";
-import CardFooter from "components/Card/CardFooter.js";
-import Button from "components/CustomButtons/Button.js";
-import Checkbox from "@material-ui/core/Checkbox";
-import Check from "@material-ui/icons/Check";
-import FormControl from "@material-ui/core/FormControl";
+import Card from 'components/Card/Card.js';
+import CardHeader from 'components/Card/CardHeader.js';
+import CardBody from 'components/Card/CardBody.js';
+import CardFooter from 'components/Card/CardFooter.js';
+import Button from 'components/CustomButtons/Button.js';
+import Checkbox from '@material-ui/core/Checkbox';
+import Check from '@material-ui/icons/Check';
+import FormControl from '@material-ui/core/FormControl';
 
-import WithAuthentication from "components/WithAuthentication/WithAuthentication";
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-import adminStyles from "assets/jss/natcash/components/headerLinksStyle.js";
-import tableStyles from "assets/jss/natcash/components/tableStyle.js";
-import taskStyles from "assets/jss/natcash/components/tasksStyle.js";
-import dashStyles from "assets/jss/natcash/views/dashboardStyle.js";
-import useWindowSize from "components/Hooks/useWindowSize.js";
+import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
+import GridContainer from 'components/Grid/GridContainer.js';
+import GridItem from 'components/Grid/GridItem.js';
+import adminStyles from 'assets/jss/natcash/components/headerLinksStyle.js';
+import tableStyles from 'assets/jss/natcash/components/tableStyle.js';
+import taskStyles from 'assets/jss/natcash/components/tasksStyle.js';
+import dashStyles from 'assets/jss/natcash/views/dashboardStyle.js';
+import useWindowSize from 'components/Hooks/useWindowSize.js';
 // connect api
 
-import styles from "assets/jss/natcash/views/inventory/CreateStockProductFormEcomStyle.js";
-import { getCreateItemEcomScreen, createItemFromEcom } from "../../../utilities/ApiManage";
-import { setShowLoader } from "../../../redux/actions/app";
-import { NotificationContainer, NotificationManager} from "react-light-notifications";
+import styles from 'assets/jss/natcash/views/inventory/CreateStockProductFormEcomStyle.js';
+import { getCreateItemEcomScreen, createItemFromEcom } from '../../../utilities/ApiManage';
+import { setShowLoader } from '../../../redux/actions/app';
+import { NotificationContainer, NotificationManager } from 'react-light-notifications';
 
 function CreateStockProductFormEcom() {
   const dispatch = useDispatch();
@@ -39,68 +39,68 @@ function CreateStockProductFormEcom() {
   const useDashStyles = makeStyles(dashStyles);
   const [isMobile, setIsMobile] = useState(false);
   const [storeStatusFilter, setStoreStatusFilter] = useState([]);
-  const [selectedShop, setSelectedShop] = useState("");
+  const [selectedShop, setSelectedShop] = useState('');
   const [data, setData] = useState([]);
 
   const FILTER_STATUS = [
     {
-      id: "en",
+      id: 'en',
       value: [
-        "If inventory’s SKU codes are matched with their Channel SKUs",
-        "If inventory’s product names are matched with their listings’ product names (applicable for product listings without variants)",
+        'If inventory’s SKU codes are matched with their Channel SKUs',
+        'If inventory’s product names are matched with their listings’ product names (applicable for product listings without variants)',
       ],
     },
     {
-      id: "vi",
+      id: 'vi',
       value: [
-        "Trùng mã SKU",
-        "Trùng tên sản phẩm (chỉ áp dụng cho sản phẩm không có phân loại. VD: màu sắc, kích thước,...)",
+        'Trùng mã SKU',
+        'Trùng tên sản phẩm (chỉ áp dụng cho sản phẩm không có phân loại. VD: màu sắc, kích thước,...)',
       ],
     },
   ];
   const Filter = [
     {
-      id: "en",
+      id: 'en',
       value: {
-        title: "Products",
+        title: 'Products',
         value: [
-          "Please choose your primary shop to import its product listings as inventory items",
-          "All Inventory Channels and Channel SKUs will be linked if these following conditions are met:",
+          'Please choose your primary shop to import its product listings as inventory items',
+          'All Inventory Channels and Channel SKUs will be linked if these following conditions are met:',
         ],
-        button: ["Reset", "Create new inventory product"],
+        button: ['Reset', 'Create new inventory product'],
       },
     },
     {
-      id: "vi",
+      id: 'vi',
       value: {
-        title: "Sản phẩm",
+        title: 'Sản phẩm',
         value: [
-          "Chọn gian hàng chính đại diện cho sản phẩm kho",
-          "Tự động liên kết các sản phẩm đang đăng bán trên kênh vào sản phẩm kho nếu:",
+          'Chọn gian hàng chính đại diện cho sản phẩm kho',
+          'Tự động liên kết các sản phẩm đang đăng bán trên kênh vào sản phẩm kho nếu:',
         ],
-        button: ["Đặt lại", "Tạo sản phẩm kho"],
+        button: ['Đặt lại', 'Tạo sản phẩm kho'],
       },
     },
   ];
   const language = useSelector((state) => state.app.language);
   const listText = [
     {
-      id: "en",
-      title: "Import stock items from e-commerce marketplaces",
+      id: 'en',
+      title: 'Import stock items from e-commerce marketplaces',
       filterStatus: FILTER_STATUS[0].value,
       fillter: Filter[0].value,
-      txtSuccess: "Success",
-      txtError: "Fail",
-      txtChooseShop: "Please choose a shop"
+      txtSuccess: 'Success',
+      txtError: 'Fail',
+      txtChooseShop: 'Please choose a shop',
     },
     {
-      id: "vi",
-      title: "Tạo sản phẩm kho từ kênh",
+      id: 'vi',
+      title: 'Tạo sản phẩm kho từ kênh',
       filterStatus: FILTER_STATUS[1].value,
       fillter: Filter[1].value,
-      txtSuccess: "Thành công",
-      txtError: "Thất bại",
-      txtChooseShop: "Bạn chưa chọn shop"
+      txtSuccess: 'Thành công',
+      txtError: 'Thất bại',
+      txtChooseShop: 'Bạn chưa chọn shop',
     },
   ];
   const [text, setText] = useState(listText[0]);
@@ -114,12 +114,12 @@ function CreateStockProductFormEcom() {
     }
   }, [language]);
   useEffect(async () => {
-    const res = await getCreateItemEcomScreen()
-    setData(res.data)
+    const res = await getCreateItemEcomScreen();
+    setData(res.data);
   }, []);
   useEffect(() => {
     window.addEventListener(
-      "resize",
+      'resize',
       () => {
         setIsMobile(window.innerWidth < 1200);
       },
@@ -139,31 +139,29 @@ function CreateStockProductFormEcom() {
   };
 
   const handleClickShop = (item) => {
-    setSelectedShop(item)
-  }
+    setSelectedShop(item);
+  };
 
-  const handelCreateIventoryProduct = async() => {
-    if(!selectedShop){
+  const handelCreateIventoryProduct = async () => {
+    if (!selectedShop) {
       NotificationManager.error({
         title: text.title,
-        message: text.txtChooseShop
+        message: text.txtChooseShop,
       });
-    }
-    else{
+    } else {
       dispatch(setShowLoader(true));
-      const sameSku = storeStatusFilter.indexOf(text.filterStatus[0]) !== -1
-      const sameName = storeStatusFilter.indexOf(text.filterStatus[1]) !== -1
-      const res = await createItemFromEcom(selectedShop.shop_id, sameSku, sameName)
-      if(res.code == 200){
+      const sameSku = storeStatusFilter.indexOf(text.filterStatus[0]) !== -1;
+      const sameName = storeStatusFilter.indexOf(text.filterStatus[1]) !== -1;
+      const res = await createItemFromEcom(selectedShop.shop_id, sameSku, sameName);
+      if (res.code == 200) {
         NotificationManager.success({
           title: text.title,
-          message: text.txtSuccess
+          message: text.txtSuccess,
         });
-      }
-      else {
+      } else {
         NotificationManager.error({
           title: text.title,
-          message: text.txtError
+          message: text.txtError,
         });
       }
       dispatch(setShowLoader(false));
@@ -172,31 +170,35 @@ function CreateStockProductFormEcom() {
 
   const shopListRadios = () => {
     return (
-      <FormControl component="fieldset" style={{marginBottom: "20px"}}>
-          <NotificationContainer />
-          <GridContainer>
-            {data.map((item) => {
-              return (
-                <GridItem>
-                  <Button color={selectedShop == item ? "primary" : "white"} style={{ minWidth: "250px", height: "130px" }} onClick={() => handleClickShop(item)}>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                      }}
-                    >
-                      <img className={selectedShop == item ? classes.shopImageWhite : classes.shopImage} src={item.icon} />
-                      <p className={classes.shopTxt}>{item.code}</p>
-                      <p className={classes.txtPro}>
+      <FormControl component="fieldset" style={{ marginBottom: '20px' }}>
+        <GridContainer>
+          {data.map((item) => {
+            return (
+              <GridItem>
+                <Button
+                  color={selectedShop == item ? 'primary' : 'white'}
+                  style={{ minWidth: '250px', height: '130px' }}
+                  onClick={() => handleClickShop(item)}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                    }}>
+                    <img
+                      className={selectedShop == item ? classes.shopImageWhite : classes.shopImage}
+                      src={item.icon}
+                    />
+                    <p className={classes.shopTxt}>{item.code}</p>
+                    <p className={classes.txtPro}>
                       <span>{item.total_product}</span> {text.fillter.title}
                     </p>
-                    </div>
-                  </Button>
-                </GridItem>
-              );
-            })}
-          </GridContainer>
+                  </div>
+                </Button>
+              </GridItem>
+            );
+          })}
+        </GridContainer>
       </FormControl>
     );
   };
@@ -224,9 +226,7 @@ function CreateStockProductFormEcom() {
                       checked={storeStatusFilter.indexOf(item) !== -1}
                       tabIndex={-1}
                       onClick={() => handleStoreStatus(item)}
-                      checkedIcon={
-                        <Check className={taskClasses.checkedIcon} />
-                      }
+                      checkedIcon={<Check className={taskClasses.checkedIcon} />}
                       icon={<Check className={taskClasses.uncheckedIcon} />}
                       classes={{
                         checked: taskClasses.checked,
@@ -234,9 +234,7 @@ function CreateStockProductFormEcom() {
                       }}
                       style={{ padding: 5 }}
                     />
-                    <p className={classes.Txt + " " + classes.checkBoxLabel}>
-                      {item}
-                    </p>
+                    <p className={classes.Txt + ' ' + classes.checkBoxLabel}>{item}</p>
                   </div>
                 </GridItem>
               );
@@ -250,8 +248,7 @@ function CreateStockProductFormEcom() {
             color="primary"
             onClick={() => {
               handelCreateIventoryProduct();
-            }}
-          >
+            }}>
             {text.fillter.button[1]}
           </Button>
         </div>

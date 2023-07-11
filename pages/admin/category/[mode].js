@@ -213,7 +213,6 @@ function AddProductCategory({ onUpdated }) {
 
         return (
           <Form>
-            <NotificationContainer />
             <Card>
               <CardHeader color="primary">
                 <Text textStyle="h5" color="text-white">

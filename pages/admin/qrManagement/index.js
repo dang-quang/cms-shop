@@ -353,7 +353,6 @@ function QrManagement() {
 
   return (
     <Card>
-      <NotificationContainer />
       <CardHeader color="primary">
         <h4 className={classes.cardTitleWhite}>{t('sideBar.qrManagement')}</h4>
       </CardHeader>

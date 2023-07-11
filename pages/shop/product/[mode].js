@@ -688,7 +688,7 @@ function CreateProduct() {
                             {isEmpty(values.variations) ? (
                               <Button
                                 leftIcon={<HiPlus />}
-                                variant="outline-primary"
+                                variant="border-outline-primary"
                                 children={t('shop_product.enable_variations')}
                                 onClick={() => {
                                   setFieldValue('variations', [

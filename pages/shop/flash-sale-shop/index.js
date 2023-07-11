@@ -20,7 +20,7 @@ function VoucherPage() {
 
   const tabs = [t('all'), t('happening'), t('upcoming'), t('finished')];
 
-  const index = useSelector((state) => state.app.selectedFlashSaleTabIndex);
+  const index = useSelector((state) => state.app.shopFlashSaleTabIndex);
 
   return (
     <Box>
@@ -69,8 +69,8 @@ function VoucherPage() {
               </Tab>
             ))}
           </TabList>
-          <TabPanels mt="6" key="ALL">
-            <TabPanel p="0">
+          <TabPanels mt="6">
+            <TabPanel p="0" key="ALL">
               <TableAll />
             </TabPanel>
             <TabPanel p="0" key={EFlashSaleStatus.HAPPENING}>

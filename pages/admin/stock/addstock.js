@@ -1,16 +1,13 @@
-import React, { useState, useEffect, useCallback } from "react";
-import Router from "next/router";
-import { setShowLoader } from "../../../redux/actions/app";
-import { useSelector, useDispatch } from "react-redux";
-import moment from "moment";
-import Link from "next/link";
-import {
-  NotificationContainer,
-  NotificationManager,
-} from "react-light-notifications";
-import "react-light-notifications/lib/main.css";
+import React, { useState, useEffect, useCallback } from 'react';
+import Router from 'next/router';
+import { setShowLoader } from '../../../redux/actions/app';
+import { useSelector, useDispatch } from 'react-redux';
+import moment from 'moment';
+import Link from 'next/link';
+import { NotificationContainer, NotificationManager } from 'react-light-notifications';
+import 'react-light-notifications/lib/main.css';
 // @material-ui/core components
-import {} from "@material-ui/core/styles";
+import {} from '@material-ui/core/styles';
 import {
   primaryColor,
   whiteColor,
@@ -20,15 +17,15 @@ import {
   infoColor,
   orangeColor,
   grayColor,
-} from "assets/jss/natcash.js";
+} from 'assets/jss/natcash.js';
 // layout for this page
-import Admin from "layouts/Admin.js";
+import Admin from 'layouts/Admin.js';
 // core components
-import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardBody from "components/Card/CardBody.js";
-import CardFooter from "components/Card/CardFooter.js";
-import Button from "components/CustomButtons/Button.js";
+import Card from 'components/Card/Card.js';
+import CardHeader from 'components/Card/CardHeader.js';
+import CardBody from 'components/Card/CardBody.js';
+import CardFooter from 'components/Card/CardFooter.js';
+import Button from 'components/CustomButtons/Button.js';
 import {
   Modal,
   Tab,
@@ -53,35 +50,35 @@ import {
   RadioGroup,
   Checkbox,
   FormControlLabel,
-} from "@material-ui/core";
+} from '@material-ui/core';
 
-import Check from "@material-ui/icons/Check";
-import DateFnsUtils from "@date-io/date-fns";
-import Poppers from "@material-ui/core/Popper";
-import SwipeableViews from "react-swipeable-views";
-import WithAuthentication from "components/WithAuthentication/WithAuthentication";
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-import adminStyles from "assets/jss/natcash/components/headerLinksStyle.js";
-import tableStyles from "assets/jss/natcash/components/tableStyle.js";
-import taskStyles from "assets/jss/natcash/components/tasksStyle.js";
-import shopStyle from "assets/jss/natcash/views/shoplist/shoplistStyle.js";
-import { Icon } from "@material-ui/core";
-import dashStyles from "assets/jss/natcash/views/dashboardStyle.js";
-import vi from "date-fns/locale/vi";
-import classNames from "classnames";
-import useWindowSize from "components/Hooks/useWindowSize.js";
-import PropTypes from "prop-types";
-import Switch from "components/CustomSwitch/Switch.js";
+import Check from '@material-ui/icons/Check';
+import DateFnsUtils from '@date-io/date-fns';
+import Poppers from '@material-ui/core/Popper';
+import SwipeableViews from 'react-swipeable-views';
+import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
+import GridContainer from 'components/Grid/GridContainer.js';
+import GridItem from 'components/Grid/GridItem.js';
+import adminStyles from 'assets/jss/natcash/components/headerLinksStyle.js';
+import tableStyles from 'assets/jss/natcash/components/tableStyle.js';
+import taskStyles from 'assets/jss/natcash/components/tasksStyle.js';
+import shopStyle from 'assets/jss/natcash/views/shoplist/shoplistStyle.js';
+import { Icon } from '@material-ui/core';
+import dashStyles from 'assets/jss/natcash/views/dashboardStyle.js';
+import vi from 'date-fns/locale/vi';
+import classNames from 'classnames';
+import useWindowSize from 'components/Hooks/useWindowSize.js';
+import PropTypes from 'prop-types';
+import Switch from 'components/CustomSwitch/Switch.js';
 
-import { formatCurrency, formatNumber } from "../../../utilities/utils";
-import { createNewStock } from "../../../utilities/ApiManage";
-import { useRouter } from "next/router";
+import { formatCurrency, formatNumber } from '../../../utilities/utils';
+import { createNewStock } from '../../../utilities/ApiManage';
+import { useRouter } from 'next/router';
 
-import imgShop from "assets/img/shop.png";
-import imgProduct from "assets/img/product.png";
-import ModalCustom from "components/ModalCustom/ModalCustom.js";
-import styles from "assets/jss/natcash/views/stock/addStockStyle.js";
+import imgShop from 'assets/img/shop.png';
+import imgProduct from 'assets/img/product.png';
+import ModalCustom from 'components/ModalCustom/ModalCustom.js';
+import styles from 'assets/jss/natcash/views/stock/addStockStyle.js';
 
 function AddWarehousePage() {
   const dispatch = useDispatch();
@@ -114,44 +111,44 @@ function AddWarehousePage() {
 
   const ACTIONS = [
     {
-      id: "en",
-      button: ["Confirm"],
+      id: 'en',
+      button: ['Confirm'],
       select: [
-        "Stock Name *",
-        "Stock Code",
-        "Address *",
-        "Contact person",
-        "Email",
-        "Contact phone",
-        "Note",
-        "Set as default repository. Note: When default is used for order processing",
+        'Stock Name *',
+        'Stock Code',
+        'Address *',
+        'Contact person',
+        'Email',
+        'Contact phone',
+        'Note',
+        'Set as default repository. Note: When default is used for order processing',
       ],
     },
     {
-      id: "vi",
-      button: ["Xác nhận"],
+      id: 'vi',
+      button: ['Xác nhận'],
       select: [
-        "Tên kho *",
-        "Mã kho tham chiếu",
-        "Địa chỉ *",
-        "Người liên hệ",
-        "Email",
-        "Điện thoại liên hệ",
-        "Ghi chú",
-        "Đặt làm kho mặc định. Lưu ý: Kho mặc định được dùng để xử lý đơn hàng",
+        'Tên kho *',
+        'Mã kho tham chiếu',
+        'Địa chỉ *',
+        'Người liên hệ',
+        'Email',
+        'Điện thoại liên hệ',
+        'Ghi chú',
+        'Đặt làm kho mặc định. Lưu ý: Kho mặc định được dùng để xử lý đơn hàng',
       ],
     },
   ];
 
   const listText = [
     {
-      id: "en",
-      title: "Create new stock",
+      id: 'en',
+      title: 'Create new stock',
       actions: ACTIONS[0],
     },
     {
-      id: "vi",
-      title: "Tạo mới kho hàng",
+      id: 'vi',
+      title: 'Tạo mới kho hàng',
       actions: ACTIONS[1],
     },
   ];
@@ -178,12 +175,12 @@ function AddWarehousePage() {
   };
   const CustomSwitch = withStyles({
     switchBase: {
-      color: "#fff",
-      "&$checked": {
-        color: "#f96606",
+      color: '#fff',
+      '&$checked': {
+        color: '#f96606',
       },
-      "&$checked + $track": {
-        backgroundColor: "#f3a36f",
+      '&$checked + $track': {
+        backgroundColor: '#f3a36f',
       },
     },
     checked: {},
@@ -192,21 +189,21 @@ function AddWarehousePage() {
 
   const handleSubmit = async () => {
     dispatch(setShowLoader(true));
-    let res = await createNewStock(values)
+    let res = await createNewStock(values);
     dispatch(setShowLoader(false));
     if (res.code === 200) {
-      if(addFrom === "addpurchaseorder"){
-        Router.push("/admin/purchaseorder/addpurchaseorder");
-      }else{
-        Router.push("/admin/operation");
+      if (addFrom === 'addpurchaseorder') {
+        Router.push('/admin/purchaseorder/addpurchaseorder');
+      } else {
+        Router.push('/admin/operation');
       }
     } else {
       NotificationManager.error({
-        title: "Error",
-        message: res.message ? res.message.text : "Error",
+        title: 'Error',
+        message: res.message ? res.message.text : 'Error',
       });
     }
-  }
+  };
 
   return (
     <Card>
@@ -225,7 +222,7 @@ function AddWarehousePage() {
               fullWidth
               inputProps={{
                 value: values.name,
-                onChange: handleChangeValue("name"),
+                onChange: handleChangeValue('name'),
               }}
               autoComplete="off"
               className={classes.custom_field}
@@ -241,7 +238,7 @@ function AddWarehousePage() {
               fullWidth
               inputProps={{
                 value: values.reference_id,
-                onChange: handleChangeValue("reference_id"),
+                onChange: handleChangeValue('reference_id'),
               }}
               autoComplete="off"
               className={classes.custom_field}
@@ -259,7 +256,7 @@ function AddWarehousePage() {
               fullWidth
               inputProps={{
                 value: values.address,
-                onChange: handleChangeValue("address"),
+                onChange: handleChangeValue('address'),
               }}
               autoComplete="off"
               className={classes.custom_field}
@@ -277,7 +274,7 @@ function AddWarehousePage() {
               fullWidth
               inputProps={{
                 value: values.contact_person,
-                onChange: handleChangeValue("contact_person"),
+                onChange: handleChangeValue('contact_person'),
               }}
               autoComplete="off"
               className={classes.custom_field}
@@ -293,7 +290,7 @@ function AddWarehousePage() {
               fullWidth
               inputProps={{
                 value: values.email,
-                onChange: handleChangeValue("email"),
+                onChange: handleChangeValue('email'),
               }}
               autoComplete="off"
               className={classes.custom_field}
@@ -309,7 +306,7 @@ function AddWarehousePage() {
               fullWidth
               inputProps={{
                 value: values.phone,
-                onChange: handleChangeValue("phone"),
+                onChange: handleChangeValue('phone'),
               }}
               type="number"
               autoComplete="off"
@@ -328,7 +325,7 @@ function AddWarehousePage() {
               fullWidth
               inputProps={{
                 value: values.notes,
-                onChange: handleChangeValue("notes"),
+                onChange: handleChangeValue('notes'),
               }}
               autoComplete="off"
               multiline
@@ -339,18 +336,15 @@ function AddWarehousePage() {
         </GridContainer>
         <GridContainer>
           <div className={classes.flex_center}>
-            <CustomSwitch
-              checked={values.default}
-              onChange={handleChange}
-              name="default"
-            />
+            <CustomSwitch checked={values.default} onChange={handleChange} name="default" />
             <p className={classes.infoTextPrimary}>{text.actions.select[7]}</p>
           </div>
         </GridContainer>
-        <NotificationContainer />
       </CardBody>
       <CardFooter className={classes.flex_end}>
-        <Button color="primary" onClick={handleSubmit}>{text.actions.button[0]}</Button>
+        <Button color="primary" onClick={handleSubmit}>
+          {text.actions.button[0]}
+        </Button>
       </CardFooter>
     </Card>
   );

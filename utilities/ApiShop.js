@@ -51,3 +51,15 @@ export function requestGetListVoucherShop(obj) {
 export function requestCreateUpdateVoucherShop(obj) {
   return postWithCheckingToken(`${BASE_API_URL}/voucher/shop-save-voucher`, {}, obj);
 }
+
+export function requestDeleteVoucherShop(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/voucher/delete`, {}, obj);
+}
+
+export function requestGetShopListProgram(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/voucher/shop-list-program`, {}, obj);
+}
+
+export function requestRegisterShopProgramVoucher(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/voucher/shop-register-program`, {}, obj);
+}

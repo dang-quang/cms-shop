@@ -134,11 +134,10 @@ function CreateProduct() {
           let listVariationVariations = list_variation.flatMap((item) => item.variations);
 
           for (let i = 0; i < listVariationVariations.length; i++) {
-            listVariationVariations[i].imgUri = listVariationVariations[i].image.replace(
+            listVariationVariations[i].image = listVariationVariations[i].image.replace(
               /^data:image\/(png|jpg|jpeg);base64,/,
               ''
             );
-            delete listVariationVariations[i].image;
             listVariationVariations[i].stock = parseFloat(listVariationVariations[i].stock);
             listVariationVariations[i].price = parseFloat(listVariationVariations[i].price);
           }
@@ -424,6 +423,7 @@ function CreateProduct() {
                         );
 
                         return {
+                          id: product.id,
                           parentVariationTitle: _variations[0].name,
                           childVariationTitle: _variations[1].name,
                           childVariationValue: _variations[1].options[childVariationIndex],

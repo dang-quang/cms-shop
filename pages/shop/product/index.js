@@ -37,6 +37,7 @@ import {
   setSearchProductName,
   setSearchProductStockMax,
   setSearchProductStockMin,
+  setSelectedCategory,
   setSelectedCategorySearch,
 } from 'redux/actions/product';
 import TableReviewing from './components/TableReviewing';
@@ -99,7 +100,10 @@ function ShopProducts() {
           leftIcon={<HiPlus />}
           variant="primary"
           children={t('shop_product.add_new_product')}
-          onClick={() => router.push('/shop/product/add')}
+          onClick={() => {
+            dispatch(setSelectedCategory([]));
+            router.push('/shop/product/add');
+          }}
         />
       </Flex>
       <Box bg="bg-1" p="6" borderRadius="4px" mt="6">

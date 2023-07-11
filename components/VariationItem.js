@@ -50,7 +50,7 @@ const VariationItem = ({ item, index }) => {
                   <InputGroup>
                     <Input
                       type="text"
-                      placeholder={`eg:${index === 0 ? 'colour' : 'size'} etc.`}
+                      placeholder={`eg: ${index === 0 ? 'colour' : 'size'} etc.`}
                       autoComplete="off"
                       value={name}
                       size="sm"
@@ -121,7 +121,7 @@ const VariationItem = ({ item, index }) => {
                   <InputGroup>
                     <Input
                       size="sm"
-                      placeholder={index === 0 ? 'eg:Red, etc.' : 'eg:S,M, etc.'}
+                      placeholder={index === 0 ? 'eg: Red, etc.' : 'eg: S,M, etc.'}
                       autoComplete="off"
                       flex="1"
                       value={option}

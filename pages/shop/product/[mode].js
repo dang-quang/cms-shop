@@ -8,7 +8,7 @@ import * as yup from 'yup';
 import { useMultiImageUpload } from 'hooks';
 import _, { isEmpty } from 'lodash';
 import { useRouter } from 'next/router';
-import { setShowLoader } from 'redux/actions/app';
+import { setShowLoader, setLoading } from 'redux/actions/app';
 import {
   AspectRatio,
   Box,
@@ -93,6 +93,7 @@ function CreateProduct() {
   const dispatch = useDispatch();
   const refImages = React.useRef(null);
   const selectedCategory = useSelector((state) => state.product.selectedCategory);
+  const { loading } = useSelector((state) => state.app);
 
   const product =
     !_.isEmpty(router.query) && router.query.mode === 'update' ? router.query : undefined;
@@ -108,6 +109,7 @@ function CreateProduct() {
     async ({ id, images, name, description, list_variation, price, stock }) => {
       try {
         dispatch(setShowLoader(true));
+        dispatch(setLoading(true));
 
         let _product;
         let _details = [];
@@ -180,6 +182,7 @@ function CreateProduct() {
               onCloseComplete: () => {
                 dispatch(setSelectedCategory([]));
                 router.push('/shop/product');
+                dispatch(setLoading(false));
               },
             });
           } else {
@@ -190,6 +193,9 @@ function CreateProduct() {
               status: 'error',
               duration: 2000,
               isClosable: true,
+              onCloseComplete: () => {
+                dispatch(setLoading(false));
+              },
             });
           }
         } else {
@@ -205,6 +211,7 @@ function CreateProduct() {
               onCloseComplete: () => {
                 dispatch(setSelectedCategory([]));
                 router.push('/shop/product');
+                dispatch(setLoading(false));
               },
             });
           } else {
@@ -215,6 +222,9 @@ function CreateProduct() {
               status: 'error',
               duration: 2000,
               isClosable: true,
+              onCloseComplete: () => {
+                dispatch(setLoading(false));
+              },
             });
           }
         }
@@ -325,6 +335,7 @@ function CreateProduct() {
         setFieldTouched,
         values,
         errors,
+        isSubmitting,
       }) => {
         React.useEffect(() => {
           (async () => {
@@ -1037,6 +1048,7 @@ function CreateProduct() {
                 minW="80px"
                 size="sm"
                 mr="4"
+                disabled={isSubmitting || loading}
                 onClick={() => router.back()}>
                 {t('cancel')}
               </Button>
@@ -1044,7 +1056,7 @@ function CreateProduct() {
                 variant="primary"
                 minW="80px"
                 size="sm"
-                disabled={isEmpty(selectedCategory)}
+                disabled={isEmpty(selectedCategory) || isSubmitting || loading}
                 onClick={() => handleSubmit()}>
                 {t('confirm')}
               </Button>

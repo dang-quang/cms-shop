@@ -450,6 +450,15 @@ function CreateProduct() {
 
                   setFieldValue('list_variation', list3);
                 }
+
+                _variations = _variations.map((i) => {
+                  return {
+                    ...i,
+                    options: [...i.options, ''],
+                  };
+                });
+
+                setFieldValue('variations', _variations);
               }
             }
           })();

@@ -431,13 +431,16 @@ const TableAll = () => {
                 children={t('delete')}
                 onClick={onOpenDelete}
               />
-              <Button
-                variant="outline-control"
-                minW="80px"
-                size="sm"
-                children={t('delist')}
-                onClick={onOpenDeList}
-              />
+              {(_.filter(selectedProducts, { isShow: EShowProductType.ACTIVE }).length > 0 ||
+                _.filter(selectedProducts, { isShow: EShowProductType.PENDING }).length > 0) && (
+                <Button
+                  variant="outline-control"
+                  minW="80px"
+                  size="sm"
+                  children={t('delist')}
+                  onClick={onOpenDeList}
+                />
+              )}
               {_.filter(selectedProducts, { isShow: EShowProductType.DELISTED }).length > 0 && (
                 <Button
                   variant="primary"

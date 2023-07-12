@@ -80,7 +80,7 @@ const ProductFlashSaleItem: React.FC<ProductFlashSaleItemProps> = ({
           <AspectRatio w="40px" ratio={1} mr="2" borderRadius="4px" overflow="hidden">
             <Image w="100%" h="100%" objectFit="cover" src={_image} />
           </AspectRatio>
-          <Flex flexDirection="column">
+          <Flex flexDirection="column" flex="1">
             <Text textStyle="h3-m" color="text-basic">
               {name}
             </Text>

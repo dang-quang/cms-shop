@@ -427,6 +427,7 @@ const CreateShopFlashSale = () => {
                                   <Th
                                     key={index}
                                     borderBottomWidth="0px"
+                                    minW={index === 1 ? '250px' : 'unset'}
                                     color="text-note"
                                     textStyle="b-md"
                                     textTransform="capitalize">

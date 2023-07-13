@@ -24,7 +24,7 @@ import { NotificationManager } from 'react-light-notifications';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import { ModalConfirm, ProductFlashSaleItem, WithAuthentication } from 'components';
-import _, { isEmpty } from 'lodash';
+import _, { debounce, isEmpty } from 'lodash';
 import { Formik, FieldArray } from 'formik';
 import { FormGroup } from 'components';
 import * as yup from 'yup';
@@ -117,7 +117,11 @@ const CreateShopFlashSale = () => {
   );
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required(t('error_field_empty')),
+    name: yup
+      .string()
+      .required(t('error_field_empty'))
+      .matches(/^\S(.*\S)?$/, t('error_whitespace_not_allowed'))
+      .min(10, t('shop_product.error_product_name_too_short'), { min: 10 }),
     startAt: yup
       .date()
       .min(dayjs().toDate(), 'Please enter a start time that is later than the current time.'),
@@ -167,7 +171,17 @@ const CreateShopFlashSale = () => {
       enableReinitialize={true}
       initialValues={initialValues}
       onSubmit={handleSubmitVoucher}>
-      {({ handleChange, handleSubmit, setFieldValue, setFieldError, values, errors }) => {
+      {({
+        handleChange,
+        handleSubmit,
+        setFieldValue,
+        setFieldError,
+        validateField,
+        values,
+        errors,
+      }) => {
+        const validateDebounced = debounce(validateField, 300);
+
         React.useEffect(() => {
           if (isEmpty(selectedProducts)) {
             return;
@@ -349,10 +363,15 @@ const CreateShopFlashSale = () => {
               <FormGroup title={t('flash_sale_shop.flash_sale_name')}>
                 <FormControl isInvalid={!!errors.name}>
                   <Input
+                    id="name"
+                    name="name"
                     placeholder={t('input')}
                     autoComplete="off"
                     value={values.name}
-                    onChange={handleChange('name')}
+                    onChange={(e) => {
+                      handleChange(e);
+                      validateDebounced('name');
+                    }}
                   />
                   <FormErrorMessage>{errors.name}</FormErrorMessage>
                 </FormControl>
@@ -361,20 +380,30 @@ const CreateShopFlashSale = () => {
                 <SimpleGrid columns={{ base: 1, xl: 2 }} gap="5" pr={{ base: 'unset', xl: '20%' }}>
                   <FormControl isInvalid={!!errors.startAt}>
                     <Input
+                      id="startAt"
+                      name="startAt"
                       type="datetime-local"
                       value={values.startAt}
-                      onChange={handleChange('startAt')}
                       min={dayjs().format(formatDate)}
+                      onChange={(e) => {
+                        handleChange(e);
+                        validateDebounced('startAt');
+                      }}
                     />
                     <FormErrorMessage>{errors.startAt}</FormErrorMessage>
                   </FormControl>
                   <FormControl isInvalid={!!errors.endAt}>
                     <Input
+                      id="endAt"
+                      name="endAt"
                       type="datetime-local"
                       value={values.endAt}
-                      onChange={handleChange('endAt')}
                       min={dayjs(values.startAt).format(formatDate)}
                       max={dayjs(values.startAt).endOf('day').format(formatDate)}
+                      onChange={(e) => {
+                        handleChange(e);
+                        validateDebounced('endAt');
+                      }}
                     />
                     <FormErrorMessage>{errors.endAt}</FormErrorMessage>
                   </FormControl>
@@ -465,6 +494,7 @@ const CreateShopFlashSale = () => {
                                         `products.${idx}.discounted_price`,
                                         e.target.value
                                       );
+                                      validateDebounced(`products.${idx}.discounted_price`);
                                       const roundedValue = Math.floor(
                                         ((values.products[idx].price - parseFloat(e.target.value)) /
                                           values.products[idx].price) *
@@ -534,6 +564,7 @@ const CreateShopFlashSale = () => {
                                       };
 
                                       setFieldValue('flashSaleProducts', updatedFlashSaleProducts);
+                                      validateDebounced(`products.${idx}.discounted_price`);
                                     },
                                   }}
                                   campaignStock={{
@@ -542,6 +573,8 @@ const CreateShopFlashSale = () => {
                                         `products.${idx}.campaign_stock`,
                                         e.target.value
                                       );
+
+                                      validateDebounced(`products.${idx}.campaign_stock`);
 
                                       const updatedFlashSaleProducts = [
                                         ...values.flashSaleProducts,

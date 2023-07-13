@@ -240,10 +240,6 @@ function CreateProduct() {
       .array()
       .required(t('error_field_empty'))
       .min(1, t('shop_product.error_image_missing')),
-    // name: yup
-    //   .string()
-    //   .required(t('error_field_empty'))
-    //   .min(10, t('shop_product.error_product_name_too_short')),
     name: yup
       .string()
       .required(t('error_field_empty'))

@@ -36,7 +36,7 @@ import { setShowLoader } from 'redux/actions/app';
 import _ from 'lodash';
 import { BASE_API_URL } from 'utilities/const';
 import { requestCreateUpdateVoucher } from 'utilities/ApiManage';
-import { EDiscountType, EDiscountLimitType, EShopLimitType, EAppKey } from 'constants/types';
+import { EDiscountType, EDiscountLimitType, EShopLimitType, EAppKey, EMode } from 'constants/types';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { IoIosCloudUpload } from 'react-icons/io';
 import { FormGroup } from 'components';
@@ -75,7 +75,7 @@ function AddVoucherPage() {
   const inputRefBanner = React.useRef(null);
 
   const voucher =
-    !_.isEmpty(router.query) && router.query.mode === 'update' ? router.query : undefined;
+    !_.isEmpty(router.query) && router.query.mode === EMode.UPDATE ? router.query : undefined;
 
   const handleSubmitVoucher = React.useCallback(
     async (

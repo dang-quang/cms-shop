@@ -20,9 +20,9 @@ import {
   InputRightElement,
   Center,
   InputGroup,
+  useToast,
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { NotificationManager } from 'react-light-notifications';
 
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
@@ -33,9 +33,9 @@ import { FormGroup } from 'components';
 import * as yup from 'yup';
 import { HiPlus } from 'react-icons/hi';
 import { setModalSelectProducts, setSelectedProducts } from 'redux/actions/product';
-import { setShowLoader } from 'redux/actions/app';
+import { setLoading, setShowLoader } from 'redux/actions/app';
 import { requestCreateShopFlashSale } from 'utilities/ApiShop';
-import { EAppKey } from 'constants/types';
+import { EAppKey, EMode } from 'constants/types';
 
 const formatDate = 'YYYY-MM-DDTHH:mm';
 
@@ -50,9 +50,14 @@ const initialValues = {
 const CreateShopFlashSale = () => {
   const shopId = 143;
   const router = useRouter();
+  const toast = useToast();
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const selectedProducts = useSelector((state) => state.product.selectedProducts);
+  const { loading } = useSelector((state) => state.app);
+
+  const flashSale =
+    !_.isEmpty(router.query) && router.query.mode === EMode.UPDATE ? router.query : undefined;
 
   const headers = [
     '',
@@ -77,6 +82,7 @@ const CreateShopFlashSale = () => {
     async ({ name, startAt, endAt, products }, { setFieldValue }) => {
       try {
         dispatch(setShowLoader(true));
+        dispatch(setLoading(true));
         //TODO If you add flash sale in the program, then transmit the programId
         //programId
         let _details = [];
@@ -95,22 +101,67 @@ const CreateShopFlashSale = () => {
           });
         }
         params.details = _details;
-        const res = await requestCreateShopFlashSale(params);
-        if (res && res.code === EAppKey.MSG_SUCCESS) {
-          setFieldValue('products', []);
-          dispatch(setSelectedProducts([]));
-          NotificationManager.success({
-            title: t('success'),
-            message: 'Create Flash Sale Success',
-          });
-          setTimeout(() => {
-            router.push('/shop/flash-sale-shop');
-          }, 1000);
+        if (flashSale) {
+          // params.id = parseFloat(flashSale.id);
+          // const res = await requestCreateShopFlashSale(params);
+          // if (res && res.code === EAppKey.MSG_SUCCESS) {
+          //   dispatch(setSelectedProducts([]));
+          //   setFieldValue('products', []);
+          //   toast({
+          //     position: 'top',
+          //     title: t('success'),
+          //     description: t('update_flash_sale_success'),
+          //     status: 'success',
+          //     duration: 2000,
+          //     isClosable: true,
+          //     onCloseComplete: () => {
+          //       router.push('/shop/flash-sale-shop');
+          //       dispatch(setLoading(false));
+          //     },
+          //   });
+          // } else {
+          //   toast({
+          //     position: 'top',
+          //     title: t('error'),
+          //     description: t('update_flash_sale_failed'),
+          //     status: 'error',
+          //     duration: 2000,
+          //     isClosable: true,
+          //     onCloseComplete: () => {
+          //       dispatch(setLoading(false));
+          //     },
+          //   });
+          // }
         } else {
-          NotificationManager.error({
-            title: t('error'),
-            message: res.message ? res.message.text : t('error'),
-          });
+          const res = await requestCreateShopFlashSale(params);
+          if (res && res.code === EAppKey.MSG_SUCCESS) {
+            dispatch(setSelectedProducts([]));
+            setFieldValue('products', []);
+            toast({
+              position: 'top',
+              title: t('success'),
+              description: t('create_flash_sale_success'),
+              status: 'success',
+              duration: 2000,
+              isClosable: true,
+              onCloseComplete: () => {
+                router.push('/shop/flash-sale-shop');
+                dispatch(setLoading(false));
+              },
+            });
+          } else {
+            toast({
+              position: 'top',
+              title: t('error'),
+              description: t('create_flash_sale_failed'),
+              status: 'error',
+              duration: 2000,
+              isClosable: true,
+              onCloseComplete: () => {
+                dispatch(setLoading(false));
+              },
+            });
+          }
         }
       } finally {
         dispatch(setShowLoader(false));
@@ -184,6 +235,8 @@ const CreateShopFlashSale = () => {
         errors,
       }) => {
         const validateDebounced = debounce(validateField, 300);
+
+        // TODO need api get information flash sale by id
 
         React.useEffect(() => {
           if (isEmpty(selectedProducts)) {
@@ -403,10 +456,7 @@ const CreateShopFlashSale = () => {
                       type="datetime-local"
                       value={values.startAt}
                       min={dayjs().format(formatDate)}
-                      onChange={(e) => {
-                        handleChange(e);
-                        validateDebounced('startAt');
-                      }}
+                      onChange={handleChange}
                     />
                     <FormErrorMessage>{errors.startAt}</FormErrorMessage>
                   </FormControl>
@@ -418,10 +468,7 @@ const CreateShopFlashSale = () => {
                       value={values.endAt}
                       min={dayjs(values.startAt).format(formatDate)}
                       max={dayjs(values.startAt).endOf('day').format(formatDate)}
-                      onChange={(e) => {
-                        handleChange(e);
-                        validateDebounced('endAt');
-                      }}
+                      onChange={handleChange}
                     />
                     <FormErrorMessage>{errors.endAt}</FormErrorMessage>
                   </FormControl>
@@ -637,6 +684,7 @@ const CreateShopFlashSale = () => {
                 minW="80px"
                 size="sm"
                 mr="4"
+                disabled={loading}
                 onClick={() => router.back()}>
                 {t('cancel')}
               </Button>
@@ -644,7 +692,7 @@ const CreateShopFlashSale = () => {
                 variant="primary"
                 minW="80px"
                 size="sm"
-                isDisabled={isEmpty(values.products)}
+                isDisabled={isEmpty(values.products) || loading}
                 onClick={() => {
                   const flashSaleEnable = values.products.filter((i) => i.isEnable === true);
                   if (!isEmpty(flashSaleEnable)) {

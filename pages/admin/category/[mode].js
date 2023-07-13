@@ -23,6 +23,7 @@ import { setShowLoader } from 'redux/actions/app';
 import { AspectRatio, Box, Button, Center, Flex, Text } from '@chakra-ui/react';
 import GridContainer from 'components/Grid/GridContainer';
 import GridItem from 'components/Grid/GridItem';
+import { EMode } from 'constants/types';
 
 const initialValues = {
   id: '',
@@ -41,7 +42,7 @@ function AddProductCategory({ onUpdated }) {
   const refInput = React.useRef(null);
 
   const category =
-    !_.isEmpty(router.query) && router.query.mode === 'update' ? router.query : undefined;
+    !_.isEmpty(router.query) && router.query.mode === EMode.UPDATE ? router.query : undefined;
 
   const [selectedImages, setSelectedImages] = React.useState([]);
   const [parentCategories, setParentCategories] = React.useState([]);

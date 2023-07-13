@@ -27,16 +27,24 @@ const FlashSaleShopItem: React.FC<FlashSaleShopItemProps> = ({
 
   const borderColor = isLast ? 'transparent' : 'border-5';
 
+  let _startAt;
+  let _endAt;
+
+  if (startAt && endAt) {
+    _startAt = new Date(startAt * 1000).toISOString();
+    _endAt = new Date(endAt * 1000).toISOString();
+  }
+
   return (
     <Tr>
       <Td borderColor={borderColor}>
         <HStack mt="2" w="300px">
           <Text textStyle="h3" color="text-basic">
-            {dayjs(startAt).format(formatTime)}
+            {dayjs(_startAt).format(formatTime)}
           </Text>
           <Text>-</Text>
           <Text textStyle="h3" color="text-basic">
-            {dayjs(endAt).format(formatTime)}
+            {dayjs(_endAt).format(formatTime)}
           </Text>
         </HStack>
       </Td>

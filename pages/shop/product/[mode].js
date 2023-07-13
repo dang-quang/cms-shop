@@ -55,7 +55,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { AiFillEdit } from 'react-icons/ai';
 import { HiPlus } from 'react-icons/hi';
 
-import { EAppKey } from 'constants/types';
+import { EAppKey, EMode } from 'constants/types';
 import { parseNumber } from 'utilities/parseNumber';
 import {
   requestCreateUpdateProduct,
@@ -96,7 +96,7 @@ function CreateProduct() {
   const { loading } = useSelector((state) => state.app);
 
   const product =
-    !_.isEmpty(router.query) && router.query.mode === 'update' ? router.query : undefined;
+    !_.isEmpty(router.query) && router.query.mode === EMode.UPDATE ? router.query : undefined;
 
   const {
     isOpen: isOpenCategory,
@@ -175,7 +175,7 @@ function CreateProduct() {
             toast({
               position: 'top',
               title: t('success'),
-              description: 'Update Product Success',
+              description: t('update_product_success'),
               status: 'success',
               duration: 2000,
               isClosable: true,
@@ -189,7 +189,7 @@ function CreateProduct() {
             toast({
               position: 'top',
               title: t('error'),
-              description: 'Update Product Failed',
+              description: t('update_product_failed'),
               status: 'error',
               duration: 2000,
               isClosable: true,
@@ -204,7 +204,7 @@ function CreateProduct() {
             toast({
               position: 'top',
               title: t('success'),
-              description: 'Create Product Success',
+              description: t('create_product_success'),
               status: 'success',
               duration: 2000,
               isClosable: true,
@@ -218,7 +218,7 @@ function CreateProduct() {
             toast({
               position: 'top',
               title: t('error'),
-              description: 'Create Product Failed',
+              description: t('create_product_failed'),
               status: 'error',
               duration: 2000,
               isClosable: true,

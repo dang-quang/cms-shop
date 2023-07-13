@@ -26,6 +26,7 @@ import { setShowLoader } from 'redux/actions/app';
 import { BASE_API_URL } from 'utilities/const';
 import { Button, Flex, Text } from '@chakra-ui/react';
 import _ from 'lodash';
+import { EMode } from 'constants/types';
 
 const initialValues = {
   id: '',
@@ -51,7 +52,7 @@ function AddShop() {
   const router = useRouter();
 
   const shop =
-    !_.isEmpty(router.query) && router.query.mode === 'update' ? router.query : undefined;
+    !_.isEmpty(router.query) && router.query.mode === EMode.UPDATE ? router.query : undefined;
 
   const [selectedImages, setSelectedImages] = React.useState([]);
   const [users, setUsers] = React.useState([]);

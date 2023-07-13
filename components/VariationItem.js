@@ -57,8 +57,6 @@ const VariationItem = ({ item, index }) => {
                       onChange={(e) => {
                         const { value } = e.target;
                         setFieldValue(`variations.${index}.name`, value);
-                        setFieldTouched(`variations.${index}.name`, true, false);
-                        //validateField(`variations.${index}`);
 
                         if (index === 0) {
                           for (let i = 0; i < values.list_variation.length; i++) {
@@ -125,10 +123,10 @@ const VariationItem = ({ item, index }) => {
                       autoComplete="off"
                       flex="1"
                       value={option}
+                      onBlur={() => validateField(`variations.${index}.options`)}
                       onChange={(e) => {
                         const { value } = e.target;
                         setFieldTouched(`variations.${index}.options`, true, false);
-                        validateField(`variations.${index}.options`);
 
                         if (index === 0) {
                           if (!!values.list_variation?.[idx]?.variations) {

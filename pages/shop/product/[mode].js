@@ -240,10 +240,15 @@ function CreateProduct() {
       .array()
       .required(t('error_field_empty'))
       .min(1, t('shop_product.error_image_missing')),
+    // name: yup
+    //   .string()
+    //   .required(t('error_field_empty'))
+    //   .min(10, t('shop_product.error_product_name_too_short')),
     name: yup
       .string()
       .required(t('error_field_empty'))
-      .min(10, t('shop_product.error_product_name_too_short')),
+      .matches(/^\S(.*\S)?$/, t('error_whitespace_not_allowed'))
+      .min(10, t('shop_product.error_product_name_too_short'), { min: 10 }),
     description: yup
       .string()
       .required(t('error_field_empty'))
@@ -597,13 +602,10 @@ function CreateProduct() {
                       placeholder={t('input')}
                       autoComplete="off"
                       value={values.name}
-                      onChange={(e) => {
-                        handleChange(e);
-                        setFieldTouched('name', true, false);
-                        validateField('name');
-                      }}
+                      onChange={handleChange}
                       pr="100px"
                       maxLength={120}
+                      onBlur={() => validateField('name')}
                     />
                     <InputRightElement
                       pointerEvents="none"
@@ -720,11 +722,8 @@ function CreateProduct() {
                         placeholder=" "
                         autoComplete="off"
                         value={values.description}
-                        onChange={(e) => {
-                          handleChange(e);
-                          setFieldTouched('description', true, false);
-                          validateField('description');
-                        }}
+                        onChange={handleChange}
+                        onBlur={() => validateField('description')}
                       />
                     </Box>
                   </InputGroup>
@@ -817,10 +816,9 @@ function CreateProduct() {
                                   _hover={{ zIndex: 1 }}
                                   zIndex={!!errors?.set_variation?.price ? 1 : 'unset'}
                                   value={values.set_variation.price}
+                                  onBlur={() => validateField('set_variation.price')}
                                   onChange={(e) => {
                                     setFieldValue('set_variation.price', parseNumber(e));
-                                    setFieldTouched('set_variation.price', true, false);
-                                    validateField('set_variation.price');
                                   }}>
                                   <NumberInputField
                                     pl="54px"
@@ -1006,10 +1004,12 @@ function CreateProduct() {
                                 name="price"
                                 w="50%"
                                 value={values.price}
-                                onChange={(e) => {
-                                  setFieldValue('price', parseNumber(e));
+                                onBlur={() => {
                                   setFieldTouched('price', true, false);
                                   validateField('price');
+                                }}
+                                onChange={(e) => {
+                                  setFieldValue('price', parseNumber(e));
                                 }}>
                                 <NumberInputField pl="54px" placeholder={t('input')} />
                               </NumberInput>

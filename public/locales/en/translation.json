@@ -73,6 +73,7 @@
   "error_price_minimum": "The value should be at least 1.000",
   "error_start_time": "Please enter a start time that is later than the current time.",
   "error_end_time": "The end time must be greater than the start time by at least 1 hour.",
+  "error_whitespace_not_allowed": "White spaces are not allowed at the start or end of this field",
   "amount": "Amount",
   "price": "Price",
   "happening": "Happening",

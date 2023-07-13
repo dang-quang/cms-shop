@@ -137,17 +137,14 @@ const VariationTableItem = ({ item, index, isLast }) => {
                         name={`list_variation.${index}.variations.${idx}.price`}
                         size="sm"
                         value={i.price}
+                        onBlur={() =>
+                          validateField(`list_variation.${index}.variations.${idx}.price`)
+                        }
                         onChange={(e) => {
                           setFieldValue(
                             `list_variation.${index}.variations.${idx}.price`,
                             e.target.value
                           );
-                          setFieldTouched(
-                            `list_variation.${index}.variations.${idx}.price`,
-                            true,
-                            false
-                          );
-                          validateField(`list_variation.${index}.variations.${idx}.price`);
                         }}
                       />
                     </Box>

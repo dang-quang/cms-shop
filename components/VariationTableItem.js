@@ -22,13 +22,16 @@ import { useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { parseNumber } from 'utilities/parseNumber';
 import ProductImage from './ProductImage';
+import { debounce } from 'lodash';
 
 const VariationTableItem = ({ item, index, isLast }) => {
   const { variations } = item;
   const { t } = useTranslation();
   const refImage = React.useRef(null);
 
-  const { setFieldValue, errors, values, validateField, setFieldTouched } = useFormikContext();
+  const { setFieldValue, errors, values, validateField } = useFormikContext();
+
+  const validateDebounced = debounce(validateField, 300);
 
   const borderColor = isLast ? 'transparent' : 'border-5';
 
@@ -137,14 +140,12 @@ const VariationTableItem = ({ item, index, isLast }) => {
                         name={`list_variation.${index}.variations.${idx}.price`}
                         size="sm"
                         value={i.price}
-                        onBlur={() =>
-                          validateField(`list_variation.${index}.variations.${idx}.price`)
-                        }
                         onChange={(e) => {
                           setFieldValue(
                             `list_variation.${index}.variations.${idx}.price`,
                             e.target.value
                           );
+                          validateDebounced(`list_variation.${index}.variations.${idx}.price`);
                         }}
                       />
                     </Box>

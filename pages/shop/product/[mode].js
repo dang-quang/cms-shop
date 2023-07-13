@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { FieldArray, Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { useMultiImageUpload } from 'hooks';
-import _, { isEmpty } from 'lodash';
+import _, { debounce, isEmpty } from 'lodash';
 import { useRouter } from 'next/router';
 import { setShowLoader, setLoading } from 'redux/actions/app';
 import {
@@ -333,11 +333,12 @@ function CreateProduct() {
         setFieldValue,
         setFieldError,
         validateField,
-        setFieldTouched,
         values,
         errors,
         isSubmitting,
       }) => {
+        const validateDebounced = debounce(validateField, 300);
+
         React.useEffect(() => {
           (async () => {
             const res = await requestGetListCategory({});
@@ -598,10 +599,12 @@ function CreateProduct() {
                       placeholder={t('input')}
                       autoComplete="off"
                       value={values.name}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        handleChange(e);
+                        validateDebounced('name');
+                      }}
                       pr="100px"
                       maxLength={120}
-                      onBlur={() => validateField('name')}
                     />
                     <InputRightElement
                       pointerEvents="none"
@@ -718,8 +721,10 @@ function CreateProduct() {
                         placeholder=" "
                         autoComplete="off"
                         value={values.description}
-                        onChange={handleChange}
-                        onBlur={() => validateField('description')}
+                        onChange={(e) => {
+                          handleChange(e);
+                          validateDebounced('description');
+                        }}
                       />
                     </Box>
                   </InputGroup>
@@ -812,9 +817,9 @@ function CreateProduct() {
                                   _hover={{ zIndex: 1 }}
                                   zIndex={!!errors?.set_variation?.price ? 1 : 'unset'}
                                   value={values.set_variation.price}
-                                  onBlur={() => validateField('set_variation.price')}
                                   onChange={(e) => {
                                     setFieldValue('set_variation.price', parseNumber(e));
+                                    validateDebounced('set_variation.price');
                                   }}>
                                   <NumberInputField
                                     pl="54px"
@@ -1000,12 +1005,9 @@ function CreateProduct() {
                                 name="price"
                                 w="50%"
                                 value={values.price}
-                                onBlur={() => {
-                                  setFieldTouched('price', true, false);
-                                  validateField('price');
-                                }}
                                 onChange={(e) => {
                                   setFieldValue('price', parseNumber(e));
+                                  validateDebounced('price');
                                 }}>
                                 <NumberInputField pl="54px" placeholder={t('input')} />
                               </NumberInput>

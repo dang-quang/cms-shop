@@ -17,6 +17,9 @@ import {
   Tr,
   Th,
   useDisclosure,
+  InputRightElement,
+  Center,
+  InputGroup,
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { NotificationManager } from 'react-light-notifications';
@@ -362,17 +365,32 @@ const CreateShopFlashSale = () => {
               </Text>
               <FormGroup title={t('flash_sale_shop.flash_sale_name')}>
                 <FormControl isInvalid={!!errors.name}>
-                  <Input
-                    id="name"
-                    name="name"
-                    placeholder={t('input')}
-                    autoComplete="off"
-                    value={values.name}
-                    onChange={(e) => {
-                      handleChange(e);
-                      validateDebounced('name');
-                    }}
-                  />
+                  <InputGroup>
+                    <Input
+                      id="name"
+                      name="name"
+                      placeholder={t('input')}
+                      autoComplete="off"
+                      value={values.name}
+                      onChange={(e) => {
+                        handleChange(e);
+                        validateDebounced('name');
+                      }}
+                      pr="100px"
+                      maxLength={120}
+                    />
+                    <InputRightElement
+                      pointerEvents="none"
+                      w="100px"
+                      borderLeftWidth="1px"
+                      borderColor="border-5">
+                      <Center h="full">
+                        <Text textStyle="h4" color="text-body">
+                          {values.name.length}/120
+                        </Text>
+                      </Center>
+                    </InputRightElement>
+                  </InputGroup>
                   <FormErrorMessage>{errors.name}</FormErrorMessage>
                 </FormControl>
               </FormGroup>

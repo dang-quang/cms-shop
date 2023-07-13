@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { useFormikContext } from 'formik';
 import { FiTrash2 } from 'react-icons/fi';
-import _ from 'lodash';
+import _, { debounce } from 'lodash';
 import { IoCloseOutline } from 'react-icons/io5';
 import { HiPlus } from 'react-icons/hi';
 import { useTranslation } from 'react-i18next';
@@ -24,7 +24,9 @@ const VariationItem = ({ item, index }) => {
   const { t } = useTranslation();
   const { name, options, isShow } = item;
 
-  const { values, setFieldValue, setFieldTouched, validateField, errors } = useFormikContext();
+  const { values, setFieldValue, validateField, errors } = useFormikContext();
+
+  const validateDebounced = debounce(validateField, 300);
 
   return (
     <Flex gap="4" flexDirection="column" bg="bg-2" borderRadius="4px" p="4" position="relative">
@@ -123,10 +125,9 @@ const VariationItem = ({ item, index }) => {
                       autoComplete="off"
                       flex="1"
                       value={option}
-                      onBlur={() => validateField(`variations.${index}.options`)}
                       onChange={(e) => {
                         const { value } = e.target;
-                        setFieldTouched(`variations.${index}.options`, true, false);
+                        validateDebounced(`variations.${index}.options`);
 
                         if (index === 0) {
                           if (!!values.list_variation?.[idx]?.variations) {

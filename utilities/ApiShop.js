@@ -63,3 +63,7 @@ export function requestGetShopListProgram(obj) {
 export function requestRegisterShopProgramVoucher(obj) {
   return postWithCheckingToken(`${BASE_API_URL}/voucher/shop-register-program`, {}, obj);
 }
+
+export function requestGetFlashSaleDetailsShop(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/flash-sale/shop-detail-flash-sale`, {}, obj);
+}

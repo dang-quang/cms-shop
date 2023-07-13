@@ -34,7 +34,7 @@ import * as yup from 'yup';
 import { HiPlus } from 'react-icons/hi';
 import { setModalSelectProducts, setSelectedProducts } from 'redux/actions/product';
 import { setLoading, setShowLoader } from 'redux/actions/app';
-import { requestCreateShopFlashSale } from 'utilities/ApiShop';
+import { requestCreateShopFlashSale, requestGetFlashSaleDetailsShop } from 'utilities/ApiShop';
 import { EAppKey, EMode } from 'constants/types';
 
 const formatDate = 'YYYY-MM-DDTHH:mm';
@@ -102,36 +102,36 @@ const CreateShopFlashSale = () => {
         }
         params.details = _details;
         if (flashSale) {
-          // params.id = parseFloat(flashSale.id);
-          // const res = await requestCreateShopFlashSale(params);
-          // if (res && res.code === EAppKey.MSG_SUCCESS) {
-          //   dispatch(setSelectedProducts([]));
-          //   setFieldValue('products', []);
-          //   toast({
-          //     position: 'top',
-          //     title: t('success'),
-          //     description: t('update_flash_sale_success'),
-          //     status: 'success',
-          //     duration: 2000,
-          //     isClosable: true,
-          //     onCloseComplete: () => {
-          //       router.push('/shop/flash-sale-shop');
-          //       dispatch(setLoading(false));
-          //     },
-          //   });
-          // } else {
-          //   toast({
-          //     position: 'top',
-          //     title: t('error'),
-          //     description: t('update_flash_sale_failed'),
-          //     status: 'error',
-          //     duration: 2000,
-          //     isClosable: true,
-          //     onCloseComplete: () => {
-          //       dispatch(setLoading(false));
-          //     },
-          //   });
-          // }
+          params.id = parseFloat(flashSale.id);
+          const res = await requestCreateShopFlashSale(params);
+          if (res && res.code === EAppKey.MSG_SUCCESS) {
+            dispatch(setSelectedProducts([]));
+            setFieldValue('products', []);
+            toast({
+              position: 'top',
+              title: t('success'),
+              description: t('update_flash_sale_success'),
+              status: 'success',
+              duration: 2000,
+              isClosable: true,
+              onCloseComplete: () => {
+                router.push('/shop/flash-sale-shop');
+                dispatch(setLoading(false));
+              },
+            });
+          } else {
+            toast({
+              position: 'top',
+              title: t('error'),
+              description: t('update_flash_sale_failed'),
+              status: 'error',
+              duration: 2000,
+              isClosable: true,
+              onCloseComplete: () => {
+                dispatch(setLoading(false));
+              },
+            });
+          }
         } else {
           const res = await requestCreateShopFlashSale(params);
           if (res && res.code === EAppKey.MSG_SUCCESS) {
@@ -236,7 +236,47 @@ const CreateShopFlashSale = () => {
       }) => {
         const validateDebounced = debounce(validateField, 300);
 
-        // TODO need api get information flash sale by id
+        React.useEffect(() => {
+          (async () => {
+            if (flashSale) {
+              const res = await requestGetFlashSaleDetailsShop({ id: parseFloat(flashSale.id) });
+
+              if (res && res.code === EAppKey.MSG_SUCCESS) {
+                let list = [];
+                let x = [];
+                const productsFlashSale = res.data.results;
+                const { name, startAt, endAt } = res.flashSale;
+
+                let _startAt = new Date(startAt * 1000).toISOString();
+                let _endAt = new Date(endAt * 1000).toISOString();
+
+                setFieldValue('name', name);
+                setFieldValue('startAt', dayjs(_startAt).format(formatDate));
+                setFieldValue('endAt', dayjs(_endAt).format(formatDate));
+
+                for (let i = 0; i < productsFlashSale.length; i++) {
+                  const roundedValue = Math.floor(
+                    ((productsFlashSale[i].price - productsFlashSale[i].reduceValue) /
+                      productsFlashSale[i].price) *
+                      100
+                  );
+                  list.push({
+                    ...productsFlashSale[i],
+                    id: productsFlashSale[i].productId,
+                    name: productsFlashSale[i].productName,
+                    discounted_price: productsFlashSale[i].reduceValue,
+                    discount_percent: roundedValue,
+                    campaign_stock: productsFlashSale[i].productQuantity,
+                    isEnable: true,
+                  });
+                }
+
+                setFieldValue('products', list);
+                dispatch(setSelectedProducts(list));
+              }
+            }
+          })();
+        }, [flashSale]);
 
         React.useEffect(() => {
           if (isEmpty(selectedProducts)) {
@@ -248,8 +288,8 @@ const CreateShopFlashSale = () => {
           for (let i = 0; i < selectedProducts.length; i++) {
             list.push({
               ...selectedProducts[i],
-              discounted_price: selectedProducts[i].price,
-              discount_percent: 0,
+              discounted_price: selectedProducts[i].reduceValue ?? selectedProducts[i].price,
+              discount_percent: selectedProducts[i].discount_percent ?? 0,
               campaign_stock: selectedProducts[i].stock,
               isEnable: false,
             });
@@ -486,7 +526,7 @@ const CreateShopFlashSale = () => {
                   </Text>
                 </Box>
                 <Button
-                  display={!isEmpty(selectedProducts) ? 'block' : 'none'}
+                  display={!isEmpty(values.products) ? 'block' : 'none'}
                   leftIcon={<HiPlus />}
                   variant="outline"
                   children={t('flash_sale_shop.add_products')}
@@ -494,7 +534,7 @@ const CreateShopFlashSale = () => {
                 />
               </Flex>
               <Button
-                display={isEmpty(selectedProducts) ? 'block' : 'none'}
+                display={isEmpty(values.products) ? 'block' : 'none'}
                 mt="2"
                 leftIcon={<HiPlus />}
                 variant="outline"

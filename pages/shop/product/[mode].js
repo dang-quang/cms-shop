@@ -277,9 +277,6 @@ function CreateProduct() {
               yup
                 .string()
                 .trim()
-                .required((_, index) => {
-                  return index < value.length - 1 ? t('error_field_empty') : null;
-                })
                 .test('unique', t('shop_product.name_variations_exist'), function (option) {
                   if (option === '' || option === undefined) {
                     return true;
@@ -289,7 +286,17 @@ function CreateProduct() {
             );
           }
 
-          return yup.array().of(yup.string().trim().required(t('error_field_empty')));
+          return yup
+            .array()
+            .of(
+              yup
+                .string()
+                .trim()
+                .required((_, index) => {
+                  return index === 0 ? t('error_field_empty') : null;
+                })
+            )
+            .min(1, t('error_field_empty'));
         }),
       })
     ),
@@ -876,7 +883,7 @@ function CreateProduct() {
                         </SimpleGrid>
                         <Button
                           variant="primary"
-                          children="Apply To All"
+                          children={t('apply_to_all')}
                           w="140px"
                           ml="4"
                           disabled={
@@ -899,8 +906,8 @@ function CreateProduct() {
                               ...variation,
                               variations: variation.variations.map((item) => ({
                                 ...item,
-                                price,
-                                stock,
+                                price: price !== '' ? price : item.price,
+                                stock: stock !== '' ? stock : item.stock,
                                 //sku,
                               })),
                             }));

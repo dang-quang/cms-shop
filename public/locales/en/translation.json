@@ -207,6 +207,7 @@
   "create_product_failed": "Create Product Failed",
   "update_product_success": "Update Product Success",
   "update_product_failed": "Update Product Failed",
+  "apply_to_all": "Apply To All",
   "shop_product": {
     "product_images": "Product Images",
     "product_description": "Product Description",

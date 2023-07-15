@@ -1,9 +1,9 @@
 import React from 'react';
 import { Flex, BoxProps, Skeleton, VStack } from '@chakra-ui/react';
 
-interface LoadingNatShopVoucherItemProps extends BoxProps {}
+interface LoadingProgramItemProps extends BoxProps {}
 
-const LoadingNatShopVoucherItem: React.FC<LoadingNatShopVoucherItemProps> = ({ ...rest }) => {
+const LoadingProgramItem: React.FC<LoadingProgramItemProps> = ({ ...rest }) => {
   const startColor = 'gray.200';
   const endColor = 'gray.500';
 
@@ -19,4 +19,4 @@ const LoadingNatShopVoucherItem: React.FC<LoadingNatShopVoucherItemProps> = ({ .
   );
 };
 
-export default LoadingNatShopVoucherItem;
+export default LoadingProgramItem;

@@ -5,15 +5,21 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading, setShowLoader } from 'redux/actions/app';
 import { useRouter } from 'next/router';
-import { EmptyListItem, LoadingProgramItem, PaginationPanel, VoucherNatShopItem } from 'components';
+import {
+  EmptyListItem,
+  FlashSaleProgramItem,
+  LoadingProgramItem,
+  PaginationPanel,
+} from 'components';
 import { isEmpty } from 'lodash';
-import { EAppKey } from 'constants/types';
-import { requestGetShopListProgramVoucher } from 'utilities/ApiShop';
-import { setDoSearchVoucher } from 'redux/actions/voucher';
+import { EAppKey, EFlashSaleRegisterStatus } from 'constants/types';
+import { requestGetShopListProgramFlashSale } from 'utilities/ApiShop';
+
 import dayjs from 'dayjs';
 import { IconNoData } from 'components/Icons/Icons';
+import { setDoSearchFlashSale } from 'redux/actions/flashSale';
 
-const TableAllNatShop = () => {
+const TableReviewingNatShop = () => {
   const formatDate = 'YYYY/MM/DD';
   const shopId = 143;
   const router = useRouter();
@@ -25,12 +31,12 @@ const TableAllNatShop = () => {
   const { loading, showLoader } = useSelector((state) => state.app);
   const isLoading = loading || showLoader;
 
-  const [vouchers, setVouchers] = React.useState([]);
+  const [flashSales, setFlashSales] = React.useState([]);
   const [totalPage, setTotalPage] = React.useState(1);
   const [totalRecords, setTotalRecords] = React.useState(0);
 
-  const { doSearchVoucher, searchProgramVoucherName, searchProgramVoucherDate } = useSelector(
-    (state) => state.voucher
+  const { doSearchFlashSale, searchProgramFlashSaleName, searchProgramFlashSaleDate } = useSelector(
+    (state) => state.flashSale
   );
 
   const { pages, pagesCount, currentPage, setCurrentPage, isDisabled } = usePagination({
@@ -54,22 +60,23 @@ const TableAllNatShop = () => {
         let params = {
           page: 1,
           shopId: shopId,
+          type: EFlashSaleRegisterStatus.PENDING,
         };
 
-        const res = await requestGetShopListProgramVoucher(params);
+        const res = await requestGetShopListProgramFlashSale(params);
 
         if (res.code === EAppKey.MSG_SUCCESS) {
           if (res.data && res.data.results) {
-            setVouchers(res.data.results);
+            setFlashSales(res.data.results);
             setTotalPage(res.data.totalPages);
             setTotalRecords(res.data.totalRecords);
           } else {
-            setVouchers([]);
+            setFlashSales([]);
             setTotalPage(1);
             setTotalRecords(0);
           }
         } else {
-          setVouchers([]);
+          setFlashSales([]);
           setTotalPage(1);
           setTotalRecords(0);
           toast({
@@ -90,34 +97,34 @@ const TableAllNatShop = () => {
   React.useEffect(() => {
     (async () => {
       try {
-        let params = { shopId: shopId, page: currentPage };
+        let params = { shopId: shopId, page: currentPage, type: EFlashSaleRegisterStatus.PENDING };
 
-        if (doSearchVoucher) {
+        if (doSearchFlashSale) {
           dispatch(setShowLoader(true));
           dispatch(setLoading(true));
-          if (!!searchProgramVoucherName) {
-            params.keyWord = searchProgramVoucherName;
+          if (!!searchProgramFlashSaleName) {
+            params.keyWord = searchProgramFlashSaleName;
           }
 
-          if (searchProgramVoucherDate.length > 1) {
-            params.fromDate = dayjs(searchProgramVoucherDate[0]).format(formatDate);
-            params.toDate = dayjs(searchProgramVoucherDate[1]).format(formatDate);
+          if (searchProgramFlashSaleDate.length > 1) {
+            params.fromDate = dayjs(searchProgramFlashSaleDate[0]).format(formatDate);
+            params.toDate = dayjs(searchProgramFlashSaleDate[1]).format(formatDate);
           }
 
-          const res = await requestGetShopListProgramVoucher(params);
+          const res = await requestGetShopListProgramFlashSale(params);
 
           if (res.code === EAppKey.MSG_SUCCESS) {
             if (res.data && res.data.results) {
-              setVouchers(res.data.results);
+              setFlashSales(res.data.results);
               setTotalPage(res.data.totalPages);
               setTotalRecords(res.data.totalRecords);
             } else {
-              setVouchers([]);
+              setFlashSales([]);
               setTotalPage(1);
               setTotalRecords(0);
             }
           } else {
-            setVouchers([]);
+            setFlashSales([]);
             setTotalPage(1);
             setTotalRecords(0);
             toast({
@@ -131,18 +138,24 @@ const TableAllNatShop = () => {
           }
         }
       } finally {
-        dispatch(setDoSearchVoucher(false));
+        dispatch(setDoSearchFlashSale(false));
         dispatch(setShowLoader(false));
         setTimeout(() => {
           dispatch(setLoading(false));
         }, 2000);
       }
     })();
-  }, [shopId, doSearchVoucher, currentPage, searchProgramVoucherName, searchProgramVoucherDate]);
+  }, [
+    shopId,
+    doSearchFlashSale,
+    currentPage,
+    searchProgramFlashSaleName,
+    searchProgramFlashSaleDate,
+  ]);
 
   return (
     <Box>
-      <Box mt="6" position="relative" minH={isEmpty(vouchers) || isLoading ? '300px' : 'unset'}>
+      <Box mt="6" position="relative" minH={isEmpty(flashSales) || isLoading ? '300px' : 'unset'}>
         {isLoading ? (
           <>
             {Array(4)
@@ -151,20 +164,20 @@ const TableAllNatShop = () => {
                 return <LoadingProgramItem key={index} />;
               })}
           </>
-        ) : isEmpty(vouchers) ? (
+        ) : isEmpty(flashSales) ? (
           <EmptyListItem title={t('no_data')}>
             <Icon as={IconNoData} w="93px" h="87px" />
           </EmptyListItem>
         ) : (
           <>
-            {vouchers.map((item, index) => {
+            {flashSales.map((item, index) => {
               return (
-                <VoucherNatShopItem
+                <FlashSaleProgramItem
                   item={item}
                   index={index}
-                  isLast={index === vouchers.length - 1}
+                  isLast={index === flashSales.length - 1}
                   onClick={() =>
-                    router.push({ pathname: '/shop/voucher-coupon/program-voucher', query: item })
+                    router.push({ pathname: '/shop/flash-sale-natshop/program', query: item })
                   }
                 />
               );
@@ -172,14 +185,14 @@ const TableAllNatShop = () => {
           </>
         )}
       </Box>
-      {!isEmpty(vouchers) && !isLoading && (
+      {!isEmpty(flashSales) && !isLoading && (
         <Flex justifyContent="space-between" alignItems="center">
           <PaginationPanel
             pagesCount={pagesCount}
             currentPage={currentPage}
             isDisabled={isDisabled}
             onPageChange={(page) => {
-              setVouchers([]);
+              setFlashSales([]);
               setCurrentPage(page);
             }}
             pages={pages}
@@ -189,7 +202,7 @@ const TableAllNatShop = () => {
           <Text textStyle="h4-m">
             {t('results_page', {
               start: (currentPage - 1) * 50 + 1,
-              end: (currentPage - 1) * 50 + vouchers.length,
+              end: (currentPage - 1) * 50 + flashSales.length,
               total: totalRecords,
             })}
           </Text>
@@ -199,4 +212,4 @@ const TableAllNatShop = () => {
   );
 };
 
-export default TableAllNatShop;
+export default TableReviewingNatShop;

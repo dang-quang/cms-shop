@@ -1,17 +1,17 @@
 import React from 'react';
 import { Flex, Text, Image, Center, Box, Button } from '@chakra-ui/react';
-import { EVoucherRegisterStatus, EVoucherStatus, IProgramVoucher } from 'constants/types';
+import { EFlashSaleRegisterStatus, EFlashSaleStatus, IProgramFlashSale } from 'constants/types';
 import { useImageHandler, useRemainingRegistrationTime } from 'hooks';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 
-interface VoucherShopItemProps {
-  item: IProgramVoucher;
+interface FlashSaleProgramItemProps {
+  item: IProgramFlashSale;
   isLast?: boolean;
   onClick?(): void;
 }
 
-const VoucherNatShopItem: React.FC<VoucherShopItemProps> = ({ item, isLast, onClick }) => {
+const FlashSaleProgramItem: React.FC<FlashSaleProgramItemProps> = ({ item, isLast, onClick }) => {
   const formatDate = 'HH:MM DD-MM-YYYY';
   const {
     banner,
@@ -73,9 +73,9 @@ const VoucherNatShopItem: React.FC<VoucherShopItemProps> = ({ item, isLast, onCl
               py="1"
               px="2"
               bg={
-                status === EVoucherStatus.UPCOMING
+                status === EFlashSaleStatus.UPCOMING
                   ? 'red.700'
-                  : status === EVoucherStatus.HAPPENING
+                  : status === EFlashSaleStatus.HAPPENING
                   ? 'green.200'
                   : 'gray.2000'
               }
@@ -84,16 +84,16 @@ const VoucherNatShopItem: React.FC<VoucherShopItemProps> = ({ item, isLast, onCl
               <Text
                 textStyle="h2-m"
                 color={
-                  status === EVoucherStatus.UPCOMING
+                  status === EFlashSaleStatus.UPCOMING
                     ? 'red.600'
-                    : status === EVoucherStatus.HAPPENING
+                    : status === EFlashSaleStatus.HAPPENING
                     ? 'green.100'
                     : 'gray.100'
                 }
                 textTransform="capitalize">
-                {status === EVoucherStatus.UPCOMING
+                {status === EFlashSaleStatus.UPCOMING
                   ? 'Upcoming'
-                  : status === EVoucherStatus.HAPPENING
+                  : status === EFlashSaleStatus.HAPPENING
                   ? 'Happening'
                   : 'Finished'}
               </Text>
@@ -117,16 +117,17 @@ const VoucherNatShopItem: React.FC<VoucherShopItemProps> = ({ item, isLast, onCl
         <Button
           size="sm"
           w="150px"
-          variant={
-            statusRegisterName !== EVoucherRegisterStatus.UNREGISTERED
-              ? 'primary'
-              : 'outline-primary'
-          }
-          children={
-            statusRegisterName !== EVoucherRegisterStatus.UNREGISTERED
-              ? t('register')
-              : t('view_details')
-          }
+          //TODO cần BE trả thêm field statusRegisterName
+          //   variant={
+          //     statusRegisterName !== EFlashSaleRegisterStatus.UNREGISTERED
+          //       ? 'primary'
+          //       : 'outline-primary'
+          //   }
+          //   children={
+          //     statusRegisterName !== EFlashSaleRegisterStatus.UNREGISTERED
+          //       ? t('register')
+          //       : t('view_details')
+          //   }
           onClick={onClick}
         />
       </Center>
@@ -134,4 +135,4 @@ const VoucherNatShopItem: React.FC<VoucherShopItemProps> = ({ item, isLast, onCl
   );
 };
 
-export default VoucherNatShopItem;
+export default FlashSaleProgramItem;

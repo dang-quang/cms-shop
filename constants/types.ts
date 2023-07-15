@@ -103,6 +103,30 @@ export interface IProgramVoucher {
   typeLimit?: string;
 }
 
+export interface IProgramFlashSale {
+  id?: number;
+  name?: string;
+  banner?: string;
+  registerStart: number;
+  registerEnd: number;
+  programStart: number;
+  programEnd: number;
+  maxProductRegister?: number;
+  maxShopRegister?: number;
+  registerPrice: number;
+  shopRegister?: null;
+  typeDiscount: EDiscountType;
+  discountValue?: number;
+  minDiscount?: number;
+  maxDiscount?: number;
+  createAt?: number;
+  updateAt?: number;
+  description?: string;
+  status: EFlashSaleStatus;
+  statusRegister: number;
+  statusRegisterName: EFlashSaleRegisterStatus;
+}
+
 export interface IShopProduct {
   categoryId?: number;
   categoryName?: string;
@@ -197,6 +221,10 @@ export enum ActionTypes {
   SEARCH_PROGRAM_VOUCHER_NAME = 'SEARCH_PROGRAM_VOUCHER_NAME',
   SEARCH_PROGRAM_VOUCHER_DATE = 'SEARCH_PROGRAM_VOUCHER_DATE',
   DO_SEARCH_VOUCHER = 'DO_SEARCH_VOUCHER',
+  NAT_SHOP_FLASH_SALE_TAB_INDEX = 'NAT_SHOP_FLASH_SALE_TAB_INDEX',
+  SEARCH_PROGRAM_FLASH_SALE_NAME = 'SEARCH_PROGRAM_FLASH_SALE_NAME',
+  SEARCH_PROGRAM_FLASH_SALE_DATE = 'SEARCH_PROGRAM_FLASH_SALE_DATE',
+  DO_SEARCH_FLASH_SALE = 'DO_SEARCH_FLASH_SALE',
 }
 
 export enum EProductType {
@@ -225,6 +253,13 @@ export enum EVoucherType {
 }
 
 export enum EVoucherRegisterStatus {
+  APPROVED = 'APPROVED',
+  PENDING = 'PENDING',
+  UNREGISTERED = 'UNREGISTERED',
+  UNAPPROVED = 'UNAPPROVED',
+}
+
+export enum EFlashSaleRegisterStatus {
   APPROVED = 'APPROVED',
   PENDING = 'PENDING',
   UNREGISTERED = 'UNREGISTERED',

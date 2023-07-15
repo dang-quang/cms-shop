@@ -208,6 +208,9 @@
   "update_product_success": "Update Product Success",
   "update_product_failed": "Update Product Failed",
   "apply_to_all": "Apply To All",
+  "search_voucher_program_name": "Search voucher program name",
+  "search_flash_sale_program_name": "Search flash sale program name",
+  "registration_has_ended": "Registration: Registration has ended",
   "shop_product": {
     "product_images": "Product Images",
     "product_description": "Product Description",
@@ -243,6 +246,7 @@
   },
   "flash_sale_shop": {
     "shop_flash_sale": "Shop Flash Sale",
+    "nat_shop_flash_sale": "Natshop Flash Sale",
     "delete_shop_flash_sale": "Delete Shop Flash Sale",
     "delete_shop_flash_sale_description": "Are you sure to delete this Shop Flash Sale?",
     "title_disable_flash_sale": "Are you sure to disable this Flash Sale in your shop?",

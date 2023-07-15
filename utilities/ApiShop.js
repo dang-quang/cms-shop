@@ -56,7 +56,7 @@ export function requestDeleteVoucherShop(obj) {
   return postWithCheckingToken(`${BASE_API_URL}/voucher/delete`, {}, obj);
 }
 
-export function requestGetShopListProgram(obj) {
+export function requestGetShopListProgramVoucher(obj) {
   return postWithCheckingToken(`${BASE_API_URL}/voucher/shop-list-program`, {}, obj);
 }
 
@@ -66,4 +66,8 @@ export function requestRegisterShopProgramVoucher(obj) {
 
 export function requestGetFlashSaleDetailsShop(obj) {
   return postWithCheckingToken(`${BASE_API_URL}/flash-sale/shop-detail-flash-sale`, {}, obj);
+}
+
+export function requestGetShopListProgramFlashSale(obj) {
+  return postWithCheckingToken(`${BASE_API_URL}/flash-sale/shop-program`, {}, obj);
 }

@@ -5,15 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading, setShowLoader } from 'redux/actions/app';
 import { useRouter } from 'next/router';
-import {
-  EmptyListItem,
-  LoadingNatShopVoucherItem,
-  PaginationPanel,
-  VoucherNatShopItem,
-} from 'components';
+import { EmptyListItem, LoadingProgramItem, PaginationPanel, VoucherNatShopItem } from 'components';
 import { isEmpty } from 'lodash';
 import { EAppKey, EVoucherRegisterStatus } from 'constants/types';
-import { requestGetShopListProgram } from 'utilities/ApiShop';
+import { requestGetShopListProgramVoucher } from 'utilities/ApiShop';
 import { setDoSearchVoucher } from 'redux/actions/voucher';
 import dayjs from 'dayjs';
 import { IconNoData } from 'components/Icons/Icons';
@@ -62,7 +57,7 @@ const TableRegisteredNatShop = () => {
           type: EVoucherRegisterStatus.APPROVED,
         };
 
-        const res = await requestGetShopListProgram(params);
+        const res = await requestGetShopListProgramVoucher(params);
 
         if (res.code === EAppKey.MSG_SUCCESS) {
           if (res.data && res.data.results) {
@@ -110,7 +105,7 @@ const TableRegisteredNatShop = () => {
             params.toDate = dayjs(searchProgramVoucherDate[1]).format(formatDate);
           }
 
-          const res = await requestGetShopListProgram(params);
+          const res = await requestGetShopListProgramVoucher(params);
 
           if (res.code === EAppKey.MSG_SUCCESS) {
             if (res.data && res.data.results) {
@@ -144,7 +139,7 @@ const TableRegisteredNatShop = () => {
         }, 2000);
       }
     })();
-  }, [shopId, doSearchVoucher, currentPage, searchProgramVoucherName]);
+  }, [shopId, doSearchVoucher, currentPage, searchProgramVoucherName, searchProgramVoucherDate]);
 
   return (
     <Box>
@@ -154,7 +149,7 @@ const TableRegisteredNatShop = () => {
             {Array(4)
               .fill(4)
               .map((item, index) => {
-                return <LoadingNatShopVoucherItem key={index} />;
+                return <LoadingProgramItem key={index} />;
               })}
           </>
         ) : isEmpty(vouchers) ? (

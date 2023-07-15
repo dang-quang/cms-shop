@@ -64,6 +64,7 @@ import {
 } from 'utilities/ApiShop';
 import { setSelectedCategory } from 'redux/actions/product';
 import { BASE_API_URL } from 'utilities/const';
+import { loadImage } from 'utilities/loadImage';
 
 const initialValues = {
   id: '',
@@ -293,7 +294,9 @@ function CreateProduct() {
                 .string()
                 .trim()
                 .required((_, index) => {
-                  return index === 0 ? t('error_field_empty') : null;
+                  return index === 0 && this.options.context.isShow && value.length > 0
+                    ? t('error_field_empty')
+                    : null;
                 })
             )
             .min(1, t('error_field_empty'));
@@ -434,30 +437,37 @@ function CreateProduct() {
                 setFieldValue('variations', _variations);
 
                 if (!!list_variation && !isEmpty(list_variation)) {
-                  const list3 = _variations[0].options.map((parentVariation, index) => {
-                    const variations = list_variation
-                      .filter((product) => product.name.includes(parentVariation))
-                      .map((product) => {
-                        const childVariationIndex = _variations[1].options.indexOf(
-                          product.name.split(', ')[2]
-                        );
+                  const list3 = _variations[0].options.map(async (parentVariation, index) => {
+                    const variations = await Promise.all(
+                      list_variation
+                        .filter((product) => product.name.includes(parentVariation))
+                        .map(async (product) => {
+                          const childVariationIndex = _variations[1].options.indexOf(
+                            product.name.split(', ')[2]
+                          );
 
-                        return {
-                          id: product.id,
-                          parentVariationTitle: _variations[0].name,
-                          childVariationTitle: _variations[1].name,
-                          childVariationValue: _variations[1].options[childVariationIndex],
-                          parentVariationValue: parentVariation,
-                          image: product.image ?? '',
-                          price: product.price,
-                          stock: product.stock,
-                        };
-                      });
+                          const str = BASE_API_URL + '/assets/' + product.image;
+                          const _image = await loadImage(str);
+
+                          return {
+                            id: product.id,
+                            parentVariationTitle: _variations[0].name,
+                            childVariationTitle: _variations[1].name,
+                            childVariationValue: _variations[1].options[childVariationIndex],
+                            parentVariationValue: parentVariation,
+                            image: _image,
+                            price: product.price,
+                            stock: product.stock,
+                          };
+                        })
+                    );
 
                     return { variations };
                   });
 
-                  setFieldValue('list_variation', list3);
+                  Promise.all(list3).then((result) => {
+                    setFieldValue('list_variation', result);
+                  });
                 }
 
                 _variations = _variations.map((i) => {

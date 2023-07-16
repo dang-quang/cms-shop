@@ -584,7 +584,7 @@ const AddUpdateVoucherCoupon = () => {
                   </Box>
                 </Box>
               </FormGroup>
-              <FormGroup title={t('voucher.program_details')} mt="6">
+              <FormGroup title={t('program_details')} mt="6">
                 <Textarea
                   id="description"
                   name="description"

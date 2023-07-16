@@ -20,15 +20,15 @@ import {
 
 import dayjs from 'dayjs';
 
-function ProgramVoucherDetails() {
+function ProgramFlashSaleDetails() {
   const formatDate = 'YYYY/MM/DD HH:MM:ss';
   const router = useRouter();
   const { t } = useTranslation();
 
-  const voucher = !_.isEmpty(router.query) ? router.query : undefined;
-  const lineCount = voucher.description.split('\n').length;
+  const flashSale = !_.isEmpty(router.query) ? router.query : undefined;
+  const lineCount = flashSale.description.split('\n').length;
 
-  const banner = useImageHandler(voucher.banner);
+  const banner = useImageHandler(flashSale.banner);
   const [isExpanded, { toggle: toggleExpand }] = useBoolean(false);
 
   const tabs = [t('program_details')];
@@ -36,15 +36,15 @@ function ProgramVoucherDetails() {
   const data = [
     {
       title: t('register_time'),
-      time: `${dayjs(voucher.registerStart).format(formatDate)} - ${dayjs(
-        voucher.registerEnd
+      time: `${dayjs(flashSale.registerStart).format(formatDate)} - ${dayjs(
+        flashSale.registerEnd
       ).format(formatDate)}`,
     },
     {
       title: t('occurrence_time'),
-      time: `${dayjs(voucher.programStart).format(formatDate)} - ${dayjs(voucher.programEnd).format(
-        formatDate
-      )}`,
+      time: `${dayjs(flashSale.programStart).format(formatDate)} - ${dayjs(
+        flashSale.programEnd
+      ).format(formatDate)}`,
     },
   ];
 
@@ -52,7 +52,7 @@ function ProgramVoucherDetails() {
     <Box>
       <Box mt="6" bg="bg-1" borderRadius="4px" p="6">
         <Text textStyle="h6-sb" color="text-basic">
-          {voucher.name}
+          {flashSale.name}
         </Text>
         <Flex h="150px" borderWidth="1px" mt="4" borderColor="border-5">
           <Box flex="4">
@@ -115,7 +115,7 @@ function ProgramVoucherDetails() {
                 WebkitBoxOrient="vertical"
                 textStyle="h3"
                 color="text-note">
-                {voucher.description}
+                {flashSale.description}
               </Box>
               {lineCount > 5 && (
                 <Text
@@ -131,7 +131,7 @@ function ProgramVoucherDetails() {
           </TabPanels>
         </Tabs>
         <Text textStyle="h4" color="text-basic">
-          {t('voucher.register_voucher')}
+          {t('flash_sale_shop.register_flash_sale')}
         </Text>
         <Button
           size="sm"
@@ -139,13 +139,13 @@ function ProgramVoucherDetails() {
           variant="primary"
           children={t('create')}
           mt="4"
-          onClick={() => router.push({ pathname: '/shop/voucher-coupon/add', query: voucher })}
+          onClick={() => router.push({ pathname: '/shop/voucher-coupon/add', query: flashSale })}
         />
       </Box>
     </Box>
   );
 }
 
-ProgramVoucherDetails.layout = Admin;
+ProgramFlashSaleDetails.layout = Admin;
 
-export default WithAuthentication(ProgramVoucherDetails);
+export default WithAuthentication(ProgramFlashSaleDetails);

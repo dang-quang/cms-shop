@@ -211,6 +211,9 @@
   "search_voucher_program_name": "Search voucher program name",
   "search_flash_sale_program_name": "Search flash sale program name",
   "registration_has_ended": "Registration: Registration has ended",
+  "program_details": "Program details",
+  "register_time": "Register Time",
+  "occurrence_time": "Occurrence Time",
   "shop_product": {
     "product_images": "Product Images",
     "product_description": "Product Description",
@@ -264,7 +267,8 @@
     "original_price": "Original Price",
     "discounted_price": "Discounted Price",
     "campaign_stock": "Campaign Stock",
-    "description_delete_product": "Are you sure you want to delete this product?"
+    "description_delete_product": "Are you sure you want to delete this product?",
+    "register_flash_sale": "Register flash sale"
   },
   "sideBar": {
     "shop": "Shop",
@@ -412,7 +416,6 @@
     "usage_quantity": "Usage Quantity",
     "banner_voucher": "Banner voucher",
     "upload_an_image_of_banner_voucher": "Upload an image of banner voucher",
-    "program_details": "Program details",
     "discount_type_amount": "Discount Type | Amount",
     "maximum_discount_price": "Maximum Discount Price",
     "create_voucher_success": "Create Voucher Success",
@@ -431,8 +434,6 @@
     "register_end_time": "Registration: The closest registration deadline is in",
     "register_voucher_program": "Register Voucher Program",
     "description_register_voucher_program": "Complete Voucher Program Registration Now",
-    "register_time": "Register Time",
-    "occurrence_time": "Occurrence Time",
     "register_voucher": "Register voucher",
     "voucher_shop": "Voucher Shop",
     "voucher_product": "Voucher Product"

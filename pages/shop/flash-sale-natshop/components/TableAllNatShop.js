@@ -217,7 +217,10 @@ const TableAllNatShop = () => {
                   index={index}
                   isLast={index === flashSales.length - 1}
                   onClick={() =>
-                    router.push({ pathname: '/shop/flash-sale-natshop/program', query: item })
+                    router.push({
+                      pathname: '/shop/flash-sale-natshop/program-flash-sale',
+                      query: item,
+                    })
                   }
                 />
               );

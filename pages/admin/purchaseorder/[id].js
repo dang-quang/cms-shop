@@ -59,7 +59,6 @@ import Pagination from '@material-ui/lab/Pagination';
 import Check from '@material-ui/icons/Check';
 import DateFnsUtils from '@date-io/date-fns';
 import Poppers from '@material-ui/core/Popper';
-import SwipeableViews from 'react-swipeable-views';
 import WithAuthentication from 'components/WithAuthentication/WithAuthentication';
 import GridContainer from 'components/Grid/GridContainer.js';
 import TextField from '@material-ui/core/TextField';

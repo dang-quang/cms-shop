@@ -7,13 +7,6 @@ const dashboardRoutes = [
     parent: 'operation',
     permission: 'stocks',
     subMenu: [
-      // {
-      //   path: '/qrManagement',
-      //   name: 'qrManagement',
-      //   layout: '/admin',
-      //   parent: 'operation',
-      //   permission: 'shop_admin_qr',
-      // },
       {
         path: '/shop-management',
         name: 'shop_management',

@@ -117,17 +117,16 @@ const FlashSaleProgramItem: React.FC<FlashSaleProgramItemProps> = ({ item, isLas
         <Button
           size="sm"
           w="150px"
-          //TODO cần BE trả thêm field statusRegisterName
-          //   variant={
-          //     statusRegisterName !== EFlashSaleRegisterStatus.UNREGISTERED
-          //       ? 'primary'
-          //       : 'outline-primary'
-          //   }
-          //   children={
-          //     statusRegisterName !== EFlashSaleRegisterStatus.UNREGISTERED
-          //       ? t('register')
-          //       : t('view_details')
-          //   }
+          variant={
+            statusRegisterName !== EFlashSaleRegisterStatus.UNREGISTERED
+              ? 'primary'
+              : 'outline-primary'
+          }
+          children={
+            statusRegisterName !== EFlashSaleRegisterStatus.UNREGISTERED
+              ? t('register')
+              : t('view_details')
+          }
           onClick={onClick}
         />
       </Center>

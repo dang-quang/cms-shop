@@ -360,125 +360,144 @@ function CreateProduct() {
 
         React.useEffect(() => {
           (async () => {
-            if (product) {
-              const res = await requestGetProductInfo({ productId: parseFloat(product.id) });
+            try {
+              if (product) {
+                dispatch(setShowLoader(true));
+                const res = await requestGetProductInfo({ productId: parseFloat(product.id) });
 
-              if (res && res.code === EAppKey.MSG_SUCCESS) {
-                let _product = res.product;
-                let variations = res.variationInfo;
-                let list_variation = res.productDetailInfo;
+                if (res && res.code === EAppKey.MSG_SUCCESS) {
+                  let _product = res.product;
+                  let variations = res.variationInfo;
+                  let list_variation = res.productDetailInfo;
 
-                if (_product && !isEmpty(_product.listImage)) {
-                  let _images = [];
-                  let imagePromises = [];
+                  if (_product && !isEmpty(_product.listImage)) {
+                    const loadImages = async () => {
+                      const _images = [];
 
-                  for (let i = 0; i < _product.listImage.length; i++) {
-                    imagePromises.push(
-                      new Promise((resolve) => {
-                        const str = BASE_API_URL + '/assets/' + _product.listImage[i];
-                        const img = new Image();
-                        img.crossOrigin = 'anonymous';
-                        img.src = str;
-                        img.onload = async () => {
-                          const canvas = document.createElement('canvas');
-                          canvas.width = img.width;
-                          canvas.height = img.height;
-                          const ctx = canvas.getContext('2d');
-                          ctx.drawImage(img, 0, 0);
+                      await Promise.allSettled(
+                        _product.listImage.map(
+                          (image) =>
+                            new Promise((resolve) => {
+                              const str = BASE_API_URL + '/assets/' + image;
+                              const img = new Image();
 
-                          const dataURL = canvas.toDataURL('image/png');
-                          _images.push(dataURL);
-                          resolve();
-                        };
+                              img.crossOrigin = 'anonymous';
+                              img.src = str;
+
+                              img.onload = async () => {
+                                const canvas = document.createElement('canvas');
+                                canvas.width = img.width;
+                                canvas.height = img.height;
+
+                                const ctx = canvas.getContext('2d');
+                                ctx.drawImage(img, 0, 0);
+
+                                const dataURL = canvas.toDataURL('image/png');
+                                _images.push(dataURL);
+                                resolve();
+                              };
+
+                              img.onerror = () => {
+                                console.error('Failed to load image: ' + str);
+                                resolve(); // Resolve even if the image fails to load
+                              };
+                            })
+                        )
+                      );
+
+                      setFieldValue('images', _images);
+                    };
+
+                    loadImages();
+                  }
+
+                  setFieldValue('name', _product.name);
+                  setFieldValue('description', _product.description);
+                  setFieldValue('category_id', _product.categoryId);
+                  if (!_product.productDetail || isEmpty(_product.productDetail)) {
+                    setFieldValue('price', _product.price);
+                    setFieldValue('stock', _product.stock);
+                  }
+
+                  let _variations = [];
+
+                  if (isEmpty(variations) || isEmpty(list_variation)) {
+                    return;
+                  }
+
+                  for (const i in variations) {
+                    const _options = Array.from(variations[i].details, (details) => details.name);
+                    const newName = variations[i].name;
+
+                    const existingIndex = _variations.findIndex((item) => item.name === newName);
+
+                    if (existingIndex === -1) {
+                      _variations.push({
+                        name: newName,
+                        options: Array.from(new Set(_options)),
+                        isShow: true,
+                      });
+                    } else {
+                      const uniqueOptions = new Set([
+                        ..._variations[existingIndex].options,
+                        ..._options,
+                      ]);
+                      _variations[existingIndex].options = Array.from(uniqueOptions);
+                    }
+                  }
+
+                  setFieldValue('variations', _variations);
+
+                  if (!!list_variation && !isEmpty(list_variation)) {
+                    const list3 = await Promise.all(
+                      _variations[0].options.map(async (parentVariation, index) => {
+                        const variations = await Promise.all(
+                          list_variation
+                            .filter((product) => product.name.includes(parentVariation))
+                            .map(async (product) => {
+                              const childVariationIndex = _variations[1].options.indexOf(
+                                product.name.split(', ')[2]
+                              );
+
+                              const str = BASE_API_URL + '/assets/' + product.image;
+                              const _image = await loadImage(str);
+
+                              return {
+                                id: product.id,
+                                parentVariationTitle: _variations[0].name,
+                                childVariationTitle: _variations[1].name,
+                                childVariationValue: _variations[1].options[childVariationIndex],
+                                parentVariationValue: parentVariation,
+                                image: _image,
+                                price: product.price,
+                                stock: product.stock,
+                              };
+                            })
+                        );
+
+                        return { variations };
                       })
                     );
+
+                    setFieldValue('list_variation', list3);
                   }
 
-                  Promise.all(imagePromises).then(() => {
-                    setFieldValue('images', _images);
-                  });
-                }
-
-                setFieldValue('name', _product.name);
-                setFieldValue('description', _product.description);
-                setFieldValue('category_id', _product.categoryId);
-                if (!_product.productDetail || isEmpty(_product.productDetail)) {
-                  setFieldValue('price', _product.price);
-                  setFieldValue('stock', _product.stock);
-                }
-
-                let _variations = [];
-
-                if (isEmpty(variations) || isEmpty(list_variation)) {
-                  return;
-                }
-
-                for (const i in variations) {
-                  const _options = Array.from(variations[i].details, (details) => details.name);
-                  const newName = variations[i].name;
-
-                  const existingIndex = _variations.findIndex((item) => item.name === newName);
-
-                  if (existingIndex === -1) {
-                    _variations.push({
-                      name: newName,
-                      options: Array.from(new Set(_options)),
-                      isShow: true,
-                    });
-                  } else {
-                    const uniqueOptions = new Set([
-                      ..._variations[existingIndex].options,
-                      ..._options,
-                    ]);
-                    _variations[existingIndex].options = Array.from(uniqueOptions);
-                  }
-                }
-
-                setFieldValue('variations', _variations);
-
-                if (!!list_variation && !isEmpty(list_variation)) {
-                  const list3 = _variations[0].options.map(async (parentVariation, index) => {
-                    const variations = await Promise.all(
-                      list_variation
-                        .filter((product) => product.name.includes(parentVariation))
-                        .map(async (product) => {
-                          const childVariationIndex = _variations[1].options.indexOf(
-                            product.name.split(', ')[2]
-                          );
-
-                          const str = BASE_API_URL + '/assets/' + product.image;
-                          const _image = await loadImage(str);
-
-                          return {
-                            id: product.id,
-                            parentVariationTitle: _variations[0].name,
-                            childVariationTitle: _variations[1].name,
-                            childVariationValue: _variations[1].options[childVariationIndex],
-                            parentVariationValue: parentVariation,
-                            image: _image,
-                            price: product.price,
-                            stock: product.stock,
-                          };
-                        })
-                    );
-
-                    return { variations };
+                  _variations = _variations.map((i) => {
+                    return {
+                      ...i,
+                      options: [...i.options, ''],
+                    };
                   });
 
-                  Promise.all(list3).then((result) => {
-                    setFieldValue('list_variation', result);
-                  });
+                  setFieldValue('variations', _variations);
                 }
-
-                _variations = _variations.map((i) => {
-                  return {
-                    ...i,
-                    options: [...i.options, ''],
-                  };
-                });
-
-                setFieldValue('variations', _variations);
               }
+            } catch (e) {
+              console.log('error get product by id', e);
+            } finally {
+              setTimeout(() => {
+                dispatch(setShowLoader(false));
+              }, 1000);
             }
           })();
         }, [product, values.categories]);

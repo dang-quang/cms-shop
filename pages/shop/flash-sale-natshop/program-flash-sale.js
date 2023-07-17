@@ -139,7 +139,7 @@ function ProgramFlashSaleDetails() {
           variant="primary"
           children={t('create')}
           mt="4"
-          onClick={() => router.push({ pathname: '/shop/voucher-coupon/add', query: flashSale })}
+          onClick={() => router.push({ pathname: '/shop/flash-sale-shop/add', query: flashSale })}
         />
       </Box>
     </Box>

@@ -40,6 +40,8 @@ import { EAppKey, EMode } from 'constants/types';
 const formatDate = 'YYYY-MM-DDTHH:mm';
 
 const initialValues = {
+  id: null,
+  programId: null,
   name: '',
   startAt: dayjs().add(10, 'minutes').format(formatDate),
   endAt: dayjs().add(1, 'hours').add(10, 'minutes').format(formatDate),
@@ -56,8 +58,8 @@ const CreateShopFlashSale = () => {
   const selectedProducts = useSelector((state) => state.product.selectedProducts);
   const { loading } = useSelector((state) => state.app);
 
-  const flashSale =
-    !_.isEmpty(router.query) && router.query.mode === EMode.UPDATE ? router.query : undefined;
+  const mode = router.query.mode;
+  const flashSale = router.query ? router.query : undefined;
 
   const headers = [
     '',
@@ -79,12 +81,10 @@ const CreateShopFlashSale = () => {
   const { isOpen: isOpenNotice, onOpen: onOpenNotice, onClose: onCloseNotice } = useDisclosure();
 
   const handleSubmitVoucher = React.useCallback(
-    async ({ name, startAt, endAt, products }, { setFieldValue }) => {
+    async ({ id, programId, name, startAt, endAt, products }, { setFieldValue }) => {
       try {
         dispatch(setShowLoader(true));
         dispatch(setLoading(true));
-        //TODO If you add flash sale in the program, then transmit the programId
-        //programId
         let _details = [];
         let params = {
           name: name,
@@ -92,6 +92,9 @@ const CreateShopFlashSale = () => {
           endAt: dayjs(endAt).unix(),
           shopId: shopId,
         };
+        if (!!programId) {
+          params.programId = programId;
+        }
         for (let i = 0; i < products.length; i++) {
           const product = products[i];
           _details.push({
@@ -101,8 +104,8 @@ const CreateShopFlashSale = () => {
           });
         }
         params.details = _details;
-        if (flashSale) {
-          params.id = parseFloat(flashSale.id);
+        if (mode === EMode.UPDATE) {
+          params.id = id;
           const res = await requestCreateShopFlashSale(params);
           if (res && res.code === EAppKey.MSG_SUCCESS) {
             dispatch(setSelectedProducts([]));
@@ -167,7 +170,7 @@ const CreateShopFlashSale = () => {
         dispatch(setShowLoader(false));
       }
     },
-    []
+    [flashSale, mode, shopId]
   );
 
   const validationSchema = yup.object().shape({
@@ -238,18 +241,19 @@ const CreateShopFlashSale = () => {
 
         React.useEffect(() => {
           (async () => {
-            if (flashSale) {
+            if (mode === EMode.UPDATE) {
               const res = await requestGetFlashSaleDetailsShop({ id: parseFloat(flashSale.id) });
 
               if (res && res.code === EAppKey.MSG_SUCCESS) {
                 let list = [];
-                let x = [];
                 const productsFlashSale = res.data.results;
-                const { name, startAt, endAt } = res.flashSale;
+                const { name, startAt, endAt, productId } = res.flashSale;
 
                 let _startAt = new Date(startAt * 1000).toISOString();
                 let _endAt = new Date(endAt * 1000).toISOString();
 
+                setFieldValue('id', parseFloat(flashSale.id));
+                setFieldValue('programId', productId);
                 setFieldValue('name', name);
                 setFieldValue('startAt', dayjs(_startAt).format(formatDate));
                 setFieldValue('endAt', dayjs(_endAt).format(formatDate));
@@ -274,9 +278,12 @@ const CreateShopFlashSale = () => {
                 setFieldValue('products', list);
                 dispatch(setSelectedProducts(list));
               }
+            } else {
+              if (!!flashSale && !!flashSale.id)
+                setFieldValue('programId', parseFloat(flashSale.id));
             }
           })();
-        }, [flashSale]);
+        }, [flashSale, mode]);
 
         React.useEffect(() => {
           if (isEmpty(selectedProducts)) {

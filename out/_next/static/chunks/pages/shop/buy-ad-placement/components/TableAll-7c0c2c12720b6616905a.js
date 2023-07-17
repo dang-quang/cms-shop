@@ -1,0 +1,1 @@
+_N_E=(window.webpackJsonp_N_E=window.webpackJsonp_N_E||[]).push([[110],{W0pB:function(n,_,o){(window.__NEXT_P=window.__NEXT_P||[]).push(["/shop/buy-ad-placement/components/TableAll",function(){return o("8Y5j")}])}},[["W0pB",0,1,9,13,16,18,19,21,20,17,22,2,3,4,5,6,7,10,8,12,11,14,15,23,33]]]);

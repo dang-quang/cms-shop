@@ -23,7 +23,9 @@ const FlashSaleShopItem: React.FC<FlashSaleShopItemProps> = ({
 }) => {
   const formatTime = 'HH:MM DD-MM-YYYY';
   const { t } = useTranslation();
-  const { endAt, name, startAt, status, isShow } = item;
+  const { endAt, name, startAt, statusName, isShow } = item;
+
+  console.log('quang debug item', item);
 
   const borderColor = isLast ? 'transparent' : 'border-5';
 
@@ -61,9 +63,9 @@ const FlashSaleShopItem: React.FC<FlashSaleShopItemProps> = ({
           px="2"
           w="fit-content"
           bg={
-            status === EFlashSaleStatus.UPCOMING
+            statusName === EFlashSaleStatus.UPCOMING
               ? 'red.700'
-              : status === EFlashSaleStatus.HAPPENING
+              : statusName === EFlashSaleStatus.HAPPENING
               ? 'green.200'
               : 'gray.2000'
           }
@@ -72,16 +74,16 @@ const FlashSaleShopItem: React.FC<FlashSaleShopItemProps> = ({
           <Text
             textStyle="h2-m"
             color={
-              status === EFlashSaleStatus.UPCOMING
+              statusName === EFlashSaleStatus.UPCOMING
                 ? 'red.600'
-                : status === EFlashSaleStatus.HAPPENING
+                : statusName === EFlashSaleStatus.HAPPENING
                 ? 'green.100'
                 : 'gray.100'
             }
             textTransform="capitalize">
-            {status === EFlashSaleStatus.UPCOMING
+            {statusName === EFlashSaleStatus.UPCOMING
               ? t('upcoming')
-              : status === EFlashSaleStatus.HAPPENING
+              : statusName === EFlashSaleStatus.HAPPENING
               ? t('happening')
               : t('expired')}
           </Text>
@@ -89,7 +91,7 @@ const FlashSaleShopItem: React.FC<FlashSaleShopItemProps> = ({
       </Td>
       <Td borderColor={borderColor}>
         <Switch
-          disabled={status === EFlashSaleStatus.FINISHED}
+          disabled={statusName === EFlashSaleStatus.FINISHED}
           isChecked={isShow === EShowFlashSaleType.TURN_ON}
           onChange={onChange}
           name="promotion"
@@ -97,7 +99,7 @@ const FlashSaleShopItem: React.FC<FlashSaleShopItemProps> = ({
         />
       </Td>
       <Td isNumeric borderColor={borderColor}>
-        {status !== EFlashSaleStatus.FINISHED && (
+        {statusName !== EFlashSaleStatus.FINISHED && (
           <Flex justifyContent="flex-end">
             <HStack>
               <Center boxSize="40px" cursor="pointer" onClick={onUpdate}>

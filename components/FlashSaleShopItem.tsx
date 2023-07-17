@@ -25,8 +25,6 @@ const FlashSaleShopItem: React.FC<FlashSaleShopItemProps> = ({
   const { t } = useTranslation();
   const { endAt, name, startAt, statusName, isShow } = item;
 
-  console.log('quang debug item', item);
-
   const borderColor = isLast ? 'transparent' : 'border-5';
 
   let _startAt;

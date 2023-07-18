@@ -50,6 +50,16 @@ export const textStyles = {
       lineHeight: '100%',
       fontWeight: '400',
     },
+    'h4-sb': {
+      fontSize: '16px',
+      lineHeight: '100%',
+      fontWeight: '600',
+    },
+    'h4-b': {
+      fontSize: '16px',
+      lineHeight: '100%',
+      fontWeight: 'bold',
+    },
     h5: {
       fontSize: '18px',
       lineHeight: '21px',

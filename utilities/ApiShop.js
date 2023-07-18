@@ -11,6 +11,7 @@ export function requestCreateUpdateProduct(payload) {
 }
 
 export function requestGetListShopProduct(obj) {
+  console.log('get list shop product params ========>', obj);
   return postWithCheckingToken(`${BASE_API_URL}/shop/list-product`, {}, obj);
 }
 

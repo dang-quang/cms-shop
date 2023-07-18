@@ -25,6 +25,7 @@ import {
   Thead,
   Tr,
   useBoolean,
+  useToast,
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
@@ -34,15 +35,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setModalSelectProducts, setSelectedProducts } from 'redux/actions/product';
 import { setShowLoader } from 'redux/actions/app';
 import { EAppKey, EProductType } from 'constants/types';
-import { NotificationManager } from 'react-light-notifications';
-import { requestGetListCategoryShop, requestGetListShopProduct } from 'utilities/ApiShop';
 import EmptyListItem from './EmptyListItem';
 import { usePagination } from '@ajna/pagination';
 import { PaginationPanel } from 'components';
+import { RiArrowRightSLine } from 'react-icons/ri';
+
+import { requestGetListCategoryShop, requestGetListShopProduct } from 'utilities/ApiShop';
 
 const ModalSelectProducts = () => {
   const shopId = 143;
   const pageSize = 10;
+  const toast = useToast();
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const refInput = React.useRef(null);
@@ -80,7 +83,7 @@ const ModalSelectProducts = () => {
       const res = await requestGetListCategoryShop({ id: shopId, type: EProductType.STOCK });
 
       if (res && res.code === EAppKey.MSG_SUCCESS) {
-        setCategories(res.categoryList);
+        setCategories([{ list: res.categoryList }]);
       }
     })();
   }, []);
@@ -99,9 +102,12 @@ const ModalSelectProducts = () => {
           setProducts(res.dataProduct);
           setTotalRecords(res.totalProduct);
         } else {
-          NotificationManager.error({
-            title: t('error'),
-            message: t('no_data_exists'),
+          toast({
+            position: 'top',
+            title: t('no_data_exists'),
+            status: 'error',
+            duration: 2000,
+            isClosable: true,
           });
         }
       } catch (e) {
@@ -115,12 +121,16 @@ const ModalSelectProducts = () => {
   React.useEffect(() => {
     (async () => {
       try {
-        let params = { id: shopId, page: currentPage, type: EProductType.STOCK, pagesize: 20 };
+        let params = { id: shopId, page: currentPage, type: EProductType.STOCK };
 
         if (doSearch) {
           dispatch(setShowLoader(true));
           if (refInput.current.value) {
             params.keyWord = refInput.current.value;
+          }
+
+          if (category) {
+            params.categoryId = category.id;
           }
 
           const res = await requestGetListShopProduct(params);
@@ -130,9 +140,13 @@ const ModalSelectProducts = () => {
             setTotalRecords(res.totalProduct);
           } else {
             setProducts([]);
-            NotificationManager.error({
+            toast({
+              position: 'top',
               title: t('no_results_found'),
-              message: t('no_results_found_for_your_search'),
+              description: t('no_results_found_for_your_search'),
+              status: 'error',
+              duration: 2000,
+              isClosable: true,
             });
           }
         }
@@ -141,7 +155,7 @@ const ModalSelectProducts = () => {
         dispatch(setShowLoader(false));
       }
     })();
-  }, [doSearch, currentPage]);
+  }, [doSearch, currentPage, category, refInput.current]);
 
   React.useEffect(() => {
     if (!isEmpty(selectedProducts) && isOpen) {
@@ -238,7 +252,7 @@ const ModalSelectProducts = () => {
               <Text textStyle="h3" color="text-basic">
                 {t('category.category')}
               </Text>
-              <Menu onClose={offFocus}>
+              <Menu isOpen={focus} onClose={offFocus}>
                 <MenuButton
                   bg="bg-1"
                   w="200px"
@@ -259,13 +273,79 @@ const ModalSelectProducts = () => {
                     />
                   </Flex>
                 </MenuButton>
-                <MenuList>
+                <MenuList
+                  display="flex"
+                  flexDirection="row"
+                  bg="transparent"
+                  py="0"
+                  p="0"
+                  shadow="none"
+                  boxShadow="none"
+                  border="none">
                   {categories &&
                     categories.map((item, index) => {
+                      const { list } = item;
                       return (
-                        <MenuItem key={index} minH="48px" onClick={() => setCategory(item)}>
-                          <span>{item.name}</span>
-                        </MenuItem>
+                        <MenuList key={index} borderRadius="0px" shadow="none" boxShadow="none">
+                          {list &&
+                            list.length > 0 &&
+                            list.map((i, idx) => {
+                              return (
+                                <MenuItem
+                                  item={i}
+                                  key={idx}
+                                  minH="32px"
+                                  onMouseEnter={() => {
+                                    let updatedCategories = [...categories];
+
+                                    // Remove additional levels
+                                    updatedCategories = updatedCategories.slice(0, index + 1);
+
+                                    if (!isEmpty(i.listChild)) {
+                                      // Add the selected category to the next level
+                                      updatedCategories.push({ list: i.listChild });
+                                    }
+
+                                    // Update the selected category at the current level
+                                    updatedCategories[index].selectedCategory = i;
+
+                                    setCategories(updatedCategories);
+                                  }}
+                                  onClick={() => {
+                                    if (!isEmpty(i.listChild)) {
+                                      onFocus();
+                                    } else {
+                                      setCategory(i);
+                                      offFocus();
+                                    }
+                                  }}>
+                                  <Flex
+                                    h="32px"
+                                    justifyContent="space-between"
+                                    alignItems="center"
+                                    flex="1">
+                                    <Text
+                                      textStyle={item.selectedCategory === i ? 'h3-b' : 'h3'}
+                                      color={
+                                        item.selectedCategory === i ? 'text-primary' : 'basic'
+                                      }>
+                                      {i.name}
+                                    </Text>
+                                    {!isEmpty(i.listChild) && (
+                                      <Icon
+                                        as={RiArrowRightSLine}
+                                        w="16px"
+                                        h="16px"
+                                        color={
+                                          item.selectedCategory === i ? 'text-primary' : 'text-body'
+                                        }
+                                      />
+                                    )}
+                                  </Flex>
+                                </MenuItem>
+                              );
+                            })}
+                        </MenuList>
                       );
                     })}
                 </MenuList>
@@ -292,6 +372,7 @@ const ModalSelectProducts = () => {
               variant="outline-control"
               children={t('reset')}
               onClick={() => {
+                setCategory(null);
                 refInput.current.value = '';
                 onSearch();
               }}

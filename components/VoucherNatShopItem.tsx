@@ -29,7 +29,6 @@ const VoucherNatShopItem: React.FC<VoucherShopItemProps> = ({ item, isLast, onCl
   const _image = useImageHandler(banner);
 
   const { days, hours, minutes, seconds } = useRemainingRegistrationTime({
-    registerStart: registerStart,
     registerEnd: registerEnd,
   });
 
@@ -118,12 +117,12 @@ const VoucherNatShopItem: React.FC<VoucherShopItemProps> = ({ item, isLast, onCl
           size="sm"
           w="150px"
           variant={
-            statusRegisterName !== EVoucherRegisterStatus.UNREGISTERED
+            statusRegisterName === EVoucherRegisterStatus.UNREGISTERED
               ? 'primary'
               : 'outline-primary'
           }
           children={
-            statusRegisterName !== EVoucherRegisterStatus.UNREGISTERED
+            statusRegisterName === EVoucherRegisterStatus.UNREGISTERED
               ? t('register')
               : t('view_details')
           }

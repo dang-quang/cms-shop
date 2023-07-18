@@ -19,6 +19,7 @@ import {
 } from '@chakra-ui/react';
 
 import dayjs from 'dayjs';
+import { requestGetShopListProgramVoucher } from 'utilities/ApiShop';
 
 function ProgramVoucherDetails() {
   const formatDate = 'YYYY/MM/DD HH:MM:ss';
@@ -27,6 +28,17 @@ function ProgramVoucherDetails() {
 
   const voucher = !_.isEmpty(router.query) ? router.query : undefined;
   const lineCount = voucher.description.split('\n').length;
+
+  React.useEffect(() => {
+    (async () => {
+      //TODO get program voucher details
+      const res = await requestGetShopListProgramVoucher({
+        shopId: 143,
+        id: parseFloat(voucher.id),
+        page: 1,
+      });
+    })();
+  }, [voucher]);
 
   const banner = useImageHandler(voucher.banner);
   const [isExpanded, { toggle: toggleExpand }] = useBoolean(false);

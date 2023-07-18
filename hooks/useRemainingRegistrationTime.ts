@@ -1,7 +1,7 @@
+import dayjs from 'dayjs';
 import React from 'react';
 
 interface RemainingRegistrationTimeProps {
-  registerStart: number;
   registerEnd: number;
 }
 
@@ -19,15 +19,13 @@ const initValue: IRemainingTime = {
   seconds: 0,
 };
 
-const useRemainingRegistrationTime = ({
-  registerStart,
-  registerEnd,
-}: RemainingRegistrationTimeProps) => {
+const useRemainingRegistrationTime = ({ registerEnd }: RemainingRegistrationTimeProps) => {
   const [remainingTime, setRemainingTime] = React.useState<IRemainingTime | null>(initValue);
 
   React.useEffect(() => {
     const calculateRemainingTime = () => {
-      const timeDifference = registerEnd - registerStart;
+      const currentTime = new Date().getTime();
+      const timeDifference = registerEnd - currentTime;
 
       if (timeDifference > 0) {
         const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24)) || 0;
@@ -48,5 +46,4 @@ const useRemainingRegistrationTime = ({
 
   return remainingTime;
 };
-
 export default useRemainingRegistrationTime;

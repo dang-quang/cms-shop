@@ -29,7 +29,6 @@ const FlashSaleProgramItem: React.FC<FlashSaleProgramItemProps> = ({ item, isLas
   const _image = useImageHandler(banner);
 
   const { days, hours, minutes, seconds } = useRemainingRegistrationTime({
-    registerStart: registerStart,
     registerEnd: registerEnd,
   });
 

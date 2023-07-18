@@ -526,7 +526,7 @@ const AddUpdateVoucherCoupon = () => {
                   <FormErrorMessage>{errors.quantityVoucher}</FormErrorMessage>
                 </FormControl>
               </FormGroup>
-              <FormGroup title={t('voucher.banner_voucher')} mt="6">
+              {/* <FormGroup title={t('voucher.banner_voucher')} mt="6">
                 <Box maxW={{ base: 'unset', '2xl': '60%' }}>
                   <Box
                     zIndex={1}
@@ -583,8 +583,8 @@ const AddUpdateVoucherCoupon = () => {
                     />
                   </Box>
                 </Box>
-              </FormGroup>
-              <FormGroup title={t('program_details')} mt="6">
+              </FormGroup> */}
+              {/* <FormGroup title={t('program_details')} mt="6">
                 <Textarea
                   id="description"
                   name="description"
@@ -594,7 +594,7 @@ const AddUpdateVoucherCoupon = () => {
                   value={values.description}
                   onChange={handleChange('description')}
                 />
-              </FormGroup>
+              </FormGroup> */}
               <HStack justifyContent="flex-end" gap="6" mt="6">
                 <Button variant="control" onClick={() => router.back()} w="150px">
                   {t('cancel')}

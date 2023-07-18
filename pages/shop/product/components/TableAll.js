@@ -293,6 +293,7 @@ const TableAll = () => {
   const handlePublishProducts = React.useCallback(async () => {
     try {
       onClosePublish();
+      onClosePublishAll();
       dispatch(setShowLoader(true));
 
       let list = _.filter(selectedProducts, { isShow: EShowProductType.DELISTED });

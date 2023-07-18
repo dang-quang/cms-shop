@@ -1,1 +1,0 @@
-_N_E=(window.webpackJsonp_N_E=window.webpackJsonp_N_E||[]).push([[108],{LeEh:function(n,o,_){(window.__NEXT_P=window.__NEXT_P||[]).push(["/shop/buy-ad-placement/components/QRShop",function(){return _("XsL4")}])}},[["LeEh",0,1,9,13,16,18,19,21,20,17,22,2,3,4,6,5,7,8,10,12,11,14,15,23,33]]]);

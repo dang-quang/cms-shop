@@ -630,17 +630,6 @@ export function removeMemberSubTask(id, member_id) {
   );
 }
 
-// export function getFirstToken() {
-//   return postWithTimeout(
-//     `${BASE_API_URL}/tools/enc-first-token`,
-//     {},
-//     {
-//       deviceId: localStorage.getItem("DEVICEID"),
-//       buildKey: buildKey,
-//     }
-//   );
-// }
-
 export function initData() {
   return postWithTimeout(
     `${BASE_API_URL}/init-data`,
@@ -658,28 +647,6 @@ export function initData() {
     }
   );
 }
-
-// export function getEncToken() {
-//   return postWithTimeout(
-//     `${BASE_API_URL}/tools/enc-access-token`,
-//     {},
-//     {
-//       deviceId: localStorage.getItem("DEVICEID"),
-//       buildKey: buildKey,
-//       rsaPublicKey: localStorage.getItem("RSAPUBLIC"),
-//     }
-//   );
-// }
-// export function generateSignature(phoneNumber, password) {
-//   return postWithTimeout(
-//     `${BASE_API_URL}/tools/generate-signature`,
-//     {},
-//     {
-//       signatureKey: localStorage.getItem("RSASIGNATURE"),
-//       signatureData: `${phoneNumber}${password}`,
-//     }
-//   );
-// }
 
 export function userLoginNew(email, password) {
   return postWithTimeout(
@@ -715,31 +682,6 @@ export function userLoginOtp(signature, transId, otp) {
     }
   );
 }
-// export function decryptToken() {
-//   return postWithTimeout(
-//     `${BASE_API_URL}/tools/decrypt`,
-//     {},
-//     {
-//       deviceId: localStorage.getItem("DEVICEID"),
-//       buildKey: buildKey,
-//       cryptData: localStorage.getItem("ACCESSSTOKEN"),
-//       rsaPrivateKey: localStorage.getItem("RSAPRIVATE"),
-//     }
-//   );
-// }
-// export function encryptToken(cryptDataDecrypt) {
-//   return postWithTimeout(
-//     `${BASE_API_URL}/tools/encrypt`,
-//     {},
-//     {
-//       deviceId: localStorage.getItem("DEVICEID"),
-//       buildKey: buildKey,
-//       cryptData: cryptDataDecrypt,
-//       rsaPublicKey: localStorage.getItem("RSAPUBLIC"),
-//       rsaPrivateKey: localStorage.getItem("RSAPRIVATE"),
-//     }
-//   );
-// }
 
 export function getListShopQr(keyWord, fromDate, toDate, status) {
   return postWithCheckingToken(

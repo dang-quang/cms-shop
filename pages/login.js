@@ -15,12 +15,13 @@ import backgroundImage from 'assets/img/login-background-min.png';
 import { NotificationManager } from 'react-light-notifications';
 import PageLoader from 'components/PageLoader/PageLoader.js';
 import { useTranslation } from 'react-i18next';
-import { Input } from '@chakra-ui/react';
+import { Box, Flex, Image, Input, SimpleGrid, Text } from '@chakra-ui/react';
 import { setShowLoader } from 'redux/actions/app';
-import { buildKey } from 'utilities/const';
+import { BUILD_KEY } from 'utilities/const';
 import { encryptSha256, encryptString } from 'utilities/utils';
 import { initData } from 'utilities/ApiManage';
 import { userLogin } from 'redux/actions/user';
+import Images from 'assets';
 
 function login(props) {
   const useStyles = makeStyles(styles);
@@ -39,7 +40,7 @@ function login(props) {
       });
     }
 
-    const initToken = await encryptString(`${localStorage.getItem('DEVICEID')}##${buildKey}`);
+    const initToken = await encryptString(`${localStorage.getItem('DEVICEID')}##${BUILD_KEY}`);
     localStorage.setItem('INITTOKEN', initToken);
 
     dispatch(setShowLoader(true));
@@ -61,7 +62,7 @@ function login(props) {
     }
 
     const encAccessToken = await encryptString(
-      `${localStorage.getItem('DEVICEID')}##${buildKey}`,
+      `${localStorage.getItem('DEVICEID')}##${BUILD_KEY}`,
       localStorage.getItem('RSAPUBLIC')
     );
     localStorage.setItem('ENCACCESSTOKEN', encAccessToken);
@@ -88,66 +89,51 @@ function login(props) {
   };
 
   return (
-    <div
-      className={classes.container}
-      style={{
-        backgroundImage: `url(${backgroundImage})`,
-      }}>
+    <Box minH="100vh">
+      <Flex
+        alignItems="center"
+        justifyContent="space-between"
+        px="32"
+        shadow="0px 4px 4px 3px rgba(0, 0, 0, 0.10)">
+        <Flex alignItems="center">
+          <Image boxSize="80px" objectFit="contain" src={Images.shopping_bag} />
+          <Image w="260px" h="70px" objectFit="contain" src={Images.logo} />
+        </Flex>
+        <Text cursor="pointer" textStyle="h3" color="red">
+          You need help?
+        </Text>
+      </Flex>
       {showLoader && <PageLoader />}
-      <Form className={classes.loginContainer}>
-        <FormHeader title={t('login.login')} />
-        <FormBody>
-          <GridContainer style={{ padding: '0 30px' }}>
-            <GridItem xs={12} sm={12} md={12}>
-              <Input
-                id="username"
-                variant="login"
-                placeholder={t('login.userName')}
-                value={username}
-                onChange={onChangeUsername}
-              />
-              <Input
-                mt="6"
-                id="password"
-                variant="login"
-                type="password"
-                placeholder={t('login.pass')}
-                value={password}
-                onChange={onChangePassword}
-              />
-              {/* <CustomInput
-                labelText={t('login.userName')}
-                id="username"
-                formControlProps={{
-                  fullWidth: true,
-                }}
-                inputProps={{
-                  className: classes.txtInput,
-                  value: username,
-                  onChange: onChangeUsername,
-                }}
-              /> */}
-              {/* <CustomInput
-                labelText={t('login.pass')}
-                id="password"
-                formControlProps={{
-                  fullWidth: true,
-                }}
-                inputProps={{
-                  className: classes.txtInput,
-                  type: 'password',
-                  value: password,
-                  onChange: onChangePassword,
-                }}
-              /> */}
-              <Button className={classes.btnLogin} onClick={() => handleLogin()} color="primary">
-                {t('login.login')}
-              </Button>
-            </GridItem>
-          </GridContainer>
-        </FormBody>
-      </Form>
-    </div>
+      <SimpleGrid columns={2}>
+        <Box>
+          <Text color >Natshop profesional management</Text>
+          <Text>Help admin and shop-user manage your channel more effectively.</Text>
+          <Image />
+        </Box>
+        <Box>
+          <Text>Welcome to atshop Management</Text>
+          <Input
+            id="username"
+            variant="login"
+            placeholder={t('login.userName')}
+            value={username}
+            onChange={onChangeUsername}
+          />
+          <Input
+            mt="6"
+            id="password"
+            variant="login"
+            type="password"
+            placeholder={t('login.pass')}
+            value={password}
+            onChange={onChangePassword}
+          />
+          <Button className={classes.btnLogin} onClick={() => handleLogin()} color="primary">
+            {t('login.login')}
+          </Button>
+        </Box>
+      </SimpleGrid>
+    </Box>
   );
 }
 

@@ -11,6 +11,8 @@ const Images = {
   qc_banner: require('./img/img_qcBanner.png'),
   voucher_cash,
   voucher_percent,
+  shopping_bag: require('./img/image_shopping_bag.png'),
+  logo: require('./img/image_logo.png'),
 };
 
 export default Images;

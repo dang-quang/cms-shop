@@ -1,4 +1,2 @@
-// export const BASE_API_URL = "https://rest.tigerate.com";
-export const BASE_API_URL = 'https://testeuapi.natcom.com.ht';
-export const buildKey = 'ht.com.natcash.eu';
-// export const buildKey = "vn.supper.app.apigw";
+export const BASE_API_URL = process.env.BASE_API_URL;
+export const BUILD_KEY = process.env.BUILD_KEY;

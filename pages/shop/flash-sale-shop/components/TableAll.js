@@ -25,7 +25,7 @@ import {
 } from 'utilities/ApiShop';
 
 export const TableAll = () => {
-  //TODO add shop Id - need update authentication flow
+  //TODO: add shop Id - need update authentication flow
   const shopId = 143;
   const pageSize = 50;
   const formatDate = 'YYYY-MM-DD';

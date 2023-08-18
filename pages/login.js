@@ -105,11 +105,15 @@ function login(props) {
       </Flex>
       {showLoader && <PageLoader />}
       <SimpleGrid columns={2}>
-        <Box>
-          <Text color >Natshop profesional management</Text>
-          <Text>Help admin and shop-user manage your channel more effectively.</Text>
+        <Flex flex="1" justifyItems="center" alignItems="center" bg="red">
+          <Text textStyle="20-m" color="text-primary">
+            Natshop profesional management
+          </Text>
+          <Text textStyle="h3" color="text-basic">
+            Help admin and shop-user manage your channel more effectively.
+          </Text>
           <Image />
-        </Box>
+        </Flex>
         <Box>
           <Text>Welcome to atshop Management</Text>
           <Input

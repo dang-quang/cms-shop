@@ -80,6 +80,21 @@ export const textStyles = {
       lineHeight: '24px',
       fontWeight: '400',
     },
+    '20-m': {
+      fontSize: '20px',
+      lineHeight: '24px',
+      fontWeight: '500',
+    },
+    '20-sb': {
+      fontSize: '20px',
+      lineHeight: '24px',
+      fontWeight: '600',
+    },
+    '20-b': {
+      fontSize: '20px',
+      lineHeight: '24px',
+      fontWeight: '700',
+    },
     'h6-t': {
       fontSize: '24px',
       lineHeight: '28px',
